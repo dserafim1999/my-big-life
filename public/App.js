@@ -1,10 +1,10 @@
 import React from "react"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Map  from "./components/Map";
-import SideBar from "./components/SideBar";
+import Map from "../src/components/Map";
+import SideBar from "../src/components/SideBar";
 
-import { FeaturesData } from "./components/SideBar/FeaturesData";
+import { FeaturesData } from "../src/components/SideBar/FeaturesData";
 
 import "./App.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
