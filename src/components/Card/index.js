@@ -22,12 +22,13 @@ const Content = styled.div`
     padding: 20px;
 `;
 
-const Card = ({width, height, top, left, content}) => {
-    console.log(width);
+const Card = (props) => {
+    const { children, width, height, top, left, content } = props;
+
     return (
         <Wrapper width={width} height={height} top={top} left={left}>
             <Content>
-              { content }
+              { children }
             </Content>
         </Wrapper>
     )
