@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Stack from 'react-bootstrap/Stack';
-import { getActiveRoute, isEquals } from "../../../utils";
+import { getActiveRoute, isEquals } from "../../utils";
 
 import IconButton from "@mui/material/IconButton";
 import { FeaturesData } from "./FeaturesData";
