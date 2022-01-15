@@ -12,7 +12,7 @@ import { loadFiles } from "../../utils.js";
 import { FeaturesData } from "../SideBar/FeaturesData";
 
 
-let Container = ({dispatch}) => {
+let Container = ({ tracks, dispatch }) => {
     const onDrop = (e) => {
       let dt = e.dataTransfer;
       let files = dt.files;
@@ -45,9 +45,10 @@ let Container = ({dispatch}) => {
 
                 <SideBar/>
                 <Map
-                center={[50, 25]}
-                zoom={4} 
-                scroll={true} 
+                    center={[50, 25]}
+                    zoom={4} 
+                    scroll={true}
+                    tracks={tracks} 
                 />
             </Router>
         </Dropzone>
@@ -57,6 +58,10 @@ let Container = ({dispatch}) => {
 const mapStateToProps = (state) => {
     console.log("State:");
     console.log(state);
+
+    return {
+        tracks: state.tracks
+      }
   }
   
 Container = connect(mapStateToProps)(Container);
