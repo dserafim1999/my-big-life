@@ -17,8 +17,8 @@ const Map = ({ center, zoom, scroll, tracks}) => {
 
     var bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}];
     
-    const elements = tracks.map((track, i) => {
-        return track.map((segment) => {
+    const elements = tracks.map((track, trackId) => {
+        return track.map((segment, segmentId) => {
             const points = segment.points;
             const t = points.map((t) => { return {lat: t.lat, lon: t.lon} });
             t.forEach((elm) => {
@@ -30,7 +30,7 @@ const Map = ({ center, zoom, scroll, tracks}) => {
 
             const handlers = {};
 
-            return (<Polyline opacity={1.0} positions={t} color={ segment.color } key={i} {...handlers} />);
+            return (<Polyline opacity={1.0} positions={t} color={ segment.color } key={segmentId} {...handlers} />);
         });
     });
 

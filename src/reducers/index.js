@@ -1,15 +1,16 @@
 import { combineReducers } from 'redux';
-import { getSegmentById } from '../utils';
 
 const tracks = (state = [], action) => {
+  const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === action.segmentId)).find((x) => !!x)
+
   switch (action.type) {
     case 'track/add':
       return [...state, action.track];
     case 'segment/visibility':
-      let nextState = [...state];
-      let segment = getSegmentById(action.segmentId, nextState);
-      segment.display = !segment.display;
-      return nextState;
+      let nextStateA = [...state];
+      let segmentA = getSegmentById(action.segmentId, nextStateA);
+      segmentA.display = !segmentA.display;
+      return nextStateA;
     default:
       return state;
   }

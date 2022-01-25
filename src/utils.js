@@ -30,9 +30,6 @@ export const loadFiles = (files, fn) => {
   }
 }
 
-// gets segment by id in state
-export const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === action.segmentId)).find((x) => !!x);
-
 // returns the active route
 export const getActiveRoute = () => {
     return window.location.pathname;
