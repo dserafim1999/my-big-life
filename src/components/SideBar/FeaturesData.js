@@ -1,6 +1,6 @@
 import React from "react";
 
-import {nanoid } from "nanoid";
+import { nanoid } from "nanoid";
 
 import SearchBar from "../SearchBar";
 import LifeEditor from "../LifeEditor";

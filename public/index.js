@@ -11,6 +11,8 @@ import "./App.css";
 
 let store = createStore(reducers);
 
+export default store;
+
 ReactDom.render((
   <Provider store={store}>
     <App />

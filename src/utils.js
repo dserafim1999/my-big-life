@@ -1,17 +1,37 @@
 import { GXParser } from 'gxparser';
+import moment from 'moment';
 
 // reads GPX file, converts to JSON format and then applies fn to the result 
 export const loadFiles = (files, fn) => {
-  for (var i=0; i<files.length; i++) {
-    var file = files[i]
-    var reader = new FileReader()
-    reader.readAsText(file)
-    reader.onloadend = function() {
-      var gpx = GXParser(reader.result)
-      fn(gpx)
+  for (let i = 0; i < files.length; i++) {
+    let file = files[i];
+    /*global FileReader*/
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = () => {
+      let gpx = GXParser(reader.result);
+      gpx.trk = gpx.trk.map((track) => {
+        return {
+          trkseg: track.trkseg.map((segment) => {
+            return {
+              trkpt: segment.trkpt.map((point) => {
+                return {
+                  lat: Number(point.lat),
+                  lon: Number(point.lon),
+                  time: moment(point.time[0])
+                }
+              })
+            }
+          })
+        }
+      })
+      fn(gpx, file);
     }
   }
 }
+
+// gets segment by id in state
+export const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === action.segmentId)).find((x) => !!x);
 
 // returns the active route
 export const getActiveRoute = () => {
@@ -22,3 +42,6 @@ export const getActiveRoute = () => {
 export const isEquals = (a, b) => {
     return a === b;
 }
+
+export const max = (a, b) => a >= b ? a : b;
+export const min = (a, b) => a <= b ? a : b;
