@@ -1,6 +1,7 @@
-import React from "react";
-import Leaflet from 'leaflet';
+import React, { useState } from "react";
+import { icon } from 'leaflet'
 import { min, max } from '../../utils';
+import { PolylineEditor } from 'leaflet-editable-polyline'
 
 import { 
     MapContainer,
@@ -16,7 +17,35 @@ const Map = ({ center, zoom, scroll, tracks}) => {
     // const bounds = Leaflet.latLngBounds(corner1, corner2);
 
     var bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}];
-    
+    const [map, setMap] = useState();
+
+    function addPolyline(coordinates) {
+
+        var polylineOptions = {
+                // The user can add new polylines by clicking anywhere on the map:
+                newPolylines: true,
+                newPolylineConfirmMessage: 'Add a new polyline here?',
+                // Show editable markers only if less than this number are in map bounds:
+                maxMarkers: 100,
+                pointIcon: icon({
+                    iconUrl: 'https://raw.githubusercontent.com/tkrajina/leaflet-editable-polyline/master/examples/editmarker.png',
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                }),
+                newPointIcon: icon({
+                    iconUrl: 'https://raw.githubusercontent.com/tkrajina/leaflet-editable-polyline/master/examples/editmarker2.png',
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                })
+        }
+
+        var polyline = L.Polyline.PolylineEditor(coordinates, polylineOptions).addTo(map);
+        map.fitBounds(polyline.getBounds());
+
+
+        return polyline;
+    }
+
     const elements = tracks.map((track, trackId) => {
         return track.map((segment, segmentId) => {
             const points = segment.points;
@@ -30,17 +59,13 @@ const Map = ({ center, zoom, scroll, tracks}) => {
 
             const handlers = {};
 
-            return (<Polyline opacity={1.0} positions={t} color={ segment.color } key={segmentId} {...handlers} />);
+            addPolyline(t);
         });
     });
 
-    const ns = elements.reduce((prev, seg) => prev + seg.length, 0);
-    if (ns === 0) {
-        bounds = [{lat: 67.47492238478702, lng: 225}, {lat: -55.17886766328199, lng: -225}];
-    }
-
     return (
         <MapContainer 
+            whenCreated={setMap}
             center={center}
             zoom={zoom} 
             scrollWheelZoom={scroll}
