@@ -13,13 +13,13 @@ const EditablePolyline = (props) => {
             // maxMarkers: 100,
             // icon for existing point on polyline
             pointIcon: icon({
-                iconUrl: '/pointIcon.svg', //TODO change marker 
+                iconUrl: '/pointIcon.svg', 
                 iconSize: [12, 12],
                 iconAnchor: [6, 6]
             }),
             // icon for new point on polyline
             newPointIcon: icon({
-                iconUrl: '/newPointIcon.svg', //TODO change marker
+                iconUrl: '/newPointIcon.svg',
                 iconSize: [12, 12],
                 iconAnchor: [6, 6]
             }),
@@ -34,9 +34,12 @@ const EditablePolyline = (props) => {
 
         // creates an editable polyline 
         const polyline = L.Polyline.PolylineEditor(props.positions, polylineOptions);
-        
+
         // gets map from the current leaflet context
         const container = context.layerContainer || context.map;
+
+        // focuses on segment to be edited
+        container.fitBounds(polyline.getBounds());
 
         // adds polyline to map
         container.addLayer(polyline);

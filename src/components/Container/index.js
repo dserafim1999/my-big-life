@@ -52,9 +52,6 @@ let Container = ({ tracks, dispatch }) => {
                 {tracks.length > 0 ? <TrackList tracks={tracks} dispatch={dispatch} /> : <></>}
               </div>
               <Map
-                  center={[50, 25]}
-                  zoom={4} 
-                  scroll={true}
                   tracks={a} 
                   dispatch={dispatch}
               />
