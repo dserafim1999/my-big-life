@@ -72,7 +72,6 @@ const tracks = (state = [], action) => {
         let prev = state[n - 1].time;
         let next = state[n].time;
         let diff = next.diff(prev) / 2;
-        console.log(prev.clone().add(diff));
         return prev.clone().add(diff);
       }
 
@@ -82,12 +81,19 @@ const tracks = (state = [], action) => {
         time: extrapolateTimeAdd(segment.points, action.index)
       }
 
-      console.log("=====");
-      console.log(segment.points[action.index-1].time);
-      console.log(pointAdd.time);
-      console.log(segment.points[action.index].time);
-      console.log("=====");
-      segment.points.splice(action.index, 0, pointAdd)
+      segment.points.splice(action.index, 0, pointAdd);
+      return nextState;
+
+    case 'segment/remove':
+      // Bug when removing from multiple
+      let track = state.map((track) => track.segments.find((s) => s.id === action.segmentId) ? track : null).find((x) => !!x);
+      nextState = [...state];
+      if (track.segments.length === 1) {
+        nextState.splice(nextState.indexOf(track), 1);
+      } else {
+        let ix = track.segments.indexOf(track.segments.find((s) => s.id === action.segmentId));
+        track.segments.splice(ix, 1);
+      }
       return nextState;
     default:
       return state;

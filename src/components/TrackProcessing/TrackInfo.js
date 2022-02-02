@@ -1,8 +1,9 @@
 import React from 'react';
-import { toggleSegmentVisibility, toggleSegmentEditing } from '../../actions';
+import { toggleSegmentVisibility, toggleSegmentEditing, removeSegment } from '../../actions';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Col, Container } from 'react-bootstrap';
 
 const SegmentInfo = ({ dispatch, segment }) => {
@@ -16,19 +17,31 @@ const SegmentInfo = ({ dispatch, segment }) => {
     return () => dispatch(toggleSegmentEditing(segmentId));
   }
 
+  const deleteSegment = (segmentId) => {
+    return () => dispatch(removeSegment(segmentId))
+  }
+
   return (
     <div style={{border: '1px solid #F0F0F0'}}>
         <Container style={{width: '15%', float: 'right'}} >
             <Col>
                 <VisibilityIcon style={{color: 'gray', cursor: 'pointer'}} onClick={toggleTrack(id)}/>
-                <EditIcon style={{color: 'gray', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
             </Col>
         </Container>
         <div style={{width: '85%'}} >
         <li style={{borderLeft: '10px solid ' + color, paddingLeft: '2%', opacity: display ? 1 : 0.5}} >
+        <div>
             <div style={{fontSize: '1rem', color: 'gray'}}>{name.length === 0 ? 'untitled' : name} <span style={{fontSize: '0.8rem', color: 'gray'}}>{points.length} points</span></div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('L')} - {end.format('L')}, {end.fromNow()}</div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('LT')} - {end.format('LT')}, {start.to(end, true)}</div>
+        </div>
+
+        <div style={{marginTop: '2px'}}>
+            <Col>
+                <EditIcon style={{color:  editing ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
+                <DeleteIcon style={{color: 'grey', cursor: 'pointer'}} onClick={deleteSegment(id)}/>
+            </Col>
+        </div>
         </li>
         </div>
     </div>

@@ -80,3 +80,11 @@ export const changeSegmentPoint = (segmentId, index, lat, lon) => {
     type: 'segment/change_point'
   }
 }
+
+export const removeSegment = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/remove'
+  }
+}
+

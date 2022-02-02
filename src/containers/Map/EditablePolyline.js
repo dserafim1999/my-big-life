@@ -38,9 +38,6 @@ const EditablePolyline = (props) => {
         // gets map from the current leaflet context
         const container = context.layerContainer || context.map;
 
-        // focuses on segment to be edited
-        container.fitBounds(polyline.getBounds());
-
         // adds polyline to map
         container.addLayer(polyline);
 
