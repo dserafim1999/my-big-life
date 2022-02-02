@@ -16,6 +16,7 @@ import { FeaturesData } from "../SideBar/FeaturesData";
 
 
 let Container = ({ tracks, dispatch }) => {
+  
   const onDrop = (e) => {
     let dt = e.dataTransfer
     let files = dt.files
@@ -55,6 +56,7 @@ let Container = ({ tracks, dispatch }) => {
                   zoom={4} 
                   scroll={true}
                   tracks={a} 
+                  dispatch={dispatch}
               />
           </Router>
       </Dropzone>
@@ -62,7 +64,6 @@ let Container = ({ tracks, dispatch }) => {
 };
 
 const mapStateToProps = (state) => {
-  console.log(state.tracks)
     return {
         tracks: state.tracks
       }

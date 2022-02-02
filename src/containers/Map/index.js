@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { icon } from 'leaflet'
 import { min, max } from '../../utils';
-import { PolylineEditor } from 'leaflet-editable-polyline'
-
 import { 
     MapContainer,
     TileLayer,
@@ -10,44 +7,16 @@ import {
     Polyline
 } from "react-leaflet";
 
+import EditablePolyline from "./EditablePolyline";
+import { PolyUtil } from "leaflet";
 
-const Map = ({ center, zoom, scroll, tracks}) => {
-    // const corner1 = Leaflet.latLng(-90, -200);
-    // const corner2 = Leaflet.latLng(90, 200);
-    // const bounds = Leaflet.latLngBounds(corner1, corner2);
 
+const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
     var bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}];
     const [map, setMap] = useState();
 
-    function addPolyline(coordinates) {
-
-        var polylineOptions = {
-                // The user can add new polylines by clicking anywhere on the map:
-                newPolylines: true,
-                newPolylineConfirmMessage: 'Add a new polyline here?',
-                // Show editable markers only if less than this number are in map bounds:
-                maxMarkers: 100,
-                pointIcon: icon({
-                    iconUrl: 'https://raw.githubusercontent.com/tkrajina/leaflet-editable-polyline/master/examples/editmarker.png',
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
-                }),
-                newPointIcon: icon({
-                    iconUrl: 'https://raw.githubusercontent.com/tkrajina/leaflet-editable-polyline/master/examples/editmarker2.png',
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
-                })
-        }
-
-        var polyline = L.Polyline.PolylineEditor(coordinates, polylineOptions).addTo(map);
-        map.fitBounds(polyline.getBounds());
-
-
-        return polyline;
-    }
-
     const elements = tracks.map((track, trackId) => {
-        return track.map((segment, segmentId) => {
+        return track.map((segment) => {
             const points = segment.points;
             const t = points.map((t) => { return {lat: t.lat, lon: t.lon} });
             t.forEach((elm) => {
@@ -59,7 +28,11 @@ const Map = ({ center, zoom, scroll, tracks}) => {
 
             const handlers = {};
 
-            addPolyline(t);
+            //const Poly = segment.pointEditing? EditablePolyline : Polyline;
+            const Poly =  EditablePolyline;
+            
+            return (<Poly positions={t} color={segment.color} key={segment.id}/>);
+            
         });
     });
 
