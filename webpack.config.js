@@ -43,6 +43,14 @@ const htmlPlugin = new HtmlWebpackPlugin({
             {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: [
+                  {
+                    loader: 'file-loader'
+                  }
+                ]
             }
         ]
     },

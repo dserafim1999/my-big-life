@@ -23,7 +23,7 @@ export const addTrack = (track, file) => {
           end: segment[segment.length - 1].time,
           color: COLORS[sId % COLORS.length],
           name: '',
-          pointEditing: false
+          editing: false
         }
       }),
       name: file.name
@@ -42,5 +42,41 @@ export const toggleSegmentEditing = (segmentId) => {
   return {
     segmentId,
     type: 'segment/edit'
+  }
+}
+
+
+export const extendSegment = (segmentId, index, lat, lon) => {
+  return {
+    segmentId,
+    index,
+    lat,
+    lon,
+    type: 'segment/extend'
+  }
+}
+export const addSegmentPoint = (segmentId, index, lat, lon) => {
+  return {
+    segmentId,
+    index,
+    lat,
+    lon,
+    type: 'segment/add_point'
+  }
+}
+export const removeSegmentPoint = (segmentId, index) => {
+  return {
+    segmentId,
+    index,
+    type: 'segment/remove_point'
+  }
+}
+export const changeSegmentPoint = (segmentId, index, lat, lon) => {
+  return {
+    segmentId,
+    index,
+    lat,
+    lon,
+    type: 'segment/change_point'
   }
 }

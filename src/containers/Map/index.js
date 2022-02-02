@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { min, max } from '../../utils';
 import { 
     MapContainer,
     TileLayer,
@@ -8,28 +7,41 @@ import {
 } from "react-leaflet";
 
 import EditablePolyline from "./EditablePolyline";
-
+import { changeSegmentPoint, removeSegmentPoint, addSegmentPoint, extendSegment } from '../../actions';
 
 const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
-    var bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}];
+    // creates a map state that will be associated with the MapContainer component to be able to reference the map  
     const [map, setMap] = useState();
 
-    const elements = tracks.map((track, trackId) => {
+    // parses track segments into polylines to display on the map
+    const polylines = tracks.map((track) => {
         return track.map((segment) => {
             const points = segment.points;
-            const t = points.map((t) => { return {lat: t.lat, lon: t.lon} });
-            t.forEach((elm) => {
-                bounds[0].lat = min(bounds[0].lat, elm.lat);
-                bounds[0].lon = min(bounds[0].lon, elm.lon);
-                bounds[1].lat = max(bounds[1].lat, elm.lat);
-                bounds[1].lon = max(bounds[1].lon, elm.lon);
-            });
+            const positions = points.map((t) => { return {lat: t.lat, lon: t.lon} });
 
-            const handlers = {};
+            // defines the type of polyline to use whether the segment is in editing mode or not
+            const Poly = segment.editing? EditablePolyline : Polyline;
 
-            const Poly = segment.pointEditing? EditablePolyline : Polyline;
-            
-            return (<Poly positions={t} color={segment.color} key={segment.id}/>);
+            // defines the behaviour when editing the polyline to update changes in the state
+            const handlers = segment.editing ? {
+                onChange: (n, points) => {
+                  let {lat, lng} = points[n]._latlng;
+                  dispatch(changeSegmentPoint(segment.id, n, lat, lng));
+                },
+                onRemove: (n) => {
+                  dispatch(removeSegmentPoint(segment.id, n));
+                },
+                onPointAdd: (n, points) => {
+                  let {lat, lng} = points[n]._latlng;
+                  dispatch(addSegmentPoint(segment.id, n, lat, lng));
+                },
+                onExtend: (n, points) => {
+                  let {lat, lng} = points[n]._latlng;
+                  dispatch(extendSegment(segment.id, n, lat, lng));
+                }
+            } : {};
+
+            return (<Poly positions={positions} color={segment.color} key={segment.id} {...handlers}/>);
             
         });
     });
@@ -42,15 +54,13 @@ const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
             scrollWheelZoom={scroll}
             zoomControl={false}
             minZoom={2}
-            maxBoundsViscosity={1.0}
-            maxBounds={bounds}  
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {
-                elements
+                polylines
             }
             <ZoomControl position="topright" />
         </MapContainer>

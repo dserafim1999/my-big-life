@@ -22,7 +22,7 @@
     "gxparser": "^1.0.0",
     "leaflet": "^1.7.1",
     "leaflet-editable": "^1.2.0",
-    "leaflet-editable-polyline": "^1.0.8",
+    "leaflet-editable-polyline": "github:ruipgil/leaflet-editable-polyline",
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.0",
