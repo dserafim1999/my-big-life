@@ -1,14 +1,19 @@
 import React from 'react';
-import { toggleSegmentVisibility } from '../../actions';
+import { toggleSegmentVisibility, toggleSegmentEditing } from '../../actions';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 import { Col, Container } from 'react-bootstrap';
 
 const SegmentInfo = ({ dispatch, segment }) => {
   const { id, name, points, start, end, display, color, editing } = segment;
   
-  const toggleTrack = (segmentIndex) => {
-    return () => dispatch(toggleSegmentVisibility(segmentIndex));
+  const toggleTrack = (segmentId) => {
+    return () => dispatch(toggleSegmentVisibility(segmentId));
+  }
+
+  const toggleEditing = (segmentId) => {
+    return () => dispatch(toggleSegmentEditing(segmentId));
   }
 
   return (
@@ -16,6 +21,7 @@ const SegmentInfo = ({ dispatch, segment }) => {
         <Container style={{width: '15%', float: 'right'}} >
             <Col>
                 <VisibilityIcon style={{color: 'gray', cursor: 'pointer'}} onClick={toggleTrack(id)}/>
+                <EditIcon style={{color: 'gray', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
             </Col>
         </Container>
         <div style={{width: '85%'}} >

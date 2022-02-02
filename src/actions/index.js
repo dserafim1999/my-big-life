@@ -37,3 +37,10 @@ export const toggleSegmentVisibility = (segmentId) => {
     type: 'segment/visibility'
   }
 }
+
+export const toggleSegmentEditing = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/edit'
+  }
+}

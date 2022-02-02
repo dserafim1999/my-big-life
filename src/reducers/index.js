@@ -11,6 +11,11 @@ const tracks = (state = [], action) => {
       let segmentA = getSegmentById(action.segmentId, nextStateA);
       segmentA.display = !segmentA.display;
       return nextStateA;
+    case 'segment/edit':
+      let nextStateB = [...state];
+      let segmentB = getSegmentById(action.segmentId, nextStateB);
+      segmentB.pointEditing = !segmentB.pointEditing;
+      return nextStateB;
     default:
       return state;
   }

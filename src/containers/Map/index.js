@@ -8,7 +8,6 @@ import {
 } from "react-leaflet";
 
 import EditablePolyline from "./EditablePolyline";
-import { PolyUtil } from "leaflet";
 
 
 const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
@@ -28,8 +27,7 @@ const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
 
             const handlers = {};
 
-            //const Poly = segment.pointEditing? EditablePolyline : Polyline;
-            const Poly =  EditablePolyline;
+            const Poly = segment.pointEditing? EditablePolyline : Polyline;
             
             return (<Poly positions={t} color={segment.color} key={segment.id}/>);
             
