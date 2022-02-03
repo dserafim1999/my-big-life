@@ -15,7 +15,7 @@ import { loadFiles } from "../../utils.js";
 import { FeaturesData } from "../SideBar/FeaturesData";
 
 
-let Container = ({ tracks, dispatch }) => {
+let Container = ({ ui, tracks, dispatch }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -29,7 +29,7 @@ let Container = ({ tracks, dispatch }) => {
     })
   }
 
-  let a = tracks.map((track) => track.segments.filter((segment) => segment.display));
+  let filteredTracks = tracks.map((track) => track.segments.filter((segment) => segment.display));
 
   return (
       <Dropzone id="container" onDrop={onDrop}>
@@ -52,7 +52,8 @@ let Container = ({ tracks, dispatch }) => {
                 {tracks.length > 0 ? <TrackList tracks={tracks} dispatch={dispatch} /> : <></>}
               </div>
               <Map
-                  tracks={a} 
+                  bounds={ui.bounds}
+                  tracks={filteredTracks} 
                   dispatch={dispatch}
               />
           </Router>
@@ -62,7 +63,8 @@ let Container = ({ tracks, dispatch }) => {
 
 const mapStateToProps = (state) => {
     return {
-        tracks: state.tracks
+        tracks: state.tracks,
+        ui: state.ui
       }
   }
   

@@ -88,3 +88,18 @@ export const removeSegment = (segmentId) => {
   }
 }
 
+
+export const fitSegment = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/fit'
+  }
+}
+
+export const updateBounds = (bounds) => {
+  return {
+    bounds,
+    type: 'ui/bounds'
+  }
+}
+

@@ -1,9 +1,16 @@
 import React from 'react';
-import { toggleSegmentVisibility, toggleSegmentEditing, removeSegment } from '../../actions';
+import { 
+  toggleSegmentVisibility,
+  toggleSegmentEditing,
+  removeSegment,
+  updateBounds
+} from '../../actions';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FitIcon from '@mui/icons-material/ZoomOutMap';
+
 import { Col, Container } from 'react-bootstrap';
 
 const SegmentInfo = ({ dispatch, segment }) => {
@@ -19,6 +26,10 @@ const SegmentInfo = ({ dispatch, segment }) => {
 
   const deleteSegment = (segmentId) => {
     return () => dispatch(removeSegment(segmentId))
+  }
+
+  const fitToSegment = () => {
+    return () => dispatch(updateBounds(segment.bounds))
   }
 
   return (
@@ -40,6 +51,7 @@ const SegmentInfo = ({ dispatch, segment }) => {
             <Col>
                 <EditIcon style={{color:  editing ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
                 <DeleteIcon style={{color: 'grey', cursor: 'pointer'}} onClick={deleteSegment(id)}/>
+                <FitIcon style={{color: 'grey', cursor: 'pointer'}} onClick={fitToSegment()}/>
             </Col>
         </div>
         </li>

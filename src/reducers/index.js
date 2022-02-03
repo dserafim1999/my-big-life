@@ -1,4 +1,30 @@
 import { combineReducers } from 'redux';
+import { min, max } from "../utils";
+
+
+const updateBoundsWithPoint = (point, bounds) => {
+  return [
+    { lat: min(bounds[0].lat, point.lat),
+      lon: min(bounds[0].lon, point.lon)
+    },
+    { lat: max(bounds[1].lat, point.lat),
+      lon: max(bounds[1].lon, point.lon)
+    }
+  ];
+}
+const calculateBounds = (points) => {
+  let bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}];
+  points
+    .map((t) => { return {lat: t.lat, lon: t.lon} })
+      .forEach((elm) => {
+      bounds[0].lat = min(bounds[0].lat, elm.lat)
+      bounds[0].lon = min(bounds[0].lon, elm.lon)
+      bounds[1].lat = max(bounds[1].lat, elm.lat)
+      bounds[1].lon = max(bounds[1].lon, elm.lon)
+    }
+  );
+  return bounds;
+}
 
 const tracks = (state = [], action) => {
   const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === action.segmentId)).find((x) => !!x)
@@ -6,6 +32,9 @@ const tracks = (state = [], action) => {
 
   switch (action.type) {
     case 'track/add':
+      action.track.segments.forEach((segment) => {
+        segment.bounds = calculateBounds(segment.points)
+      });
       return [...state, action.track];
     
     case 'segment/visibility':
@@ -25,12 +54,14 @@ const tracks = (state = [], action) => {
       segment = getSegmentById(action.segmentId, nextState)
       segment.points[action.index].lat = action.lat;
       segment.points[action.index].lon = action.lon;
+      segment.bounds = updateBoundsWithPoint(segment.points[action.index], segment.bounds)
       return nextState;
 
     case 'segment/remove_point':
       nextState = [...state];
       segment = getSegmentById(action.segmentId, nextState);
       segment.points = segment.points.filter((_, i) => i !== action.index);
+      segment.bounds = calculateBounds(segment.points)
       return nextState;
 
     case 'segment/extend':
@@ -57,6 +88,8 @@ const tracks = (state = [], action) => {
         time: extrapolateTimeExtend(segment.points, action.index)
       }
 
+      segment.bounds = updateBoundsWithPoint(pointExtend, segment.bounds)
+
       if (action.index === 0) {
         segment.points.unshift(pointExtend);
       } else {
@@ -81,6 +114,7 @@ const tracks = (state = [], action) => {
         time: extrapolateTimeAdd(segment.points, action.index)
       }
 
+      segment.bounds = updateBoundsWithPoint(pointAdd, segment.bounds);
       segment.points.splice(action.index, 0, pointAdd);
       return nextState;
 
@@ -100,8 +134,19 @@ const tracks = (state = [], action) => {
   }
 }
 
+const ui = (state = {}, action) => {
+  switch (action.type) {
+    case 'ui/bounds':
+      state.bounds = action.bounds;
+      return Object.assign({}, state);
+    default:
+      return state;
+  }
+}
+
 const app = combineReducers({
-  tracks
+  tracks,
+  ui
 });
 
 export default app;

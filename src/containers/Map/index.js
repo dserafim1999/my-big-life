@@ -6,15 +6,13 @@ import {
     Polyline
 } from "react-leaflet";
 
-import { min, max } from "../../utils";
 import EditablePolyline from "./EditablePolyline";
 import { changeSegmentPoint, removeSegmentPoint, addSegmentPoint, extendSegment } from '../../actions';
+import Bounds from "./Bounds";
 
-const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
+const Map = ({ bounds, tracks, dispatch}) => {
     // creates a map state that will be associated with the MapContainer component to be able to reference the map  
     const [map, setMap] = useState();
-
-    var bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}]
 
     // parses track segments into polylines to display on the map
     const polylines = tracks.map((track) => {
@@ -22,15 +20,10 @@ const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
             const points = segment.points;
             const positions = points.map((t) => { return {lat: t.lat, lon: t.lon} });
 
-            positions.forEach((elm) => {
-                bounds[0].lat = min(bounds[0].lat, elm.lat)
-                bounds[0].lon = min(bounds[0].lon, elm.lon)
-                bounds[1].lat = max(bounds[1].lat, elm.lat)
-                bounds[1].lon = max(bounds[1].lon, elm.lon)
-            });
-
             // defines the type of polyline to use whether the segment is in editing mode or not
             const Poly = segment.editing? EditablePolyline : Polyline;
+
+            //TODO split and join
 
             // defines the behaviour when editing the polyline to update changes in the state
             const handlers = segment.editing ? {
@@ -56,15 +49,12 @@ const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
         });
     });
 
-    const ns = polylines.reduce((prev, seg) => prev + seg.length, 0)
-    if (ns === 0) {
-      bounds = [{lat: 67.47492238478702, lng: 225}, {lat: -55.17886766328199, lng: -225}]
-    }
+    bounds = bounds || [{lat: 67.47492238478702, lng: 225}, {lat: -55.17886766328199, lng: -225}];
 
     return (
         <MapContainer 
+            id='map'
             whenCreated={setMap}
-            center={[50, 25]}
             zoom={4} 
             scrollWheelZoom={true}
             zoomControl={false}
@@ -79,6 +69,7 @@ const Map = ({ center, zoom, scroll, tracks, dispatch}) => {
                 polylines
             }
             <ZoomControl position="topright" />
+            <Bounds bounds={bounds}/>
         </MapContainer>
     );
 };
