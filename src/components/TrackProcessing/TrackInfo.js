@@ -3,18 +3,20 @@ import {
   toggleSegmentVisibility,
   toggleSegmentEditing,
   removeSegment,
-  updateBounds
+  updateBounds,
+  toggleSegmentSpliting
 } from '../../actions';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
+import SplitIcon from '@mui/icons-material/Height';
 
 import { Col, Container } from 'react-bootstrap';
 
 const SegmentInfo = ({ dispatch, segment }) => {
-  const { id, name, points, start, end, display, color, editing } = segment;
+  const { id, name, points, start, end, display, color, editing, spliting } = segment;
   
   const toggleTrack = (segmentId) => {
     return () => dispatch(toggleSegmentVisibility(segmentId));
@@ -30,6 +32,10 @@ const SegmentInfo = ({ dispatch, segment }) => {
 
   const fitToSegment = () => {
     return () => dispatch(updateBounds(segment.bounds))
+  }
+
+  const toggleSpliting = (segmentId) => {
+    return () => dispatch(toggleSegmentSpliting(segmentId))
   }
 
   return (
@@ -52,6 +58,7 @@ const SegmentInfo = ({ dispatch, segment }) => {
                 <EditIcon style={{color:  editing ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
                 <DeleteIcon style={{color: 'grey', cursor: 'pointer'}} onClick={deleteSegment(id)}/>
                 <FitIcon style={{color: 'grey', cursor: 'pointer'}} onClick={fitToSegment()}/>
+                <SplitIcon style={{color: spliting ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleSpliting(id)}/>
             </Col>
         </div>
         </li>

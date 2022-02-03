@@ -27,8 +27,10 @@ const calculateBounds = (points) => {
 }
 
 const tracks = (state = [], action) => {
-  const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === action.segmentId)).find((x) => !!x)
-  let nextState, segment;
+  const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === id)).find((x) => !!x);
+  const getTrackBySegmentId = (id, state = state) => state.map((track) => track.segments.find((s) => s.id === id) ? track : null).find((x) => !!x);
+  
+  let nextState, segment, track;
 
   switch (action.type) {
     case 'track/add':
@@ -37,24 +39,32 @@ const tracks = (state = [], action) => {
       });
       return [...state, action.track];
     
-    case 'segment/visibility':
+    case 'segment/toggle_visibility':
       nextState = [...state];
       segment = getSegmentById(action.segmentId, nextState);
       segment.display = !segment.display;
       return nextState;
 
-    case 'segment/edit':
+    case 'segment/toggle_edit':
       nextState = [...state];
       segment = getSegmentById(action.segmentId, nextState);
       segment.editing = !segment.editing;
+      segment.spliting = false;
       return nextState;
 
+    case 'segment/toggle_split':
+      nextState = [...state];
+      segment = getSegmentById(action.segmentId, nextState);
+      segment.spliting = !segment.spliting;
+      segment.editing = false;
+      return nextState;
+    
     case 'segment/change_point':
       nextState = [...state];
-      segment = getSegmentById(action.segmentId, nextState)
+      segment = getSegmentById(action.segmentId, nextState);
       segment.points[action.index].lat = action.lat;
       segment.points[action.index].lon = action.lon;
-      segment.bounds = updateBoundsWithPoint(segment.points[action.index], segment.bounds)
+      segment.bounds = updateBoundsWithPoint(segment.points[action.index], segment.bounds);
       return nextState;
 
     case 'segment/remove_point':
@@ -88,7 +98,7 @@ const tracks = (state = [], action) => {
         time: extrapolateTimeExtend(segment.points, action.index)
       }
 
-      segment.bounds = updateBoundsWithPoint(pointExtend, segment.bounds)
+      segment.bounds = updateBoundsWithPoint(pointExtend, segment.bounds);
 
       if (action.index === 0) {
         segment.points.unshift(pointExtend);
@@ -119,8 +129,7 @@ const tracks = (state = [], action) => {
       return nextState;
 
     case 'segment/remove':
-      // Bug when removing from multiple
-      let track = state.map((track) => track.segments.find((s) => s.id === action.segmentId) ? track : null).find((x) => !!x);
+      track = state.map((track) => track.segments.find((s) => s.id === action.segmentId) ? track : null).find((x) => !!x);
       nextState = [...state];
       if (track.segments.length === 1) {
         nextState.splice(nextState.indexOf(track), 1);
@@ -128,6 +137,25 @@ const tracks = (state = [], action) => {
         let ix = track.segments.indexOf(track.segments.find((s) => s.id === action.segmentId));
         track.segments.splice(ix, 1);
       }
+      return nextState;
+
+    case 'segment/split':
+      nextState = [...state];
+      segment = getSegmentById(action.segmentId, nextState);
+      track = getTrackBySegmentId(action.segmentId, nextState);
+
+      let rest = segment.points.splice(action.index);
+      segment.points.push(rest[0]); // adds split point to segment
+      segment.end = segment.points[segment.points.length - 1].time;
+      segment.spliting = false
+
+      let seg = action.segmentInfo;
+      seg.points = rest;
+      seg.bounds = calculateBounds(seg.points);
+      seg.start = rest[0].time;
+      seg.end = rest[rest.length - 1].time
+
+      track.segments.push(seg);
       return nextState;
     default:
       return state;

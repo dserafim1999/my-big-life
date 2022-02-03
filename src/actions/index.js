@@ -23,7 +23,8 @@ export const addTrack = (track, file) => {
           end: segment[segment.length - 1].time,
           color: COLORS[sId % COLORS.length],
           name: '',
-          editing: false
+          editing: false,
+          spliting: false
         }
       }),
       name: file.name
@@ -34,17 +35,23 @@ export const addTrack = (track, file) => {
 export const toggleSegmentVisibility = (segmentId) => {
   return {
     segmentId,
-    type: 'segment/visibility'
+    type: 'segment/toggle_visibility'
   }
 }
 
 export const toggleSegmentEditing = (segmentId) => {
   return {
     segmentId,
-    type: 'segment/edit'
+    type: 'segment/toggle_edit'
   }
 }
 
+export const toggleSegmentSpliting = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/toggle_split'
+  }
+}
 
 export const extendSegment = (segmentId, index, lat, lon) => {
   return {
@@ -55,6 +62,27 @@ export const extendSegment = (segmentId, index, lat, lon) => {
     type: 'segment/extend'
   }
 }
+
+export const splitSegment = (segmentId, index) => {
+  const sId = _segmentId++
+  return {
+    index,
+    segmentId,
+    segmentInfo: {
+      id: sId,
+      points: [],
+      display: true,
+      start: null,
+      end: null,
+      color: COLORS[sId % COLORS.length],
+      name: '',
+      editing: false,
+      spliting: false
+    },
+    type: 'segment/split'
+  }
+}
+
 export const addSegmentPoint = (segmentId, index, lat, lon) => {
   return {
     segmentId,

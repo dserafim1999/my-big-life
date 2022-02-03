@@ -10,7 +10,7 @@ const EditablePolyline = (props) => {
     useEffect(() => {
         var polylineOptions = {
             // shows editable markers only if less than this number are in map bounds
-            // maxMarkers: 100,
+            maxMarkers: 500,
             // icon for existing point on polyline
             pointIcon: icon({
                 iconUrl: '/pointIcon.svg', 

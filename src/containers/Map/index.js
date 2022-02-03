@@ -6,8 +6,16 @@ import {
     Polyline
 } from "react-leaflet";
 
+import { 
+    changeSegmentPoint, 
+    removeSegmentPoint, 
+    addSegmentPoint, 
+    extendSegment,
+    splitSegment
+} from '../../actions';
+
 import EditablePolyline from "./EditablePolyline";
-import { changeSegmentPoint, removeSegmentPoint, addSegmentPoint, extendSegment } from '../../actions';
+import PointPolyline from "./PointPolyline";
 import Bounds from "./Bounds";
 
 const Map = ({ bounds, tracks, dispatch}) => {
@@ -21,7 +29,7 @@ const Map = ({ bounds, tracks, dispatch}) => {
             const positions = points.map((t) => { return {lat: t.lat, lon: t.lon} });
 
             // defines the type of polyline to use whether the segment is in editing mode or not
-            const Poly = segment.editing? EditablePolyline : Polyline;
+            const Poly = segment.editing? EditablePolyline : (segment.spliting ? PointPolyline : Polyline);
 
             //TODO split and join
 
@@ -44,7 +52,12 @@ const Map = ({ bounds, tracks, dispatch}) => {
                 }
             } : {};
 
-            return (<Poly positions={positions} color={segment.color} key={segment.id} {...handlers}/>);
+            handlers.onPointClick = (point, i) => {
+                dispatch(splitSegment(segment.id, i));
+            }
+              
+            
+            return (<Poly positions={positions} color={segment.color} key={segment.id + ' ' + track.id} {...handlers}/>);
             
         });
     });
