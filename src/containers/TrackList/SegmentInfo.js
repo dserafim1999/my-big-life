@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { 
   toggleSegmentVisibility,
   toggleSegmentEditing,
-  removeSegment,
-  updateBounds,
   toggleSegmentSpliting
-} from '../../actions';
+} from '../../actions/toggles';
+import { removeSegment } from '../../actions/tracks';
+import { updateBounds } from '../../actions/ui';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';

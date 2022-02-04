@@ -12,7 +12,7 @@ import {
     addSegmentPoint, 
     extendSegment,
     splitSegment
-} from '../../actions';
+} from '../../actions/tracks';
 
 import EditablePolyline from "./EditablePolyline";
 import PointPolyline from "./PointPolyline";

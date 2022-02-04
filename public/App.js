@@ -1,12 +1,12 @@
 import React from "react"
 
-import Container from "../src/components/Container";
+import MainContainer from "../src/containers/MainContainer";
 
 import "./App.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => (
-    <Container/>
+    <MainContainer/>
 );
 
 export default App

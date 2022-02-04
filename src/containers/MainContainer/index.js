@@ -3,19 +3,19 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import Map from "../../containers/Map";
+import Map from "../Map";
 
-import SideBar from "../SideBar";
-import Dropzone from "../Dropzone";
-import TrackList from "../TrackProcessing/TrackList";
+import SideBar from "../../components/SideBar";
+import Dropzone from "../../components/Dropzone";
+import TrackList from "../TrackList";
 
-import { addTrack } from '../../actions';
-import { loadFiles } from "../../utils.js";
+import { addTrack } from '../../actions/tracks';
+import { loadFiles } from "../../GPXParser";
 
-import { FeaturesData } from "../SideBar/FeaturesData";
+import { FeaturesData } from "../../components/SideBar/FeaturesData";
 
 
-let Container = ({ ui, tracks, dispatch }) => {
+let MainContainer = ({ ui, tracks, dispatch }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -68,6 +68,6 @@ const mapStateToProps = (state) => {
       }
   }
   
-Container = connect(mapStateToProps)(Container);
+MainContainer = connect(mapStateToProps)(MainContainer);
 
-export default Container;
+export default MainContainer;

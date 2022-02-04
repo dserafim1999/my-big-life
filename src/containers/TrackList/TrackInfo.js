@@ -2,12 +2,12 @@ import React from 'react';
 
 import SegmentInfo from "./SegmentInfo";
 import ExportIcon from '@mui/icons-material/Download';
-import { downloadTrack } from '../../utils';
+import { downloadTrack } from '../../GPXParser';
 
 const TrackInfo = ({ dispatch, track }) => {
   
   const exportTrack = (track) => {
-    return () => console.log(downloadTrack(track));
+    return () => downloadTrack(track);
   }
 
   const { name, segments } = track
