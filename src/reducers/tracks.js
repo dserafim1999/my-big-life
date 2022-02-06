@@ -1,4 +1,5 @@
 import { min, max } from "../utils";
+import { removeSegment as removeSegmentAction } from "../actions/tracks";
 
 const updateBoundsWithPoint = (point, bounds) => {
   return [
@@ -24,8 +25,15 @@ const calculateBounds = (points) => {
   return bounds;
 }
 
-const getSegmentById = (id, state = state) => state.map((track) => track.segments.find((x) => x.id === id)).find((x) => !!x);
-const getTrackBySegmentId = (id, state = state) => state.map((track) => track.segments.find((s) => s.id === id) ? track : null).find((x) => !!x);
+const getSegmentById = (id, state) =>
+  state.map((track) =>
+    track.segments.find((x) => x.id === id)
+  ).find((x) => !!x);
+
+const getTrackBySegmentId = (id, state) =>
+  state.map((track) =>
+    track.segments.find((s) => s.id === id) ? track : null
+  ).find((x) => !!x);
 
 const addTrack = (state, action) => {
     action.track.segments.forEach((segment) => {
@@ -78,6 +86,63 @@ const toggleSegmentPointDetails = (state, action) => {
     segment.spliting = false;
     
     return nextState;
+}
+
+const toggleSegmentJoining = (state, action) => {
+  let nextState = [...state];
+  let segment = getSegmentById(action.segmentId, nextState);
+  let track = getTrackBySegmentId(action.segmentId, nextState);
+
+  if (track.segments.length > 1) {
+    let possibilities = [];
+    let candidates = [...track.segments];
+    candidates.splice(candidates.indexOf(segment), 1);
+
+    let sStart = segment.start;
+    let sEnd = segment.end;
+    let closerToStart;
+    let closerToEnd;
+    let t_closerToStart = Infinity;
+    let t_closerToEnd = Infinity;
+    
+    candidates.forEach((c, i) => {
+      let { start, end } = c;
+      let startDiff = start.diff(sEnd);
+      let endDiff = end.diff(sStart);
+
+      if (startDiff >= 0 && startDiff < t_closerToStart) {
+        t_closerToStart = startDiff;
+        closerToStart = c.id;
+      } else if (endDiff <= 0 && endDiff < t_closerToEnd) {
+        t_closerToEnd = endDiff;
+        closerToEnd = c.id;
+      }
+    })
+
+    if (closerToStart !== undefined) {
+      possibilities.push({
+        segment: closerToStart,
+        destiny: 'END',
+        show: 'END'
+      })
+    }
+
+    if (closerToEnd !== undefined) {
+      possibilities.push({
+        segment: closerToEnd,
+        destiny: 'START',
+        show: 'START'
+      })
+    }
+
+    segment.joinPossible = possibilities;
+    segment.joining = !segment.joining;
+    segment.editing = false;
+    segment.spliting = false;
+    segment.pointDetails = false;
+  }
+
+  return nextState;
 }
 
 const changeSegmentPoint = (state, action) => {
@@ -196,11 +261,33 @@ const splitSegment = (state, action) => {
     return nextState;
 }
 
+const updateSegment = (segment) => {
+  segment.start = segment.points[0].time;
+  segment.end = segment.points[segment.points.length - 1].time;
+  segment.bounds = calculateBounds(segment.points);
+}
+
+const joinSegment = (state, action) => {
+  let nextState = [...state];
+  const { details } = action;
+  let segment = getSegmentById(action.segmentId, nextState);
+  let toJoin = getSegmentById(details.segment, nextState);
+  let index = details.destiny !== 'START' ? toJoin.points.length - 1 : 0;
+  let toRemove = details.segment;
+  
+  segment.points.splice(index, 0, ...toJoin.points);
+  updateSegment(segment);
+  segment.joining = false;
+
+  return tracks(nextState, removeSegmentAction(toRemove));
+}
+
 const ACTION_REACTION = {
     'track/add': addTrack,
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
     'segment/toggle_split': toggleSegmentSpliting,
+    'segment/toggle_join': toggleSegmentJoining,
     'segment/toggle_point_details': toggleSegmentPointDetails,
     'segment/change_point': changeSegmentPoint,
     'segment/remove_point': removeSegmentPoint,
@@ -208,6 +295,7 @@ const ACTION_REACTION = {
     'segment/extend': extendSegment,
     'segment/remove': removeSegment,
     'segment/split': splitSegment,
+    'segment/join': joinSegment,
 }
 
 const tracks = (state = [], action) => {

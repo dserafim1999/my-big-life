@@ -4,6 +4,7 @@ import {
   toggleSegmentVisibility,
   toggleSegmentEditing,
   toggleSegmentSpliting,
+  toggleSegmentJoining,
   toggleSegmentPointDetails
 } from '../../actions/toggles';
 import { removeSegment } from '../../actions/tracks';
@@ -13,13 +14,14 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
-import SplitIcon from '@mui/icons-material/Height';
+import SplitIcon from '@mui/icons-material/Expand';
+import JoinIcon from '@mui/icons-material/Compress';
 import PointIcon from '@mui/icons-material/LocationOn';
 
 import { Col, Container } from 'react-bootstrap';
 
 const SegmentInfo = ({ dispatch, segment, track }) => {
-  const { id, name, points, start, end, display, color, editing, spliting, pointDetails } = segment;
+  const { id, name, points, start, end, display, color, editing, spliting, joining, pointDetails } = segment;
 
   const toggleTrack = (segmentId) => {
     return () => dispatch(toggleSegmentVisibility(segmentId));
@@ -39,6 +41,10 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
 
   const toggleSpliting = (segmentId) => {
     return () => dispatch(toggleSegmentSpliting(segmentId));
+  }
+
+  const toggleJoining = (segmentId) => {
+    return () => dispatch(toggleSegmentJoining(segmentId));
   }
 
   const toggleDetails = (segmentId) => {
@@ -67,6 +73,7 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
                 <DeleteIcon style={{color: 'grey', cursor: 'pointer'}} onClick={deleteSegment(id)}/>
                 <FitIcon style={{color: 'grey', cursor: 'pointer'}} onClick={fitToSegment()}/>
                 <SplitIcon style={{color: spliting ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleSpliting(id)}/>
+                <JoinIcon style={{color: joining ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleJoining(id)}/>
                 <PointIcon style={{color: pointDetails ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleDetails(id)}/>
             </Col>
         </div>

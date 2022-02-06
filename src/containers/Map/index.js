@@ -11,7 +11,8 @@ import {
     removeSegmentPoint, 
     addSegmentPoint, 
     extendSegment,
-    splitSegment
+    splitSegment,
+    joinSegment
 } from '../../actions/tracks';
 
 import EditablePolyline from "./EditablePolyline";
@@ -62,7 +63,21 @@ const Map = ({ bounds, tracks, dispatch}) => {
                 handlers.onPointClick = (point, i) => {
                   dispatch(splitSegment(segment.id, i))
                 }
-            } else if (segment.pointDetails) {
+            } else if (segment.joining) {
+                let p = segment.joinPossible;
+                p.forEach((pp) => {
+                  if (pp.show === 'END') {
+                    handlers.showEnd = (point, i) => {
+                      dispatch(joinSegment(segment.id, i, pp))
+                    }
+                  }
+                  if (pp.show === 'START') {
+                    handlers.showStart = (point, i) => {
+                      dispatch(joinSegment(segment.id, i, pp))
+                    }
+                  }
+                })
+              } else if (segment.pointDetails) {
                 handlers.popupInfo = points;
             }
             

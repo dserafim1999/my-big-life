@@ -93,6 +93,14 @@ export const removeSegment = (segmentId) => {
     }
 }
 
+export const joinSegment = (segmentId, index, details) => {
+    return {
+      index,
+      segmentId,
+      details,
+      type: 'segment/join'
+    }
+}
 
 export const fitSegment = (segmentId) => {
     return {
