@@ -10,6 +10,8 @@ import {
 import { removeSegment } from '../../actions/tracks';
 import { updateBounds } from '../../actions/ui';
 
+import { calculateMetrics } from '../../utils';
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -51,6 +53,9 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
     return () => dispatch(toggleSegmentPointDetails(segmentId));
   }
 
+  let metrics = calculateMetrics(points);
+  let distance = metrics.reduce((prev, c) => { return prev + c.distance }, 0);
+  let avrgSpeed = metrics.reduce((prev, c) => { return prev + c.velocity }, 0) / metrics.length;
 
   return (
     <div style={{border: '1px solid #F0F0F0'}}>
@@ -65,6 +70,7 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
             <div style={{fontSize: '1rem', color: 'gray'}}>{name.length === 0 ? 'untitled' : name} <span style={{fontSize: '0.8rem', color: 'gray'}}>{points.length} points</span></div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('L')} - {end.format('L')}, {end.fromNow()}</div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('LT')} - {end.format('LT')}, {start.to(end, true)}</div>
+            <div style={{fontSize: '0.8rem', color: 'gray'}}>{ distance.toFixed(2) } km at { avrgSpeed.toFixed(2) } km/h</div>
         </div>
 
         <div style={{marginTop: '2px'}}>
