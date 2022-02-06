@@ -29,9 +29,15 @@ const Map = ({ bounds, tracks, dispatch}) => {
             const positions = points.map((t) => { return {lat: t.lat, lon: t.lon} });
 
             // defines the type of polyline to use whether the segment is in editing mode or not
-            const Poly = segment.editing? EditablePolyline : (segment.spliting ? PointPolyline : Polyline);
-
-            //TODO split and join
+            let Poly;
+      
+            if (segment.editing) {
+                Poly = EditablePolyline
+            } else if (segment.spliting || segment.joining || segment.pointDetails) {
+                Poly = PointPolyline;
+            } else {
+                Poly = Polyline;
+            }
 
             // defines the behaviour when editing the polyline to update changes in the state
             const handlers = segment.editing ? {
@@ -52,10 +58,13 @@ const Map = ({ bounds, tracks, dispatch}) => {
                 }
             } : {};
 
-            handlers.onPointClick = (point, i) => {
-                dispatch(splitSegment(segment.id, i));
+            if (segment.spliting) {
+                handlers.onPointClick = (point, i) => {
+                  dispatch(splitSegment(segment.id, i))
+                }
+            } else if (segment.pointDetails) {
+                handlers.popupInfo = points;
             }
-              
             
             return (<Poly positions={positions} color={segment.color} key={segment.id + ' ' + track.id} {...handlers}/>);
             

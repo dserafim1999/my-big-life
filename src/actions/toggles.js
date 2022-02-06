@@ -18,6 +18,14 @@ export const toggleSegmentSpliting = (segmentId) => {
       type: 'segment/toggle_split'
     }
 }
+
+export const toggleSegmentPointDetails = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/toggle_point_details'
+  }
+}
+
   
   
   

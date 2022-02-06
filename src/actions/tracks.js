@@ -18,7 +18,9 @@ export const addTrack = (track, file) => {
                 color: colors(sId),
                 name: '',
                 editing: false,
-                spliting: false
+                spliting: false,
+                joining: false,
+                pointDetails: false
             }
         }),
         name: file.name
@@ -50,7 +52,9 @@ export const splitSegment = (segmentId, index) => {
         color: colors(sId),
         name: '',
         editing: false,
-        spliting: false
+        spliting: false,
+        joining: false,
+        pointDetails: false
         },
         type: 'segment/split'
     }

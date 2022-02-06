@@ -49,7 +49,9 @@ const toggleSegmentEditing = (state, action) => {
     let segment = getSegmentById(action.segmentId, nextState);
     
     segment.editing = !segment.editing;
+    segment.joining = false;
     segment.spliting = false;
+    segment.pointDetails = false;
  
     return nextState;
 }
@@ -60,7 +62,21 @@ const toggleSegmentSpliting = (state, action) => {
     
     segment.spliting = !segment.spliting;
     segment.editing = false;
+    segment.joining = false;
+    segment.pointDetails = false;
+    
+    return nextState;
+}
 
+const toggleSegmentPointDetails = (state, action) => {
+    let nextState = [...state];
+    let segment = getSegmentById(action.segmentId, nextState);
+    
+    segment.pointDetails = !segment.pointDetails;
+    segment.editing = false;
+    segment.joining = false;
+    segment.spliting = false;
+    
     return nextState;
 }
 
@@ -185,6 +201,7 @@ const ACTION_REACTION = {
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
     'segment/toggle_split': toggleSegmentSpliting,
+    'segment/toggle_point_details': toggleSegmentPointDetails,
     'segment/change_point': changeSegmentPoint,
     'segment/remove_point': removeSegmentPoint,
     'segment/add_point': addSegmentPoint,
