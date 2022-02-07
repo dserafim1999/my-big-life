@@ -1,5 +1,7 @@
 export default {
     ADD_TRACK: 'track/add',
+    UPDATE_TRACK_NAME: 'track/update_name',
+    TOGGLE_TRACK_REMAINING: 'track/toggle_renaming',
     TOGGLE_SEGMENT_VISIBILITY: 'segment/toggle_visibility',
     TOGGLE_SEGMENT_EDITING: 'segment/toggle_edit',
     TOGGLE_SEGMENT_SPLITING: 'segment/toggle_split',

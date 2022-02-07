@@ -1,3 +1,10 @@
+export const toggleTrackRenaming = (trackId) => {
+  return {
+    trackId,
+    type: 'track/toggle_renaming'
+  }
+}
+
 export const toggleSegmentVisibility = (segmentId) => {
     return {
       segmentId,

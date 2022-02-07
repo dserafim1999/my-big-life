@@ -42,6 +42,24 @@ const addTrack = (state, action) => {
     
     return [...state, action.track];
 }
+
+const toggleTrackRenaming = (state, action) => {
+  let nextState = [...state];
+  let track = nextState.find((t) => t.id === action.trackId);
+
+  track.renaming = !track.renaming;
+
+  return nextState;
+}
+
+const updateTrackName = (state, action) => {
+  let nextState = [...state];
+  let track = nextState.find((t) => t.id === action.trackId);
+
+  track.name = action.name;
+
+  return nextState;
+}
     
 const toggleSegmentVisibility = (state, action) => {
     let nextState = [...state];
@@ -96,12 +114,11 @@ const toggleSegmentJoining = (state, action) => {
   if (track.segments.length > 1) {
     let possibilities = [];
     let candidates = [...track.segments];
-    candidates.splice(candidates.indexOf(segment), 1);
+    candidates.splice(candidates.indexOf(segment), 1); // removes segment to join from list of joinable candidates
 
     let sStart = segment.start;
     let sEnd = segment.end;
-    let closerToStart;
-    let closerToEnd;
+    let closerToStart, closerToEnd;
     let t_closerToStart = Infinity;
     let t_closerToEnd = Infinity;
     
@@ -110,6 +127,7 @@ const toggleSegmentJoining = (state, action) => {
       let startDiff = start.diff(sEnd);
       let endDiff = end.diff(sStart);
 
+      // determines points that represent possible joining points at the start and end of the segment
       if (startDiff >= 0 && startDiff < t_closerToStart) {
         t_closerToStart = startDiff;
         closerToStart = c.id;
@@ -279,11 +297,13 @@ const joinSegment = (state, action) => {
   updateSegment(segment);
   segment.joining = false;
 
-  return tracks(nextState, removeSegmentAction(toRemove));
+  return tracks(nextState, removeSegmentAction(toRemove)); 
 }
 
 const ACTION_REACTION = {
     'track/add': addTrack,
+    'track/update_name': updateTrackName,
+    'track/toggle_renaming': toggleTrackRenaming,
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
     'segment/toggle_split': toggleSegmentSpliting,

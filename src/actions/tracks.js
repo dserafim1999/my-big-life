@@ -23,8 +23,17 @@ export const addTrack = (track, file) => {
                 pointDetails: false
             }
         }),
-        name: file.name
+        name: file.name,
+        renaming: false
         }
+    }
+}
+
+export const updateTrackName = (trackId, newName) => {
+    return {
+      trackId,
+      name: newName,
+      type: 'track/update_name'
     }
 }
 
