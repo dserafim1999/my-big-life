@@ -4,7 +4,7 @@ export default {
     TOGGLE_TRACK_REMAINING: 'track/toggle_renaming',
     TOGGLE_SEGMENT_VISIBILITY: 'segment/toggle_visibility',
     TOGGLE_SEGMENT_EDITING: 'segment/toggle_edit',
-    TOGGLE_SEGMENT_SPLITING: 'segment/toggle_split',
+    TOGGLE_SEGMENT_SPLITTING: 'segment/toggle_split',
     TOGGLE_SEGMENT_JOINING: 'segment/toggle_join',
     TOGGLE_SEGMENT_POINT_DETAILS: 'segment/toggle_point_details',
     CHANGE_SEGMENT_POINT: 'segment/change_point',
@@ -15,4 +15,5 @@ export default {
     REMOVE_SEGMENT: 'segment/remove',
     SPLIT_SEGMENT: 'segment/split',
     JOIN_SEGMENT: 'segment/join',
+    UPDATE_BOUNDS: 'ui/bounds'
 }

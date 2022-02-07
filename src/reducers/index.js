@@ -4,7 +4,7 @@ import ui from './ui'
 import tracks from './tracks'
 
 const app = combineReducers({
-  tracks,
+  tracks: tracks,
   ui
 })
 

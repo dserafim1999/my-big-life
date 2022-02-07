@@ -13,7 +13,7 @@ import {
     extendSegment,
     splitSegment,
     joinSegment
-} from '../../actions/tracks';
+} from '../../actions/segments';
 
 import EditablePolyline from "./EditablePolyline";
 import PointPolyline from "./PointPolyline";
@@ -34,7 +34,7 @@ const Map = ({ bounds, tracks, dispatch}) => {
       
             if (segment.editing) {
                 Poly = EditablePolyline
-            } else if (segment.spliting || segment.joining || segment.pointDetails) {
+            } else if (segment.splitting || segment.joining || segment.pointDetails) {
                 Poly = PointPolyline;
             } else {
                 Poly = Polyline;
@@ -59,7 +59,7 @@ const Map = ({ bounds, tracks, dispatch}) => {
                 }
             } : {};
 
-            if (segment.spliting) {
+            if (segment.splitting) {
                 handlers.onPointClick = (point, i) => {
                   dispatch(splitSegment(segment.id, i))
                 }

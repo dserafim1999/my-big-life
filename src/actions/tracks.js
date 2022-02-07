@@ -1,33 +1,17 @@
-import colors from "./colors";
-import { generateSegmentId, generateTrackId } from "./idState"
-
-export const addTrack = (track, file) => {
-    let id = generateTrackId();
+export const addTrack = (segments, file) => {
     return {
-        type: 'track/add',
-        track: {
-        id,
-        segments: track.map((segment) => {
-            let sId = generateSegmentId();
-            return {
-                id: sId,
-                points: segment,
-                display: true,
-                start: segment[0].time,
-                end: segment[segment.length - 1].time,
-                color: colors(sId),
-                name: '',
-                editing: false,
-                spliting: false,
-                joining: false,
-                pointDetails: false
-            }
-        }),
+        segments,
         name: file.name,
-        renaming: false
-        }
+        type: 'track/add',
     }
 }
+
+export const toggleTrackRenaming = (trackId) => {
+    return {
+      trackId,
+      type: 'track/toggle_renaming'
+    }
+  }
 
 export const updateTrackName = (trackId, newName) => {
     return {
@@ -37,83 +21,35 @@ export const updateTrackName = (trackId, newName) => {
     }
 }
 
-export const extendSegment = (segmentId, index, lat, lon) => {
-    return {
-      segmentId,
-      index,
-      lat,
-      lon,
-      type: 'segment/extend'
-    }
+// converts track into GPX format
+const trackToGPX = (track) => {
+  return track.segments.reduce((prev, s) => {
+    return prev + s.points.reduce((prev, p) => {
+      return prev + '<trkpt lat="' + p.lat + '" lon="' + p.lon + '">' +
+      '<time>' + p.time.toISOString() + '</time>' +
+      '</trkpt>'
+    }, '<trkseg>') + '</trkseg>'
+  }, '<?xml version="1.0" encoding="UTF-8"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk>') + '</trk></gpx>'
+}
+
+// generates <a> tag to trigger file download
+var saveData = (function () {
+  let a = document.createElement('a');
+  document.body.appendChild(a);
+  a.style = 'display: none';
+  return function (data, fileName) {
+    let blob = new Blob([data], {type: 'octet/stream'});
+    let url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
-  
-export const splitSegment = (segmentId, index) => {
-    const sId = generateSegmentId();
-    return {
-        index,
-        segmentId,
-        segmentInfo: {
-        id: sId,
-        points: [],
-        display: true,
-        start: null,
-        end: null,
-        color: colors(sId),
-        name: '',
-        editing: false,
-        spliting: false,
-        joining: false,
-        pointDetails: false
-        },
-        type: 'segment/split'
-    }
-}
+}());
 
-export const addSegmentPoint = (segmentId, index, lat, lon) => {
-    return {
-        segmentId,
-        index,
-        lat,
-        lon,
-        type: 'segment/add_point'
-    }
-}
-export const removeSegmentPoint = (segmentId, index) => {
-    return {
-        segmentId,
-        index,
-        type: 'segment/remove_point'
-    }
-}
-export const changeSegmentPoint = (segmentId, index, lat, lon) => {
-    return {
-        segmentId,
-        index,
-        lat,
-        lon,
-        type: 'segment/change_point'
-    }
-}
-
-export const removeSegment = (segmentId) => {
-    return {
-        segmentId,
-        type: 'segment/remove'
-    }
-}
-
-export const joinSegment = (segmentId, index, details) => {
-    return {
-      index,
-      segmentId,
-      details,
-      type: 'segment/join'
-    }
-}
-
-export const fitSegment = (segmentId) => {
-    return {
-        segmentId,
-        type: 'segment/fit'
-    }
+// triggers download with track converted to GPX format
+export const downloadTrack = (track) => {
+  let str = trackToGPX(track);
+  saveData(str, track.name);
+  return str;
 }

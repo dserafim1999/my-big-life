@@ -3,13 +3,13 @@ import React from 'react';
 import { 
   toggleSegmentVisibility,
   toggleSegmentEditing,
-  toggleSegmentSpliting,
+  toggleSegmentSplitting,
   toggleSegmentJoining,
-  toggleSegmentPointDetails
-} from '../../actions/toggles';
-import { removeSegment } from '../../actions/tracks';
-import { updateBounds } from '../../actions/ui';
+  toggleSegmentPointDetails,
+  removeSegment
+} from '../../actions/segments';
 
+import { updateBounds } from '../../actions/ui';
 import { calculateMetrics } from '../../utils';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -24,7 +24,7 @@ import { Col, Container } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
 
 const SegmentInfo = ({ dispatch, segment, track }) => {
-  const { id, name, points, start, end, display, color, editing, spliting, joining, pointDetails } = segment;
+  const { id, name, points, start, end, display, color, editing, splitting, joining, pointDetails } = segment;
 
   const toggleTrack = (segmentId) => {
     return () => dispatch(toggleSegmentVisibility(segmentId));
@@ -42,8 +42,8 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
     return () => dispatch(updateBounds(segment.bounds));
   }
 
-  const toggleSpliting = (segmentId) => {
-    return () => dispatch(toggleSegmentSpliting(segmentId));
+  const toggleSplitting = (segmentId) => {
+    return () => dispatch(toggleSegmentSplitting(segmentId));
   }
 
   const toggleJoining = (segmentId) => {
@@ -88,7 +88,7 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
                 <PointIcon className={(pointDetails ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleDetails(id)} sx={{ fontSize: 30 }} />
               </Tooltip>
               <Tooltip title="Split Segment"  placement="top" arrow>
-                <SplitIcon className={(spliting ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleSpliting(id)} sx={{ fontSize: 30 }} />
+                <SplitIcon className={(splitting ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleSplitting(id)} sx={{ fontSize: 30 }} />
               </Tooltip>
               <Tooltip title="Join Segment"  placement="top" arrow>
                 <JoinIcon className={(joining ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleJoining(id)} sx={{ fontSize: 30 }} />

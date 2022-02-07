@@ -3,10 +3,8 @@ import React from 'react';
 import SegmentInfo from "./SegmentInfo";
 import ExportIcon from '@mui/icons-material/Download';
 
-import { downloadTrack } from '../../GPXParser';
+import { toggleTrackRenaming, updateTrackName, downloadTrack } from '../../actions/tracks';
 
-import { toggleTrackRenaming } from '../../actions/toggles';
-import { updateTrackName } from '../../actions/tracks';
 import { Tooltip } from '@mui/material';
 
 const TrackInfo = ({ dispatch, track }) => {
