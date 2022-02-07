@@ -9,4 +9,17 @@
 
 .clickable {
     cursor: pointer;
+    color: grey;
+}
+
+.selected {
+    cursor: pointer;
+    color: white;
+    background-color: grey;
+}
+
+.segmentButton {
+    border: solid 1px grey;
+    border-radius: 5px;
+    margin: 5px;
 }

@@ -7,6 +7,7 @@ import { downloadTrack } from '../../GPXParser';
 
 import { toggleTrackRenaming } from '../../actions/toggles';
 import { updateTrackName } from '../../actions/tracks';
+import { Tooltip } from '@mui/material';
 
 const TrackInfo = ({ dispatch, track }) => {
   const { name, segments, renaming, id } = track;
@@ -38,7 +39,9 @@ const TrackInfo = ({ dispatch, track }) => {
   } else {
     title = (
       <div>
-        <ExportIcon className='float-right clickable' style={{color: 'grey', cursor: 'pointer'}} onClick={onDownload}/>
+        <Tooltip title="Export Track"  placement="top" arrow>
+          <ExportIcon className='float-right clickable' style={{color: 'grey'}} onClick={onDownload}/>
+        </Tooltip>
         <div onClick={toggleEditing}>{name}</div>
       </div>
     )

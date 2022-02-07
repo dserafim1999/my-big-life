@@ -21,6 +21,7 @@ import JoinIcon from '@mui/icons-material/Compress';
 import PointIcon from '@mui/icons-material/LocationOn';
 
 import { Col, Container } from 'react-bootstrap';
+import { Tooltip } from '@mui/material';
 
 const SegmentInfo = ({ dispatch, segment, track }) => {
   const { id, name, points, start, end, display, color, editing, spliting, joining, pointDetails } = segment;
@@ -61,7 +62,9 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
     <div style={{border: '1px solid #F0F0F0'}}>
         <Container style={{width: '15%', float: 'right'}} >
             <Col>
-                <VisibilityIcon style={{color: 'gray', cursor: 'pointer'}} onClick={toggleTrack(id)}/>
+              <Tooltip title="Toggle Segment Visibility"  placement="top" arrow>
+                <VisibilityIcon className='clickable' onClick={toggleTrack(id)}/>
+              </Tooltip>
             </Col>
         </Container>
         <div style={{width: '85%'}} >
@@ -75,12 +78,24 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
 
         <div style={{marginTop: '2px'}}>
             <Col>
-                <EditIcon style={{color:  editing ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleEditing(id)}/>
-                <DeleteIcon style={{color: 'grey', cursor: 'pointer'}} onClick={deleteSegment(id)}/>
-                <FitIcon style={{color: 'grey', cursor: 'pointer'}} onClick={fitToSegment()}/>
-                <SplitIcon style={{color: spliting ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleSpliting(id)}/>
-                <JoinIcon style={{color: joining ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleJoining(id)}/>
-                <PointIcon style={{color: pointDetails ? 'black' : 'grey', cursor: 'pointer'}} onClick={toggleDetails(id)}/>
+              <Tooltip title="Edit Segment"  placement="top" arrow>
+                <EditIcon className={(editing ? 'selected' : 'clickable') + ' segmentButton'} onClick={toggleEditing(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
+              <Tooltip title="Focus on Segment"  placement="top" arrow>
+                <FitIcon className='clickable segmentButton' onClick={fitToSegment()} sx={{ fontSize: 30 }} />
+              </Tooltip>
+              <Tooltip title="View Segment Points"  placement="top" arrow>  
+                <PointIcon className={(pointDetails ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleDetails(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
+              <Tooltip title="Split Segment"  placement="top" arrow>
+                <SplitIcon className={(spliting ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleSpliting(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
+              <Tooltip title="Join Segment"  placement="top" arrow>
+                <JoinIcon className={(joining ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleJoining(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
+              <Tooltip title="Delete Segment"  placement="top" arrow>
+                <DeleteIcon className='clickable segmentButton' onClick={deleteSegment(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
             </Col>
         </div>
         </li>
