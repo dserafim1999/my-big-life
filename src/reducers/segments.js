@@ -6,86 +6,217 @@ import {
   createSegmentObj
 } from './utils';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
+import { fromJS } from 'immutable';
 
-const updateSegment = (segment) => {
-  segment.start = segment.points[0].time;
-  segment.end = segment.points[segment.points.length - 1].time;
-  segment.bounds = calculateBounds(segment.points);
+const updateSegment = (state, id) => {
+  // TODO update bounds
+    return state.updateIn(['segments', id], (segment) => {
+      return segment
+        .set('start', segment.get('points').get(0).get('time'))
+        .set('end', segment.get('points').get(-1).get('time'));
+    });
 }
+
+const changeSegmentPoint = (state, action) => {
+  const id = action.segmentId;
+
+  state = state.setIn(['segments', id, 'points', action.index, 'lat'], action.lat);
+  state = state.setIn(['segments', id, 'points', action.index, 'lon'], action.lon);
+  // TODO updateBounds
+  
+  return state;
+}
+
+const removeSegmentPoint = (state, action) => {
+  const id = action.segmentId;
+
+  return state.deleteIn(['segments', id, 'points', action.index]);
+}
+    
+const extendSegment = (state, action) => {
+    const id = action.segmentId;
+    
+    // when extending segment, adding points at the beggining or the end, the time will be interpolated using the delta time between the last two or next two points
+    const extrapolateTime = (points, n) => {
+        if (n === 0) {
+            let prev = points.get(0).get('time');
+            let next = points.get(1).get('time');
+            let prediction = prev.clone().subtract(prev.diff(next));
+            return prediction;
+        } else {
+            let prev = points.get(-1).get('time');
+            let next = points.get(-2).get('time');
+            let prediction = prev.clone().add(prev.diff(next));
+            return prediction;
+        }
+    }
+
+    let point = {
+      lat: action.lat,
+      lon: action.lon,
+      time: extrapolateTime(state.get('segments').get(id).get('points'), action.index)
+    }
+ 
+    return state.updateIn(['segments', id, 'points'], (points) => {
+      if (action.index === 0) {
+        return points.unshift(point);
+      } else {
+        return points.push(pointExtend);
+      }
+    });
+}
+
+const addSegmentPoint = (state, action) => {
+    const id = action.segmentId;
+
+    // when adding a point between two other points the time is interpolated is the difference between the two points halved.
+    const extrapolateTime = (points, n) => {
+      let prev = points.get(n - 1).get('time')
+      let next = points.get(n + 1).get('time')
+        let diff = next.diff(prev) / 2;
+        return prev.clone().add(diff);
+    }
+
+    let point = {
+        lat: action.lat,
+        lon: action.lon,
+        time: extrapolateTime(state.get('segments').get(id).get('points'), action.index)
+  }
+
+  return state.updateIn(['segments', id, 'points'], (points) => {
+    return points.insert(action.index, fromJS(point))
+  });
+}
+
+const removeSegment = (state, action) => {
+    // TOFIX needs update to remove from map
+    const id = action.segmentId;
+    const trackId = state.get('segments').get(id).get('trackId');
+    state = state.deleteIn(['segments', action.segmentId]);
+    if (state.get('tracks').get(trackId).get('segments').count() === 1) {
+      state = state.deleteIn(['tracks', trackId]);
+    } else {
+      state = state.updateIn(['tracks', trackId, 'segments'], (segments) => {
+        return segments.delete(segments.indexOf(id))
+      });
+    }
+    return state;
+}
+
+const splitSegment = (state, action) => {
+    const id = action.segmentId;
+    const segment = state.get('segments').get(id);
+    let _points = segment.get('points');
+    const newSegment = _points.slice(action.index, _points.count());
+
+    state = state.updateIn(['segments', id, 'points'], (points) => {
+      return points.slice(0, action.index + 1);
+    })
+
+    state = updateSegment(state, id);
+
+    const segData = createSegmentObj(segment.get('trackId'), newSegment.toJS());
+    state = state.setIn(['segments', segData.id], fromJS(segData));
+
+    state = state.updateIn(['tracks', segment.get('trackId'), 'segments'], (segments) => {
+      return segments.push(segData.id);
+    });
+
+    return toggleSegmentProp(state, id, 'splitting');
+}
+
+const joinSegment = (state, action) => {
+  const { details } = action;
+  const toRemove = state.get('segments').get(details.segment);
+
+  state = state.updateIn(['segments', action.segmentId, 'points'], (points) => {
+    //TODO rename destiny
+    if (details.destiny !== 'START') {
+      toRemove.get('points').forEach((p) => {
+        points = points.push(p)
+      });
+    } else {
+      toRemove.get('points').reverse().forEach((p) => {
+        points = points.unshift(p)
+      });
+    }
+    return points;
+  });
+
+  state = toggleSegmentProp(state, action.segmentId, 'joining');
+  return segments(state, removeSegmentAction(toRemove.get('id')));
+}
+
 
 const defaultPropSet = ['editing', 'splitting', 'joining', 'pointDetails'];
 
 // sets prop as true and false to others, in order to indicate the active feature
-const toggleSegmentProp = (segment, prop, propSet = defaultPropSet) => {
+const toggleSegmentProp = (state, id, prop, propSet = defaultPropSet) => {
+  const data = state.get('segments').get(id);
+
   propSet.forEach((p) => {
-    segment[p] = (p === prop ? !segment[p] : false)
+    state = state.setIn(['segments', id, p], (p === prop ? !data.get(p) : false))
   });
+
+  return state;
 }    
 
 const toggleSegmentVisibility = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    segment.display = !segment.display;
-    
-    return nextState;
+    const id = action.segmentId;
+    state = toggleSegmentProp(state, id, 'display');
+    return state.setIn(['segments', id, 'display'], !state.get('segments').get(id).get('display'));
 }
 
 const toggleSegmentEditing = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    toggleSegmentProp(segment, 'editing');
- 
-    return nextState;
+  const id = action.segmentId;
+
+  return toggleSegmentProp(state, id, 'editing');
 }
 
 const toggleSegmentSplitting = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    toggleSegmentProp(segment, 'splitting');
-    
-    return nextState;
+  const id = action.segmentId;
+
+  return toggleSegmentProp(state, id, 'splitting');
 }
 
 const toggleSegmentPointDetails = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    toggleSegmentProp(segment, 'pointDetails');
-    
-    return nextState;
+  const id = action.segmentId;
+
+  return toggleSegmentProp(state, id, 'pointDetails');
 }
 
 const toggleSegmentJoining = (state, action) => {
-  let nextState = [...state];
-  let segment = getSegmentById(action.segmentId, nextState);
-  let track = getTrackBySegmentId(action.segmentId, nextState);
+  const id = action.segmentId;
+  const segment = state.get('segments').get(id);
+  const trackId = segment.get('trackId');
+  const track = state.get('tracks').get(trackId);
 
-  if (track.segments.length > 1) {
+  if (track.get('segments').count() > 1) {
     let possibilities = [];
-    let candidates = [...track.segments];
-    candidates.splice(candidates.indexOf(segment), 1); // removes segment to join from list of joinable candidates
+    let candidates = track.get('segments').toJS();
+    candidates.splice(candidates.indexOf(id), 1);
 
-    let sStart = segment.start;
-    let sEnd = segment.end;
+    let sStart = segment.get('start');
+    let sEnd = segment.get('end');
+
     let closerToStart, closerToEnd;
     let t_closerToStart = Infinity;
     let t_closerToEnd = Infinity;
-    
+
     candidates.forEach((c, i) => {
-      let { start, end } = c;
+      const _c = state.get('segments').get(c);
+      const start = _c.get('start');
+      const end = _c.get('end');
+
       let startDiff = start.diff(sEnd);
       let endDiff = end.diff(sStart);
 
-      // determines points that represent possible joining points at the start and end of the segment
       if (startDiff >= 0 && startDiff < t_closerToStart) {
         t_closerToStart = startDiff;
-        closerToStart = c.id;
+        closerToStart = _c.get('id');
       } else if (endDiff <= 0 && endDiff < t_closerToEnd) {
         t_closerToEnd = endDiff;
-        closerToEnd = c.id;
+        closerToEnd = _c.get('id');
       }
     })
 
@@ -94,154 +225,24 @@ const toggleSegmentJoining = (state, action) => {
         segment: closerToStart,
         destiny: 'END',
         show: 'END'
-      })
+      });
     }
-
     if (closerToEnd !== undefined) {
       possibilities.push({
         segment: closerToEnd,
         destiny: 'START',
         show: 'START'
-      })
+      });
     }
 
-    segment.joinPossible = possibilities;
-    toggleSegmentProp(segment, 'joining');
+    state = state.setIn(['segments', id, 'joinPossible'], possibilities);
+    
+    return toggleSegmentProp(state, action.segmentId, 'joining');
+  } else {
+    alert('Can\'t join with any segment of the same track');
   }
 
-  return nextState;
-}
-
-const changeSegmentPoint = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-
-    segment.points[action.index].lat = action.lat;
-    segment.points[action.index].lon = action.lon;
-    segment.bounds = updateBoundsWithPoint(segment.points[action.index], segment.bounds);
-
-    return nextState;
-}
-
-const removeSegmentPoint = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    segment.points = segment.points.filter((_, i) => i !== action.index);
-    segment.bounds = calculateBounds(segment.points)
-    
-    return nextState;
-}
-    
-const extendSegment = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    // when extending segment, adding points at the beggining or the end, the time will be interpolated using the delta time between the last two or next two points
-    const extrapolateTime = (state, n) => {
-        if (n === 0) {
-            let prev = state[0].time;
-            let next = state[1].time;
-            let prediction = prev.clone().subtract(prev.diff(next));
-            return prediction;
-        } else {
-            let prev = state[state.length - 1].time;
-            let next = state[state.length - 2].time;
-            let prediction = prev.clone().add(prev.diff(next));
-            return prediction;
-        }
-    }
-
-    let pointExtend = {
-       lat: action.lat,
-        lon: action.lon,
-        time: extrapolateTime(segment.points, action.index)
-    }
-
-    segment.bounds = updateBoundsWithPoint(pointExtend, segment.bounds);
-
-    if (action.index === 0) {
-    segment.points.unshift(pointExtend);
-    } else {
-    segment.points.push(pointExtend);
-    }
- 
-    return nextState;
-}
-
-const addSegmentPoint = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    
-    // when adding a point between two other points the time is interpolated is the difference between the two points halved.
-    const extrapolateTime = (state, n) => {
-        let prev = state[n - 1].time;
-        let next = state[n].time;
-        let diff = next.diff(prev) / 2;
-        return prev.clone().add(diff);
-    }
-
-    let pointAdd = {
-        lat: action.lat,
-        lon: action.lon,
-        time: extrapolateTime(segment.points, action.index)
-    }
-
-    segment.bounds = updateBoundsWithPoint(pointAdd, segment.bounds);
-    segment.points.splice(action.index, 0, pointAdd);
-    
-    return nextState;
-}
-
-const removeSegment = (state, action) => {
-    let track = state.map((track) => track.segments.find((s) => s.id === action.segmentId) ? track : null).find((x) => !!x);
-    let nextState = [...state];
-
-    if (track.segments.length === 1) {
-        nextState.splice(nextState.indexOf(track), 1);
-    } else {
-        let ix = track.segments.indexOf(track.segments.find((s) => s.id === action.segmentId));
-        track.segments.splice(ix, 1);
-    }
-
-    return nextState;
-}
-
-const splitSegment = (state, action) => {
-    let nextState = [...state];
-    let segment = getSegmentById(action.segmentId, nextState);
-    let track = getTrackBySegmentId(action.segmentId, nextState);
-
-    let rest = segment.points.splice(action.index);
-    segment.points.push(rest[0]); // adds split point to segment
-    segment.end = segment.points[segment.points.length - 1].time;
-    segment.splitting = false;
-    segment.bounds = calculateBounds(segment.points);
-
-    let seg = createSegmentObj(rest);
-    seg.points = rest;
-    seg.start = rest[0].time;
-    seg.end = rest[rest.length - 1].time;
-    seg.bounds = calculateBounds(seg.points);
-
-    track.segments.push(seg);
-
-    return nextState;
-}
-
-const joinSegment = (state, action) => {
-  let nextState = [...state];
-  const { details } = action;
-  let segment = getSegmentById(action.segmentId, nextState);
-  let toJoin = getSegmentById(details.segment, nextState);
-  let index = details.destiny !== 'START' ? toJoin.points.length - 1 : 0;
-  let toRemove = details.segment;
-  
-  segment.points.splice(index, 0, ...toJoin.points);
-  updateSegment(segment);
-  segment.joining = false;
-
-  return segments(nextState, removeSegmentAction(toRemove)); 
+  return state;
 }
 
 const ACTION_REACTION = {
@@ -250,9 +251,11 @@ const ACTION_REACTION = {
     'segment/toggle_split': toggleSegmentSplitting,
     'segment/toggle_join': toggleSegmentJoining,
     'segment/toggle_point_details': toggleSegmentPointDetails,
+ 
     'segment/change_point': changeSegmentPoint,
     'segment/remove_point': removeSegmentPoint,
     'segment/add_point': addSegmentPoint,
+ 
     'segment/extend': extendSegment,
     'segment/remove': removeSegment,
     'segment/split': splitSegment,

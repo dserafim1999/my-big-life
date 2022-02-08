@@ -1,8 +1,11 @@
-const ui = (state = {}, action) => {
+import { Map } from 'immutable';
+
+const initialState = Map({});
+
+const ui = (state = initialState, action) => {
     switch (action.type) {
       case 'ui/bounds':
-        state.bounds = action.bounds;
-        return Object.assign({}, state);
+        return state.set('bounds', action.bounds);
       default:
         return state;
     }

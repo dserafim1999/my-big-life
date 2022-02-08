@@ -1,3 +1,5 @@
+import { Map, List, fromJS } from 'immutable';
+
 import { min, max } from "../utils";
 import { generateSegmentId, generateTrackId } from "./idState";
 import colors from "./colors";
@@ -37,9 +39,10 @@ export const getTrackBySegmentId = (id, state) =>
     track.segments.find((s) => s.id === id) ? track : null
   ).find((x) => !!x);
 
-export const createSegmentObj = (points) => {
+export const createSegmentObj = (trackId, points) => {
     let sId = generateSegmentId();
     return {
+        trackId,
         id: sId,
         points: points,
         display: true,
@@ -57,10 +60,14 @@ export const createSegmentObj = (points) => {
 
 export const createTrackObj = (name, segments) => {
     let id = generateTrackId();
+    let segs = segments.map((segment) => createSegmentObj(id, segment));
     return {
-        id,
-        segments: segments.map((segment) => createSegmentObj(segment)),
-        name: name,
-        renaming: false
+      track: {
+          id,
+          segments: segs.map((s) => s.id),
+          name: name,
+          renaming: false
+      },
+      segments: segs
     }
 }

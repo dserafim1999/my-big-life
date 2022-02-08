@@ -15,7 +15,7 @@ import { loadFiles } from "../../GPXParser";
 import { FeaturesData } from "../../components/SideBar/FeaturesData";
 
 
-let MainContainer = ({ ui, tracks, dispatch }) => {
+let MainContainer = ({ dispatch }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -26,10 +26,9 @@ let MainContainer = ({ ui, tracks, dispatch }) => {
         const trackPoints = trk.trkseg.map((seg) => seg.trkpt)
         dispatch(addTrack(trackPoints, file))
       })
-    })
-  }
+    });
 
-  let filteredTracks = tracks.map((track) => track.segments.filter((segment) => segment.display));
+  }
 
   return (
       <Dropzone id="container" onDrop={onDrop}>
@@ -49,23 +48,16 @@ let MainContainer = ({ ui, tracks, dispatch }) => {
               </Routes>
               <SideBar/>
               <div id='details'>
-                {tracks.length > 0 ? <TrackList tracks={tracks} dispatch={dispatch} /> : <></>}
+                <TrackList/>
               </div>
-              <Map
-                  bounds={ui.bounds}
-                  tracks={filteredTracks} 
-                  dispatch={dispatch}
-              />
+              <Map/>
           </Router>
       </Dropzone>
   );
 };
 
 const mapStateToProps = (state) => {
-    return {
-        tracks: state.tracks,
-        ui: state.ui
-      }
+    return {}
   }
   
 MainContainer = connect(mapStateToProps)(MainContainer);

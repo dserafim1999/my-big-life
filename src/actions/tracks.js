@@ -22,8 +22,8 @@ export const updateTrackName = (trackId, newName) => {
 }
 
 // converts track into GPX format
-const trackToGPX = (track) => {
-  return track.segments.reduce((prev, s) => {
+const trackToGPX = (segments) => {
+  return segments.toJS().reduce((prev, s) => {
     return prev + s.points.reduce((prev, p) => {
       return prev + '<trkpt lat="' + p.lat + '" lon="' + p.lon + '">' +
       '<time>' + p.time.toISOString() + '</time>' +
@@ -48,8 +48,8 @@ var saveData = (function () {
 }());
 
 // triggers download with track converted to GPX format
-export const downloadTrack = (track) => {
-  let str = trackToGPX(track);
-  saveData(str, track.name);
+export const downloadTrack = (segments, name) => {
+  let str = trackToGPX(segments);
+  saveData(str, name);
   return str;
 }

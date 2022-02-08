@@ -2,7 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
-var NODE_ENV = process.env.NODE_ENV
+var NODE_ENV = process.env.NODE_ENV;
 
 const htmlPlugin = new HtmlWebpackPlugin({
     template: "./public/index.html", 
@@ -51,7 +51,12 @@ const htmlPlugin = new HtmlWebpackPlugin({
                     loader: 'file-loader'
                   }
                 ]
-            }
+            },
+            {
+                test: /\.js$/,
+                enforce: 'pre',
+                use: ['source-map-loader'],
+            },
         ]
     },
     plugins: [htmlPlugin, new MiniCssExtractPlugin()],
@@ -59,6 +64,6 @@ const htmlPlugin = new HtmlWebpackPlugin({
 
 if (NODE_ENV === 'development') {
     config.devtool = NODE_ENV === 'development' ? 'inline-source-map' : false;
-} 
+}
 
 module.exports = config;

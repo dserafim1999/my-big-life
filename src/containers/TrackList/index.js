@@ -1,9 +1,10 @@
 import React from "react";
-import Card from "../Card";
-import TrackInfo from "./TrackInfo";
+import { connect } from 'react-redux';
 
-const TrackList = ({ tracks, dispatch }) => {
-    
+import Card from "../Card";
+import TrackInfo from './TrackInfo';
+
+let TrackList = ({ tracks, dispatch, segments }) => {
     const style = {
         listStyleType: 'none',
         margin: 0,
@@ -12,18 +13,33 @@ const TrackList = ({ tracks, dispatch }) => {
         height: 450,
     };
 
-    return (
-        <Card width="350" height="500" top="99" left="99">
-            <div style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>Tracks</div>
-            <ul style={style}>
-            {
-                tracks.map((track, i) => {
-                    return <TrackInfo dispatch={dispatch} track={track} key={i} />
-                })
-            }
-            </ul>
-        </Card>
-    )
+    if (tracks.size == 0) {
+        return <></>
+    } else {
+        return (
+            <Card width="350" height="500" top="99" left="99">
+                <div style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>Tracks</div>
+                <ul style={style}>
+                {
+                    tracks.valueSeq().map((track, i) => {
+                        const trackSegments = track.get('segments').map((id) => segments.get(id));
+                        return <TrackInfo dispatch={dispatch} track={track} segments={trackSegments} key={i} />
+                      })
+                }
+                </ul>
+            </Card>
+        );
+    }
+
 };
 
+const mapStateToProps = (state) => {
+    return {
+      tracks: state.get('tracks').get('tracks'),
+      segments: state.get('tracks').get('segments')
+    }
+}
+  
+TrackList = connect(mapStateToProps)(TrackList);
+  
 export default TrackList;

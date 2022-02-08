@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     width: ${props => props.width}px;
     height: ${props => props.height}px;
     background-color: white;
-    border-radius: 25px;
+    border-radius: 15px;
     
     z-index: 500;
     top: ${props => props.top}%;

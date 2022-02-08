@@ -40,7 +40,7 @@ export const calculateMetrics = (points) => {
 }
 
 export const calculateDistance = (points) => {
-  let l = points.length - 2;
+  let l = points.count() - 2;
   return points.map((p) => {
     return { latitude: p.lat, longitude: p.lon }
   }).reduce((prev, curr, i, arr) => {
