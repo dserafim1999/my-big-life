@@ -4,7 +4,8 @@ import {
     TileLayer,
     ZoomControl,
     LayerGroup,
-    Polyline
+    Polyline,
+    useMapEvents
 } from "react-leaflet";
 
 import { 
@@ -16,10 +17,17 @@ import {
     joinSegment
 } from '../../actions/segments';
 
+import {
+  hideDetails,
+  showDetails,
+  updateBounds
+} from '../../actions/ui';
+
 import EditablePolyline from "./EditablePolyline";
 import PointPolyline from "./PointPolyline";
 import Bounds from "./Bounds";
 import { connect } from "react-redux";
+import MapEvents from "./MapEvents";
 
 const EditableSegment = (points, trackId, id, color, dispatch) => {
     return (
@@ -89,7 +97,7 @@ const PointDetailSegment = (points, trackId, id, color, details) => {
     return (
       <PointPolyline
         opacity={1.0}
-        positions={points}
+        positions={points.slice(1, -1)}
         color={color}
         key={trackId + ' ' + id + 'p'}
         popupInfo={details.toJS()} />
@@ -119,11 +127,12 @@ const ComplexMapSegments = (points, id, color, trackId, state, joinPossible, met
     }
 }
 
-const SelectMapSegment = (points, id, color, trackId, state, joinPossible, metrics, dispatch) => {
+const SelectMapSegment = (points, id, color, trackId, state, joinPossible, metrics, details, dispatch) => {
+    const complex = details ? ComplexMapSegments(points, id, color, trackId, state, joinPossible, metrics, dispatch) : null; 
     return (
       <LayerGroup key={trackId + ' ' + id} >
         <Polyline opacity={1.0} positions={points} color={ color } key={trackId + ' ' + id}/>
-        {ComplexMapSegments(points, id, color, trackId, state, joinPossible, metrics, dispatch)}
+        {complex}
       </LayerGroup>
     )
 }
@@ -142,9 +151,29 @@ const segmentStateSelector = (segment) => {
     }
 }
 
-let Map = ({ bounds, map, segments, dispatch}) => {
+const between = (a, b, c) => {
+  return a <= b && b <= c;
+}
+
+const boundsFilter = (ne, sw) => {
+  return (point) => {
+  const lat = point.get('lat');
+  const lon = point.get('lon');
+    return ne.lat >= lat && lat >= sw.lat &&
+      ne.lng >= lon && lon >= sw.lng;
+  }
+}
+
+let Map = ({ bounds, map, segments, details, dispatch}) => {
+    let useMaxZoom = false;
+    bounds = bounds || [{lat: 67.47492238478702, lng: 225}, {lat: -55.17886766328199, lng: -225}];
+
     const elms = segments.filter((segment) => segment.get('display')).map((segment) => {
-        const points = segment.get('points').toJS();
+        const sBounds = segment.get('bounds').toJS();
+        const filter = boundsFilter(bounds[0], bounds[1]);
+        const inclusive = true;
+        const pts = segment.get('points');
+        const points = inclusive ? pts.toJS() : pts.filter(filter).toJS();
         const state = segmentStateSelector(segment);
         const color = segment.get('color');
         const id = segment.get('id');
@@ -152,16 +181,58 @@ let Map = ({ bounds, map, segments, dispatch}) => {
         const joinPossible = segment.get('joinPossible');
         const metrics = segment.get('metrics');
         
-        return SelectMapSegment(points, id, color, trackId, state, joinPossible, metrics, dispatch);
+        useMaxZoom = state === mapStates.VANILLA;
+
+        return SelectMapSegment(points, id, color, trackId, state, joinPossible, metrics, details, dispatch);
       }).toJS()
 
     const elements = Object.keys(elms).map((e) => elms[e]);
-    bounds = bounds || [{lat: 67.47492238478702, lng: 225}, {lat: -55.17886766328199, lng: -225}];
+
+    const onZoom = (e) => {
+      console.log("Zoom In/Out")
+      const zoom = e.target.getZoom();
+      const maxZoom = e.target.getMaxZoom();
+      if (zoom >= maxZoom && !details) {
+        dispatch(showDetails());
+      } else if (details) {
+        dispatch(hideDetails());
+      }
+    }
+
+    let _justRendered = true;
+
+    let _m = null;
+    const onMove = (e) => {
+      console.log("Moving Map")
+      const bnds = e.target.getBounds();
+      const bndObj = [
+        {
+          lat: bnds._northEast.lat,
+          lng: bnds._northEast.lng
+        }, {
+          lat: bnds._southWest.lat,
+          lng: bnds._southWest.lng
+        }
+      ];
+
+      if (_justRendered || (bounds[0].lat === bndObj[0].lat && bounds[0].lng === bndObj[0].lng && bounds[1].lat === bndObj[1].lat && bounds[1].lng === bndObj[1].lng)) {
+        _justRendered = false;
+        return;
+      }
+      _m = updateBounds(bndObj);
+      setTimeout(() => {
+        if (_m) {
+          const m = _m;
+          _m = null;
+          dispatch(m);
+        }
+      }, 100);
+    }
 
     return (
         <MapContainer 
             id='map'
-            zoom={4} 
+            zoom={ useMaxZoom ? 18 : undefined } 
             scrollWheelZoom={true}
             zoomControl={false}
             minZoom={2}
@@ -175,6 +246,7 @@ let Map = ({ bounds, map, segments, dispatch}) => {
                 elements
             }
             <ZoomControl position="topright" />
+            <MapEvents onMoveEnd={onMove} onZoomEnd={onZoom}/>
             <Bounds bounds={bounds}/>
         </MapContainer>
     );
@@ -184,7 +256,8 @@ const mapStateToProps = (state) => {
     return {
       map: state.get('ui').get('map'),
       bounds: state.get('ui').get('bounds'),
-      segments: state.get('tracks').get('segments')
+      segments: state.get('tracks').get('segments'),
+      details: state.get('ui').get('details')
     }
 }
   
