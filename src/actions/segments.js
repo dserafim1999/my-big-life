@@ -65,6 +65,22 @@ export const fitSegment = (segmentId) => {
   }
 }
 
+export const updateTimeFilterSegment = (segmentId, lower, upper) => {
+  return {
+    segmentId,
+    lower,
+    upper,
+    type: 'segment/time_filter'
+  }
+}
+
+export const toggleTimeFilter = (segmentId) => {
+  return {
+    segmentId,
+    type: 'segment/toggle_time_filter'
+  }
+}
+
 export const toggleSegmentVisibility = (segmentId) => {
     return {
       segmentId,

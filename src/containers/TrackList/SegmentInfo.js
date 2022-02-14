@@ -6,11 +6,13 @@ import {
   toggleSegmentSplitting,
   toggleSegmentJoining,
   toggleSegmentPointDetails,
-  removeSegment
+  toggleTimeFilter,
+  updateTimeFilterSegment,
+  removeSegment,
 } from '../../actions/segments';
 
 import { updateBounds } from '../../actions/ui';
-import { calculateMetrics } from '../../utils';
+import TimeSlider from '../../components/TimeSlider';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,6 +21,7 @@ import FitIcon from '@mui/icons-material/ZoomOutMap';
 import SplitIcon from '@mui/icons-material/Expand';
 import JoinIcon from '@mui/icons-material/Compress';
 import PointIcon from '@mui/icons-material/LocationOn';
+import TimeFilterIcon from '@mui/icons-material/EventNote';
 
 import { Col, Container } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
@@ -37,6 +40,7 @@ const SegmentInfo = ({ dispatch, segment }) => {
   const pointDetails = segment.get('pointDetails');
   const bounds = segment.get('bounds').toJS();
   const metrics = segment.get('metrics').toJS();
+  const showTimeFilter = segment.get('showTimeFilter');
 
   const toggleTrack = (segmentId) => {
     return () => dispatch(toggleSegmentVisibility(segmentId));
@@ -64,6 +68,15 @@ const SegmentInfo = ({ dispatch, segment }) => {
 
   const toggleDetails = (segmentId) => {
     return () => dispatch(toggleSegmentPointDetails(segmentId));
+  }
+
+  const updateFilter = (segmentIndex) => {
+    return (lower, higher) => dispatch(updateTimeFilterSegment(segmentIndex, lower, higher));
+  }
+  const toggleTF = (segmentIndex) => {
+    return () => {
+      dispatch(toggleTimeFilter(segmentIndex));
+    }
   }
 
   let distance = metrics.totalDistance;
@@ -99,11 +112,19 @@ const SegmentInfo = ({ dispatch, segment }) => {
               <Tooltip title="Join Segment"  placement="top" arrow>
                 <JoinIcon className={(joining ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleJoining(id)} sx={{ fontSize: 30 }} />
               </Tooltip>
+              <Tooltip title="Time Filter"  placement="top" arrow>
+                <TimeFilterIcon className={(showTimeFilter ? 'selected' : 'clickable' ) + ' segmentButton'} onClick={toggleTF(id)} sx={{ fontSize: 30 }} />
+              </Tooltip>
               <Tooltip title="Delete Segment"  placement="top" arrow>
                 <DeleteIcon className='clickable segmentButton' onClick={deleteSegment(id)} sx={{ fontSize: 30 }} />
               </Tooltip>
             </Col>
         </div>
+        {
+          showTimeFilter
+            ? <TimeSlider start={start} end={end} onChange={updateFilter(id)}/>
+            : null
+        }
       </li>
     </div>
   )

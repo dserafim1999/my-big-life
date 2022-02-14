@@ -55,11 +55,19 @@ let Map = ({ bounds, map, segments, details, dispatch}) => {
     const elms = segments.filter((segment) => segment.get('display')).map((segment) => {
         //const sBounds = segment.get('bounds').toJS();
         const filter = boundsFilter(bounds[0], bounds[1]);
+        const tfLower = segment.get('timeFilter').get(0);
+        const tfUpper = segment.get('timeFilter').get(1);
+
+        const timeFilter = (p) => {
+          return p.get('time').isBetween(tfLower, tfUpper);
+        }
 
         const inclusive = true;
-        const pts = segment.get('points');
+        let pts = segment.get('points');
+        if (segment.get('showTimeFilter') && tfLower && tfUpper) {
+          pts = pts.filter(timeFilter);
+        }
         const points = inclusive ? pts.toJS() : pts.filter(filter).toJS();
-       
         const state = segmentStateSelector(segment);
         const color = segment.get('color');
         const id = segment.get('id');

@@ -19,6 +19,6 @@ export const showDetails = () => {
 export const updateInternalBounds = (bounds) => {
   return {
     bounds,
-    type: 'ui/update_internal_bounds'
+    type: 'ui/internal_bounds'
   }
 }

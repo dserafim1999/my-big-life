@@ -17,7 +17,7 @@ let TrackList = ({ tracks, dispatch, segments }) => {
         return <></>
     } else {
         return (
-            <Card width="350" height="500" top="99" left="99">
+            <Card width="400" height="500" top="99" left="99">
                 <div style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>Tracks</div>
                 <ul style={style}>
                 {
