@@ -23,7 +23,7 @@ import PointIcon from '@mui/icons-material/LocationOn';
 import { Col, Container } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
 
-const SegmentInfo = ({ dispatch, segment, track }) => {
+const SegmentInfo = ({ dispatch, segment }) => {
   const id = segment.get('id');
   const name = segment.get('name');
   const points = segment.get('points');
@@ -36,6 +36,7 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
   const joining = segment.get('joining');
   const pointDetails = segment.get('pointDetails');
   const bounds = segment.get('bounds').toJS();
+  const metrics = segment.get('metrics').toJS();
 
   const toggleTrack = (segmentId) => {
     return () => dispatch(toggleSegmentVisibility(segmentId));
@@ -65,8 +66,8 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
     return () => dispatch(toggleSegmentPointDetails(segmentId));
   }
 
-  let distance = 0;
-  let avrgSpeed = 0;
+  let distance = metrics.totalDistance;
+  let avrgVel = metrics.averageVelocity;
 
   return (
     <div style={{border: '1px solid #F0F0F0'}}>
@@ -75,7 +76,7 @@ const SegmentInfo = ({ dispatch, segment, track }) => {
             <div style={{fontSize: '1rem', color: 'gray'}}>{name.length === 0 ? 'untitled' : name} <span style={{fontSize: '0.8rem', color: 'gray'}}>{points.count()} points</span></div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('L')} - {end.format('L')}, {end.fromNow()}</div>
             <div style={{fontSize: '0.8rem', color: 'gray'}}>{start.format('LT')} - {end.format('LT')}, {start.to(end, true)}</div>
-            <div style={{fontSize: '0.8rem', color: 'gray'}}>{ distance.toFixed(2) } km at { avrgSpeed.toFixed(2) } km/h</div>
+            <div style={{fontSize: '0.8rem', color: 'gray'}}>{ distance.toFixed(2) } km at { avrgVel.toFixed(2) } km/h</div>
         </div>
 
         <div style={{marginTop: '2px'}}>

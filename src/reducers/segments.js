@@ -1,9 +1,6 @@
 import {
-  updateBoundsWithPoint,
-  calculateBounds,
-  getSegmentById,
-  getTrackBySegmentId,
-  createSegmentObj
+  createSegmentObj,
+  calculateMetrics
 } from './utils';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { fromJS } from 'immutable';
@@ -11,9 +8,19 @@ import { fromJS } from 'immutable';
 const updateSegment = (state, id) => {
   // TODO update bounds
     return state.updateIn(['segments', id], (segment) => {
+      const pts = segment.get('points');
+      const points = calculateMetrics(pts);
+      const totalDistance = points.reduce((total, point) => total + point.distance, 0);
+      const averageVelocity = points.reduce((total, point) => total + point.velocity, 0) / points.length;
+      
       return segment
-        .set('start', segment.get('points').get(0).get('time'))
-        .set('end', segment.get('points').get(-1).get('time'));
+        .set('start', pts.get(0).get('time'))
+        .set('end', pts.get(-1).get('time'))
+        .set('metrics', fromJS({
+          totalDistance,
+          averageVelocity,
+          points
+        }));
     });
 }
 
@@ -71,8 +78,8 @@ const addSegmentPoint = (state, action) => {
 
     // when adding a point between two other points the time is interpolated is the difference between the two points halved.
     const extrapolateTime = (points, n) => {
-      let prev = points.get(n - 1).get('time')
-      let next = points.get(n + 1).get('time')
+        let prev = points.get(n - 1).get('time');
+        let next = points.get(n + 1).get('time');
         let diff = next.diff(prev) / 2;
         return prev.clone().add(diff);
     }
@@ -84,7 +91,7 @@ const addSegmentPoint = (state, action) => {
   }
 
   return state.updateIn(['segments', id, 'points'], (points) => {
-    return points.insert(action.index, fromJS(point))
+    return points.insert(action.index, fromJS(point));
   });
 }
 
@@ -109,10 +116,11 @@ const splitSegment = (state, action) => {
     let _points = segment.get('points');
     const newSegment = _points.slice(action.index, _points.count());
 
+    
     state = state.updateIn(['segments', id, 'points'], (points) => {
       return points.slice(0, action.index + 1);
     })
-
+    
     state = updateSegment(state, id);
 
     const segData = createSegmentObj(segment.get('trackId'), newSegment.toJS());

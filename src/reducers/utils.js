@@ -1,8 +1,8 @@
-import { Map, List, fromJS } from 'immutable';
-
 import { min, max } from "../utils";
 import { generateSegmentId, generateTrackId } from "./idState";
 import colors from "./colors";
+import haversine from 'haversine';
+import moment from 'moment';
 
 export const updateBoundsWithPoint = (point, bounds) => {
   return [
@@ -44,7 +44,10 @@ export const createSegmentObj = (trackId, points) => {
     return {
         trackId,
         id: sId,
-        points: points,
+        points: points.map((point) => {
+          point.time = moment(point.time);
+          return point;
+        }),
         display: true,
         start: points[0].time,
         end: points[points.length - 1].time,
@@ -54,7 +57,8 @@ export const createSegmentObj = (trackId, points) => {
         splitting: false,
         joining: false,
         pointDetails: false,
-        bounds: calculateBounds(points)
+        bounds: calculateBounds(points),
+        metrics: calculateMetrics(points)
     }
 }
 
@@ -70,4 +74,43 @@ export const createTrackObj = (name, segments) => {
       },
       segments: segs
     }
+}
+
+
+export const calculateMetrics = (points) => {
+  const convert = 1 / 3600000;
+  points = points.map((p) => {
+    return { latitude: p.lat, longitude: p.lon, time: p.time }
+  }).map((curr, i, arr) => {
+    if (i !== 0) {
+      let prev = arr[i - 1];
+      let distance = haversine(prev, curr, {unit: 'km'});
+      let timeDiff = curr.time.diff(prev.time) * convert;
+      let velocity = timeDiff === 0 ? 0 : distance / timeDiff;
+      return {
+        distance,
+        velocity,
+        lat: curr.latitude,
+        lon: curr.longitude,
+        time: curr.time
+      }
+    } else {
+      return {
+        distance: 0,
+        velocity: 0,
+        lat: curr.latitude,
+        lon: curr.longitude,
+        time: curr.time
+      }
+    }
+  });
+
+  const totalDistance = points.reduce((total, point) => total + point.distance, 0);
+  const averageVelocity = points.reduce((total, point) => total + point.velocity, 0) / points.length;
+
+  return {
+    totalDistance,
+    averageVelocity,
+    points
+  }
 }

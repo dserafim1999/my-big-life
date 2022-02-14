@@ -85,14 +85,14 @@ const JoinableSegment = (points, trackId, id, color, possibilities, dispatch) =>
     );
 }
 
-const PointDetailSegment = (points, trackId, id, color) => {
+const PointDetailSegment = (points, trackId, id, color, details) => {
     return (
       <PointPolyline
         opacity={1.0}
         positions={points}
         color={color}
         key={trackId + ' ' + id + 'p'}
-        popupInfo={points} />
+        popupInfo={details.toJS()} />
     );
 }
 
@@ -104,8 +104,8 @@ const mapStates = {
     POINT_DETAILS: 4
 }
 
-const ComplexMapSegments = (points, id, color, trackId, state, joinPossible, dispatch) => {
-    switch (state) {
+const ComplexMapSegments = (points, id, color, trackId, state, joinPossible, metrics, dispatch) => {
+  switch (state) {
       case mapStates.EDITING:
         return EditableSegment(points, trackId, id, color, dispatch);
       case mapStates.SPLITING:
@@ -113,17 +113,17 @@ const ComplexMapSegments = (points, id, color, trackId, state, joinPossible, dis
       case mapStates.JOINING:
         return JoinableSegment(points, trackId, id, color, joinPossible, dispatch);
       case mapStates.POINT_DETAILS:
-        return PointDetailSegment(points, trackId, id, color, trackId);
+        return PointDetailSegment(points, trackId, id, color, metrics.get('points'));
       default:
         return null;
     }
 }
 
-const SelectMapSegment = (points, id, color, trackId, state, joinPossible, dispatch) => {
+const SelectMapSegment = (points, id, color, trackId, state, joinPossible, metrics, dispatch) => {
     return (
       <LayerGroup key={trackId + ' ' + id} >
         <Polyline opacity={1.0} positions={points} color={ color } key={trackId + ' ' + id}/>
-        {ComplexMapSegments(points, id, color, trackId, state, joinPossible, dispatch)}
+        {ComplexMapSegments(points, id, color, trackId, state, joinPossible, metrics, dispatch)}
       </LayerGroup>
     )
 }
@@ -150,8 +150,9 @@ let Map = ({ bounds, map, segments, dispatch}) => {
         const id = segment.get('id');
         const trackId = segment.get('trackId');
         const joinPossible = segment.get('joinPossible');
+        const metrics = segment.get('metrics');
         
-        return SelectMapSegment(points, id, color, trackId, state, joinPossible, dispatch);
+        return SelectMapSegment(points, id, color, trackId, state, joinPossible, metrics, dispatch);
       }).toJS()
 
     const elements = Object.keys(elms).map((e) => elms[e]);
