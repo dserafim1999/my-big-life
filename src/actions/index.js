@@ -1,19 +1,23 @@
-export default {
-    ADD_TRACK: 'track/add',
-    UPDATE_TRACK_NAME: 'track/update_name',
-    TOGGLE_TRACK_REMAINING: 'track/toggle_renaming',
-    TOGGLE_SEGMENT_VISIBILITY: 'segment/toggle_visibility',
-    TOGGLE_SEGMENT_EDITING: 'segment/toggle_edit',
-    TOGGLE_SEGMENT_SPLITTING: 'segment/toggle_split',
-    TOGGLE_SEGMENT_JOINING: 'segment/toggle_join',
-    TOGGLE_SEGMENT_POINT_DETAILS: 'segment/toggle_point_details',
-    CHANGE_SEGMENT_POINT: 'segment/change_point',
-    REMOVE_SEGMENT_POINT: 'segment/remove_point',
-    EXTEND_SEGMENT_POINT: 'segment/extend_point',
-    ADD_SEGMENT_POINT: 'segment/add_point',
-    EXTEND_SEGMENT: 'segment/extend',
-    REMOVE_SEGMENT: 'segment/remove',
-    SPLIT_SEGMENT: 'segment/split',
-    JOIN_SEGMENT: 'segment/join',
-    UPDATE_BOUNDS: 'ui/bounds'
-}
+export const ADD_TRACK = 'track/add' ;
+export const UPDATE_TRACK_NAME = 'track/update_name' ;
+export const TOGGLE_TRACK_REMAINING = 'track/toggle_renaming' ;
+
+export const TOGGLE_SEGMENT_VISIBILITY = 'segment/toggle_visibility' ;
+export const TOGGLE_SEGMENT_EDITING = 'segment/toggle_edit' ;
+export const TOGGLE_SEGMENT_SPLITTING = 'segment/toggle_split' ;
+export const TOGGLE_SEGMENT_JOINING = 'segment/toggle_join' ;
+export const TOGGLE_SEGMENT_POINT_DETAILS = 'segment/toggle_point_details' ;
+
+export const CHANGE_SEGMENT_POINT = 'segment/change_point' ;
+export const REMOVE_SEGMENT_POINT = 'segment/remove_point' ;
+export const EXTEND_SEGMENT_POINT = 'segment/extend_point' ;
+export const ADD_SEGMENT_POINT = 'segment/add_point' ;
+export const EXTEND_SEGMENT = 'segment/extend' ;
+export const REMOVE_SEGMENT = 'segment/remove' ;
+export const SPLIT_SEGMENT = 'segment/split' ;
+export const JOIN_SEGMENT = 'segment/join' ;
+export const UPDATE_BOUNDS = 'ui/bounds'
+
+
+export const REMOVE_TRACKS_FOR = 'track/remove_for';
+export const ADVANCE_TO_ADJUST = 'progress/advance_adjust';
