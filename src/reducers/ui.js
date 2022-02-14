@@ -1,16 +1,22 @@
 import { Map } from 'immutable';
+import { 
+  HIDE_TRACK_DETAILS,
+  SHOW_TRACK_DETAILS,
+  UPDATE_BOUNDS,
+  UPDATE_INTERNAL_BOUNDS,
+} from '../actions';
 
 const initialState = Map({});
 
 const ui = (state = initialState, action) => {
     switch (action.type) {
-      case 'ui/bounds':
+      case UPDATE_BOUNDS:
         return state.set('bounds', action.bounds);
-      case 'ui/show_track_details':
+      case SHOW_TRACK_DETAILS:
         return state.set('details', true);
-      case 'ui/hide_track_details':
+      case HIDE_TRACK_DETAILS:
         return state.set('details', false);
-      case 'ui/internal_bounds':
+      case UPDATE_INTERNAL_BOUNDS:
         return state.set('internalBounds', action.bounds);
       default:
         return state;

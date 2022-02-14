@@ -1,15 +1,21 @@
+import { 
+  ADD_TRACK, 
+  TOGGLE_TRACK_REMAINING,
+  UPDATE_TRACK_NAME
+} from ".";
+
 export const addTrack = (segments, file) => {
     return {
         segments,
         name: file.name,
-        type: 'track/add',
+        type: ADD_TRACK,
     }
 }
 
 export const toggleTrackRenaming = (trackId) => {
     return {
       trackId,
-      type: 'track/toggle_renaming'
+      type: TOGGLE_TRACK_REMAINING
     }
   }
 
@@ -17,7 +23,7 @@ export const updateTrackName = (trackId, newName) => {
     return {
       trackId,
       name: newName,
-      type: 'track/update_name'
+      type: UPDATE_TRACK_NAME
     }
 }
 

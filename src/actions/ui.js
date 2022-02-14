@@ -1,24 +1,31 @@
+import { 
+  HIDE_TRACK_DETAILS,
+  SHOW_TRACK_DETAILS,
+  UPDATE_BOUNDS,
+  UPDATE_INTERNAL_BOUNDS,
+} from "."
+
 export const updateBounds = (bounds) => {
     return {
       bounds,
-      type: 'ui/bounds'
+      type: UPDATE_BOUNDS
     }
 }
 
 export const hideDetails = () => {
   return {
-    type: 'ui/hide_track_details'
+    type: HIDE_TRACK_DETAILS
   }
 }
 export const showDetails = () => {
   return {
-    type: 'ui/show_track_details'
+    type: SHOW_TRACK_DETAILS
   }
 }
 
 export const updateInternalBounds = (bounds) => {
   return {
     bounds,
-    type: 'ui/internal_bounds'
+    type: UPDATE_INTERNAL_BOUNDS
   }
 }

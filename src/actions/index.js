@@ -17,6 +17,7 @@ export const EXTEND_SEGMENT = 'segment/extend';
 export const REMOVE_SEGMENT = 'segment/remove';
 export const SPLIT_SEGMENT = 'segment/split';
 export const JOIN_SEGMENT = 'segment/join';
+export const FIT_SEGMENT = 'segment/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segment/time_filter';
 
 export const UPDATE_BOUNDS = 'ui/bounds';
