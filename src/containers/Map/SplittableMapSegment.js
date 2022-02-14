@@ -1,0 +1,18 @@
+import React from "react";
+import PointPolyline from "./PointPolyline";
+import { splitSegment } from "../../actions/segments";
+
+const SplittableMapSegment = (points, trackId, id, color, dispatch) => {
+    return (
+      <PointPolyline
+        opacity={1.0}
+        positions={points.slice(1, -1)}
+        color={color}
+        key={trackId + ' ' + id + 's'}
+        onPointClick={(point, i) => {
+          dispatch(splitSegment(id, i + 1))
+        }} />
+    );
+}
+
+export default SplittableMapSegment;

@@ -7,9 +7,11 @@ const ui = (state = initialState, action) => {
       case 'ui/bounds':
         return state.set('bounds', action.bounds);
       case 'ui/show_track_details':
-        return state.set('details', true)
+        return state.set('details', true);
       case 'ui/hide_track_details':
-        return state.set('details', false)
+        return state.set('details', false);
+      case 'ui/update_internal_bounds':
+        return state.set('internalBounds', action.bounds);
       default:
         return state;
     }
