@@ -34,11 +34,11 @@ export default (lseg, current, previous) => {
 
     openPopupFor(target.layer, index);
   })
-  lseg.points.addTo(lseg.layergroup);
+  lseg.points.addTo(lseg.details);
 
   lseg.tearDown = () => {
     lseg.points.off('click');
-    lseg.layergroup.removeLayer(lseg.points);
+    lseg.details.removeLayer(lseg.points);
     lseg.tearDown = null;
   }
 }

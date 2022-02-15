@@ -49,7 +49,9 @@ export default class PerfMap extends Component {
     });
 
     setupTileLayers(this.map);
+
     this.map.fitWorld();
+    this.map.on('zoomend', this.onZoomEnd.bind(this));
   }
 
   componentWillUnmount () {
@@ -109,8 +111,29 @@ export default class PerfMap extends Component {
         this.shouldUpdateDisplay(lseg, display, previous.get('display'));
         this.shouldUpdateMode(lseg, current, previous);
       } else {
-        this.addSegment(id, points, color, display, filter, current, dispatch);
+        this.addSegment(id, points, color, display, filter, current, dispatch, previous);
       }
+    }
+  }
+
+  onZoomEnd (e) {
+    const defaultDetail = 16;
+    if (this.map.getZoom() >= defaultDetail) {
+      // add layers
+      Object.keys(this.segments).forEach((s) => {
+        const { details, layergroup } = this.segments[s];
+        if (layergroup.hasLayer(details) === false) {
+          layergroup.addLayer(details);
+        }
+      });
+    } else {
+      // remove layers
+      Object.keys(this.segments).forEach((s) => {
+        const { details, layergroup } = this.segments[s];
+        if (layergroup.hasLayer(details) === true) {
+          layergroup.removeLayer(details);
+        }
+      });
     }
   }
 
@@ -128,10 +151,10 @@ export default class PerfMap extends Component {
     if (current.get('splitting') === true && current.get('splitting') !== previous.get('splitting')) {
       splitMode(lseg, current, previous, (id, index) => dispatch(splitSegment(id, index)));
     }
-    if (current.get('pointDetails') && current.get('pointDetails') !== previous.get('pointDetails')) {
+    if (current.get('pointDetails') === true && current.get('pointDetails') !== previous.get('pointDetails')) {
       detailMode(lseg, current, previous);
     }
-    if (current.get('editing') && current.get('editing') !== previous.get('editing') || (current.get('editing') && current.get('points') !== previous.get('points'))) {
+    if (current.get('editing') === true && current.get('editing') !== previous.get('editing') || (current.get('editing') && current.get('points') !== previous.get('points'))) {
       editMode(lseg, current, previous, {
         onRemove: (id, index, lat, lng) => dispatch(removeSegmentPoint(id, index, lat, lng)),
         onAdd: (id, index, lat, lng) => dispatch(addSegmentPoint(id, index, lat, lng)),
@@ -139,7 +162,7 @@ export default class PerfMap extends Component {
         onExtend: (id, index, lat, lng) => dispatch(extendSegment(id, index, lat, lng))
       });
     }
-    if (current.get('joining') && current.get('joining') !== previous.get('joining')) {
+    if (current.get('joining') === true && current.get('joining') !== previous.get('joining')) {
       joinMode(lseg, current, previous, (id, i, pp) => dispatch(joinSegment(id, i, pp)));
     }
   }
@@ -176,7 +199,7 @@ export default class PerfMap extends Component {
     }
   }
 
-  addSegment (id, points, color, display, filter, segment, dispatch) {
+  addSegment (id, points, color, display, filter, segment, dispatch, previous) {
     const obj = addSegment(id, points, color, display, filter, segment, dispatch);
     this.segments[id] = obj;
     obj.layergroup.addTo(this.map);

@@ -73,7 +73,7 @@ const addSegmentPoint = (state, action) => {
     // when adding a point between two other points the time is interpolated is the difference between the two points halved.
     const extrapolateTime = (points, n) => {
         let prev = points.get(n - 1).get('time');
-        let next = points.get(n + 1).get('time');
+        let next = points.get(n).get('time');
         let diff = next.diff(prev) / 2;
         return prev.clone().add(diff);
     }
