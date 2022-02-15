@@ -12,6 +12,7 @@ import {
 } from '../../actions/segments';
 
 import setupTileLayers from './setupTileLayers';
+import setupControls from './setupControls';
 
 import editMode from './editMode';
 import joinMode from './joinMode';
@@ -42,13 +43,20 @@ export default class PerfMap extends Component {
   }
 
   componentDidMount () {
+    const world = new L.LatLngBounds([[90,-200],[-90,200]]);  
+
     const m = findDOMNode(this.mapRef.current);
     this.map = map(m, {
       // bounds: this.props.bounds
-      zoomControl: false
+      zoomControl: false,
+      minZoom: 2,
+      maxBounds: world,
+      maxBoundsViscosity: 1
     });
 
     setupTileLayers(this.map);
+
+    setupControls(this.map, {});
 
     this.map.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
