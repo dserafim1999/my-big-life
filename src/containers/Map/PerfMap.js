@@ -1,4 +1,12 @@
-import Leaflet, { FeatureGroup, Polyline, CircleMarker, DivIcon, Control } from 'leaflet';
+import Leaflet, { 
+    Marker,
+    FeatureGroup,
+    Polyline, 
+    CircleMarker, 
+    DivIcon, 
+    Control 
+} from 'leaflet';
+
 import React, { Component } from 'react';
 import { Set } from 'immutable';
 import { findDOMNode, render } from 'react-dom';
@@ -14,7 +22,6 @@ import { PolylineEditor } from 'leaflet-editable-polyline';
 
 import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';
-import AddIcon from '@mui/icons-material/Add';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 
 const CIRCLE_OPTIONS = {
@@ -38,7 +45,10 @@ const createPointsFeatureGroup = (pts, color, pointsEventMap = {}) => {
   pointsLayer.on(pointsEventMap);
   return pointsLayer;
 }
-const PointPopup = ({ lat, lon, time, distance, velocity, n, onMove }) => {
+const PointPopup = ({ lat, lon, time, distance, velocity, i, onMove, count }) => {
+    const displayPrev = i !== 0;
+    const displayNext = (i + 1) < count;
+    
     const flexAlignStyle = {
         display: 'flex',
         alignItems: 'center',
@@ -46,17 +56,18 @@ const PointPopup = ({ lat, lon, time, distance, velocity, n, onMove }) => {
         position: 'relative',
         margin: 'auto'
     };
+
     return (
     <div>
         <div className='is-flex'>
-            <LeftIcon sx={{ fontSize: 40 }} onClick={() => onMove(n - 1)} className='clickable' style={flexAlignStyle} />
+            <LeftIcon sx={{ fontSize: 40 }} className='clickable' style={Object.assign({}, flexAlignStyle, { opacity: displayPrev ? 1 : 0.5 })} onClick={() => (displayPrev ? onMove(i - 1) : null)} />
             <span>
-                <div>#<strong>{n}</strong></div>
+                <div>#<strong>{i + 1}</strong></div>
                 <div>Lat: <strong>{lat}</strong> Lon: <strong>{lon}</strong></div>
                 <div>Time: <strong>{time.format('dddd, MMMM Do YYYY, HH:mm:ss')}</strong></div>
                 <div><strong>{(distance * 1000).toFixed(3)}</strong>m at <strong>{velocity.toFixed(3)}</strong>km/h</div>
             </span>
-            <RightIcon sx={{ fontSize: 40 }} onClick={() => onMove(n + 1)} className='clickable' style={flexAlignStyle} />
+            <RightIcon sx={{ fontSize: 40 }} className='clickable' style={Object.assign({}, flexAlignStyle, { opacity: displayNext ? 1 : 0.5 })} onClick={() => (displayNext ? onMove(i + 1) : null)}/>
         </div>
     </div>
   );
@@ -234,7 +245,7 @@ export default class PerfMap extends Component {
         this.detailMode(lseg, current, previous);
       }
     }
-    if (current.get('editing') !== previous.get('editing')) {
+    if (current.get('editing') !== previous.get('editing') || (current.get('editing') && current.get('points') !== previous.get('points'))) {
       if (current.get('editing')) {
         this.editMode(lseg, current, previous);
       }
@@ -310,6 +321,8 @@ export default class PerfMap extends Component {
       const openPopupFor = (target, index) => {
         const point = current.get('points').get(index);
         const pm = current.get('metrics').get('points').get(index);
+        const count = current.get('points').count();
+
         const next = (i) => {
           target.closePopup();
           target = lseg.points.getLayers()[i];
@@ -322,7 +335,8 @@ export default class PerfMap extends Component {
             time={point.get('time')}
             distance={pm.get('distance')}
             velocity={pm.get('velocity')}
-            n={index}
+            i={index}
+            count={count}
             onMove={next} />
         );
         const div = document.createElement('div');
@@ -345,44 +359,96 @@ export default class PerfMap extends Component {
     const { dispatch } = this.props;
     const id = current.get('id');
     const color = current.get('color');
-    let options = {
-      onChange: (n, points) => {
-        let {lat, lng} = points[n]._latlng;
-        dispatch(changeSegmentPoint(id, n, lat, lng));
-      },
-      onRemove: (n, points) => {
-        dispatch(removeSegmentPoint(id, n));
-      },
-      onPointAdd: (n, points) => {
-        let {lat, lng} = points[n]._latlng;
-        dispatch(addSegmentPoint(id, n, lat, lng));
-      },
-      onExtend: (n, points) => {
-        let {lat, lng} = points[n]._latlng;
-        dispatch(extendSegment(id, n, lat, lng));
-      }
-    }
-    options.pointIcon = new DivIcon({
+    const points = current.get('points');
+    
+    const pointIcon = new DivIcon({
         className: 'editable-point border-color-' + color.substr(1),
         iconAnchor: [12, 12],
     });
-    options.newPointIcon = new DivIcon({      
+
+    const newPointIcon = new DivIcon({      
         className: 'editable-point new-editable-point',
         html: '<div class="center">+</div>',
         iconAnchor: [12, 12],
     });
-    options.maxMarkers = 500;
-    options.weight = 0;
 
-    const opts = createCircleOptions(color);
-    Object.keys(opts).forEach((option) => (options[option] = opts[option]));
+    const pointInBetween = (prev, after) => {
+      const latDiff = after.get('lat') - prev.get('lat');
+      const lonDiff = after.get('lon') - prev.get('lon');
 
-    const editable = PolylineEditor(current.get('points').toJS(), options);
-    editable.addTo(lseg.layergroup);
+      return [prev.get('lat') + latDiff / 2, prev.get('lon') + lonDiff / 2];
+    }
 
-    lseg.tearDown = (segment) => {
-      if (!segment.get('editing')) {
-        lseg.layergroup.removeLayer(editable);
+    let group;
+
+    const createMarker = (point, icon) => new Marker(point, { icon, draggable: true });
+
+    const handler = (e) => {
+      const { target } = e;
+      const { type, index, previous, next } = target;
+      if (type === 'NEW') {
+        let {lat, lng} = target.getLatLng();
+        dispatch(addSegmentPoint(id, index, lat, lng));
+        lseg.layergroup.removeLayer(group);
+      } else if (type === 'MOVE') {
+        let {lat, lng} = target.getLatLng();
+        dispatch(changeSegmentPoint(id, index, lat, lng));
+        lseg.layergroup.removeLayer(group);
+      }
+    }
+
+    let helperLine;
+    const visualHelper = (e) => {
+      const { previous, next } = e.target;
+      const points = lseg.points.getLayers();
+
+      const latlngs = [
+        previous < 0 ? null : points[previous].getLatLng(),
+        e.target.getLatLng(),
+        next >= points.length ? null : points[next].getLatLng()
+      ];
+
+      if (e.type === 'movestart') {
+        helperLine = new Polyline(latlngs.filter((x) => x), { color: current.get('color'), opacity: 0.8 });
+        helperLine.addTo(group);
+      } else if (e.type === 'move') {
+        helperLine.setLatLngs(latlngs.filter((x) => x));
+      } else if (e.type === 'moveend') {
+        group.removeLayer(helperLine);
+      }
+    }
+
+    let overlay = [];
+    let prevPoint;
+
+    points.forEach((point, i) => {
+      if (prevPoint) {
+        const nm = createMarker(pointInBetween(prevPoint, point), newPointIcon);
+        nm.on('moveend click', handler);
+        nm.on('move movestart moveend', visualHelper);
+        nm.type = 'NEW';
+        nm.index = i;
+        nm.previous = i - 1;
+        nm.next = i;
+        overlay.push(nm);
+      }
+      const existingPoint = createMarker([point.get('lat'), point.get('lon')], pointIcon);
+      existingPoint.type = 'MOVE';
+      existingPoint.index = i;
+      existingPoint.previous = i - 1;
+      existingPoint.next = i + 1;
+      existingPoint.on('moveend', handler);
+      existingPoint.on('move movestart moveend', visualHelper);
+      overlay.push(existingPoint);
+      prevPoint = point;
+    })
+
+    group = new FeatureGroup(overlay);
+    group.addTo(lseg.layergroup);
+
+    lseg.tearDown = (current, previous) => {
+      if (!current.get('editing') || (current.get('editing') && current.get('points') !== previous.get('points'))) {
+        lseg.layergroup.removeLayer(group);
         lseg.tearDown = null;
       }
     }
@@ -400,12 +466,16 @@ export default class PerfMap extends Component {
 
   shouldUpdatePoints (segment, points, filter, prev, color) {
     if (points !== prev.get('points') || filter.get(0) !== prev.get('timeFilter').get(0) || filter.get(-1) !== prev.get('timeFilter').get(-1)) {
-      const tfLower = filter.get(0) || points.get(0).get('time');
-      const tfUpper = filter.get(-1) || points.get(-1).get('time');
-      const timeFilter = (point) => point.get('time').isBetween(tfLower, tfUpper);
-      const pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
-      segment.polyline.setLatLngs(pts);
-      segment.points = createPointsFeatureGroup(pts, color, segment.pointsEventMap);
+        const tfLower = (filter.get(0) || points.get(0).get('time')).valueOf();
+        const tfUpper = (filter.get(-1) || points.get(-1).get('time')).valueOf();
+        const timeFilter = (point) => {
+            const t = point.get('time').valueOf();
+            return tfLower <= t && t <= tfUpper;
+        }
+        
+        const pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
+        segment.polyline.setLatLngs(pts);
+        segment.points = createPointsFeatureGroup(pts, color, segment.pointsEventMap);
     }
   }
 
@@ -426,9 +496,13 @@ export default class PerfMap extends Component {
   }
 
   addSegment (id, points, color, display, filter) {
-    const tfLower = filter.get(0) || points.get(0).get('time');
-    const tfUpper = filter.get(-1) || points.get(-1).get('time');
-    const timeFilter = (point) => point.get('time').isBetween(tfLower, tfUpper);
+    const tfLower = (filter.get(0) || points.get(0).get('time')).valueOf();
+    const tfUpper = (filter.get(-1) || points.get(-1).get('time')).valueOf();
+    const timeFilter = (point) => {
+      const t = point.get('time');
+      return tfLower <= t && t <= tfUpper;
+    }
+    
     const pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
 
     const pline = new Polyline(pts, {
