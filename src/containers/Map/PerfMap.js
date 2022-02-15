@@ -1,0 +1,470 @@
+import Leaflet, { FeatureGroup, Polyline, CircleMarker, DivIcon, Control } from 'leaflet';
+import React, { Component } from 'react';
+import { Set } from 'immutable';
+import { findDOMNode, render } from 'react-dom';
+import {
+  extendSegment,
+  splitSegment,
+  changeSegmentPoint,
+  addSegmentPoint,
+  removeSegmentPoint,
+  joinSegment
+} from '../../actions/segments';
+import { PolylineEditor } from 'leaflet-editable-polyline';
+
+import LeftIcon from '@mui/icons-material/ChevronLeft';
+import RightIcon from '@mui/icons-material/ChevronRight';
+import AddIcon from '@mui/icons-material/Add';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+
+const CIRCLE_OPTIONS = {
+  opacity: 1,
+  radius: 10,
+  fillColor: 'white',
+  fillOpacity: 1
+}
+
+const createCircleOptions = (color) => Object.assign({}, CIRCLE_OPTIONS, { color });
+
+const createPointsFeatureGroup = (pts, color, pointsEventMap = {}) => {
+  const cpts = pts.map((point, i) => {
+    const p = new CircleMarker(point);
+    p.index = i;
+    return p;
+  })
+  const pointsLayer = new FeatureGroup(cpts);
+  pointsLayer.setStyle(createCircleOptions(color));
+
+  pointsLayer.on(pointsEventMap);
+  return pointsLayer;
+}
+const PointPopup = ({ lat, lon, time, distance, velocity, n, onMove }) => {
+    const flexAlignStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        margin: 'auto'
+    };
+    return (
+    <div>
+        <div className='is-flex'>
+            <LeftIcon sx={{ fontSize: 40 }} onClick={() => onMove(n - 1)} className='clickable' style={flexAlignStyle} />
+            <span>
+                <div>#<strong>{n}</strong></div>
+                <div>Lat: <strong>{lat}</strong> Lon: <strong>{lon}</strong></div>
+                <div>Time: <strong>{time.format('dddd, MMMM Do YYYY, HH:mm:ss')}</strong></div>
+                <div><strong>{(distance * 1000).toFixed(3)}</strong>m at <strong>{velocity.toFixed(3)}</strong>km/h</div>
+            </span>
+            <RightIcon sx={{ fontSize: 40 }} onClick={() => onMove(n + 1)} className='clickable' style={flexAlignStyle} />
+        </div>
+    </div>
+  );
+}
+const Button = Control.extend({
+  options: [],
+
+  onAdd: function (map) {
+    const zoomName = 'leaflet-control-zoom';
+    const container = Leaflet.DomUtil.create('div', zoomName + ' leaflet-bar');
+    const options = this.options;
+
+    let opts;
+    if (Array.isArray(options)) {
+      opts = options;
+    } else if (options['0']) {
+      opts = Object.keys(options).sort().map((option) => options[option]);
+    } else {
+      opts = [options];
+    }
+
+    opts.map((button) => {
+      return this._createButton(button, zoomName + '-in', container);
+    })
+
+    return container;
+  },
+
+  _createButton: function (button, className, container) {
+    var link = Leaflet.DomUtil.create('a', className, container);
+    if (typeof button.button === 'string') {
+      link.innerHTML = button.button || '';
+    } else {
+      render(button.button || null, link);
+    }
+    link.href = '#';
+    link.title = button.title || '';
+
+    Leaflet.DomEvent
+    .on(link, 'mousedown dblclick', Leaflet.DomEvent.stopPropagation)
+    .on(link, 'click', Leaflet.DomEvent.stop)
+    .on(link, 'click', button.onClick || function () {}, this)
+    .on(link, 'click', this._refocusOnMap, this);
+
+    return link;
+  }
+})
+
+export default class PerfMap extends Component {
+  constructor (props) {
+    super(props);
+    this.map = undefined;
+    this.mapRef = React.createRef(); 
+    /**
+     * Holds the segments currently displayed in their leaflet form
+     *  keys: segment id
+     *  values: object of
+     *    { layergroup, polyline, points, pointsEventMap } layergroup contains polyline and points
+     *      - pointsEventMap is an object { eventName: fn(target, i) }
+     */
+    this.segments = {};
+  }
+
+  componentDidMount () {
+    const m = findDOMNode(this.mapRef.current);
+    console.log(m);
+    this.map = Leaflet.map(m, {
+      zoomControl: false
+    })
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new Leaflet.TileLayer(osmUrl, {attribution: osmAttrib});
+
+    var zoomControl = new Control.Zoom({
+      position: 'topright'
+    })
+    zoomControl.addTo(this.map);
+
+    new Button({
+      button: (<MyLocationIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit', color: 'black' }} className='clickable' />),
+      title: 'Position on your location'
+    }).addTo(this.map);
+    
+    this.map.fitWorld();
+    this.map.addLayer(osm);
+  }
+
+  componentWillUnmount () {
+    this.map.remove();
+  }
+
+  /**
+   * Receives the following props
+   *    + center
+   *    + bounds
+   *    + segments : array of objects
+   *        - points: array
+   *        - color : bool
+   *        - show  : bool
+   *        - id    : string
+   *        - diff  : fn (executes a function when there was a change, receives the leaflet map, and segment)
+   *        - operation : [details, edit, split, join]
+   *        - filter: fn (temporal or bounds)
+   */
+  componentDidUpdate (prev) {
+    if (!this.map) {
+      return;
+    }
+
+    const { center, bounds, zoom, segments } = this.props;
+
+    this.shouldUpdateZoom(zoom, prev.zoom);
+    this.shouldUpdateCenter(center, prev.center);
+    this.shouldUpdateBounds(bounds, prev.bounds);
+    this.shouldUpdateSegments(segments, prev.segments);
+  }
+
+  shouldUpdateZoom (current, previous) {
+    if (current !== previous || this.map.getZoom() !== current) {
+      this.map.setZoom(current);
+    }
+  }
+
+  shouldUpdateCenter (current, previous) {
+    let tCenter;
+    if (current) {
+      tCenter = Leaflet.LatLng(current.lat, current.lon || current.lng);
+    }
+    if (current !== previous || (tCenter && !this.map.getCenter().equals(tCenter))) {
+      this.map.setView(tCenter);
+    }
+  }
+
+  shouldUpdateSegments (segments, previous) {
+    if (segments !== previous) {
+      segments.forEach((segment) => {
+        this.shouldUpdateSegment(segment, previous.get(segment.get('id')))
+      });
+
+      this.shouldRemoveSegments(segments, previous);
+    }
+  }
+
+  shouldUpdateSegment (current, previous) {
+    if (current !== previous) {
+      const points = current.get('points');
+      const color = current.get('color');
+      const display = current.get('display');
+      const id = current.get('id');
+      const filter = current.get('timeFilter');
+      const lseg = this.segments[id];
+
+      if (lseg) {
+        this.shouldUpdatePoints(lseg, points, filter, previous, color);
+        this.shouldUpdateColor(lseg, color, previous.get('color'));
+        this.shouldUpdateDisplay(lseg, display, previous.get('display'));
+        this.shouldUpdateMode(lseg, current, previous);
+      } else {
+        this.addSegment(id, points, color, display, filter);
+      }
+    }
+  }
+
+  shouldUpdateMode (lseg, current, previous) {
+    if (lseg.tearDown) {
+      lseg.tearDown(current);
+    }
+    if (current.get('splitting') !== previous.get('splitting')) {
+      if (current.get('splitting')) {
+        this.splitMode(lseg, current, previous);
+      }
+    }
+    if (current.get('pointDetails') !== previous.get('pointDetails')) {
+      if (current.get('pointDetails')) {
+        this.detailMode(lseg, current, previous);
+      }
+    }
+    if (current.get('editing') !== previous.get('editing')) {
+      if (current.get('editing')) {
+        this.editMode(lseg, current, previous);
+      }
+    }
+    if (current.get('joining') !== previous.get('joining')) {
+      if (current.get('joining')) {
+        this.joinMode(lseg, current, previous);
+      }
+    }
+  }
+
+  joinMode (lseg, current, previous) {
+    const { dispatch } = this.props;
+    const id = current.get('id');
+    const possibilities = current.get('joinPossible');
+
+    let handlers = {};
+    let reset = () => {};
+    possibilities.forEach((pp) => {
+      if (pp.show === 'END') {
+        handlers.showEnd = (point, i) => {
+          reset();
+          dispatch(joinSegment(id, i, pp));
+        }
+      }
+      if (pp.show === 'START') {
+        handlers.showStart = (point, i) => {
+          reset();
+          dispatch(joinSegment(id, i, pp));
+        }
+      }
+    })
+
+    const ls = lseg.points.getLayers();
+    let arr = [];
+    if (handlers.showStart) {
+      arr.push(new CircleMarker(ls[0].getLatLng(), { radius: 10 }).on('click', handlers.showStart));
+    }
+    if (handlers.showEnd) {
+      arr.push(new CircleMarker(ls[ls.length - 1].getLatLng(), { radius: 10 }).on('click', handlers.showEnd));
+    }
+    const group = new FeatureGroup(arr);
+    reset = () => {
+      lseg.layergroup.removeLayer(group);
+      lseg.tearDown = null;
+    }
+    lseg.tearDown = reset;
+
+    group.addTo(lseg.layergroup);
+  }
+
+  splitMode (lseg, current, previous) {
+    const { dispatch } = this.props;
+    lseg.points.on('click', (target) => {
+      const index = target.layer.index;
+      const id = current.get('id');
+
+      lseg.layergroup.removeLayer(lseg.points);
+      dispatch(splitSegment(id, index));
+    })
+    lseg.tearDown = () => {
+      lseg.layergroup.removeLayer(lseg.points);
+      lseg.points.off('click');
+      lseg.tearDown = null;
+    }
+    lseg.points.addTo(lseg.layergroup);
+  }
+
+  detailMode (lseg, current, previous) {
+    lseg.points.on('click', (target) => {
+      const index = target.layer.index;
+
+      const openPopupFor = (target, index) => {
+        const point = current.get('points').get(index);
+        const pm = current.get('metrics').get('points').get(index);
+        const next = (i) => {
+          target.closePopup();
+          target = lseg.points.getLayers()[i];
+          openPopupFor(target, i);
+        }
+        const popup = (
+          <PointPopup
+            lat={point.get('lat')}
+            lon={point.get('lon')}
+            time={point.get('time')}
+            distance={pm.get('distance')}
+            velocity={pm.get('velocity')}
+            n={index}
+            onMove={next} />
+        );
+        const div = document.createElement('div');
+        render(popup, div);
+        target.bindPopup(div).openPopup();
+      }
+
+      openPopupFor(target.layer, index)
+    });
+
+    lseg.points.addTo(lseg.layergroup);
+    lseg.tearDown = () => {
+      lseg.points.off('click');
+      lseg.layergroup.removeLayer(lseg.points);
+      lseg.tearDown = null;
+    }
+  }
+
+  editMode (lseg, current, previous) {
+    const { dispatch } = this.props;
+    const id = current.get('id');
+    const color = current.get('color');
+    let options = {
+      onChange: (n, points) => {
+        let {lat, lng} = points[n]._latlng;
+        dispatch(changeSegmentPoint(id, n, lat, lng));
+      },
+      onRemove: (n, points) => {
+        dispatch(removeSegmentPoint(id, n));
+      },
+      onPointAdd: (n, points) => {
+        let {lat, lng} = points[n]._latlng;
+        dispatch(addSegmentPoint(id, n, lat, lng));
+      },
+      onExtend: (n, points) => {
+        let {lat, lng} = points[n]._latlng;
+        dispatch(extendSegment(id, n, lat, lng));
+      }
+    }
+    options.pointIcon = new DivIcon({
+        className: 'editable-point border-color-' + color.substr(1),
+        iconAnchor: [12, 12],
+    });
+    options.newPointIcon = new DivIcon({      
+        className: 'editable-point new-editable-point',
+        html: '<div class="center">+</div>',
+        iconAnchor: [12, 12],
+    });
+    options.maxMarkers = 500;
+    options.weight = 0;
+
+    const opts = createCircleOptions(color);
+    Object.keys(opts).forEach((option) => (options[option] = opts[option]));
+
+    const editable = PolylineEditor(current.get('points').toJS(), options);
+    editable.addTo(lseg.layergroup);
+
+    lseg.tearDown = (segment) => {
+      if (!segment.get('editing')) {
+        lseg.layergroup.removeLayer(editable);
+        lseg.tearDown = null;
+      }
+    }
+  }
+
+  shouldUpdateBounds (bounds, prev) {
+    let tBounds;
+    if (bounds) {
+      tBounds = Leaflet.latLngBounds(bounds.toJS());
+    }
+    if (bounds !== prev) {
+      this.map.fitBounds(tBounds);
+    }
+  }
+
+  shouldUpdatePoints (segment, points, filter, prev, color) {
+    if (points !== prev.get('points') || filter.get(0) !== prev.get('timeFilter').get(0) || filter.get(-1) !== prev.get('timeFilter').get(-1)) {
+      const tfLower = filter.get(0) || points.get(0).get('time');
+      const tfUpper = filter.get(-1) || points.get(-1).get('time');
+      const timeFilter = (point) => point.get('time').isBetween(tfLower, tfUpper);
+      const pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
+      segment.polyline.setLatLngs(pts);
+      segment.points = createPointsFeatureGroup(pts, color, segment.pointsEventMap);
+    }
+  }
+
+  shouldUpdateColor (segment, color, prev) {
+    if (color !== prev) {
+        segment.layergroup.setStyle({
+            color   
+        });
+    }
+  }
+
+  shouldUpdateDisplay (segment, display, prev) {
+    if (display !== prev) {
+        segment.layergroup.setStyle({
+            opacity: display ? 1 : 0
+        });
+    }
+  }
+
+  addSegment (id, points, color, display, filter) {
+    const tfLower = filter.get(0) || points.get(0).get('time');
+    const tfUpper = filter.get(-1) || points.get(-1).get('time');
+    const timeFilter = (point) => point.get('time').isBetween(tfLower, tfUpper);
+    const pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
+
+    const pline = new Polyline(pts, {
+      color,
+      weight: 8,
+      opacity: display ? 1 : 0
+    });
+
+    const pointsEventMap = {};
+    const pointsLayer = createPointsFeatureGroup(pts, color, pointsEventMap);
+    const layerGroup = new FeatureGroup([pline]);
+
+    // add segment
+    const obj = {
+      layergroup: layerGroup,
+      polyline: pline,
+      points: pointsLayer,
+      pointsEventMap
+    }
+    this.segments[id] = obj;
+    layerGroup.addTo(this.map);
+  }
+
+  shouldRemoveSegments (segments, prev) {
+    if (segments !== prev) {
+      // delete segment if needed
+      Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
+        this.map.removeLayer(this.segments[s].layergroup)
+        this.segments[s] = null
+      });
+    }
+  }
+
+  render () {
+    return (
+      <div id='map' ref={this.mapRef} style={{ height: '100%', zIndex: '1', position: 'absolute' }} ></div>
+    );
+  }
+}
