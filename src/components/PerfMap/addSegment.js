@@ -18,7 +18,7 @@ export default (id, points, color, display, filter, segment, dispatch, previousP
     weight: 8,
     opacity: display ? 1 : 0
   }).on('click', (e) => {
-    const popup = renderToDiv(<SegmentToolbox segment={segment} dispatch={dispatch} />)
+    const popup = renderToDiv(<SegmentToolbox segment={segment} dispatch={dispatch} isPopup={true}/>)
     e.target.bindPopup(popup).openPopup()
   });
 

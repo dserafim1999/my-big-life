@@ -27,9 +27,18 @@ import TimeFilterIcon from '@mui/icons-material/EventNote';
 import { Col } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
 
-const btnHighlight = ' is-success is-outlined';
 
-let SegmentToolbox = ({ dispatch, segment }) => {
+let SegmentButton = ({children, typeClass, description, onClick}) => {
+    return (
+        <a className={typeClass + ' button'} onClick={onClick}>    
+            <Tooltip title={description}  placement="top" arrow>  
+                { children }
+            </Tooltip>
+        </a>
+    );
+}
+
+let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     const id = segment.get('id');
     const start = segment.get('start');
     const end = segment.get('end');
@@ -42,6 +51,9 @@ let SegmentToolbox = ({ dispatch, segment }) => {
     const filterStart = segment.get('timeFilter').get(0);
     const filterEnd = segment.get('timeFilter').get(1);
   
+    const btnHighlight = isPopup ? 'icon-popup-button is-success' : 'icon-button is-success';
+    const btn = isPopup ? 'icon-popup-button' : 'icon-button';
+
     const toggleTrack = (segmentId) => {
         return () => dispatch(toggleSegmentVisibility(segmentId));
     }
@@ -84,18 +96,16 @@ let SegmentToolbox = ({ dispatch, segment }) => {
         <div>
             <div style={{marginTop: '2px', display: 'flex', justifyContent: 'space-around' }}>
                 <Col>
-                    <a className={'button icon-button'} onClick={toggleTrack(id)}>
-                        <Tooltip title="Toggle Segment Visibility"  placement="top" arrow> 
-                            <VisibilityIcon sx={{ fontSize: 20 }}/>
-                        </Tooltip>
-                    </a>
-                    <a className={'button icon-button'} onClick={fitToSegment()}>    
-                        <Tooltip title="Focus on Segment"  placement="top" arrow>
-                            <FitIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
+                    <SegmentButton typeClass={btn} description={'Toggle Segment Visibility'} onClick={toggleTrack(id)}>
+                        <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                    </SegmentButton>
+
+                    <SegmentButton typeClass={btn} description={'Focus on Segment'} onClick={fitToSegment()}>
+                        <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
+
                     <AsyncButton 
-                        className={'icon-button' + (editing ? btnHighlight : '')}
+                        className={(editing ? btnHighlight : btn)}
                         onClick={
                             (e, modifier) => {
                                 modifier('is-loading');
@@ -104,34 +114,29 @@ let SegmentToolbox = ({ dispatch, segment }) => {
                         }
                     >
                         <Tooltip title="Edit Segment"  placement="top" arrow>
-                                <EditIcon sx={{ fontSize: 20 }} />
+                                <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                         </Tooltip>
                     </AsyncButton>
-                    <a className={(pointDetails ? btnHighlight : '' ) + ' button icon-button'} onClick={toggleDetails(id)}>    
-                        <Tooltip title="View Segment Points"  placement="top" arrow>  
-                            <PointIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
-                    <a className={(splitting ? btnHighlight : '' ) + ' button icon-button'} onClick={toggleSplitting(id)}>    
-                        <Tooltip title="Split Segment"  placement="top" arrow>
-                            <SplitIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
-                    <a className={(joining ? btnHighlight : '' ) + ' button icon-button'} onClick={toggleJoining(id)}>    
-                        <Tooltip title="Join Segment"  placement="top" arrow>
-                            <JoinIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
-                    <a className={(showTimeFilter ? btnHighlight : '' ) + ' button icon-button'} onClick={toggleTF(id)}>    
-                        <Tooltip title="Time Filter"  placement="top" arrow>
-                            <TimeFilterIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
-                    <a className={'button icon-button'} onClick={deleteSegment(id)}>    
-                        <Tooltip title="Delete Segment"  placement="top" arrow>
-                            <DeleteIcon sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </a>
+
+                    <SegmentButton typeClass={(pointDetails ? btnHighlight : btn )} description={'View Segment Points'} onClick={toggleDetails(id)}>
+                        <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
+
+                    <SegmentButton typeClass={(splitting ? btnHighlight : btn )} description={'Split Segment'} onClick={toggleSplitting(id)}>
+                        <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
+                                        
+                    <SegmentButton typeClass={(joining ? btnHighlight : btn )} description={'Join Segment'} onClick={toggleJoining(id)}>
+                        <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
+
+                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Time Filter'} onClick={toggleTF(id)}>
+                        <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
+                    
+                    <SegmentButton typeClass={btn} toggleable={false} description={'Delete Segment'} onClick={deleteSegment(id)}>
+                        <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
                 </Col>
             </div>
             {

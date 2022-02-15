@@ -19,11 +19,17 @@
 }
 
 .icon-button {
-  padding: 3px 3px !important;
   color: grey;
   border: solid 1px grey;
   border-radius: 5px;
   margin: 5px;
+  height: 2em !important;
+}
+
+.icon-popup-button {
+  color: grey !important;
+  border: solid 1px grey;
+  border-radius: 5px;
   height: 2em !important;
 }
 
@@ -52,6 +58,12 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.absolute-icon-center {
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
 }
 
 .editable-point {
