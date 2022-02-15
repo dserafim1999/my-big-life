@@ -56,7 +56,9 @@ const TrackInfo = ({ dispatch, track, segments }) => {
       <span style={{fontSize: '0.8rem', color: 'gray'}}>{segments.length} segment{segments.count() === 1 ? '' : 's'}, {totalPoints} points</span>
       <ul style={{listStyleType: 'none', margin: 0, padding: 0}}>
         {
-          segments.map((s, i) => <SegmentInfo dispatch={dispatch} segment={s} track={track} key={i} />)
+          segments
+            .sort((a, b) => a.get('start').diff(b.get('start')))
+            .map((s, i) => <SegmentInfo dispatch={dispatch} segment={s} track={track} key={i} />)
         }
       </ul>
       <br/>

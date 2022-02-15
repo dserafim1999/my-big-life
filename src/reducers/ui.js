@@ -1,10 +1,11 @@
 import { fromJS } from 'immutable';
 import { 
   HIDE_TRACK_DETAILS,
-  REMOVE_ALERT,
   SHOW_TRACK_DETAILS,
   UPDATE_BOUNDS,
   UPDATE_INTERNAL_BOUNDS,
+  ADD_ALERT,
+  REMOVE_ALERT
 } from '../actions';
 
 const initialState = fromJS({ alerts: [] });

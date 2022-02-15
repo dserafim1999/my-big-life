@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import PerfMap from "./PerfMap";
+import PerfMap from "../../components/PerfMap";
 
 const mapStateToProps = (state) => {
     return {
