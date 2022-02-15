@@ -4,7 +4,7 @@ import { fromJS } from 'immutable';
 
 export const addTrack = (state, action) => {
   let { name, segments } = action;
-  let track = createTrackObj(name, segments);
+  let track = createTrackObj(name, segments, state.get('segments').count());
 
   const _track = track.track;
   const _segments = track.segments;
