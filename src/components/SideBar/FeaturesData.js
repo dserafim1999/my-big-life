@@ -11,6 +11,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import AssignmentIcon from '@mui/icons-material/AssignmentInd';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Settings from "../Settings";
 
 export const FeaturesData = [
     {
@@ -39,6 +41,13 @@ export const FeaturesData = [
         icon: <ContactSupportIcon fontSize="large"/>,
         route: "/visual-queries",
         component: <VisualQuerying/>,
+        id: nanoid()
+    },
+    {
+        title: "Settings",
+        icon: <SettingsIcon fontSize="large"/>,
+        route: "/settings",
+        component: <Settings/>,
         id: nanoid()
     },
 ];

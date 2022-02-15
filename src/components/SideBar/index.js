@@ -11,14 +11,14 @@ import { FeaturesData } from "./FeaturesData";
 
 const Wrapper = styled.div`
     position: absolute;
-    padding: 20px 15px 20px 15px;
+    padding: 10px 15px 10px 15px;
     background-color: white;
     border-radius: 50px;
     
     z-index: 500;
-    top: 50%;
-    left: 10px;
-    transform: translate(0%, -50%);
+    left: 50%;
+    bottom: 10px;
+    transform: translate(-50%, 0%);
 
     .active {
         a {
@@ -38,7 +38,7 @@ const SideBar = () => {
 
     return (
         <Wrapper>
-            <Stack gap={FeaturesData.length}>
+            <Stack direction="horizontal" gap={FeaturesData.length}>
             {
                 FeaturesData.map(menu => (
                     <IconButton 
