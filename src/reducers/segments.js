@@ -52,17 +52,17 @@ const extendSegment = (state, action) => {
         }
     }
 
-    let point = {
+    let point = fromJS({
       lat: action.lat,
       lon: action.lon,
       time: extrapolateTime(state.get('segments').get(id).get('points'), action.index)
-    }
+    });
  
     return state.updateIn(['segments', id, 'points'], (points) => {
       if (action.index === 0) {
         return points.unshift(point);
       } else {
-        return points.push(pointExtend);
+        return points.push(point);
       }
     });
 }
@@ -73,7 +73,7 @@ const addSegmentPoint = (state, action) => {
     // when adding a point between two other points the time is interpolated is the difference between the two points halved.
     const extrapolateTime = (points, n) => {
         let prev = points.get(n - 1).get('time');
-        let next = points.get(n + 1).get('time');
+        let next = points.get(n).get('time');
         let diff = next.diff(prev) / 2;
         return prev.clone().add(diff);
     }
@@ -129,24 +129,32 @@ const splitSegment = (state, action) => {
 
 const joinSegment = (state, action) => {
   const { details } = action;
+  const union = details.union[action.index];
   const toRemove = state.get('segments').get(details.segment);
 
+  const isEqual = (pa, pb) => pa.get('lat') === pb.get('lat') && pa.get('lon') === pb.get('lon') && pa.get('time').isSame(pb.get('time'));
+  
   state = state.updateIn(['segments', action.segmentId, 'points'], (points) => {
-    //TODO rename destiny
-    if (details.destiny !== 'START') {
-      toRemove.get('points').forEach((p) => {
-        points = points.push(p)
-      });
+    const removeEnd = union.length === 2 && isEqual(union[0], union[1]);
+    const betweeners = union.slice(1, -1);
+    
+    if (points.get(-1) === union[0]) {
+      // Join end of this with the start of the other segment
+      return points
+      .push(...betweeners)
+      .push(...(removeEnd ? toRemove.get('points').rest() : toRemove));
     } else {
-      toRemove.get('points').reverse().forEach((p) => {
-        points = points.unshift(p)
-      });
+      // Join start of this with the end of the other segment
+      return points
+      .unshift(...betweeners)
+      .unshift(...(removeEnd ? toRemove.get('points').butLast() : toRemove));
     }
-    return points;
   });
 
   state = toggleSegmentProp(state, action.segmentId, 'joining');
-  return segments(state, removeSegmentAction(toRemove.get('id')));
+  state = segments(state, removeSegmentAction(toRemove.get('id')));
+
+  return updateSegment(state, action.segmentId);
 }
 
 const updateTimeFilterSegment = (state, action) => {
@@ -161,7 +169,7 @@ const toggleTimeFilter = (state, action) => {
   })
 }
 
-const defaultPropSet = ['editing', 'splitting', 'joining', 'pointDetails'];
+const defaultPropSet = ['editing', 'splitting', 'joining', 'pointDetails', 'showTimeFilter'];
 
 // sets prop as true and false to others, in order to indicate the active feature
 const toggleSegmentProp = (state, id, prop, propSet = defaultPropSet) => {
@@ -209,6 +217,9 @@ const toggleSegmentJoining = (state, action) => {
     let candidates = track.get('segments').toJS();
     candidates.splice(candidates.indexOf(id), 1);
 
+    const thisStartp = segment.get('points').get(0);
+    const thisEndp = segment.get('points').get(-1);
+
     let sStart = segment.get('start');
     let sEnd = segment.get('end');
 
@@ -226,23 +237,25 @@ const toggleSegmentJoining = (state, action) => {
 
       if (startDiff >= 0 && startDiff < t_closerToStart) {
         t_closerToStart = startDiff;
-        closerToStart = _c.get('id');
+        closerToStart = _c;
       } else if (endDiff <= 0 && endDiff < t_closerToEnd) {
         t_closerToEnd = endDiff;
-        closerToEnd = _c.get('id');
+        closerToEnd = _c;
       }
     })
 
     if (closerToStart !== undefined) {
       possibilities.push({
-        segment: closerToStart,
+        segment: closerToStart.get('id'),
+        union: [[thisEndp, closerToStart.get('points').get(0)]],
         destiny: 'END',
         show: 'END'
       });
     }
     if (closerToEnd !== undefined) {
       possibilities.push({
-        segment: closerToEnd,
+        segment: closerToEnd.get('id'),
+        union: [[thisStartp, closerToEnd.get('points').get(-1)]],
         destiny: 'START',
         show: 'START'
       });

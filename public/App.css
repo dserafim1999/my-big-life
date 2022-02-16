@@ -1,45 +1,92 @@
 .leaflet-container {
-    width: 100%;
-    height: 100vh;
+  width: 100%;
+  height: 100vh;
 }
 
 .float-right {
-    float: right;
+  float: right;
 }
 
 .clickable {
-    cursor: pointer;
-    color: grey;
+  cursor: pointer;
+  color: grey;
 }
 
 .selected {
-    cursor: pointer;
-    color: white;
-    background-color: grey;
+  cursor: pointer;
+  color: white;
+  background-color: grey;
 }
 
-.segmentButton {
-    border: solid 1px grey;
-    border-radius: 5px;
-    margin: 5px;
+.icon-button {
+  color: grey;
+  border: solid 1px grey;
+  border-radius: 5px;
+  margin: 5px;
+  height: 2em !important;
+}
+
+.icon-popup-button {
+  color: grey !important;
+  border: solid 1px grey;
+  border-radius: 5px;
+  height: 2em !important;
 }
 
 .slider {
-    width: 100%;
-    height: 20px
-  }
+  width: 100%;
+  height: 20px
+}
 
 .slider:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 4px;
-    background-color: #69707A;
-    top: 8px;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background-color: #69707A;
+  top: 8px;
 }
 
 .handle {
-    background-color: black;
-    height: 15px;
-    width: 5px;
+  background-color: black;
+  height: 15px;
+  width: 5px;
 }
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.absolute-icon-center {
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+.editable-point {
+  background-color: white;
+  border-radius: 50%;
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 20px !important;
+  padding: 2px;
+  border-width: 5px;
+  border-style: solid;
+}
+
+.new-editable-point {
+  border-width: 0;
+  opacity: 0.7;
+}
+
+.border-color-1b9e77 { border-color: #1b9e77 }
+.border-color-d95f02 { border-color: #d95f02 }
+.border-color-7570b3 { border-color: #7570b3 }
+.border-color-e7298a { border-color: #e7298a }
+.border-color-66a61e { border-color: #66a61e }
+.border-color-e6ab02 { border-color: #e6ab02 }
+.border-color-a6761d { border-color: #a6761d }
+.border-color-666666 { border-color: #666666 }

@@ -24,6 +24,8 @@ export const UPDATE_BOUNDS = 'ui/bounds';
 export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
 export const SHOW_TRACK_DETAILS = 'ui/show_track_details';
 export const UPDATE_INTERNAL_BOUNDS = 'ui/internal_bounds'
+export const ADD_ALERT = 'ui/add_alert';
+export const REMOVE_ALERT = 'ui/remove_alert';
 
 
 export const REMOVE_TRACKS_FOR = 'track/remove_for';
