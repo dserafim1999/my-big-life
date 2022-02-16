@@ -13,6 +13,7 @@ import { addTrack } from '../../actions/tracks';
 import { loadFiles } from "../../GPXParser";
 
 import { FeaturesData } from "../../components/SideBar/FeaturesData";
+import AlertBox from "../AlertBox";
 
 
 let MainContainer = ({ dispatch }) => {
@@ -46,6 +47,7 @@ let MainContainer = ({ dispatch }) => {
                       }
                   <Route path='/*' element={<></>}/> 
               </Routes>
+              <AlertBox/>
               <SideBar/>
               <div id='details'>
                 <TrackList/>

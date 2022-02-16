@@ -3,6 +3,8 @@ import {
   SHOW_TRACK_DETAILS,
   UPDATE_BOUNDS,
   UPDATE_INTERNAL_BOUNDS,
+  ADD_ALERT,
+  REMOVE_ALERT
 } from "."
 
 export const updateBounds = (bounds) => {
@@ -27,5 +29,20 @@ export const updateInternalBounds = (bounds) => {
   return {
     bounds,
     type: UPDATE_INTERNAL_BOUNDS
+  }
+}
+
+export const addAlert = (message, type = 'error') => {
+  return {
+    message,
+    alertType: type,
+    type: ADD_ALERT
+  }
+}
+
+export const removeAlert = (alert) => {
+  return {
+    alert,
+    type: REMOVE_ALERT
   }
 }

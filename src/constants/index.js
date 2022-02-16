@@ -4,7 +4,7 @@ export const ANNOTATE_STAGE = 2;
 export const MAP_STATES = {
   NORMAL: 0,
   EDITING: 1,
-  SPLITING: 2,
+  SPLITTING: 2,
   JOINING: 3,
   POINT_DETAILS: 4
 };

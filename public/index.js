@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDom from "react-dom";
 
+import '../node_modules/bulma/css/bulma.css';
+
 import { Provider } from 'react-redux';
 import { Map } from 'immutable';
 

@@ -1,9 +1,4 @@
-const _COLORS = [
-    '#f7403e', '#1f78b4', '#78de1d',
-    '#33a02c', '#a6cee3', '#e31a1c',
-    '#fdbf6f', '#ff7f00', '#cab2d6',
-    '#6a3d9a', '#ffff99', '#b15928'
-];
+const _COLORS = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666'];
 
 const L = _COLORS.length;
   
