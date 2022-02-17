@@ -5,7 +5,8 @@ import {
   UPDATE_BOUNDS,
   UPDATE_INTERNAL_BOUNDS,
   ADD_ALERT,
-  REMOVE_ALERT
+  REMOVE_ALERT,
+  TOGGLE_REMAINING_TRACKS
 } from '../actions';
 
 const initialState = fromJS({ alerts: [] });
@@ -31,6 +32,8 @@ const ui = (state = initialState, action) => {
         });
       case ADD_ALERT:
         return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message }));
+      case TOGGLE_REMAINING_TRACKS:
+        return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
       default:
         return state;
     }

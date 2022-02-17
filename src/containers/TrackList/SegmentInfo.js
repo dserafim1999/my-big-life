@@ -21,7 +21,7 @@ const SegmentInfo = ({ dispatch, segment }) => {
   let avrgVel = metrics.averageVelocity;
 
   return (
-    <div style={{border: '1px solid #F0F0F0'}}>
+    <div className='slide-from-top-fade-in' style={{border: '1px solid #F0F0F0'}}>
       <li style={{borderLeft: '10px solid ' + color, paddingLeft: '2%', opacity: display ? 1 : 0.5}} >
         <div>
             <div style={style}>{start.format('L')} - {end.format('L')}</div>

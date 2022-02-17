@@ -1,6 +1,6 @@
 export const ADD_TRACK = 'track/add';
 export const UPDATE_TRACK_NAME = 'track/update_name';
-export const TOGGLE_TRACK_REMAINING = 'track/toggle_renaming';
+export const TOGGLE_TRACK_RENAMING = 'track/toggle_renaming';
 
 export const TOGGLE_SEGMENT_VISIBILITY = 'segment/toggle_visibility';
 export const TOGGLE_SEGMENT_EDITING = 'segment/toggle_edit';
@@ -28,5 +28,10 @@ export const ADD_ALERT = 'ui/add_alert';
 export const REMOVE_ALERT = 'ui/remove_alert';
 
 
-export const REMOVE_TRACKS_FOR = 'track/remove_for';
+export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';
 export const ADVANCE_TO_ADJUST = 'progress/advance_adjust';
+export const ADVANCE_TO_ANNOTATE = 'progress/advance_annotate';
+export const SET_SERVER_STATE = 'progress/set_server_state';
+export const TOGGLE_REMAINING_TRACKS = 'progress/toggle_remaining_tracks';
+export const UNDO = 'progress/undo';
+export const REDO = 'progress/redo';

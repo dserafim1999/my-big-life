@@ -4,7 +4,8 @@ import {
   UPDATE_BOUNDS,
   UPDATE_INTERNAL_BOUNDS,
   ADD_ALERT,
-  REMOVE_ALERT
+  REMOVE_ALERT,
+  TOGGLE_REMAINING_TRACKS
 } from "."
 
 export const updateBounds = (bounds) => {
@@ -44,5 +45,11 @@ export const removeAlert = (alert) => {
   return {
     alert,
     type: REMOVE_ALERT
+  }
+}
+
+export const toggleRemainingTracks = () => {
+  return {
+    type: TOGGLE_REMAINING_TRACKS
   }
 }

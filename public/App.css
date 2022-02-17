@@ -90,3 +90,215 @@
 .border-color-e6ab02 { border-color: #e6ab02 }
 .border-color-a6761d { border-color: #a6761d }
 .border-color-666666 { border-color: #666666 }
+
+/**/
+.previousBtn, .nextBtn {
+  display: inline-block;
+  width: 40%;
+  margin: 2%;
+  padding: 5px;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 4px;
+  text-align: center;
+}
+
+
+
+/* progress bar */
+.status-container {
+  top: 2px;
+  left: 15%;
+  width: 80%;
+  position: absolute;
+  z-index: 400;
+}
+.progressbar {
+  counter-reset: step;
+}
+.progressbar li {
+  list-style-type: none;
+  float: left;
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: #D4D4D4 0px 0px 10px;
+}
+.progressbar li:before {
+  content: '';
+  counter-increment: step;
+  width: 16px;
+  height: 16px;
+  line-height: 30px;
+  display: block;
+  text-align: center;
+  margin: 0 auto 0 auto;
+  border-radius: 50%;
+  background-color: #69707A;
+  box-shadow: #D4D4D4 0px 0px 10px;
+}
+.progressbar li:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background-color: #69707A;
+  top: 6px;
+  left: -50%;
+  z-index: -1;
+  box-shadow: #D4D4D4 0px 0px 10px;
+}
+.progressbar li:first-child:after {
+  content: none;
+}
+.progressbar li.active {
+  color: #7bbf51;
+}
+.progressbar li.active:before {
+  color: #7bbf51;
+}
+.progressbar li.active + li:after {
+  color: #7bbf51;
+}
+
+.is-flexgrow {
+  flex-grow: 1;
+}
+.is-highlighted {
+  color: black;
+}
+.icon-button {
+  padding: 3px 3px !important;
+}
+
+.is-monospace {
+  font-family: monospace;
+}
+
+.semantic-pill {
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+.semantic-pill.is-info {
+  background-color: #42afe3;
+  color: white;
+}
+
+#details {
+  background-color: #FDFDFD;
+  border-radius: 6px;
+  margin: 0;
+  padding: 0;
+  overflow-y: hide;
+  height: 90%;
+  padding: 4px 8px;
+}
+
+#float-container {
+  margin: 1% 0 1% 1%;
+  position: absolute;
+  z-index: 300;
+  width: 20%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fa-ih {
+  font-size: inherit !important;
+  vertical-align: inherit !important;
+}
+
+.fade-in {
+  -webkit-animation: fadeInFromNone 0.90s ease-out;
+  animation: fadeInFromNone 0.90s ease-out;
+}
+.slide-from-top {
+  -webkit-animation: slideFromTop 0.2s ease-out;
+  animation: slideFromTop 0.2s ease-out;
+}
+.slide-from-top-fade-in {
+  -webkit-animation: slideFromTopFade 0.5s ease-out;
+  animation: slideFromTopFade 0.5s ease-out;
+}
+
+.fade-scroll:before {
+  content:"";
+  width: 19%;
+  height: 6px;
+  position: fixed;
+  background: -webkit-linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+@-webkit-keyframes slideFromTopFade {
+  0% {
+    position: relative;
+    opacity: 0;
+    top: -1rem;
+  }
+
+  100% {
+    position: relative;
+    opacity: 1;
+    top: 0;
+  }
+}
+
+@keyframes slideFromTopFade {
+  0% {
+    position: relative;
+    opacity: 0;
+    top: -1rem;
+  }
+
+  100% {
+    position: relative;
+    opacity: 1;
+    top: 0;
+  }
+}
+
+@-webkit-keyframes slideFromTop {
+  0% {
+    position: relative;
+    top: -50%;
+  }
+
+  100% {
+    position: relative;
+    top: 0;
+  }
+}
+
+@keyframes slideFromTop {
+  0% {
+    position: relative;
+    top: -50%;
+  }
+
+  100% {
+    position: relative;
+    top: 0;
+  }
+}
+
+@-webkit-keyframes fadeInFromNone {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromNone {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

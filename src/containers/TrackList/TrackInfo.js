@@ -49,7 +49,7 @@ const TrackInfo = ({ dispatch, track, segments }) => {
   }
 
   return (
-    <div style={{paddingLeft: '2%'}} >
+    <div className='fade-in' style={{paddingLeft: '2%'}} >
       <div style={{fontSize: '1.5rem'}}>
         {title}
       </div>

@@ -29,6 +29,19 @@ export const calculateBounds = (points) => {
   return bounds;
 }
 
+export const calculateBoundsImmutable = (points) => {
+  let bounds = [{lat: Infinity, lon: Infinity}, {lat: -Infinity, lon: -Infinity}]
+  points
+  .map((t) => { return {lat: t.get('lat'), lon: t.get('lon')} })
+  .forEach((elm) => {
+    bounds[0].lat = min(bounds[0].lat, elm.lat)
+    bounds[0].lon = min(bounds[0].lon, elm.lon)
+    bounds[1].lat = max(bounds[1].lat, elm.lat)
+    bounds[1].lon = max(bounds[1].lon, elm.lon)
+  })
+  return bounds
+}
+
 export const getSegmentById = (id, state) =>
   state.map((track) =>
     track.segments.find((x) => x.id === id)
@@ -39,8 +52,9 @@ export const getTrackBySegmentId = (id, state) =>
     track.segments.find((s) => s.id === id) ? track : null
   ).find((x) => !!x);
 
-export const createSegmentObj = (trackId, points, nSegs) => {
+export const createSegmentObj = (trackId, points, location, transModes, nSegs) => {
     let sId = generateSegmentId();
+    
     return {
         trackId,
         id: sId,
@@ -60,13 +74,16 @@ export const createSegmentObj = (trackId, points, nSegs) => {
         timeFilter: [],
         showTimeFilter: false,
         bounds: calculateBounds(points),
-        metrics: calculateMetrics(points)
+        metrics: calculateMetrics(points),
+
+        locations: location,
+        transportationModes: transModes
     }
 }
 
-export const createTrackObj = (name, segments, n = 0) => {
+export const createTrackObj = (name, segments, locations = [], transModes = [], n = 0) => {
     let id = generateTrackId();
-    let segs = segments.map((segment, i) => createSegmentObj(id, segment, n + i));
+    let segs = segments.map((segment, i) => createSegmentObj(id, segment, locations[i] || [], transModes[i], n + i));
     return {
       track: {
           id,
