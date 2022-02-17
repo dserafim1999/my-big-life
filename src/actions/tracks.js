@@ -5,7 +5,6 @@ import {
 } from ".";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
-    console.log(locations);
     return {
         segments,
         name,

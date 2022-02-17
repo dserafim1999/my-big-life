@@ -9,10 +9,10 @@ let ProgressBar = ({ state, children }) => {
   return (
     <div className='status-container'>
       <ul className='progressbar'>
-        <li { ...(state >= 0 ? active : none) } style={{width}}>Preview</li>
-        <li { ...(state >= 1 ? active : none) } style={{width}}>Adjust</li>
-        <li { ...(state >= 2 ? active : none) } style={{width}}>Annotate</li>
-        <li { ...(state >= 3 ? active : none) } style={{width}}>Done</li>
+        <li { ...(state >= 0 ? active : none) } key={0} style={{width}}>Preview</li>
+        <li { ...(state >= 1 ? active : none) } key={1} style={{width}}>Adjust</li>
+        <li { ...(state >= 2 ? active : none) } key={2} style={{width}}>Annotate</li>
+        <li { ...(state >= 3 ? active : none) } key={3} style={{width}}>Done</li>
       </ul>
     </div>
   )

@@ -17,7 +17,6 @@ import AlertBox from "../AlertBox";
 
 import { nextStep, undo, redo } from '../../actions/progress';
 import Progress from '../Progress';
-import ProgressBar from '../ProgressBar';
 
 let MainContainer = ({ dispatch }) => {
   
@@ -80,12 +79,7 @@ let MainContainer = ({ dispatch }) => {
               </Routes>
               <AlertBox/>
               <SideBar/>
-              <div id='float-container'>
-                <div id='details'>
                   <Progress onNext={ onNext } onPrevious={ onPrevious } />
-                </div>
-              </div>
-              <ProgressBar />
               <Map/>
           </Router>
       </Dropzone>

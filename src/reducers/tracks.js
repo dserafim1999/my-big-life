@@ -38,7 +38,12 @@ const removeTracksFor = (state, action) => {
       return segments.clear()
     });
 
-  return addTrack(state, addTrackAction(action.segments, action.name, action.locations, action.transModes));
+    const { segments, name } = action
+    const points = segments.map((s) => s.points)
+    const transportationModes = segments.map((s) => s.transportationModes)
+    const locations = segments.map((s) => [s.locationFrom, s.locationTo])
+    const act = addTrackAction(points, name, locations, transportationModes)
+    return addTrack(state, act)
 }
 
 const undo = (state, action) => {

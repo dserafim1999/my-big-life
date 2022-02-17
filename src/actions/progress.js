@@ -30,7 +30,6 @@ export const requestServerState = () => {
         console.log(err)
       })
       .then((json) => {
-        console.log(json);
         dispatch(setServerState(json.step, json.queue))
         dispatch(removeTracksFor(json.track.segments, json.track.name, json.track.locations))
       })

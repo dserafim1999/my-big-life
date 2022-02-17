@@ -107,11 +107,10 @@
 
 /* progress bar */
 .status-container {
-  top: 2px;
-  left: 15%;
-  width: 80%;
-  position: absolute;
-  z-index: 400;
+  width: 95%;
+  position: relative;
+  padding-bottom: 50px;
+  text-align: center;
 }
 .progressbar {
   counter-reset: step;
@@ -166,9 +165,6 @@
 }
 .is-highlighted {
   color: black;
-}
-.icon-button {
-  padding: 3px 3px !important;
 }
 
 .is-monospace {

@@ -5,6 +5,14 @@ import TrackList from './TrackList'
 import SemanticEditor from '../components/SemanticEditor.js'
 import { nextStep, previousStep } from '../actions/progress'
 import { toggleRemainingTracks } from '../actions/ui'
+import Card from './Card'
+import ProgressBar from './ProgressBar';
+
+import LeftIcon from '@mui/icons-material/ChevronLeft'
+import RightIcon from '@mui/icons-material/ChevronRight'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import CheckIcon from '@mui/icons-material/Check'
 
 let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   let Pane
@@ -26,19 +34,19 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       case 0:
         return (
           <span>
-            <i className='fa fa-check fa-fw fa-ih' /> All tracks are processed
+            <CheckIcon /> All tracks are processed
           </span>
         )
       case 1:
         return (
           <span>
-            <i className='fa fa-ellipsis-h fa-ih' /> One track left
+            <MoreVertIcon /> One track left
           </span>
         )
       default:
         return (
           <span>
-            <i className='fa fa-ellipsis-h fa-ih' /> { n } tracks left
+            <MoreHorizIcon /> { n } tracks left
           </span>
         )
     }
@@ -67,26 +75,31 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
     )
   }
   return (
-    <div className='container' style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      { toShow }
-      <div style={{ marginTop: '0.5rem' }}>
-        <span className='column is-half is-gapless is-text-centered'>
-          <a className={'button is-warning' + ((stage === 0) ? ' is-disabled' : '')} onClick={onPrevious}>
-            <i className='fa fa-chevron-left' />
-            Previous
-          </a>
-        </span>
-        <span className='column is-half is-text-centered'>
-          <a className={'button is-success' + (!canProceed ? ' is-disabled' : '')} onClick={onNext}>
-            Continue
-            <i className='fa fa-chevron-right' />
-          </a>
-        </span>
-      <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
-        { remainingMessage(remaining.count()) }
-      </div>
-      </div>
-    </div>
+    <>
+      <Card width="400" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <ProgressBar />
+        { toShow }
+        <div style={{ marginTop: '0.5rem' }}>
+          <div className="columns" style={{textAlign: 'center'}}>
+            <div className='column'>
+              <a className={'button is-warning' + ((stage === 0) ? ' is-disabled' : '')} onClick={onPrevious}>
+                <LeftIcon/>
+                Previous
+              </a>
+            </div>
+            <div className='column'>
+              <a className={'button is-success' + (!canProceed ? ' is-disabled' : '')} onClick={onNext}>
+                Continue              
+                <RightIcon/>
+              </a>
+            </div>
+          </div>
+          <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
+            { remainingMessage(remaining.count()) }
+          </div>
+        </div>
+      </Card>
+    </>
   )
 }
 
