@@ -2,7 +2,6 @@ import { createTrackObj } from "./utils";
 import segments from "./segments";
 import { fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
-import { TOGGLE_TRACK_RENAMING, TOGGLE_SEGMENT_VISIBILITY, TOGGLE_SEGMENT_SPLITTING, TOGGLE_SEGMENT_POINT_DETAILS, TOGGLE_SEGMENT_JOINING, TOGGLE_SEGMENT_EDITING, UNDO, REDO } from '../actions';
 
 export const addTrack = (state, action) => {
   let { name, segments, locations, transModes } = action;
@@ -11,9 +10,9 @@ export const addTrack = (state, action) => {
   const _track = track.track;
   const _segments = track.segments;
 
-  state = state.setIn(['tracks', _track.id], fromJS(_track));
+  state = state.setIn(['tracks', _track.get('id')], _track);
   _segments.forEach((s) => {
-    state = state.setIn(['segments', s.id], fromJS(s))
+    state = state.setIn(['segments', s.get('id')], s)
   });
 
   return state;
@@ -49,32 +48,16 @@ const removeTracksFor = (state, action) => {
 const undo = (state, action) => {
   let toPut = state.get('history').get('past').get(-1)
   if (toPut) {
-    return state
-      .set('tracks', toPut.get('tracks'))
-      .set('segments', toPut.get('segments'))
-      .updateIn(['history', 'past'], (past) => {
-        return past.pop()
-      })
-      .updateIn(['history', 'future'], (future) => {
-        return future.push(state)
-      })
+    return toPut.undo(toPut, state)
+    .updateIn(['history', 'past'], (past) => past.pop())
+    .updateIn(['history', 'future'], (future) => future.push(toPut));
   } else {
     return state
   }
 }
 
 const redo = (state, action) => {
-  let toPut = state.get('history').get('future').get(-1)
-  if (toPut) {
-    return state
-      .set('tracks', toPut.get('tracks'))
-      .set('segments', toPut.get('segments'))
-      .updateIn(['history', 'future'], (future) => {
-        return future.pop()
-      })
-  } else {
-    return state
-  }
+  return state.updateIn(['history', 'future'], (future) => future.pop());
 }
 
 const ACTION_REACTION = {
@@ -95,8 +78,6 @@ const initialState = fromJS({
   }
 });
 
-const BLACK_LISTED_ACTIONS = [TOGGLE_TRACK_RENAMING, TOGGLE_SEGMENT_VISIBILITY, TOGGLE_SEGMENT_SPLITTING, TOGGLE_SEGMENT_POINT_DETAILS, TOGGLE_SEGMENT_JOINING, TOGGLE_SEGMENT_EDITING, UNDO, REDO];
-
 const tracks = (state = initialState, action) => {
   let result;  
   if (ACTION_REACTION[action.type]) {
@@ -104,9 +85,9 @@ const tracks = (state = initialState, action) => {
   } else {
       result = segments(state, action);
   }
-  if (result !== state && BLACK_LISTED_ACTIONS.indexOf(action.type) === -1) {
+  if (result !== state && action.undo) {
       return result.updateIn(['history', 'past'], (past) => {
-        return past.push(state)
+        return past.push(action)
       });
   } else {
       return result;

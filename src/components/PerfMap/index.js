@@ -126,6 +126,9 @@ export default class PerfMap extends Component {
 
   onZoomEnd (e) {
     const defaultDetail = 16;
+    console.log(this.map.getZoom())
+    console.log(defaultDetail)
+    console.log(this.map.getZoom() >= defaultDetail)
     if (this.map.getZoom() >= defaultDetail) {
       // add layers
       Object.keys(this.segments).forEach((s) => {
