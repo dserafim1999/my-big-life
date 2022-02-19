@@ -2,7 +2,7 @@ import React from 'react';
 import { createPointsFeatureGroup, createPointIcon } from './utils';
 import { LatLng, Marker } from 'leaflet';
 
-export default (segment, current, previous, color) => {
+export default function updatePoints (segment, current, previous, color) {
   if (segment.polyline && segment.points) {
     const update = (polylinePoints, markers) => {
       current.forEach((point, i) => {
