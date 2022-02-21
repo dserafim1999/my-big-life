@@ -46,13 +46,20 @@ const removeTracksFor = (state, action) => {
 }
 
 const undo = (state, action) => {
-  let toPut = state.get('history').get('past').get(-1)
+  let toPut = state.get('history').get('past').get(-1);
   if (toPut) {
     return toPut.undo(toPut, state)
     .updateIn(['history', 'past'], (past) => past.pop())
-    .updateIn(['history', 'future'], (future) => future.push(toPut));
+    .updateIn(['history', 'future'], (future) => {
+      future = future.push(toPut);
+      if (UNDO_LIMIT !== Infinity) {
+        return future.slice(future.count() - UNDO_LIMIT);
+      } else {
+        return future;
+      }
+    })
   } else {
-    return state
+    return state;
   }
 }
 
@@ -68,6 +75,10 @@ const ACTION_REACTION = {
     'progress/undo': undo,
     'progress/redo': redo
 }
+
+
+// Number or Infinity
+const UNDO_LIMIT = 50
 
 const initialState = fromJS({
   tracks: {},
@@ -87,7 +98,12 @@ const tracks = (state = initialState, action) => {
   }
   if (result !== state && action.undo) {
       return result.updateIn(['history', 'past'], (past) => {
-        return past.push(action)
+        past = past.push(action)
+        if (UNDO_LIMIT !== Infinity) {
+          return past.slice(past.count() - UNDO_LIMIT);
+        } else {
+          return past;
+        }
       });
   } else {
       return result;
