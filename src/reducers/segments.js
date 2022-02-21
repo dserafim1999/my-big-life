@@ -139,7 +139,7 @@ const removeSegment = (state, action) => {
         .setIn(['segments', id], segment);
       }
     }
-    return updateSegment(state, action.segmentId);
+    return state;
 }
 
 const splitSegment = (state, action) => {
