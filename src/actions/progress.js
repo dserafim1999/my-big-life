@@ -94,7 +94,7 @@ export const redo = () => {
     if (toPut) {
       toPut.undo = null
       dispatch({
-        type: 'REDO'
+        type: REDO
       })
       return dispatch(toPut)
     } else {

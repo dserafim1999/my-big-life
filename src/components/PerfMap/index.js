@@ -11,6 +11,11 @@ import {
   joinSegment
 } from '../../actions/segments';
 
+import {
+  undo, 
+  redo
+} from '../../actions/progress';
+
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';
 
@@ -57,9 +62,15 @@ export default class PerfMap extends Component {
       maxBoundsViscosity: 1
     });
 
-    setupTileLayers(this.map);
+    const { dispatch } = this.props
+    setupControls(this.map, {
+      canUndo: this.props.canUndo,
+      canRedo: this.props.canRedo,
+      undo: () => dispatch(undo()),
+      redo: () => dispatch(redo())
+    })
 
-    setupControls(this.map, {});
+    setupTileLayers(this.map);
 
     this.map.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
@@ -73,7 +84,16 @@ export default class PerfMap extends Component {
     if (!this.map) {
       return;
     }
-    const { center, bounds, zoom, segments, dispatch } = this.props;
+    
+    const { center, bounds, zoom, segments, dispatch, canUndo, canRedo } = this.props;
+
+    if (canUndo !== prev.canUndo) {
+      this.map.buttons.setEnabled(0, canUndo);
+    }
+
+    if (canRedo !== prev.canRedo) {
+      this.map.buttons.setEnabled(1, canRedo);
+    }
 
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
