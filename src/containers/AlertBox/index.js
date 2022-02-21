@@ -8,8 +8,6 @@ const mapType = {
   'error': 'is-danger'
 };
 
-const ALERT_TIME = 5000;
-
 let AlertBox = ({ dispatch, alerts }) => {
   const style = {
     position: 'absolute',
@@ -27,10 +25,10 @@ let AlertBox = ({ dispatch, alerts }) => {
   return (
     <div style={style}>
       {
-        alerts.map((alert) => {
-          setTimeout(() => deleteAlert(alert), ALERT_TIME);
+        alerts.map((alert, i) => {
+          setTimeout(() => deleteAlert(alert), alert.duration * 1000);
           return (
-            <div className={'notification ' + mapType[alert.type]}>
+            <div className={'notification ' + mapType[alert.type]} key={i}>
               <button className='delete' onClick={() => deleteAlert(alert)}></button>
               { alert.message }
             </div>

@@ -54,17 +54,20 @@ export const updateInternalBounds = (bounds) => {
   }
 }
 
-export const addAlert = (message, type = 'error') => {
+export const addAlert = (message, type = 'error', duration = 5, ref = undefined) => {
   return {
     message,
+    duration,
+    ref,
     alertType: type,
     type: ADD_ALERT
   }
 }
 
-export const removeAlert = (alert) => {
+export const removeAlert = (alert, ref) => {
   return {
     alert,
+    ref,
     type: REMOVE_ALERT
   }
 }

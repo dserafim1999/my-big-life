@@ -367,7 +367,7 @@ const toggleSegmentJoining = function (state, action) {
     
     state = toggleSegmentProp(state, action.segmentId, 'joining');
   } else {
-    alert('Can\'t join with any segment of the same track');
+      throw new Error('There are no segments that can be joined');
   }
 
   return state;

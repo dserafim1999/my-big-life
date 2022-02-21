@@ -11,7 +11,11 @@ import {
     removeSegment,
   } from '../../actions/segments';
 
-import { updateBounds } from '../../actions/ui';
+import { 
+    updateBounds,
+    addAlert,
+    removeAlert
+} from '../../actions/ui';
 import TimeSlider from '../../components/TimeSlider';
 import AsyncButton from '../../components/AsyncButton';
 
@@ -51,6 +55,8 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     const filterStart = segment.get('timeFilter').get(0);
     const filterEnd = segment.get('timeFilter').get(1);
   
+    const INFO_TIME = 100;
+
     const btnHighlight = isPopup ? 'icon-popup-button is-success' : 'icon-button is-success';
     const btn = isPopup ? 'icon-popup-button' : 'icon-button';
 
@@ -59,7 +65,23 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     }
 
     const toggleEditing = (segmentId) => {
-        return () => dispatch(toggleSegmentEditing(segmentId));
+        return () => {
+            dispatch(toggleSegmentEditing(segmentId))
+      
+            const ref = 'EDIT_INFO';
+            if (!editing) {
+              const action = addAlert((
+                <div>
+                  <div>Editing is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+                  <div>Drag existing points to move their position. Right-click to remove them.</div>
+                  <div>Drag or click on the (+) marker to add a point.</div>
+                </div>
+              ), 'success', INFO_TIME, ref);
+              dispatch(action);
+            } else {
+              dispatch(removeAlert(null, ref));
+            }
+        }
     }
     
     const deleteSegment = (segmentId) => {
@@ -71,11 +93,45 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     }
     
     const toggleSplitting = (segmentId) => {
-        return () => dispatch(toggleSegmentSplitting(segmentId));
+        return () => {
+            dispatch(toggleSegmentSplitting(segmentId));
+      
+            const ref = 'SPLIT_INFO';
+            if (!splitting) {
+              const action = addAlert((
+                <div>
+                  <div>Spliting is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+                  <div>Click on a marker to split the segment</div>
+                </div>
+              ), 'success', INFO_TIME, ref);
+              dispatch(action);
+            } else {
+              dispatch(removeAlert(null, ref));
+            }
+        }
     }
     
     const toggleJoining = (segmentId) => {
-        return () => dispatch(toggleSegmentJoining(segmentId));
+        return () => {
+            try {
+              dispatch(toggleSegmentJoining(segmentId));
+      
+              const ref = 'JOIN_INFO';
+              if (!joining) {
+                const action = addAlert((
+                  <div>
+                    <div>Joining is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+                    <div>The possible joins are highlighted, click them to join.</div>
+                  </div>
+                ), 'success', INFO_TIME, ref);
+                dispatch(action);
+              } else {
+                dispatch(removeAlert(null, ref));
+              }
+            } catch (e) {
+              dispatch(addAlert(e.message));
+            }
+        }
     } 
     
     const toggleDetails = (segmentId) => {
