@@ -17,7 +17,7 @@ const TrackInfo = ({ dispatch, track, segments }) => {
     return prev + segment.get('points').count()
   }, 0);
 
-  const onDownload = () => downloadTrack(segments.valueSeq(), name);
+  const onDownload = () => dispatch(downloadTrack(id));
   
   const updateName = (e) => {
     if (e.type) {

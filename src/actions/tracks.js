@@ -7,6 +7,7 @@ import {
 
 import { Set } from 'immutable';
 import { fitSegments } from './ui';
+import saveData from "./saveData";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
@@ -48,34 +49,22 @@ export const updateTrackName = (trackId, newName) => {
 }
 
 // converts track into GPX format
-const trackToGPX = (segments) => {
-  return segments.toJS().reduce((prev, s) => {
-    return prev + s.points.reduce((prev, p) => {
-      return prev + '<trkpt lat="' + p.lat + '" lon="' + p.lon + '">' +
-      '<time>' + p.time.toISOString() + '</time>' +
+const exportGPX = (trackId, state) => {
+  state = state.get('tracks');
+  return state.get('tracks').get(trackId).get('segments').reduce((prev, s) => {
+    s = state.get('segments').get(s)
+    return prev + s.get('points').reduce((prev, p) => {
+      return prev + '<trkpt lat="' + p.get('lat') + '" lon="' + p.get('lon') + '">' +
+      '<time>' + p.get('time').toISOString() + '</time>' +
       '</trkpt>'
     }, '<trkseg>') + '</trkseg>'
   }, '<?xml version="1.0" encoding="UTF-8"?><gpx xmlns="http://www.topografix.com/GPX/1/1"><trk>') + '</trk></gpx>'
 }
 
-// generates <a> tag to trigger file download
-var saveData = (function () {
-  let a = document.createElement('a');
-  document.body.appendChild(a);
-  a.style = 'display: none';
-  return function (data, fileName) {
-    let blob = new Blob([data], {type: 'octet/stream'});
-    let url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-}());
-
 // triggers download with track converted to GPX format
-export const downloadTrack = (segments, name) => {
-  let str = trackToGPX(segments);
-  saveData(str, name);
-  return str;
+export const downloadTrack = (trackId) => {
+  return (_, getState) => {
+    let str = exportGPX(trackId, getState());
+    saveData(str, getState().get('tracks').get('tracks').get(trackId).get('name'));
+  }
 }
