@@ -15,7 +15,7 @@ const RegExStrategy = (regEx, captureGroup = 0, log = null) => {
 
 const SemanticPill = (props) => {
   return (
-    <span className='tag is-info'>{props.children}<DownIcon/></span>
+    <span onClick={ () => {} } className='tag is-info'>{props.children}<DownIcon/></span>
   )
 }
   
@@ -71,7 +71,8 @@ const staticSuggestionGetter = (suggestions, offset = 1) => {
 const SuggestionsStrategies = [
     {
         id: 'hours',
-        strategy: RegExStrategy(/^\d{4}-\d{4}/g),
+        strategy: RegExStrategy(/^(\d{4}-\d{4})/g, 1),
+        tabCompletion: generateTabFromSeparator(':'),
         component: SemanticPill
       },
       {
@@ -108,8 +109,8 @@ const SuggestionsStrategies = [
       }
 ]
   
-let SE = ({ segments }) => {
-    let buff = ''
+const createStateTextRepresentation = (segments) => {
+    let buff = [];
     segments.forEach((segment) => {
       const start = segment.get('start')
       const end = segment.get('end')
@@ -119,32 +120,43 @@ let SE = ({ segments }) => {
 
       const DATE_FORMAT = 'HHmm'
       const span = start.format(DATE_FORMAT) + '-' + end.format(DATE_FORMAT)
-      buff += span + ': '
-      buff += from.get('label')
+      
+      let line = span + ': '
+      line = line + from.get('label')
+
       if (to) {
-        buff += ' -> ' + to.get('label')
+        line = line + ' -> ' + to.get('label')
       }
   
       if (transp) {
         if (transp.count() === 1) {
-          buff += ' [' + transp[0] + ']'
+          line = line + ' [' + transp.get('label') + ']'
         } else {
-          buff += transp.forEach((t) => {
-            const tSpan = t.start.format(DATE_FORMAT) + '-' + t.end.format(DATE_FORMAT)
-            buff += '\n\t' + tSpan + ': [' + t.mode + ']'
-          })
+          const transports = transp.map((t) => {
+            const label = t.get('label')
+            const points = segment.get('points')
+            const from = points.get(t.get('from'))
+            const to = points.get(t.get('to'))
+            const tSpan = from.get('time').format(DATE_FORMAT) + '-' + to.get('time').format(DATE_FORMAT)
+            return '    ' + tSpan + ': [' + label + ']'
+          }).toJS()
+  
+          line = line + '\n' + transports.join('\n')
         }
       }
   
-      buff += '\n'
+      buff.push(line)
     })
+    
+    return buff.join('\n')
+}
 
-    // return (
-    //     <SemanticEditor strategies={SuggestionsStrategies} initial={ buff } segments={ segments }>
-    //     </SemanticEditor>   
-    // )
-
-    return null;
+let SE = ({ segments }) => {
+  const state = createStateTextRepresentation(segments)
+  return (
+    <SemanticEditor strategies={SuggestionsStrategies} initial={ state } segments={ segments }>
+    </SemanticEditor>
+  )
 }
 
 const mapStateToProps = (state) => {

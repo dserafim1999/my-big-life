@@ -30,8 +30,8 @@ export const requestServerState = () => {
         console.log(err)
       })
       .then((json) => {
-        dispatch(setServerState(json.step, json.queue))
         dispatch(removeTracksFor(json.track.segments, json.track.name, json.track.locations))
+        dispatch(setServerState(json.step, json.queue))
       })
   }
 }
@@ -47,8 +47,8 @@ export const previousStep = () => {
       .catch((err) => console.log(err))
       .then((json) => {
         console.log(json)
-        dispatch(removeTracksFor(json.track.segments, json.track.name, json.track.locations))
         dispatch(setServerState(json.step, json.queue))
+        dispatch(removeTracksFor(json.track.segments, json.track.name, json.track.locations))
       })
   }
 }

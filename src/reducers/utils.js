@@ -81,8 +81,8 @@ export const createSegmentObj = (trackId, points, location, transModes, nSegs, c
         bounds: List([]),
         metrics: Map({}),
     
-        locations: location,
-        transportationModes: transModes
+        locations: fromJS(location),
+        transportationModes: fromJS(transModes)
     });
 
     state = calculateMetrics(state);
