@@ -15,7 +15,26 @@ const RegExStrategy = (regEx, captureGroup = 0, log = null) => {
 
 const SemanticPill = (props) => {
   return (
-    <span onClick={ () => {} } className='tag is-info'>{props.children}<DownIcon/></span>
+    <span className='tag is-info clickable'>{props.children}</span>
+    )
+  }
+  
+  const PlaceFromPill = (props) => {
+    const n = 0
+    return (
+      <SemanticPill onClick={ (e) => console.log('place', n, props.children) }>
+        { props.children }
+      </SemanticPill>
+    )
+  }
+  
+  let tagN = 0
+  const TagPill = (props) => {
+    const n = tagN++
+    return (
+      <SemanticPill onClick={ (e) => console.log('tag', n, props.children) }>
+        { props.children }
+      </SemanticPill>
   )
 }
   
@@ -39,6 +58,7 @@ const PLACES_TO = [
 
 const TAGS = [
     'walk',
+    'vehicle',
     'bike',
     'bus',
     'car',
@@ -54,16 +74,41 @@ const SEMANTIC = [
     'AC/DC'
 ]
   
-const suggestionRegExStrat = (re) => {
-    return (text) => re.exec(text)
+const suggestionRegExStrat = (re, captureGroup = 0) => {
+  captureGroup++
+  return (text, cursor) => {
+    const match = re.exec(text)
+    re.lastIndex = 0
+    if (!match) {
+      return null
+    }
+    let from = match.index
+    for (let i = 1; i < captureGroup; i++) {
+      from += match[i].length
+    }
+    let to = from + match[captureGroup].length
+    if (from <= cursor && cursor <= to) {
+      return {
+        match,
+        text: match[captureGroup],
+        until: text.slice(from, cursor),
+        from,
+        to,
+        cursor
+      }
+    }
+  }
 }
   
 const staticSuggestionGetter = (suggestions, offset = 1) => {
     return (matched, callback) => {
+      let filtered = suggestions.filter((s) => s.match(matched.text))
+      filtered = filtered.length === 0 ? suggestions : filtered
+      filtered = filtered.filter((s) => s.toLowerCase() !== matched.text.toLowerCase())
       callback({
-        suggestions: suggestions.filter((s) => s.match(matched[1])),
-        begin: matched.index + offset,
-        end: matched.index + offset + matched[1].length
+        suggestions: filtered,
+        begin: matched.from,
+        end: matched.to
       })
     }
 }
@@ -77,14 +122,14 @@ const SuggestionsStrategies = [
       },
       {
         id: 'placeFrom',
-        suggestionStrategy: suggestionRegExStrat(/\:\s*([^\[\{\-\>]*)/),
+        suggestionStrategy: suggestionRegExStrat(/(\:\s*)([^\[\{\-\>]*)/g, 1),
         suggester: staticSuggestionGetter(PLACES),
         tabCompletion: generateTabFromSeparator('->'),
         strategy: RegExStrategy(/(\:\s*)([^\[\{\-\>]*)/g, 2),
-        component: SemanticPill
+        component: PlaceFromPill
       },
       {
-        suggestionStrategy: suggestionRegExStrat(/\-\>\s*([^\[\{\-\>]*)$/),
+        suggestionStrategy: suggestionRegExStrat(/(\-\>\s*)([^\[\{\-\>]*)$/g, 1),
         suggester: staticSuggestionGetter(PLACES_TO, 2),
         id: 'placeTo',
         strategy: RegExStrategy(/(\-\>\s*)([^\[\{\-\>]*)/g, 2),
@@ -93,7 +138,7 @@ const SuggestionsStrategies = [
       },
       {
         id: 'tags',
-        suggestionStrategy: suggestionRegExStrat(/\[([^\]]*)\]?/),
+        suggestionStrategy: suggestionRegExStrat(/(\[)([^\]]*)\]?/, 1),
         suggester: staticSuggestionGetter(TAGS),
         tabCompletion: generateTabFromSeparator(']', /\[([^\]]*)\]?/g, '{'),
         strategy: RegExStrategy(/\[([^\]]*)\]?/g),
@@ -101,7 +146,7 @@ const SuggestionsStrategies = [
       },
       {
         id: 'semantic',
-        suggestionStrategy: suggestionRegExStrat(/\{([^\}]*)\}?/),
+        suggestionStrategy: suggestionRegExStrat(/(\{)([^\}]*)\}?/, 1),
         suggester: staticSuggestionGetter(SEMANTIC),
         tabCompletion: generateTabFromSeparator('}', /\{([^\}]*)\}?/g),
         strategy: RegExStrategy(/\{([^\}]*)\}?/g),
@@ -154,7 +199,7 @@ const createStateTextRepresentation = (segments) => {
 let SE = ({ segments }) => {
   const state = createStateTextRepresentation(segments)
   return (
-    <SemanticEditor strategies={SuggestionsStrategies} initial={ state } segments={ segments }>
+    <SemanticEditor strategies={SuggestionsStrategies} initial={ state } segments={ segments } onChange={() => { tagN = 0 }}>
     </SemanticEditor>
   )
 }

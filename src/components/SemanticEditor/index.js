@@ -34,13 +34,14 @@ class SemanticEditor extends Component {
 
   onChange (editorState, hide = false) {
     const sel = editorState.getSelection()
+    const startKey = sel.getStartKey()
     const index = sel.get('focusOffset')
-    const text = editorState.getCurrentContent().getLastBlock().getText().slice(0, index)
+    const text = editorState.getCurrentContent().getBlockForKey(startKey).getText()
 
     this.state.editorState = editorState
     this.setState(this.state)
 
-    findSuggestions(text, this.props.strategies, (result) => {
+    findSuggestions(text, index, this.props.strategies, (result) => {
       if (this.state.editorState === editorState) {
         const { strategy, suggestions, begin, end } = result
         const tabCompletion = strategy ? strategy.tabCompletion : null
@@ -55,6 +56,8 @@ class SemanticEditor extends Component {
             tab: tabCompletion
           }
         })
+
+        this.props.onChange();
       } else {
       }
     })
@@ -110,7 +113,7 @@ class SemanticEditor extends Component {
   render () {
     const { className } = this.props
     const { editorState, suggestions } = this.state
-    const { selected, list, show, details: { left, top } } = suggestions
+    const { selected, list, show, box: { left, top } } = suggestions
 
     return (
       <div style={{ fontFamily: 'monospace', width: '100%' }} className={className}>
