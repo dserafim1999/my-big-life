@@ -109,7 +109,6 @@
 .status-container {
   width: 95%;
   position: relative;
-  padding-bottom: 50px;
   text-align: center;
 }
 .progressbar {
@@ -147,6 +146,22 @@
   z-index: -1;
   box-shadow: #D4D4D4 0px 0px 10px;
 }
+.progressbar li.hl:before {
+  border: 4px solid #97cd76;
+  width: 20px;
+  height: 20px;
+  top: 2px;
+  position: relative;
+}
+
+.progressbar li.hl {
+  top: -4px;
+  position: relative;
+}
+
+.progressbar li.hl:after {
+  top: 10px;
+}
 .progressbar li:first-child:after {
   content: none;
 }
@@ -157,6 +172,26 @@
   color: #7bbf51;
 }
 .progressbar li.active + li:after {
+  color: #7bbf51;
+}
+
+.pg-text {
+  margin: 0;
+  padding: 0;
+  padding-left: 7.5%;
+  color: black;
+}
+.pg-text span {
+  /*display: inline-block;*/
+  font-weight: bold;
+  /*margin: 0 auto 0 auto;*/
+  width: 33%;
+  margin-left: 5%;
+}
+.pg-text span.active {
+
+}
+.pg-text span.hl {
   color: #7bbf51;
 }
 

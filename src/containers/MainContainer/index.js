@@ -79,7 +79,7 @@ let MainContainer = ({ dispatch }) => {
               </Routes>
               <AlertBox/>
               <SideBar/>
-                  <Progress onNext={ onNext } onPrevious={ onPrevious } />
+              <Progress onNext={ onNext } onPrevious={ onPrevious } />
               <Map/>
           </Router>
       </Dropzone>
