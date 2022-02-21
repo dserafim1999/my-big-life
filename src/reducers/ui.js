@@ -37,7 +37,14 @@ const ui = (state = initialState, action) => {
           }
         });
       case ADD_ALERT:
-        return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));
+        if (action.ref) {
+          const index = state.get('alerts').findIndex((a) => a.ref === action.ref);
+          if (index !== -1) {
+            return state;
+          }
+        }
+  
+        return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));  
       case TOGGLE_REMAINING_TRACKS:
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
       default:

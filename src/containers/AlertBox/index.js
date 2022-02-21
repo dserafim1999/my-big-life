@@ -28,7 +28,7 @@ let AlertBox = ({ dispatch, alerts }) => {
         alerts.map((alert, i) => {
           setTimeout(() => deleteAlert(alert), alert.duration * 1000);
           return (
-            <div className={'notification ' + mapType[alert.type]} key={i}>
+            <div className={'notification slide-from-top-fade-in ' + mapType[alert.type]} key={i}>
               <button className='delete' onClick={() => deleteAlert(alert)}></button>
               { alert.message }
             </div>
