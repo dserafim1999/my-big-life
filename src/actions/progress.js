@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO } from './'
 import { fitSegments } from './ui';
+import { reset as resetId } from '../reducers/idState';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
@@ -19,9 +20,18 @@ export const setServerState = (step, tracksRemaining) => {
   }
 }
 
-const updateState = (dispatch, json, getState) => {
-  dispatch(setServerState(json.step, json.queue))
-  dispatch(removeTracksFor(json.track.segments, json.track.name))
+const updateState = (dispatch, json, getState, reverse = false) => {
+  resetId();
+  
+  if (json.step === 2) {
+    dispatch(removeTracksFor(json.track.segments, json.track.name));
+  }
+
+  dispatch(setServerState(json.step, json.queue));
+
+  if (json.step !== 2) {
+    dispatch(removeTracksFor(json.track.segments, json.track.name));
+  }
 
   const segments = getState().get('tracks').get('segments').keySeq().toJS()
   dispatch(fitSegments(...segments))
@@ -54,7 +64,7 @@ export const previousStep = () => {
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => {
-        updateState(dispatch, json, getState)
+        updateState(dispatch, json, getState, true);
       })
   }
 }

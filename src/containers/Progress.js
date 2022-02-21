@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 import TrackList from './TrackList'
 import SemanticEditor from '../components/SemanticEditor.js'
 import { nextStep, previousStep } from '../actions/progress'
-import { toggleRemainingTracks } from '../actions/ui'
+import { toggleRemainingTracks, addAlert } from '../actions/ui'
 import Card from './Card'
 import ProgressBar from './ProgressBar';
+import AsyncButton from '../components/AsyncButton';
 
 import LeftIcon from '@mui/icons-material/ChevronLeft'
 import RightIcon from '@mui/icons-material/ChevronRight'
@@ -26,8 +27,33 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       break
   }
 
-  const onPrevious = () => dispatch(previousStep())
-  const onNext = () => dispatch(nextStep())
+  const errorHandler = (err, modifier) => {
+    dispatch(addAlert(
+      <div>
+        <div>There was an error</div>
+        <div>{ process.env.NODE_ENV === 'development' ? err.stack.split('\n').map((e) => <div>{e}</div>) : '' }</div>
+      </div>
+    ), 'error', 20)
+    console.error(err.stack)
+    modifier('is-danger')
+    setTimeout(() => modifier(), 2000)
+  }
+
+  const onPrevious = (e, modifier) => {
+    modifier('is-loading')
+    dispatch(previousStep())
+      .then(() => modifier())
+      .catch((e) => errorHandler(e, modifier));
+  }
+
+  const onNext = (e, modifier) => {
+    console.log(e)
+    console.log(modifier)
+    modifier('is-loading')
+    dispatch(nextStep())
+      .then(() => modifier())
+      .catch((e) => errorHandler(e, modifier));
+  }
 
   const remainingMessage = (n) => {
     switch (n) {
@@ -68,9 +94,23 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       </ul>
     )
   } else {
+    let style = { overflowY: 'auto' }
+    if (stage === ANNOTATE_STAGE) {
+      style = {
+        ...style,
+        overflowX: 'visible',
+        resize: 'horizontal',
+        paddingTop: '2px',
+        maxWidth: '500px',
+        minWidth: '110%',
+        borderRadius: '0px 3px 3px 0px',
+        backgroundColor: 'white'
+      }
+    }
+
     toShow = (
-      <div className='is-flexgrow' style={{ overflowY: 'auto' }} >
-        <Pane className='is-flexgrow' />
+      <div className='is-flexgrow' style={{ style }} >
+        <Pane className='is-flexgrow' width='100%'/>
       </div>
     )
   }
@@ -82,16 +122,16 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
         <div style={{ marginTop: '0.5rem' }}>
           <div className="columns" style={{textAlign: 'center'}}>
             <div className='column'>
-              <a className={'button is-warning' + ((stage === 0) ? ' is-disabled' : '')} onClick={onPrevious}>
+              <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>
                 <LeftIcon/>
                 Previous
-              </a>
+              </AsyncButton>
             </div>
             <div className='column'>
-              <a className={'button is-success' + (!canProceed ? ' is-disabled' : '')} onClick={onNext}>
-                Continue              
+              <AsyncButton disabled={!canProceed} className={'is-success'} onClick={onNext}>
+                Continue
                 <RightIcon/>
-              </a>
+              </AsyncButton>
             </div>
           </div>
           <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
