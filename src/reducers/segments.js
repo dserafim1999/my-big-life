@@ -8,13 +8,14 @@ import { fromJS } from 'immutable';
 
 const updateSegment = (state, id) => {
     return state.updateIn(['segments', id], (segment) => {
+      console.log(segment.get('points'));
       const pts = segment.get('points');
 
       const segState = segment
         .set('start', pts.get(0).get('time'))
-        .set('end', pts.get(-1).get('time'))
+        .set('end', pts.get(-1).get('time'));
         
-      return calculateBounds(calculateMetrics(segState))
+      return calculateBounds(calculateMetrics(segState));
     });
 }
 
@@ -266,7 +267,7 @@ const toggleSegmentEditing = (state, action) => {
   const id = action.segmentId;
 
   if (state.get('segments').get(id).get('editing')) {
-    state.updateSegment(state, id);
+    state = updateSegment(state, id);
   }
 
   return toggleSegmentProp(state, id, 'editing');

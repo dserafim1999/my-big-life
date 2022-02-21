@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react'
+import React, { Component } from 'react'
 import { Editor, EditorState, CompositeDecorator, ContentState } from 'draft-js'
 
 import SuggestionBox from '../SuggestionBox.js'
@@ -10,7 +10,7 @@ import findSuggestionBoxPosition from '../utils/findSuggestionBoxPosition'
 class SemanticEditor extends Component {
   constructor (props) {
     super(props)
-    const editorRef = useRef()
+    const editorRef = React.createRef()
     const decorator = new CompositeDecorator(props.strategies)
 
     const { initial } = props

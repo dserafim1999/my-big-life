@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import DownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { fromJS } from 'immutable'
 
 import SemanticEditor from './SemanticEditor/index.js'
 import findWithRegex from './utils/findWithRegex'
@@ -14,7 +15,7 @@ const RegExStrategy = (regEx, captureGroup = 0, log = null) => {
 
 const SemanticPill = (props) => {
   return (
-    <span className='tag is-info' {...props}>{props.children}<DownIcon/></span>
+    <span className='tag is-info'>{props.children}<DownIcon/></span>
   )
 }
   
@@ -112,10 +113,10 @@ let SE = ({ segments }) => {
     segments.forEach((segment) => {
       const start = segment.get('start')
       const end = segment.get('end')
-      const from = segment.get('locations').get(0)
-      const to = segment.get('locations').get(1)
-      const transp = segment.get('transportationModes')
-  
+      const from = fromJS(segment.get('locations')).get(0)
+      const to = fromJS(segment.get('locations')).get(1)
+      const transp = fromJS(segment.get('transportationModes'))
+
       const DATE_FORMAT = 'HHmm'
       const span = start.format(DATE_FORMAT) + '-' + end.format(DATE_FORMAT)
       buff += span + ': '
@@ -138,10 +139,12 @@ let SE = ({ segments }) => {
       buff += '\n'
     })
 
-    return (
-        <SemanticEditor strategies={SuggestionsStrategies} initial={ buff } segments={ segments }>
-        </SemanticEditor>   
-    )
+    // return (
+    //     <SemanticEditor strategies={SuggestionsStrategies} initial={ buff } segments={ segments }>
+    //     </SemanticEditor>   
+    // )
+
+    return null;
 }
 
 const mapStateToProps = (state) => {
