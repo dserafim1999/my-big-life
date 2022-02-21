@@ -3,10 +3,11 @@ import PerfMap from "../../components/PerfMap";
 
 const mapStateToProps = (state) => {
   const history = state.get('tracks').get('history');
-  console.log(history);
+
   return {
     map: state.get('ui').get('map'),
     bounds: state.get('ui').get('bounds'),
+    center: state.get('ui').get('center'),
     segments: state.get('tracks').get('segments'),
     details: state.get('ui').get('details'),
     canUndo: history.get('past').count() !== 0,

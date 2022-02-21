@@ -5,7 +5,8 @@ import {
   UPDATE_INTERNAL_BOUNDS,
   ADD_ALERT,
   REMOVE_ALERT,
-  TOGGLE_REMAINING_TRACKS
+  TOGGLE_REMAINING_TRACKS,
+  CENTER_MAP
 } from "."
 
 import { min, max } from "../utils";
@@ -75,5 +76,13 @@ export const removeAlert = (alert, ref) => {
 export const toggleRemainingTracks = () => {
   return {
     type: TOGGLE_REMAINING_TRACKS
+  }
+}
+
+export const centerMap = (lat, lon) => {
+  return {
+    lat,
+    lon,
+    type: CENTER_MAP
   }
 }

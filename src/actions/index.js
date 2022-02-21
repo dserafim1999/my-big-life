@@ -27,6 +27,7 @@ export const SHOW_TRACK_DETAILS = 'ui/show_track_details';
 export const UPDATE_INTERNAL_BOUNDS = 'ui/internal_bounds'
 export const ADD_ALERT = 'ui/add_alert';
 export const REMOVE_ALERT = 'ui/remove_alert';
+export const CENTER_MAP = 'ui/center_map';
 
 
 export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';

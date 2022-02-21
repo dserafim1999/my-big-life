@@ -6,7 +6,8 @@ import {
   UPDATE_INTERNAL_BOUNDS,
   ADD_ALERT,
   REMOVE_ALERT,
-  TOGGLE_REMAINING_TRACKS
+  TOGGLE_REMAINING_TRACKS,
+  CENTER_MAP
 } from '../actions';
 
 const initialState = fromJS({ alerts: [] });
@@ -47,6 +48,8 @@ const ui = (state = initialState, action) => {
         return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));  
       case TOGGLE_REMAINING_TRACKS:
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
+      case CENTER_MAP:
+        return state.set('center', { lat: action.lat, lon: action.lon});
       default:
         return state;
     }
