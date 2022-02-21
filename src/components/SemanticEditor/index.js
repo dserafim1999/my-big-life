@@ -38,6 +38,8 @@ class SemanticEditor extends Component {
     const index = sel.get('focusOffset')
     const text = editorState.getCurrentContent().getBlockForKey(startKey).getText()
 
+    const shouldShow = sel.getHasFocus()
+
     this.state.editorState = editorState
     this.setState(this.state)
 
@@ -45,22 +47,24 @@ class SemanticEditor extends Component {
       if (this.state.editorState === editorState) {
         const { strategy, suggestions, begin, end } = result
         const tabCompletion = strategy ? strategy.tabCompletion : null
+        const show = hide ? false : (suggestions.length > 0)
         this.setState({
           editorState,
           suggestions: {
-            show: hide ? false : (suggestions.length > 0),
+            show,
             list: suggestions,
             selected: -1,
-            box: findSuggestionBoxPosition(this.editorRef.current, this.state.sugBox),
+            box: findSuggestionBoxPosition(this.editorRef.current, this.state.suggestions.box),
             details: { begin, end },
             tab: tabCompletion
           }
         })
-
-        this.props.onChange();
       } else {
+        this.state.suggestions.show = false
+        this.setState(this.state)
       }
     })
+    this.props.onChange()
   }
 
   onUpArrow (e) {

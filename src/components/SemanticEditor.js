@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import DownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { fromJS } from 'immutable'
+import { EditorState, Modifier } from 'draft-js'
 
+import addTextAt from './utils/addTextAt'
 import SemanticEditor from './SemanticEditor/index.js'
 import findWithRegex from './utils/findWithRegex'
 import generateTabFromSeparator from './utils/generateTabFromSeparator'
@@ -17,25 +18,48 @@ const SemanticPill = (props) => {
   return (
     <span className='tag is-info clickable'>{props.children}</span>
     )
+}
+ 
+let timeN = 0
+const TimePill = (props) => {
+  const n = timeN++
+  const style = {
+    borderLeft: colors(n) + ' 4px solid'
   }
-  
-  const PlaceFromPill = (props) => {
-    const n = 0
-    return (
-      <SemanticPill onClick={ (e) => console.log('place', n, props.children) }>
-        { props.children }
-      </SemanticPill>
-    )
-  }
-  
-  let tagN = 0
-  const TagPill = (props) => {
-    const n = tagN++
-    return (
-      <SemanticPill onClick={ (e) => console.log('tag', n, props.children) }>
-        { props.children }
-      </SemanticPill>
+
+  return (
+    <span style={style} {...props}><span style={{ marginLeft: '5px' }} className='tag is-info clickable'>{props.children}</span></span>
   )
+}
+
+const TModeTimePill = (props) => {
+  const n = timeN - 1
+  const style = {
+    borderLeft: colors(n) + ' 4px solid'
+  }
+
+  return (
+    <span style={style} {...props}><span style={{ marginLeft: '5px' }} className='tag is-info clickable'>{props.children}</span></span>
+  )
+}
+
+const PlaceFromPill = (props) => {
+  const n = 0
+  return (
+    <SemanticPill onClick={ (e) => console.log('place', n, props.children) }>
+      { props.children }
+    </SemanticPill>
+  )
+}
+  
+let tagN = 0
+const TagPill = (props) => {
+  const n = tagN++
+  return (
+    <SemanticPill onClick={ (e) => console.log('tag', n, props.children) }>
+      { props.children }
+    </SemanticPill>
+)
 }
   
 const PLACES = [
@@ -101,7 +125,7 @@ const suggestionRegExStrat = (re, captureGroup = 0) => {
 }
   
 const staticSuggestionGetter = (suggestions, offset = 1) => {
-    return (matched, callback) => {
+  return (matched, callback, type, n) => {
       let filtered = suggestions.filter((s) => s.match(matched.text))
       filtered = filtered.length === 0 ? suggestions : filtered
       filtered = filtered.filter((s) => s.toLowerCase() !== matched.text.toLowerCase())
@@ -110,19 +134,25 @@ const staticSuggestionGetter = (suggestions, offset = 1) => {
         begin: matched.from,
         end: matched.to
       })
-    }
+  }
 }
   
 const SuggestionsStrategies = [
-    {
+      {
         id: 'hours',
         strategy: RegExStrategy(/^(\d{4}-\d{4})/g, 1),
         tabCompletion: generateTabFromSeparator(':'),
-        component: SemanticPill
+        component: TimePill
+      },
+      {
+        id: 'tmodeHours',
+        strategy: RegExStrategy(/^(\s+)(\d{4}-\d{4})/g, 2),
+        tabCompletion: generateTabFromSeparator(':'),
+        component: TModeTimePill
       },
       {
         id: 'placeFrom',
-        suggestionStrategy: suggestionRegExStrat(/(\:\s*)([^\[\{\-\>]*)/g, 1),
+        suggestionStrategy: suggestionRegExStrat(/(^\d{4}-\d{4}\:\s*)([^\[\{\-\>]*)/g, 1),
         suggester: staticSuggestionGetter(PLACES),
         tabCompletion: generateTabFromSeparator('->'),
         strategy: RegExStrategy(/(\:\s*)([^\[\{\-\>]*)/g, 2),
@@ -199,7 +229,7 @@ const createStateTextRepresentation = (segments) => {
 let SE = ({ segments }) => {
   const state = createStateTextRepresentation(segments)
   return (
-    <SemanticEditor strategies={SuggestionsStrategies} initial={ state } segments={ segments } onChange={() => { tagN = 0 }}>
+    <SemanticEditor strategies={SuggestionsStrategies} initial={ state } segments={ segments } onChange={() => { timeN = 0; tagN = 0 }}>
     </SemanticEditor>
   )
 }
