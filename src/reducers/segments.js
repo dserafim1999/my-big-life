@@ -172,9 +172,18 @@ const splitSegment = (state, action) => {
       .deleteIn(['segments', newSegmentId])
       .deleteIn(['tracks', state.get('segments').get(id).get('trackId'), 'segments', newSegmentId]);
       state = updateSegment(state, id);
+
+      action.forceId = newSegmentId;
+      action.hasDoneUndo = true;
+      return state;
     }
 
-    return toggleSegmentProp(state, id, 'splitting');
+    if (action.hasDoneUndo) {
+      action.hasDoneUndo = false;
+      return state;
+    } else {
+      return toggleSegmentProp(state, id, 'splitting');
+    }
 }
 
 const joinSegment = (state, action) => {
