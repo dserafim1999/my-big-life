@@ -18,6 +18,14 @@ export const addTrack = (state, action) => {
   return state;
 }
 
+const addMultipleTracks = (state, action) => {
+  return action.tracks.reduce((state, track) => {
+    const { segments, name } = track;
+    const action = addTrackAction(segments[0], name);
+    return tracks(state, action);
+  }, state);
+}
+
 const toggleTrackRenaming = (state, action) => {
   let renaming = !state.get('tracks').get(action.trackId).get('renaming');
 
@@ -69,6 +77,7 @@ const redo = (state, action) => {
 
 const ACTION_REACTION = {
     'track/add': addTrack,
+    'track/add_multiple': addMultipleTracks,
     'track/update_name': updateTrackName,
     'track/toggle_renaming': toggleTrackRenaming,
     'progress/remove_track_for': removeTracksFor,

@@ -1,4 +1,5 @@
 export const ADD_TRACK = 'track/add';
+export const ADD_MULTIPLE_TRACKS = 'track/add_multiple';
 export const UPDATE_TRACK_NAME = 'track/update_name';
 export const TOGGLE_TRACK_RENAMING = 'track/toggle_renaming';
 

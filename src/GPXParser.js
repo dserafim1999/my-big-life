@@ -1,10 +1,10 @@
 import { GXParser } from 'gxparser';
 import moment from 'moment';
+import { map } from 'async';
 
 // reads GPX file, converts to JSON format and then applies fn to the result 
 export const loadFiles = (files, fn) => {
-  for (let i = 0; i < files.length; i++) {
-    let file = files[i];
+  map(files, (file, done) => {
     /*global FileReader*/
     let reader = new FileReader();
     reader.readAsText(file);
@@ -25,7 +25,7 @@ export const loadFiles = (files, fn) => {
           })
         }
       })
-      fn(gpx, file);
+      done(null, { gpx, name: file.name })
     }
-  }
+  }, (_, result) => fn(result))
 }

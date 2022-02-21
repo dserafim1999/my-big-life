@@ -7,9 +7,8 @@ import Map from "../Map";
 
 import SideBar from "../../components/SideBar";
 import Dropzone from "../../components/Dropzone";
-import TrackList from "../TrackList";
 
-import { addTrack } from '../../actions/tracks';
+import { addMultipleTracks } from '../../actions/tracks';
 import { loadFiles } from "../../GPXParser";
 
 import { FeaturesData } from "../../components/SideBar/FeaturesData";
@@ -24,11 +23,15 @@ let MainContainer = ({ dispatch }) => {
     let dt = e.dataTransfer
     let files = dt.files
 
-    loadFiles(files, (gpx, file) => {
-      gpx.trk.forEach((trk) => {
-        const trackPoints = trk.trkseg.map((seg) => seg.trkpt)
-        dispatch(addTrack(trackPoints, file.name))
+    loadFiles(files, (tracks) => {
+      const r = tracks.map((track) => {
+        const { gpx, name } = track
+        return {
+          segments: gpx.trk.map((trk) => trk.trkseg.map((seg) => seg.trkpt)),
+          name
+        }
       })
+      dispatch(addMultipleTracks(r));
     });
 
   }
