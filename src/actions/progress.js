@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO } from './'
+import { fitSegments } from './ui';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
@@ -18,9 +19,12 @@ export const setServerState = (step, tracksRemaining) => {
   }
 }
 
-const updateState = (dispatch, json) => {
+const updateState = (dispatch, json, getState) => {
   dispatch(setServerState(json.step, json.queue))
   dispatch(removeTracksFor(json.track.segments, json.track.name, json.track.locations))
+
+  const segments = getState().get('tracks').get('segments').keySeq().toJS()
+  dispatch(fitSegments(...segments))
 }
 
 export const requestServerState = () => {
@@ -35,7 +39,7 @@ export const requestServerState = () => {
         console.log(err)
       })
       .then((json) => {
-        updateState(dispatch, json)
+        updateState(dispatch, json, getState)
       })
   }
 }
@@ -50,7 +54,7 @@ export const previousStep = () => {
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => {
-        updateState(dispatch, json)
+        updateState(dispatch, json, getState)
       })
   }
 }
@@ -72,7 +76,7 @@ export const nextStep = () => {
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => {
-        updateState(dispatch, json)
+        updateState(dispatch, json, getState)
       })
   }
 }
