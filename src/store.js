@@ -6,9 +6,13 @@ import reducers from './reducers';
 import { Map } from 'immutable';
 
 import { requestServerState } from './actions/progress';
+import { DEHIGHLIGHT_SEGMENT, HIGHLIGHT_SEGMENT } from './actions';
+
+const actionsToNotLog = new Set([DEHIGHLIGHT_SEGMENT, HIGHLIGHT_SEGMENT])
 
 const loggerMiddleware = createLogger({
-  stateTransformer: (state) => state.toJS()
+  stateTransformer: (state) => state.toJS(),
+  predicate: (getState, action) => !actionsToNotLog.has(action.type)
 });
 
 let store = createStore(

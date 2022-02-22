@@ -1,24 +1,31 @@
 import React, { Component } from 'react'
-import { detect } from 'async'
-import { convertToRaw, SelectionState, Modifier, Entity, Editor, EditorState, CompositeDecorator, ContentState } from 'draft-js'
 import LIFEParser from '../utils/life.peg.js'
 
 import SuggestionBox from '../SuggestionBox.js'
 
-import findSuggestions from '../utils/findSuggestions'
-import completeWithSuggestion from '../utils/completeWithSuggestion'
+import {
+  SelectionState,
+  Modifier,
+  Entity,
+  Editor,
+  EditorState,
+  CompositeDecorator
+} from 'draft-js'
+
 import findSuggestionBoxPosition from '../utils/findSuggestionBoxPosition'
 
 class SemanticEditor extends Component {
   constructor (props) {
     super(props)
     const editorRef = React.createRef()
-    const decorator = new CompositeDecorator(props.strategies)
-
-    const { initial } = props
+    
+    const { state, strategies } = this.props
+    const decorator = new CompositeDecorator(strategies)
+    const editorState = EditorState.createWithContent(state, decorator)
 
     this.state = {
-      editorState: EditorState.createWithContent(initial, decorator),suggestions: {
+      editorState,
+      suggestions: {
         show: false,
         list: [],
         selected: -1,
@@ -27,6 +34,8 @@ class SemanticEditor extends Component {
         tab: () => {}
       }
     }
+
+    this.onChange(editorState, false, true)
   }
 
   focus () {
@@ -40,18 +49,18 @@ class SemanticEditor extends Component {
     }
   }
 
-  onChange (editorState, hide = false) {
+  decorateState (editorState, force) {
     const sel = editorState.getSelection()
     const startKey = sel.getStartKey()
-    const index = sel.getStartOffset()
     let content = editorState.getCurrentContent()
     const lineKey = content.getBlockMap().keySeq()
-    const line = lineKey.findIndex((lk) => lk === startKey)
     const block = content.getBlockForKey(startKey)
 
     const blockText = block.getText()
     
-    if (content.getPlainText() !== this.state.editorState.getCurrentContent().getPlainText()) {
+    const current = this.state.editorState.getCurrentContent().getPlainText()
+    const next = content.getPlainText()
+    if (force || current !== next) {
       const segs = this.props.segments.toList()
       
       try {
@@ -90,8 +99,13 @@ class SemanticEditor extends Component {
                     isBackward: false,
                     hasFocus: false
                   })
-                  const ekey = Entity.create(part.type, 'MUTABLE', { value: part.value, segment: segs.get(n), dispatch: this.props.dispatch, modeId })
-                  //console.log('applying', _sel.serialize(), ekey, part, start, end, blockText.slice(start, end), blockText.length)
+                  
+                  const ekey = Entity.create(part.type, 'MUTABLE', {
+                    value: part.value,
+                    segment: segs.get(n),
+                    dispatch: this.props.dispatch,
+                    modeId
+                  })
                   content = Modifier.applyEntity(content, _sel, ekey)
                   break
               }
@@ -109,22 +123,35 @@ class SemanticEditor extends Component {
         editorState = EditorState.forceSelection(editorState, sel)
 
       } catch (e) {
-        console.log(blockText)
         console.error(e)
       }
     }
 
+    return editorState
+  }
+
+  onChange (editorState, hide = false, force = false) {
+    const sel = editorState.getSelection()
+    const startKey = sel.getStartKey()
+    const index = sel.getStartOffset()
+    let content = editorState.getCurrentContent()
+    const block = content.getBlockForKey(startKey)
+
+
     let entityKey = block.getEntityAt(index)
 
     const shouldShow = sel.getHasFocus()
-    const contentText = content.getPlainText('\n')
 
-    const saveState = () => {
-      this.state.editorState = editorState
+    const saveState = (es = editorState) => {
+      this.state.editorState = es
       this.state.suggestions.show = false
       this.setState(this.state)
     }
 
+    editorState = this.decorateState(editorState, force)
+    saveState()
+
+    // Allow suggestions when cursor is at an edge
     if (entityKey === null && index > 0) {
       entityKey = block.getEntityAt(index - 1)
     }
@@ -139,24 +166,23 @@ class SemanticEditor extends Component {
         const { getter, setter } = suggestionGetter
 
         getter(text, entity.getData(), (suggestions) => {
-            const show = hide ? false : (suggestions.length > 0)
-            let ranges = []
-            block.findEntityRanges((c) => c.getEntity() === entityKey, (begin, end) => ranges.push({ begin, end }))
-            const { begin, end } = ranges[0]
+          const show = hide ? false : (suggestions.length > 0) && shouldShow
+          let ranges = []
+          block.findEntityRanges((c) => c.getEntity() === entityKey, (begin, end) => ranges.push({ begin, end }))
+          const { begin, end } = ranges[0]
 
-            this.setState({
-              editorState,
-              suggestions: {
-                show,
-                list: suggestions,
-                selected: -1,
-                box: findSuggestionBoxPosition(this.refs.editor, this.state.suggestions.box),
-                setter,
-                data: entity.getData(),
-                details: { begin, end }
-                //tab: tabCompletion
-              }
-            })
+          this.setState({
+            editorState,
+            suggestions: {
+              show,
+              list: suggestions,
+              selected: -1,
+              box: findSuggestionBoxPosition(this.refs.editor, this.state.suggestions.box),
+              setter,
+              data: entity.getData(),
+              details: { begin, end }
+            }
+          })
         })
       } else {
         saveState()
@@ -164,31 +190,6 @@ class SemanticEditor extends Component {
     } else {
       saveState()
     }
-
-    
-
-    // findSuggestions(text, index, this.props.strategies, (result) => {
-    //   if (this.state.editorState === editorState) {
-    //     const { strategy, suggestions, begin, end } = result
-    //     const tabCompletion = strategy ? strategy.tabCompletion : null
-    //     const show = hide ? false : (suggestions.length > 0)
-    //     this.setState({
-    //       editorState,
-    //       suggestions: {
-    //         show,
-    //         list: suggestions,
-    //         selected: -1,
-    //         box: findSuggestionBoxPosition(this.editorRef.current, this.state.suggestions.box),
-    //         details: { begin, end },
-    //         tab: tabCompletion
-    //       }
-    //     })
-    //   } else {
-    //     this.state.suggestions.show = false
-    //     this.setState(this.state)
-    //   }
-    // })
-    // this.props.onChange()
   }
 
   onUpArrow (e) {
@@ -228,13 +229,6 @@ class SemanticEditor extends Component {
 
   onTab (e) {
     e.preventDefault()
-    // const { tab } = this.state.suggestions
-    // if (tab) {
-    //   const newEditorState = tab(this.state.editorState)
-    //   if (newEditorState) {
-    //     this.onChange(newEditorState)
-    //   }
-    // }
     const { editorState } = this.state
 
     const sel = editorState.getSelection()
@@ -243,7 +237,6 @@ class SemanticEditor extends Component {
     let content = editorState.getCurrentContent()
     const lineKey = content.getBlockMap().keySeq()
     const line = lineKey.findIndex((lk) => lk === startKey)
-    const block = content.getBlockForKey(startKey)
 
     const findBlockEntities = (block) => {
       let ranges = []
