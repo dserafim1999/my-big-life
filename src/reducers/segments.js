@@ -418,6 +418,16 @@ const updateTransportationMode = (state, action) => {
   });
 }
 
+const selectPointInMap = (state, action) => {
+  const { onClick, segmentId, highlightedPoint } = action;
+  return state.setIn(['segments', segmentId, 'pointAction'], Map({ highlightedPoint, onClick }));
+}
+
+const deselectPointInMap = (state, action) => {
+  const { segmentId } = action;
+  return state.setIn(['segments', segmentId, 'pointAction'], null);
+}
+
 const ACTION_REACTION = {
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
@@ -439,6 +449,8 @@ const ACTION_REACTION = {
 
     'segment/update_location_name': updateLocationName,
     'segment/update_transportation_mode': updateTransportationMode,
+    'segment/select_point': selectPointInMap,
+    'segment/deselect_point': deselectPointInMap,
 }
 
 const segments = (state = [], action) => {

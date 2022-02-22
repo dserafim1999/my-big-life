@@ -23,6 +23,8 @@ export const FIT_SEGMENT = 'segment/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segment/time_filter';
 export const UPDATE_LOCATION_NAME = 'segment/update_location_name';
 export const UPDATE_TRANSPORTATION_MODE = 'segment/update_transportation_mode';
+export const SELECT_POINT_IN_MAP = 'segment/select_point';
+export const DESELECT_POINT_IN_MAP = 'segment/deselect_point';
 
 export const UPDATE_BOUNDS = 'ui/bounds';
 export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';

@@ -16,7 +16,9 @@ import {
   UPDATE_TIME_FILTER_SEGMENT,
   ADD_POSSIBILITIES,
   UPDATE_LOCATION_NAME,
-  UPDATE_TRANSPORTATION_MODE
+  UPDATE_TRANSPORTATION_MODE,
+  SELECT_POINT_IN_MAP,
+  DESELECT_POINT_IN_MAP
 } from ".";
 
 import { completeTrip } from '../actions/progress';
@@ -171,6 +173,18 @@ export const updateTransportationMode = (segmentId, name, index) => ({
   index,
   segmentId,
   type: UPDATE_TRANSPORTATION_MODE
+})
+
+export const selectPointInMap = (segmentId, highlightedPoint, onClick) => ({
+  onClick,
+  segmentId,
+  highlightedPoint,
+  type: SELECT_POINT_IN_MAP
+})
+
+export const deselectPointInMap = (segmentId) => ({
+  segmentId,
+  type: DESELECT_POINT_IN_MAP
 })
   
   

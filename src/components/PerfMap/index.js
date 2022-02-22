@@ -26,6 +26,7 @@ import detailMode from './detailMode';
 import addSegment from './addSegment';
 import updatePoints from './updatePoints';
 import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
+import pointActionMode from './pointActionMode';
 
 export default class PerfMap extends Component {
   constructor (props) {
@@ -238,6 +239,9 @@ export default class PerfMap extends Component {
     }
     if (current.get('joining') === true && (current.get('joining') !== previous.get('joining') || current.get('joinPossible') !== previous.get('joinPossible'))) {
       joinMode(lseg, current, previous, (id, i, pp) => dispatch(joinSegment(id, i, pp)));
+    }
+    if (current.get('pointAction') && current.get('pointAction') !== previous.get('pointAction')) {
+      pointActionMode(lseg, current, previous)
     }
   }
 
