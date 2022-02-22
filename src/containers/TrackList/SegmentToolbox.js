@@ -186,7 +186,7 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
                         <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Time Filter'} onClick={toggleTF(id)}>
+                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Filter Points by Time'} onClick={toggleTF(id)}>
                         <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                     

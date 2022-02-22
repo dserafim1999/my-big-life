@@ -5,15 +5,25 @@ import TrackList from './TrackList'
 import SemanticEditor from '../components/SemanticEditor.js'
 import { nextStep, previousStep } from '../actions/progress'
 import { toggleRemainingTracks, addAlert } from '../actions/ui'
+import {
+  clearAll,
+  downloadAll,
+  showHideAll
+} from '../actions/tracks'
+
 import Card from './Card'
 import ProgressBar from './ProgressBar';
 import AsyncButton from '../components/AsyncButton';
+import { Tooltip } from '@mui/material'
 
 import LeftIcon from '@mui/icons-material/ChevronLeft'
 import RightIcon from '@mui/icons-material/ChevronRight'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import CheckIcon from '@mui/icons-material/Check'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DownloadIcon from '@mui/icons-material/Download';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   let Pane
@@ -47,8 +57,6 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   }
 
   const onNext = (e, modifier) => {
-    console.log(e)
-    console.log(modifier)
     modifier('is-loading')
     dispatch(nextStep())
       .then(() => modifier())
@@ -114,12 +122,34 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       </div>
     )
   }
+
+  let OptionButton = ({children, className, description, onClick}) => {
+    return (
+        <a className={className} onClick={onClick}>    
+            <Tooltip title={description}  placement="top" arrow>  
+                { children }
+            </Tooltip>
+        </a>
+    );
+  }
+
   return (
     <>
       <Card width="400" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <ProgressBar />
         { toShow }
         <div style={{ marginTop: '0.5rem' }}>
+            <div className='columns' style={{padding: '0px 50px 0px 50px'}}>
+              <OptionButton className='button icon-button column' onClick={() => dispatch(showHideAll())} description='Toggle all'>
+                <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </OptionButton>
+              <OptionButton className='button icon-button column' onClick={() => dispatch(downloadAll())} description='Download all'>
+                <DownloadIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </OptionButton>
+              <OptionButton className='button icon-button column' onClick={() => dispatch(clearAll())} description='Delete all'>
+                <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </OptionButton>
+          </div>
           <div className="columns" style={{textAlign: 'center'}}>
             <div className='column'>
               <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>

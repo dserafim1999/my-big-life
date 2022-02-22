@@ -9,6 +9,8 @@ import { Set } from 'immutable';
 import { fitSegments } from './ui';
 import saveData from "./saveData";
 
+import { toggleSegmentVisibility } from "./segments";
+
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
         segments,
@@ -66,5 +68,29 @@ export const downloadTrack = (trackId) => {
   return (_, getState) => {
     let str = exportGPX(trackId, getState());
     saveData(str, getState().get('tracks').get('tracks').get(trackId).get('name'));
+  }
+}
+
+export const downloadAll = () => {
+  return (dispatch, getState) => {
+    getState().get('tracks').get('tracks').keySeq().forEach((t) => {
+      dispatch(downloadTrack(t));
+    });
+  }
+}
+
+export const showHideAll = () => {
+  return (dispatch, getState) => {
+    getState().get('tracks').get('segments').keySeq().forEach((seg) => {
+      dispatch(toggleSegmentVisibility(seg));
+    });
+  }
+}
+
+export const clearAll = () => {
+  return (dispatch, getState) => {
+    getState().get('tracks').get('tracks').keySeq().forEach((t) => {
+      alert('Not yet implemented')
+    });
   }
 }
