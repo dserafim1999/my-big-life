@@ -4,6 +4,9 @@ import { createPointsFeatureGroup, renderToDiv } from './utils';
 import SegmentToolbox from '../../containers/TrackList/SegmentToolbox';
 import { renderToString } from 'react-dom/server';
 
+import store from '../../store';
+import { Provider } from 'react-redux';
+
 import StopIcon from '@mui/icons-material/Stop';
 import WalkIcon from '@mui/icons-material/DirectionsWalk';
 import CarIcon from '@mui/icons-material/DirectionsCar';
@@ -52,8 +55,12 @@ export default (id, points, color, display, filter, segment, dispatch, previousP
     weight: 8,
     opacity: display ? 1 : 0
   }).on('click', (e) => {
-    const popup = renderToDiv(<SegmentToolbox segment={segment} dispatch={dispatch} isPopup={true}/>)
-    e.target.bindPopup(popup).openPopup()
+    const popup = renderToDiv(
+      <Provider store={store}>
+        <SegmentToolbox segment={segment} dispatch={dispatch} isPopup={true}/>
+      </Provider>
+    )
+    e.target.bindPopup(popup, { autoPan: false }).openPopup()
   });
 
   const transModes = currentSegment.get('transportationModes');
