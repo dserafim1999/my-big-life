@@ -14,7 +14,9 @@ import {
   TOGGLE_SEGMENT_VISIBILITY, 
   TOGGLE_TIME_FILTER, 
   UPDATE_TIME_FILTER_SEGMENT,
-  ADD_POSSIBILITIES
+  ADD_POSSIBILITIES,
+  UPDATE_LOCATION_NAME,
+  UPDATE_TRANSPORTATION_MODE
 } from ".";
 
 import { completeTrip } from '../actions/progress';
@@ -157,6 +159,19 @@ export const toggleSegmentPointDetails = (segmentId) => {
   }
 }
 
+export const updateLocationName = (segmentId, name, start) => ({
+  name,
+  start: start,
+  segmentId,
+  type: UPDATE_LOCATION_NAME
+})
+
+export const updateTransportationMode = (segmentId, name, index) => ({
+  name,
+  index,
+  segmentId,
+  type: UPDATE_TRANSPORTATION_MODE
+})
   
   
   

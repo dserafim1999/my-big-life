@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { Set, fromJS } from 'immutable';
 import { 
   HIDE_TRACK_DETAILS,
   SHOW_TRACK_DETAILS,
@@ -7,10 +7,12 @@ import {
   ADD_ALERT,
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
-  CENTER_MAP
+  CENTER_MAP,
+  HIGHLIGHT_SEGMENT,
+  DEHIGHLIGHT_SEGMENT
 } from '../actions';
 
-const initialState = fromJS({ alerts: [] });
+const initialState = fromJS({ highlighted: Set([]), alerts: [] });
 
 const ui = (state = initialState, action) => {
     switch (action.type) {
@@ -50,6 +52,10 @@ const ui = (state = initialState, action) => {
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
       case CENTER_MAP:
         return state.set('center', { lat: action.lat, lon: action.lon});
+      case HIGHLIGHT_SEGMENT:
+        return state.update('highlighted', (h) => h.add(action.segmentId));
+      case DEHIGHLIGHT_SEGMENT:
+        return state.update('highlighted', (h) => h.delete(action.segmentId));
       default:
         return state;
     }

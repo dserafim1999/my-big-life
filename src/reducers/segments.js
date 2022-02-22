@@ -276,13 +276,13 @@ const joinSegment = (state, action) => {
 const updateTimeFilterSegment = (state, action) => {
   return state.updateIn(['segments', action.segmentId, 'timeFilter'], (f) => {
     return f.set(0, action.lower).set(1, action.upper);
-  })
+  });
 }
 
 const toggleTimeFilter = (state, action) => {
   return state.updateIn(['segments', action.segmentId, 'showTimeFilter'], (f) => {
     return !f;
-  })
+  });
 }
 
 const defaultPropSet = ['editing', 'splitting', 'joining', 'pointDetails', 'showTimeFilter'];
@@ -401,6 +401,23 @@ const addPossibilities = (state, action) => {
   });
 }
 
+const updateLocationName = (state, action) => {
+  const { segmentId, start, name } = action;
+  const locationIndex = start ? 0 : 1;
+  return state.setIn(['segments', segmentId, 'locations', locationIndex, 'label'], name);
+}
+
+const updateTransportationMode = (state, action) => {
+  const { segmentId, name, index } = action;
+  return state.updateIn(['segments', segmentId, 'transportationModes', index], (tmode) => {
+    if (tmode) {
+      return tmode.set('label', name);
+    } else {
+      return tmode;
+    }
+  });
+}
+
 const ACTION_REACTION = {
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
@@ -419,6 +436,9 @@ const ACTION_REACTION = {
     'segment/join': joinSegment,
     'segment/add_possibilities': addPossibilities,
     'segment/time_filter': updateTimeFilterSegment,
+
+    'segment/update_location_name': updateLocationName,
+    'segment/update_transportation_mode': updateTransportationMode,
 }
 
 const segments = (state = [], action) => {

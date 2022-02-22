@@ -21,6 +21,8 @@ export const JOIN_SEGMENT = 'segment/join';
 export const ADD_POSSIBILITIES = 'segment/add_possibilities';
 export const FIT_SEGMENT = 'segment/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segment/time_filter';
+export const UPDATE_LOCATION_NAME = 'segment/update_location_name';
+export const UPDATE_TRANSPORTATION_MODE = 'segment/update_transportation_mode';
 
 export const UPDATE_BOUNDS = 'ui/bounds';
 export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
@@ -29,6 +31,8 @@ export const UPDATE_INTERNAL_BOUNDS = 'ui/internal_bounds'
 export const ADD_ALERT = 'ui/add_alert';
 export const REMOVE_ALERT = 'ui/remove_alert';
 export const CENTER_MAP = 'ui/center_map';
+export const HIGHLIGHT_SEGMENT = 'ui/highlight_segment';
+export const DEHIGHLIGHT_SEGMENT = 'ui/dehighlight_segment';
 
 
 export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';

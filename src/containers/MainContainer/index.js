@@ -17,7 +17,7 @@ import AlertBox from "../AlertBox";
 import { nextStep, undo, redo } from '../../actions/progress';
 import Progress from '../Progress';
 
-let MainContainer = ({ dispatch }) => {
+let MainContainer = ({ dispatch, ...props }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
