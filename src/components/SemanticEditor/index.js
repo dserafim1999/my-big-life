@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Editor, EditorState, CompositeDecorator, ContentState } from 'draft-js'
+import { detect } from 'async'
+import { convertToRaw, SelectionState, Modifier, Entity, Editor, EditorState, CompositeDecorator, ContentState } from 'draft-js'
+import LIFEParser from '../utils/life.peg.js'
 
 import SuggestionBox from '../SuggestionBox.js'
 
@@ -16,8 +18,7 @@ class SemanticEditor extends Component {
     const { initial } = props
 
     this.state = {
-      editorState: EditorState.createWithContent(ContentState.createFromText(initial || ''), decorator),
-      suggestions: {
+      editorState: EditorState.createWithContent(initial, decorator),suggestions: {
         show: false,
         list: [],
         selected: -1,
@@ -32,39 +33,103 @@ class SemanticEditor extends Component {
     this.editorRef.current.focus()
   }
 
+  componentDidUpdate (prev) {
+    if (prev.initial !== this.props.initial) {
+      const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters')
+      this.onChange(state)
+    }
+  }
+
   onChange (editorState, hide = false) {
     const sel = editorState.getSelection()
     const startKey = sel.getStartKey()
     const index = sel.get('focusOffset')
-    const text = editorState.getCurrentContent().getBlockForKey(startKey).getText()
+    let content = editorState.getCurrentContent()
+    const lineKey = content.getBlockMap().keySeq()
+    const block = content.getBlockForKey(startKey)
+
+    const blockText = block.getText()
+    const line = lineKey.findIndex((lk) => lk === startKey)
+
+    try {
+      const parts = LIFEParser.parse(blockText)
+      console.log(parts)
+      const processPart = (part) => {
+        if (part.values) {
+          part.forEach((p) => processPart(p))
+        } else {
+          switch (part.type) {
+            case 'Trip':
+              processPart(part.timestamp)
+              processPart(part.locationFrom)
+              processPart(part.locationTo)
+              part.details.forEach((d) => processPart(d))
+              break
+            case 'Tag':
+            case 'Timespan':
+            case 'LocationFrom':
+            case 'Location':
+              const sel = new SelectionState({
+                focusKey: startKey,
+                focusOffset: part.offset + part.length,
+                anchorKey: startKey,
+                anchorOffset: part.offset
+              })
+              const ekey = Entity.create('TSPAN', 'MUTABLE', {})
+              content = Modifier.applyEntity(content, sel, ekey)
+              break
+          }
+        }
+      }
+
+      const ts = new SelectionState({
+        focusKey: startKey,
+        focusOffset: blockText.length,
+        anchorKey: startKey,
+        anchorOffset: 0
+      })
+      content = Modifier.applyEntity(content, ts, null)
+
+      processPart(parts)
+      editorState = EditorState.push(editorState, content, 'apply-entity')
+      editorState = EditorState.acceptSelection(editorState, sel)
+
+      console.log(editorState.getCurrentContent().getBlockMap().valueSeq().toJS())
+    } catch (e) {
+      console.log(blockText)
+      console.log(e)
+    }
+
+    const entityKey = block.getEntityAt(index)
 
     const shouldShow = sel.getHasFocus()
+    const contentText = content.getPlainText('\n')
 
     this.state.editorState = editorState
     this.setState(this.state)
 
-    findSuggestions(text, index, this.props.strategies, (result) => {
-      if (this.state.editorState === editorState) {
-        const { strategy, suggestions, begin, end } = result
-        const tabCompletion = strategy ? strategy.tabCompletion : null
-        const show = hide ? false : (suggestions.length > 0)
-        this.setState({
-          editorState,
-          suggestions: {
-            show,
-            list: suggestions,
-            selected: -1,
-            box: findSuggestionBoxPosition(this.editorRef.current, this.state.suggestions.box),
-            details: { begin, end },
-            tab: tabCompletion
-          }
-        })
-      } else {
-        this.state.suggestions.show = false
-        this.setState(this.state)
-      }
-    })
-    this.props.onChange()
+    // findSuggestions(text, index, this.props.strategies, (result) => {
+    //   if (this.state.editorState === editorState) {
+    //     const { strategy, suggestions, begin, end } = result
+    //     const tabCompletion = strategy ? strategy.tabCompletion : null
+    //     const show = hide ? false : (suggestions.length > 0)
+    //     this.setState({
+    //       editorState,
+    //       suggestions: {
+    //         show,
+    //         list: suggestions,
+    //         selected: -1,
+    //         box: findSuggestionBoxPosition(this.editorRef.current, this.state.suggestions.box),
+    //         details: { begin, end },
+    //         tab: tabCompletion
+    //       }
+    //     })
+    //   } else {
+    //     this.state.suggestions.show = false
+    //     this.setState(this.state)
+    //   }
+    // })
+    // this.props.onChange()
   }
 
   onUpArrow (e) {
@@ -98,9 +163,8 @@ class SemanticEditor extends Component {
   }
 
   onSuggestionSelect (suggestion) {
-    let { begin, end } = this.state.suggestions.details
-    const newEditorState = completeWithSuggestion(this.state.editorState, suggestion, begin, end)
-    this.onChange(newEditorState, true)
+    const { data, setter } = this.state.suggestions
+    setter(suggestion, data)
   }
 
   onTab (e) {
@@ -111,6 +175,13 @@ class SemanticEditor extends Component {
       if (newEditorState) {
         this.onChange(newEditorState)
       }
+    }
+  }
+
+  onEsc () {
+    if (this.state.suggestions.show) {
+      this.state.suggestions.show = false
+      this.setState(this.state)
     }
   }
 
@@ -128,6 +199,7 @@ class SemanticEditor extends Component {
           onDownArrow={this.onDownArrow.bind(this)}
           onUpArrow={this.onUpArrow.bind(this)}
           handleReturn={this.onReturn.bind(this)}
+          onEscape={this.onEsc.bind(this)}
           onTab={this.onTab.bind(this)}
           ref={this.editorRef}
           spellcheck={false}
