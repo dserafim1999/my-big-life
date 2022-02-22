@@ -8,9 +8,10 @@ export const renderToDiv = (component) => {
   return div;
 }
 
-export const createPointIcon = (color) =>
+export const createPointIcon = (color, inside) =>
   new DivIcon({
     className: 'editable-point' + (color ? ' border-color-' + color.substr(1) : ''),
+    html: inside || '',
     iconAnchor: [12, 12]
   });
 

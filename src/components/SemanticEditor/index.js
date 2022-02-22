@@ -36,6 +36,7 @@ class SemanticEditor extends Component {
     }
 
     this.onChange(editorState, false, true)
+    this.timer = setTimeout(() => {}, 0)
   }
 
   focus () {
@@ -167,13 +168,18 @@ class SemanticEditor extends Component {
     if (entityKey !== null && Entity.get(entityKey)) {
       const entity = Entity.get(entityKey)
       const type = entity.getType()
+      const { value } = entity.getData()
 
-      const text = entity.getData().text
       const suggestionGetter = this.props.suggestionGetters[type]
       if (suggestionGetter) {
         const { getter, setter, disposer } = suggestionGetter
+        
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          setter(value, entity.getData())
+        }, 500)
 
-        getter(text, entity.getData(), (suggestions) => {
+        getter(value, entity.getData(), (suggestions) => {
           const show = hide ? false : (suggestions.length > 0) && shouldShow
           let ranges = []
           block.findEntityRanges((c) => c.getEntity() === entityKey, (begin, end) => ranges.push({ begin, end }))

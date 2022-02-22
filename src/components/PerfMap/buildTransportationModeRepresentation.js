@@ -5,11 +5,14 @@ import { renderToString } from 'react-dom/server'
 import StopIcon from '@mui/icons-material/Stop';
 import WalkIcon from '@mui/icons-material/DirectionsWalk';
 import CarIcon from '@mui/icons-material/DirectionsCar';
+import QuestionIcon from '@mui/icons-material/QuestionMark';
+import { createPointIcon, createMarker } from './utils';
 
 const LABEL_TO_ICON = {
-  'Stop': StopIcon,
-  'Foot': WalkIcon,
-  'Vehicle': CarIcon
+  'Stop': (color) => createPointIcon(color, renderToString(<StopIcon/>)),
+  'Foot': (color) => createPointIcon(color, renderToString(<WalkIcon/>)),
+  'Vehicle': (color) => createPointIcon(color, renderToString(<CarIcon/>)),
+  '?': (color) => createPointIcon(color, renderToString(<QuestionIcon/>))
 }
 
 const angleBetween = (a, b) => {
@@ -24,7 +27,7 @@ const buildVerticalMarker = (start, next, previous, label) => {
     angle = angleBetween(previous, start);
   }
 
-  const Icon = LABEL_TO_ICON[label];
+  const iconCreator = LABEL_TO_ICON[label] || LABEL_TO_ICON['?'];
 
   const m = (
     <div style={{ transform: 'rotate(' + angle + 'rad)' }}>
@@ -33,7 +36,7 @@ const buildVerticalMarker = (start, next, previous, label) => {
     </div>
   );
 
-  return new Marker(start, { icon: new DivIcon({ className: '', html: renderToString(m) }) });
+  return createMarker(pts[from], iconCreator(segment.get('color')))
 }
 
 export default (lseg, segment) => {
