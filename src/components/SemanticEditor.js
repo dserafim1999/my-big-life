@@ -199,6 +199,14 @@ const stateSuggestionGetter = (state) => {
     })
   }
 }
+
+const filterSuggestions = (text, suggestions) => {
+  let filtered = suggestions.filter((s) => s.match(text))
+  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase())
+  filtered = filtered.length === 0 ? suggestions : filtered
+  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase())
+  return filtered
+}
   
 const staticSuggestionGetter = (suggestions, offset = 1) => {
   return (matched, callback, details) => {
@@ -449,7 +457,7 @@ const createPlaceSuggestions = (index) => (
     getter: (text, data, callback) => {
       const from = data.segment.get('locations').get(index)
       if (from) {
-        return callback(from.get('other').map((l) => l.get('label')).toJS())
+        return callback(filterSuggestions(data.value, from.get('other').map((l) => l.get('label')).toJS()))
       } else {
         return callback([])
       }
@@ -476,7 +484,7 @@ const suggestionGetters = {
       if (tmode) {
         const list = tmode.get('classification').entrySeq().sort((a, b) => (a[1] < b[1])).map((v) => MODES[v[0]]).toJS()
         //console.log(list.toJS(), tmode.get('classification').entrySeq().toJS())
-        return callback(list)
+        return callback(filterSuggestions(data.value, list))
       } else {
         return []
       }
