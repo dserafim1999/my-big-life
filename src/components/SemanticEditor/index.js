@@ -43,49 +43,60 @@ class SemanticEditor extends Component {
   onChange (editorState, hide = false) {
     const sel = editorState.getSelection()
     const startKey = sel.getStartKey()
-    const index = sel.get('focusOffset')
+    const index = sel.getStartOffset()
     let content = editorState.getCurrentContent()
     const lineKey = content.getBlockMap().keySeq()
+    const line = lineKey.findIndex((lk) => lk === startKey)
     const block = content.getBlockForKey(startKey)
 
     const blockText = block.getText()
-    const line = lineKey.findIndex((lk) => lk === startKey)
+    const segs = this.props.segments.toList()
 
     try {
-      const parts = LIFEParser.parse(blockText)
-      console.log(parts)
-      const processPart = (part) => {
+      const parts = LIFEParser.parse(content.getPlainText())
+      const processPart = (part, n, modeId) => {
+        if (!part) {
+          return
+        }
         if (part.values) {
-          part.forEach((p) => processPart(p))
+          part.forEach((p, i) => processPart(p, i))
         } else {
           switch (part.type) {
             case 'Trip':
-              processPart(part.timestamp)
-              processPart(part.locationFrom)
-              processPart(part.locationTo)
-              part.details.forEach((d) => processPart(d))
+              processPart(part.timespan, n)
+              processPart(part.locationFrom, n)
+              processPart(part.locationTo, n)
+              part.tmodes.forEach((d, i) => processPart(d, n, i))
+              part.details.forEach((d) => processPart(d, n))
+              break
+            case 'TMode':
+              processPart(part.timespan, n)
+              part.details.forEach((d, i) => processPart(d, n, modeId))
               break
             case 'Tag':
             case 'Timespan':
             case 'LocationFrom':
             case 'Location':
-              const sel = new SelectionState({
-                focusKey: startKey,
-                focusOffset: part.offset + part.length,
-                anchorKey: startKey,
-                anchorOffset: part.offset
+              const start = part.offset
+              const end = part.offset + part.length
+
+              const _sel = new SelectionState({
+                anchorOffset: start,
+                anchorKey: lineKey.get(part.line),
+                focusKey: lineKey.get(part.line),
+                focusOffset: end,
+                isBackward: false,
+                hasFocus: false
               })
-              const ekey = Entity.create('TSPAN', 'MUTABLE', {})
-              content = Modifier.applyEntity(content, sel, ekey)
+              const ekey = Entity.create(part.type, 'MUTABLE', { value: part.value, segment: segs.get(n), dispatch: this.props.dispatch, modeId })
+              content = Modifier.applyEntity(content, _sel, ekey)
               break
           }
         }
       }
 
-      const ts = new SelectionState({
-        focusKey: startKey,
+      const ts = sel.merge({
         focusOffset: blockText.length,
-        anchorKey: startKey,
         anchorOffset: 0
       })
       content = Modifier.applyEntity(content, ts, null)
@@ -94,10 +105,9 @@ class SemanticEditor extends Component {
       editorState = EditorState.push(editorState, content, 'apply-entity')
       editorState = EditorState.acceptSelection(editorState, sel)
 
-      console.log(editorState.getCurrentContent().getBlockMap().valueSeq().toJS())
     } catch (e) {
       console.log(blockText)
-      console.log(e)
+      console.error(e)
     }
 
     const entityKey = block.getEntityAt(index)
@@ -106,6 +116,7 @@ class SemanticEditor extends Component {
     const contentText = content.getPlainText('\n')
 
     this.state.editorState = editorState
+    this.state.suggestions.show = false
     this.setState(this.state)
 
     // findSuggestions(text, index, this.props.strategies, (result) => {
@@ -191,7 +202,7 @@ class SemanticEditor extends Component {
     const { selected, list, show, box: { left, top } } = suggestions
 
     return (
-      <div style={{ fontFamily: 'monospace', width: '100%' }} className={className}>
+      <div style={{ fontFamily: 'monospace', width: '100%', lineHeight: '170%' }} className={className}>
         <Editor
           editorState={editorState}
           onChange={this.onChange.bind(this)}
