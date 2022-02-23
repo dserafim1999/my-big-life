@@ -1,6 +1,6 @@
 import { createTrackObj } from "./utils";
 import segments from "./segments";
-import { fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 
 export const addTrack = (state, action) => {
@@ -76,14 +76,20 @@ const redo = (state, action) => {
   return state.updateIn(['history', 'future'], (future) => future.pop());
 }
 
+const updateLIFE = (state, action) => {
+  const { text, warning } = action;
+  return state.set('LIFE', new Map({ text, warning }));
+}
+
 const ACTION_REACTION = {
     'track/add': addTrack,
     'track/add_multiple': addMultipleTracks,
     'track/update_name': updateTrackName,
     'track/toggle_renaming': toggleTrackRenaming,
+    'track/update_life': updateLIFE,
     'progress/remove_track_for': removeTracksFor,
     'progress/undo': undo,
-    'progress/redo': redo
+    'progress/redo': redo,
 }
 
 

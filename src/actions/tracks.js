@@ -2,7 +2,8 @@ import {
   ADD_TRACK,
   ADD_MULTIPLE_TRACKS, 
   TOGGLE_TRACK_RENAMING,
-  UPDATE_TRACK_NAME
+  UPDATE_TRACK_NAME,
+  UPDATE_LIFE
 } from ".";
 
 import { Set } from 'immutable';
@@ -94,3 +95,9 @@ export const clearAll = () => {
     });
   }
 }
+
+export const updateLIFE = (text, warning) => ({
+  text,
+  warning,
+  type: UPDATE_LIFE
+})
