@@ -6,15 +6,15 @@ export default class AsyncButton extends Component {
     super(props);
     this.btnRef = createRef();
     this.state = {
-      className: '',
-      content: this.props.children
+      className: ''
     };
   }
 
   createClassName (additional) {
-    return ['button', this.props.disabled ? 'is-disabled' : null, this.props.className, additional]
-    .filter((x) => x)
-    .join(' ');
+    const { disabled, className, withoutBtnClass } = this.props;
+    return [withoutBtnClass ? null : 'button', disabled ? 'is-disabled' : null, className, additional]
+      .filter((x) => x)
+      .join(' ');
   }
 
   onClick (e) {
@@ -27,10 +27,18 @@ export default class AsyncButton extends Component {
 
   render () {
     const classes = this.createClassName();
-    return (
-      <a {...this.props} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
-        { this.state.content }
-      </a>
-    );
+    if (this.props.isDiv) {
+      return (
+        <div {...this.props} className={classes} onClick={this.onClick.bind(this)} ref='btn'>
+          { this.props.children }
+        </div>
+      );
+    } else {
+      return (
+        <a {...this.props} className={classes} onClick={this.onClick.bind(this)} ref='btn'>
+          { this.props.children }
+        </a>
+      );
+    }
   }
 }

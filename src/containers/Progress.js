@@ -153,8 +153,8 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   }
 
   const bulkNav = (
-    <div>
-      <span className='column is-gapless has-text-centered'>
+    <div style={{ margin: 'auto' }}>
+      <span className='is-gapless has-text-centered'>
         <AsyncButton className={'is-warning'} onClick={(e, modifier) => {
           modifier('is-loading')
           dispatch(bulkProcess())
