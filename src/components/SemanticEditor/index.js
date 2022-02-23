@@ -61,6 +61,8 @@ class SemanticEditor extends Component {
     
     const current = this.state.editorState.getCurrentContent().getPlainText()
     const next = content.getPlainText()
+    let warning
+
     if (force || current !== next) {
       const segs = this.props.segments.toList()
       
@@ -128,11 +130,12 @@ class SemanticEditor extends Component {
         editorState = EditorState.forceSelection(editorState, sel)
 
       } catch (e) {
+        warning = e;
         console.error(e)
       }
     }
 
-    return editorState
+    return [editorState, warning]
   }
 
   onChange (editorState, hide = false, force = false) {
@@ -147,8 +150,9 @@ class SemanticEditor extends Component {
 
     const shouldShow = sel.getHasFocus()
 
-    const saveState = (es = editorState) => {
+    const saveState = (es = editorState, warning) => {
       this.state.editorState = es
+      this.state.warning = warning
       this.state.suggestions.show = false
       if (this.state.suggestions.disposer) {
         this.state.suggestions.disposer(this.state.suggestions.data)
@@ -157,8 +161,8 @@ class SemanticEditor extends Component {
       this.setState(this.state)
     }
 
-    editorState = this.decorateState(editorState, force)
-    saveState()
+    [editorState, warning] = this.decorateState(editorState, force)
+    saveState(editorState, warning)
 
     // Allow suggestions when cursor is at an edge
     if (entityKey === null && index > 0) {
@@ -200,10 +204,10 @@ class SemanticEditor extends Component {
           })
         })
       } else {
-        saveState()
+        saveState(editorState, warning)
       }
     } else {
-      saveState()
+      saveState(editorState, warning)
     }
   }
 
@@ -295,31 +299,46 @@ class SemanticEditor extends Component {
 
   render () {
     const { className } = this.props
-    const { editorState, suggestions } = this.state
+    const { editorState, suggestions, warning } = this.state
     const { selected, list, show, box: { left, top } } = suggestions
 
     return (
-      <div style={{ fontFamily: 'monospace', width: '100%', lineHeight: '170%' }} className={className}>
-        <Editor
-          editorState={editorState}
-          onChange={this.onChange.bind(this)}
-          stripPastedStyles={true}
-          onDownArrow={this.onDownArrow.bind(this)}
-          onUpArrow={this.onUpArrow.bind(this)}
-          handleReturn={this.onReturn.bind(this)}
-          onEscape={this.onEsc.bind(this)}
-          onTab={this.onTab.bind(this)}
-          ref={this.editorRef}
-          spellcheck={false}
-        />
-        <SuggestionBox
-          left={left}
-          top={top}
-          show={show}
-          selected={selected}
-          onSelect={this.onSuggestionSelect.bind(this)}
-          suggestions={list}
-        />
+      <div style={{ display: 'flex' }}>
+          <div style={{ color: '#c1c175', width: '23px' }}>
+            {
+              warning
+                ? (
+                  <i className='fa fa-exclamation-triangle' style={{ padding: '1px', marginTop: (warning.location.start.line - 1) + 'em' }} title={warning.message} />
+                  )
+                : null
+            }
+          </div>
+          <div style={{ flexGrow: 1, display: 'flex' }}>
+            <div style={{ fontFamily: 'monospace', flexGrow: 1, lineHeight: '170%' }} className={className}>
+
+              <Editor
+                editorState={editorState}
+                onChange={this.onChange.bind(this)}
+                stripPastedStyles={true}
+                onDownArrow={this.onDownArrow.bind(this)}
+                onUpArrow={this.onUpArrow.bind(this)}
+                handleReturn={this.onReturn.bind(this)}
+                onEscape={this.onEsc.bind(this)}
+                onTab={this.onTab.bind(this)}
+                ref='editor'
+                spellcheck={false}
+              />
+              <SuggestionBox
+                left={left}
+                top={top}
+                show={show}
+                selected={selected}
+                onSelect={this.onSuggestionSelect.bind(this)}
+                suggestions={list}
+              />
+
+          </div>
+        </div>
       </div>
     )
   }

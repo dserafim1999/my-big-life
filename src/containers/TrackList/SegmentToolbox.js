@@ -150,7 +150,7 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
 
     return (
         <div>
-            <div style={{marginTop: '2px', display: 'flex', justifyContent: 'space-around' }}>
+            <div style={{ width: '100%' }} className='control has-addons'>
                 <Col>
                     <SegmentButton typeClass={btn} description={'Toggle Segment Visibility'} onClick={toggleTrack(id)}>
                         <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
