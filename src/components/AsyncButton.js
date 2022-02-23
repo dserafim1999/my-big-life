@@ -29,13 +29,13 @@ export default class AsyncButton extends Component {
     const classes = this.createClassName();
     if (this.props.isDiv) {
       return (
-        <div {...this.props} className={classes} onClick={this.onClick.bind(this)} ref='btn'>
+        <div className={classes} onClick={this.onClick.bind(this)} ref='btn'>
           { this.props.children }
         </div>
       );
     } else {
       return (
-        <a {...this.props} className={classes} onClick={this.onClick.bind(this)} ref='btn'>
+        <a className={classes} onClick={this.onClick.bind(this)} ref='btn'>
           { this.props.children }
         </a>
       );

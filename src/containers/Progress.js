@@ -3,7 +3,11 @@ import { ADJUST_STAGE, PREVIEW_STAGE, ANNOTATE_STAGE } from '../constants'
 import { connect } from 'react-redux'
 import TrackList from './TrackList'
 import SemanticEditor from '../components/SemanticEditor.js'
-import { nextStep, previousStep } from '../actions/progress'
+import { 
+  nextStep, 
+  previousStep,
+  bulkProcess,
+} from '../actions/progress'  
 import { toggleRemainingTracks, addAlert } from '../actions/ui'
 import {
   clearAll,
@@ -70,19 +74,25 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       case 0:
         return (
           <span>
-            <CheckIcon /> All days are processed
+            <CheckIcon /> There are no days left to process
           </span>
         )
       case 1:
         return (
           <span>
-            <MoreVertIcon /> One more day to process
+            <MoreVertIcon /> This is the last day to process
+          </span>
+        )
+      case 1:
+        return (
+          <span>
+            <MoreVertIcon /> There is one more day to process
           </span>
         )
       default:
         return (
           <span>
-            <MoreHorizIcon /> { n } days to process
+            <MoreHorizIcon /> { n } more days to process
           </span>
         )
     }

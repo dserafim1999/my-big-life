@@ -1,4 +1,3 @@
-@@ -0,0 +1,56 @@
 Start
   = h:Span t:Start { return [h, t] }
   / '\n' t:Start { return t }
