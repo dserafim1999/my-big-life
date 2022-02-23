@@ -8,6 +8,8 @@ import Map from "../Map";
 import SideBar from "../../components/SideBar";
 import Dropzone from "../../components/Dropzone";
 
+import ConfigPane from '../ConfigPane';
+
 import { addMultipleTracks } from '../../actions/tracks';
 import { loadFiles } from "../../GPXParser";
 
@@ -17,7 +19,7 @@ import AlertBox from "../AlertBox";
 import { nextStep, undo, redo } from '../../actions/progress';
 import Progress from '../Progress';
 
-let MainContainer = ({ dispatch, ...props }) => {
+let MainContainer = ({ showConfig, dispatch, ...props }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -80,6 +82,7 @@ let MainContainer = ({ dispatch, ...props }) => {
                       }
                   <Route path='/*' element={<></>}/> 
               </Routes>
+              { showConfig ? <ConfigPane /> : null }
               <AlertBox/>
               <SideBar/>
               <Progress onNext={ onNext } onPrevious={ onPrevious } />
@@ -90,8 +93,10 @@ let MainContainer = ({ dispatch, ...props }) => {
 };
 
 const mapStateToProps = (state) => {
-    return {}
+  return {
+    showConfig: state.get('ui').get('showConfig')
   }
+}
   
 MainContainer = connect(mapStateToProps)(MainContainer);
 

@@ -25,6 +25,7 @@ export const UPDATE_LOCATION_NAME = 'segment/update_location_name';
 export const UPDATE_TRANSPORTATION_MODE = 'segment/update_transportation_mode';
 export const SELECT_POINT_IN_MAP = 'segment/select_point';
 export const DESELECT_POINT_IN_MAP = 'segment/deselect_point';
+export const UPDATE_TRANSPORTATION_TIME = 'segment/update_transformation_time';
 
 export const UPDATE_BOUNDS = 'ui/bounds';
 export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
@@ -35,6 +36,7 @@ export const REMOVE_ALERT = 'ui/remove_alert';
 export const CENTER_MAP = 'ui/center_map';
 export const HIGHLIGHT_SEGMENT = 'ui/highlight_segment';
 export const DEHIGHLIGHT_SEGMENT = 'ui/dehighlight_segment';
+export const TOGGLE_CONFIG = 'ui/toggle_config';
 
 
 export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';
@@ -44,3 +46,4 @@ export const SET_SERVER_STATE = 'progress/set_server_state';
 export const TOGGLE_REMAINING_TRACKS = 'progress/toggle_remaining_tracks';
 export const UNDO = 'progress/undo';
 export const REDO = 'progress/redo';
+export const UPDATE_CONFIG = 'progress/update_config';

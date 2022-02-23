@@ -5,6 +5,7 @@ import {
 } from './utils';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { Map, fromJS } from 'immutable';
+import moment from 'moment';
 
 const updateSegment = (state, id) => {
     return state.updateIn(['segments', id], (segment) => {
@@ -418,6 +419,37 @@ const updateTransportationMode = (state, action) => {
   });
 }
 
+const updateTransportationTime = (state, action) => {
+  const { segmentId, time, start, tmodeIndex } = action;
+  return state.updateIn(['segments', segmentId, 'transportationModes', tmodeIndex], (tmode) => {
+    const seg = state.get('segments').get(segmentId);
+    const hours = parseInt(time.substr(0, 2), 10);
+    const mins = parseInt(time.substr(2), 10);
+
+    const t = moment(seg.get('start').clone().hours(hours).minutes(mins)).valueOf();
+    const timeIndex = seg.get('points').findIndex((point) => point.get('time').valueOf() >= t);
+
+    if (timeIndex > -1) {
+      if (start) {
+        if (seg.get('start').format('HHmm') === time) {
+          return tmode;
+        } else {
+          return tmode.set('from', timeIndex);
+        }
+      } else {
+        if (seg.get('end').format('HHmm') === time) {
+          return tmode;
+        } else {
+          return tmode.set('to', timeIndex);
+        }
+      }
+    } else {
+      console.error(new Error('Invalid time for segment'));
+      return tmode;
+    }
+  });
+}
+
 const selectPointInMap = (state, action) => {
   const { onClick, segmentId, highlightedPoint } = action;
   return state.setIn(['segments', segmentId, 'pointAction'], Map({ highlightedPoint, onClick }));
@@ -449,6 +481,7 @@ const ACTION_REACTION = {
 
     'segment/update_location_name': updateLocationName,
     'segment/update_transportation_mode': updateTransportationMode,
+    'segment/update_transportation_time': updateTransportationTime,
     'segment/select_point': selectPointInMap,
     'segment/deselect_point': deselectPointInMap,
 }

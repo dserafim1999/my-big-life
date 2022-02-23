@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
-import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO } from './'
-import { fitSegments } from './ui';
+import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
+import { fitSegments, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { addPossibilities } from '../actions/segments';
 
@@ -11,6 +11,43 @@ const segmentsToJson = (state) => {
       name: segment.get('name')
     }
   }).toJS()
+}
+
+export const updateConfig = (config) => ({
+  config,
+  type: UPDATE_CONFIG
+})
+
+export const getConfig = (cb) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    return fetch(getState().get('progress').get('server') + '/config', options)
+      .then((response) => response.json())
+      .then((config) => {
+        dispatch(updateConfig(config))
+      })
+  }
+}
+
+export const saveConfig = (config) => {
+  config._ = null
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(config)
+    }
+    return fetch(getState().get('progress').get('server') + '/config', options)
+      .then((response) => response.json())
+      .then((config) => {
+        dispatch(toggleConfig())
+        // Request server state if address has changed
+        // dispatch(requestServerState())
+      })
+  }
 }
 
 export const setServerState = (step, tracksRemaining) => {

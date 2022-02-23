@@ -68,19 +68,19 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       case 0:
         return (
           <span>
-            <CheckIcon /> All tracks are processed
+            <CheckIcon /> All days are processed
           </span>
         )
       case 1:
         return (
           <span>
-            <MoreVertIcon /> One track left
+            <MoreVertIcon /> One more day to process
           </span>
         )
       default:
         return (
           <span>
-            <MoreHorizIcon /> { n } tracks left
+            <MoreHorizIcon /> { n } days to process
           </span>
         )
     }

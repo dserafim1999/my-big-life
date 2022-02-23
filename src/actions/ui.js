@@ -8,10 +8,12 @@ import {
   TOGGLE_REMAINING_TRACKS,
   CENTER_MAP,
   DEHIGHLIGHT_SEGMENT,
-  HIGHLIGHT_SEGMENT
+  HIGHLIGHT_SEGMENT,
+  TOGGLE_CONFIG
 } from "."
 
 import { min, max } from "../utils";
+import { getConfig } from "./progress";
 
 
 
@@ -98,3 +100,17 @@ export const dehighlightSegment = (segmentId) => ({
   segmentId,
   type: DEHIGHLIGHT_SEGMENT
 })
+
+export const toggleConfig = () => {
+  const action = {
+    type: TOGGLE_CONFIG
+  }
+  return (dispatch, getState) => {
+    if (!getState().get('ui').get('showConfig')) {
+      dispatch(getConfig())
+        .then(() => dispatch(action))
+    } else {
+      dispatch(action)
+    }
+  }
+}

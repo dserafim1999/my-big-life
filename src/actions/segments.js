@@ -18,7 +18,8 @@ import {
   UPDATE_LOCATION_NAME,
   UPDATE_TRANSPORTATION_MODE,
   SELECT_POINT_IN_MAP,
-  DESELECT_POINT_IN_MAP
+  DESELECT_POINT_IN_MAP,
+  UPDATE_TRANSPORTATION_TIME
 } from ".";
 
 import { completeTrip } from '../actions/progress';
@@ -173,6 +174,14 @@ export const updateTransportationMode = (segmentId, name, index) => ({
   index,
   segmentId,
   type: UPDATE_TRANSPORTATION_MODE
+})
+
+export const updateTransportationTime = (segmentId, time, start, tmodeIndex) => ({
+  time,
+  start,
+  tmodeIndex,
+  segmentId,
+  type: UPDATE_TRANSPORTATION_TIME
 })
 
 export const selectPointInMap = (segmentId, highlightedPoint, onClick) => ({

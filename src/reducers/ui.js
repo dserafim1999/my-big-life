@@ -9,7 +9,8 @@ import {
   TOGGLE_REMAINING_TRACKS,
   CENTER_MAP,
   HIGHLIGHT_SEGMENT,
-  DEHIGHLIGHT_SEGMENT
+  DEHIGHLIGHT_SEGMENT,
+  TOGGLE_CONFIG
 } from '../actions';
 
 const initialState = fromJS({ highlighted: Set([]), alerts: [] });
@@ -46,7 +47,6 @@ const ui = (state = initialState, action) => {
             return state;
           }
         }
-  
         return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));  
       case TOGGLE_REMAINING_TRACKS:
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
@@ -56,6 +56,8 @@ const ui = (state = initialState, action) => {
         return state.update('highlighted', (h) => h.add(action.segmentId));
       case DEHIGHLIGHT_SEGMENT:
         return state.update('highlighted', (h) => h.delete(action.segmentId));
+      case TOGGLE_CONFIG:
+        return state.set('showConfig', !state.get('showConfig'));
       default:
         return state;
     }

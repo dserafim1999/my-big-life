@@ -16,6 +16,8 @@ import {
   redo
 } from '../../actions/progress';
 
+import { toggleConfig } from '../../actions/ui'
+
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';
 
@@ -69,7 +71,8 @@ export default class PerfMap extends Component {
       canUndo: this.props.canUndo,
       canRedo: this.props.canRedo,
       undo: () => dispatch(undo()),
-      redo: () => dispatch(redo())
+      redo: () => dispatch(redo()),
+      config: () => dispatch(toggleConfig())
     })
 
     setupTileLayers(this.map);
@@ -162,9 +165,11 @@ export default class PerfMap extends Component {
 
     const setOpacity = (ids, opacity) => {
       ids.forEach((id) => {
-        this.segments[id].layergroup.setStyle({
+        const lseg = this.segments[id];
+        lseg.layergroup.setStyle({
           opacity
         });
+        lseg.transportation.getLayers().forEach((m) => m.setOpacity(opacity));
       })
     }
 
@@ -172,7 +177,7 @@ export default class PerfMap extends Component {
 
     if (highlighted.count() > 0) {
       setOpacity(highlighted, 1);
-      setOpacity(hidden, 0.5);
+      setOpacity(hidden, 0.2);
     } else {
       setOpacity(hidden, 1);
     }
