@@ -358,3 +358,7 @@
 .date-from:hover, .date-to:hover {
   border-color: #aaa;
 }
+
+.day-left:hover {
+  background-color: #eee;
+}

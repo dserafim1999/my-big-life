@@ -50,10 +50,11 @@ export const saveConfig = (config) => {
   }
 }
 
-export const setServerState = (step, tracksRemaining) => {
+export const setServerState = (step, tracksRemaining, daySelected) => {
   return {
     step,
     tracksRemaining,
+    daySelected,
     type: SET_SERVER_STATE
   }
 }
@@ -90,7 +91,7 @@ const updateState = (dispatch, json, getState, reverse = false) => {
     dispatch(removeTracksFor(json.track.segments, json.track.name));
   }
 
-  dispatch(setServerState(json.step, json.queue));
+  dispatch(setServerState(json.step, json.queue, json.currentDay));
 
   if (json.step !== 2) {
     dispatch(removeTracksFor(json.track.segments, json.track.name));
@@ -185,5 +186,48 @@ export const redo = () => {
 export const undo = () => {
   return {
     type: UNDO
+  }
+}
+
+
+export const changeDayToProcess = (newDay) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        day: newDay
+      })
+    }
+    return fetch(getState().get('progress').get('server') + '/changeDay', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
+export const reloadQueue = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    return fetch(getState().get('progress').get('server') + '/reloadQueue', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
+export const bulkProcess = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    return fetch(getState().get('progress').get('server') + '/bulkProcess', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
   }
 }

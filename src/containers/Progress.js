@@ -24,6 +24,8 @@ import CheckIcon from '@mui/icons-material/Check'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import DaysLeft from './DaysLeft'
 
 let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   let Pane
@@ -86,7 +88,10 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
     }
   }
 
+  let subNav = null
   let toShow
+  let detailsLabel
+
   if (showList) {
     toShow = (
       <ul className='is-flexgrow slide-from-top-fade-in' style={{ overflowY: 'auto' }}>
@@ -100,6 +105,14 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
           })
         }
       </ul>
+    )
+
+    subNav = bulkNav
+    toShow = <DaysLeft style={{ flexGrow: 1, overflowY: 'auto' }}/>
+    detailsLabel = (
+      <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
+        <EditIcon/>Edit tracks of the current day
+      </div>
     )
   } else {
     let style = { overflowY: 'auto' }
@@ -119,6 +132,14 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
         <Pane className='is-flexgrow' width='100%'/>
       </div>
     )
+
+    detailsLabel = (
+      <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
+        { remainingMessage(remaining.count()) }
+      </div>
+    )
+
+    subNav = navNav
   }
 
   let OptionButton = ({children, className, description, onClick}) => {
@@ -131,43 +152,67 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
     );
   }
 
+  const bulkNav = (
+    <div>
+      <span className='column is-gapless has-text-centered'>
+        <AsyncButton className={'is-warning'} onClick={(e, modifier) => {
+          modifier('is-loading')
+          dispatch(bulkProcess())
+            .then(() => modifier())
+        }}>
+          Bulk process all tracks
+        </AsyncButton>
+      </span>
+    </div>
+  )
+
+  const navNav = (
+    <div>
+      <div className='column'>
+          <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>
+            <LeftIcon/>
+            Previous
+          </AsyncButton>
+      </div>
+      <div className='column'>
+          <AsyncButton disabled={!canProceed} className={'is-success'} onClick={onNext}>
+            Continue
+            <RightIcon/>
+          </AsyncButton>
+      </div>
+    </div>
+  )
+
+  const multipleActions = (
+    <div className='columns' style={{padding: '0px 50px 0px 50px'}}>
+      <OptionButton className='button icon-button column' onClick={() => dispatch(showHideAll())} description='Toggle all'>
+        <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+      </OptionButton>
+      <OptionButton className='button icon-button column' onClick={() => dispatch(downloadAll())} description='Download all'>
+        <DownloadIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+      </OptionButton>
+      <OptionButton className='button icon-button column' onClick={() => dispatch(clearAll())} description='Delete all'>
+        <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+      </OptionButton>
+    </div>
+  )
+
+  let nav = (
+    <div style={{ marginTop: '0.5rem' }}>
+      { showList ? null : multipleActions }
+      <div className="columns" style={{textAlign: 'center'}}>
+        { subNav }
+      </div>
+      { detailsLabel }
+    </div>
+  )
+
   return (
-    <>
-      <Card width="400" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <ProgressBar />
-        { toShow }
-        <div style={{ marginTop: '0.5rem' }}>
-            <div className='columns' style={{padding: '0px 50px 0px 50px'}}>
-              <OptionButton className='button icon-button column' onClick={() => dispatch(showHideAll())} description='Toggle all'>
-                <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-              </OptionButton>
-              <OptionButton className='button icon-button column' onClick={() => dispatch(downloadAll())} description='Download all'>
-                <DownloadIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-              </OptionButton>
-              <OptionButton className='button icon-button column' onClick={() => dispatch(clearAll())} description='Delete all'>
-                <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-              </OptionButton>
-          </div>
-          <div className="columns" style={{textAlign: 'center'}}>
-            <div className='column'>
-              <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>
-                <LeftIcon/>
-                Previous
-              </AsyncButton>
-            </div>
-            <div className='column'>
-              <AsyncButton disabled={!canProceed} className={'is-success'} onClick={onNext}>
-                Continue
-                <RightIcon/>
-              </AsyncButton>
-            </div>
-          </div>
-          <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
-            { remainingMessage(remaining.count()) }
-          </div>
-        </div>
-      </Card>
-    </>
+    <Card width="400" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <ProgressBar />
+      { toShow }
+      { nav }
+    </Card>
   )
 }
 
