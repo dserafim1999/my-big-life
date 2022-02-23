@@ -161,6 +161,7 @@ class SemanticEditor extends Component {
       this.setState(this.state)
     }
 
+    let warning
     [editorState, warning] = this.decorateState(editorState, force)
     saveState(editorState, warning)
 
