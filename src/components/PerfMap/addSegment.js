@@ -1,16 +1,16 @@
 import React from 'react';
-import { Polyline, FeatureGroup, DivIcon, Marker } from 'leaflet';
-import { createPointsFeatureGroup, renderToDiv } from './utils';
+import { Polyline, FeatureGroup } from 'leaflet';
+import { createPointsFeatureGroup, renderToDiv, createPointIcon, createMarker } from './utils';
 import SegmentToolbox from '../../containers/TrackList/SegmentToolbox';
 
 import store from '../../store';
 import { Provider } from 'react-redux';
 
 import StopIcon from '@mui/icons-material/Stop';
-import WalkIcon from '@mui/icons-material/DirectionsWalk';
-import CarIcon from '@mui/icons-material/DirectionsCar';
+import PlayIcon from '@mui/icons-material/PlayArrow';
 
 import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
+import { renderToString } from 'react-dom/server';
 
 export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
   const tfLower = (filter.get(0) || points.get(0).get('time')).valueOf();
@@ -36,11 +36,17 @@ export default (id, points, color, display, filter, segment, dispatch, previousP
 
   const pointsEventMap = {};
   const pointsLayer = createPointsFeatureGroup(pts, color, pointsEventMap);
-  const layergroup = new FeatureGroup([pline]);
+  
+  const specialMarkers = {
+    start: createMarker(pts[0], createPointIcon(color, renderToString(<PlayIcon className='center' sx={{ fontSize: 16 }}/>))),
+    end: createMarker(pts[pts.length - 1], createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)))
+  }
+  const layergroup = new FeatureGroup([pline, ...Object.keys(specialMarkers).map((k) => specialMarkers[k])]);
 
   // add segment
   const obj = {
     layergroup,
+    specialMarkers,
     polyline: pline,
     points: pointsLayer,
     details: new FeatureGroup(),

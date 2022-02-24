@@ -9,10 +9,10 @@ import QuestionIcon from '@mui/icons-material/QuestionMark';
 import { createPointIcon, createMarker } from './utils';
 
 const LABEL_TO_ICON = {
-  'Stop': (color) => createPointIcon(color, renderToString(<StopIcon/>)),
-  'Foot': (color) => createPointIcon(color, renderToString(<WalkIcon/>)),
-  'Vehicle': (color) => createPointIcon(color, renderToString(<CarIcon/>)),
-  '?': (color) => createPointIcon(color, renderToString(<QuestionIcon/>))
+  'Stop': (color) => createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'Foot': (color) => createPointIcon(color, renderToString(<WalkIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'Vehicle': (color) => createPointIcon(color, renderToString(<CarIcon className='center' sx={{ fontSize: 16 }}/>)),
+  '?': (color) => createPointIcon(color, renderToString(<QuestionIcon className='center' sx={{ fontSize: 16 }}/>))
 }
 
 const angleBetween = (a, b) => {
