@@ -19,7 +19,11 @@ import {
   UPDATE_TRANSPORTATION_MODE,
   SELECT_POINT_IN_MAP,
   DESELECT_POINT_IN_MAP,
-  UPDATE_TRANSPORTATION_TIME
+  UPDATE_TRANSPORTATION_TIME,
+  SELECT_POINT,
+  DESELECT_POINT,
+  STRAIGHT_SELECTED,
+  INTERPOLATED_TIME_SELECTED
 } from ".";
 
 import { completeTrip } from '../actions/progress';
@@ -195,6 +199,33 @@ export const deselectPointInMap = (segmentId) => ({
   segmentId,
   type: DESELECT_POINT_IN_MAP
 })
-  
+
+export const selectPoint = (segmentId, point) => {
+  return (dispatch, getState) => {
+    dispatch({
+      segmentId,
+      point,
+      type: SELECT_POINT
+    });
+    const selected = getState().get('tracks').get('segments').get(segmentId).get('selectedPoints');
+    return selected;
+  }
+}
+
+export const deselectPoint = (segmentId, point) => ({
+  segmentId,
+  point,
+  type: DESELECT_POINT
+})
+
+export const straightSelected = (segmentId) => ({
+  segmentId,
+  type: STRAIGHT_SELECTED
+})
+
+export const interpolateTimeSelected = (segmentId) => ({
+  segmentId,
+  type: INTERPOLATED_TIME_SELECTED
+})
   
   

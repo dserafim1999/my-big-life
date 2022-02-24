@@ -34,8 +34,8 @@ export default class PerfMap extends Component {
   constructor (props) {
     super(props);
 
-    this.detailLevel = props.detailLevel || 16;
-    this.transportationModeLevel = props.transportationModeLevel || 14;
+    this.detailLevel = props.detailLevel || 18;
+    this.transportationModeLevel = props.transportationModeLevel || 12;
     this.map = undefined;
     this.mapRef = React.createRef(); 
     /**
@@ -240,7 +240,7 @@ export default class PerfMap extends Component {
         onAdd: (id, index, lat, lng) => dispatch(addSegmentPoint(id, index, lat, lng)),
         onMove: (id, index, lat, lng) => dispatch(changeSegmentPoint(id, index, lat, lng)),
         onExtend: (id, index, lat, lng) => dispatch(extendSegment(id, index, lat, lng))
-      });
+      }, dispatch);
     }
     if (current.get('joining') === true && (current.get('joining') !== previous.get('joining') || current.get('joinPossible') !== previous.get('joinPossible'))) {
       joinMode(lseg, current, previous, (id, i, pp) => dispatch(joinSegment(id, i, pp)));

@@ -191,7 +191,7 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList, segmentsCoun
     }
 
     toShow = (
-      <div className='is-flexgrow' style={{ style }} >
+      <div className='is-flexgrow expand' style={{ style }} >
         <Pane className='is-flexgrow' width='100%'/>
       </div>
     )

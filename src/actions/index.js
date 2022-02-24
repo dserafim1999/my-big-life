@@ -25,8 +25,12 @@ export const FIT_SEGMENT = 'segment/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segment/time_filter';
 export const UPDATE_LOCATION_NAME = 'segment/update_location_name';
 export const UPDATE_TRANSPORTATION_MODE = 'segment/update_transportation_mode';
-export const SELECT_POINT_IN_MAP = 'segment/select_point';
-export const DESELECT_POINT_IN_MAP = 'segment/deselect_point';
+export const SELECT_POINT_IN_MAP = 'segment/select_point_in_map';
+export const DESELECT_POINT_IN_MAP = 'segment/deselect_point_in_map';
+export const SELECT_POINT = 'segment/select_point';
+export const DESELECT_POINT = 'segment/deselect_point';
+export const STRAIGHT_SELECTED = 'segment/straight_selected';
+export const INTERPOLATED_TIME_SELECTED = 'segment/interpolated_time_selected';
 export const UPDATE_TRANSPORTATION_TIME = 'segment/update_transformation_time';
 
 export const UPDATE_BOUNDS = 'ui/bounds';
