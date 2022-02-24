@@ -24,10 +24,12 @@ import {
   DESELECT_POINT,
   STRAIGHT_SELECTED,
   INTERPOLATED_TIME_SELECTED,
-  UPDATE_POINT
+  UPDATE_POINT,
+  ADD_NEW_SEGMENT
 } from ".";
 
 import { completeTrip } from '../actions/progress';
+import moment from "moment";
 
 
 export const extendSegment = (segmentId, index, lat, lon) => {
@@ -57,6 +59,28 @@ export const addSegmentPoint = (segmentId, index, lat, lon) => {
       type: ADD_SEGMENT_POINT
   }
 }
+
+export const addNewSegment = (trackId) => {
+  return (dispatch, getState) => {
+    const bounds = getState().get('ui').get('bounds');
+
+    const topLeft = bounds.get(0);
+    const bottomRight = bounds.get(1);
+
+    const point = {
+      lat: topLeft.get(0) + Math.abs(topLeft.get(0) - bottomRight.get(0)) / 2,
+      lon: topLeft.get(1) + Math.abs(topLeft.get(1) - bottomRight.get(1)) / 2,
+      time: moment()
+    }
+
+    return dispatch({
+      trackId,
+      point,
+      type: ADD_NEW_SEGMENT
+    });
+  }
+}
+
 export const removeSegmentPoint = (segmentId, index) => {
   return {
       segmentId,
@@ -64,6 +88,7 @@ export const removeSegmentPoint = (segmentId, index) => {
       type: REMOVE_SEGMENT_POINT
   }
 }
+
 export const changeSegmentPoint = (segmentId, index, lat, lon) => {
   return {
       segmentId,

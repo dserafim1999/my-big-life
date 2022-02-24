@@ -549,6 +549,14 @@ const updatePoint = (state, action) => {
   });
 }
 
+const addNewSegment = (state, action) => {
+  const { trackId, point } = action;
+  const seg = createSegmentObj(trackId, [point]);
+  return state
+    .setIn(['segments', seg.get('id')], seg)
+    .updateIn(['tracks', trackId, 'segments'], (segs) => segs.push(seg.get('id')));
+}
+
 const ACTION_REACTION = {
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
@@ -576,7 +584,9 @@ const ACTION_REACTION = {
     'segment/select_point': selectPoint,
     'segment/deselect_point': deselectPoint,
 
-    'segment/straight_selected': straightSelected
+    'segment/straight_selected': straightSelected,
+    'segment/update_point': updatePoint,
+    'segment/new': addNewSegment
 }
 
 const segments = (state = [], action) => {

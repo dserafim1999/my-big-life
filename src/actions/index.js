@@ -16,6 +16,7 @@ export const CHANGE_SEGMENT_POINT = 'segment/change_point';
 export const REMOVE_SEGMENT_POINT = 'segment/remove_point';
 export const EXTEND_SEGMENT_POINT = 'segment/extend_point';
 export const ADD_SEGMENT_POINT = 'segment/add_point';
+export const ADD_NEW_SEGMENT = 'segment/new';
 export const EXTEND_SEGMENT = 'segment/extend';
 export const REMOVE_SEGMENT = 'segment/remove';
 export const SPLIT_SEGMENT = 'segment/split';

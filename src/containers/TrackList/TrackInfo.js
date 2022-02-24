@@ -3,9 +3,16 @@ import React from 'react';
 import SegmentInfo from "./SegmentInfo";
 import ExportIcon from '@mui/icons-material/Download';
 
-import { toggleTrackRenaming, updateTrackName, downloadTrack } from '../../actions/tracks';
+import { 
+  toggleTrackRenaming,
+  updateTrackName,
+  downloadTrack
+} from '../../actions/tracks';
 
+import { addNewSegment } from '../../actions/segments';
 import { Tooltip } from '@mui/material';
+
+import PlusIcon from '@mui/icons-material/Add';
 
 
 const TrackInfo = ({ dispatch, track, segments }) => {
@@ -66,6 +73,18 @@ const TrackInfo = ({ dispatch, track, segments }) => {
             })
             .map((s, i) => <SegmentInfo dispatch={dispatch} segment={s} track={track} key={i} />)
         }
+        <div style={{ borderLeft: '4px dotted #aaa', marginLeft: '3px', paddingLeft: '6px' }} className='slide-from-top-fade-in' >
+          <a style={{
+            borderStyle: 'dashed',
+            width: '100%',
+            color: 'gray',
+            padding: '5px',
+            margin: '5px 0 6px 0px'
+          }} className='button is-small' onClick={() => dispatch(addNewSegment(id))}>
+            <PlusIcon/>
+            new segment
+          </a>
+        </div>
       </ul>
       <br/>
       <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
