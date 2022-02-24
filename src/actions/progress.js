@@ -50,9 +50,10 @@ export const saveConfig = (config) => {
   }
 }
 
-export const setServerState = (step, tracksRemaining, daySelected) => {
+export const setServerState = (step, tracksRemaining, daySelected, life) => {
   return {
     step,
+    life,
     tracksRemaining,
     daySelected,
     type: SET_SERVER_STATE
@@ -87,15 +88,8 @@ export const completeTrip = (segmentId, from, to, index) => {
 const updateState = (dispatch, json, getState, reverse = false) => {
   resetId();
   
-  if (json.step === 2) {
-    dispatch(removeTracksFor(json.track.segments, json.track.name));
-  }
-
-  dispatch(setServerState(json.step, json.queue, json.currentDay));
-
-  if (json.step !== 2) {
-    dispatch(removeTracksFor(json.track.segments, json.track.name));
-  }
+  dispatch(setServerState(json.step, json.queue, json.currentDay, json.life));
+  dispatch(removeTracksFor(json.track.segments, json.track.name));
 
   const segments = getState().get('tracks').get('segments').keySeq().toJS()
   dispatch(fitSegments(...segments))
