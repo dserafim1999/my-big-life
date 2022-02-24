@@ -4,6 +4,8 @@ import moment from 'moment'
 import { changeDayToProcess, reloadQueue } from '../../actions/progress'
 import AsyncButton from '../../components/AsyncButton'
 
+import RefreshIcon from '@mui/icons-material/Refresh'
+
 const POINTS_PER_KB = 7.2
 
 const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
@@ -31,23 +33,24 @@ const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges }) => {
   const refresh = (
     <AsyncButton
-      className='fa fa-refresh'
       style={{ float: 'right', border: '0px' }}
       onClick={(e, modifier) => {
         modifier('is-loading')
         dispatch(reloadQueue())
           .then(() => modifier())
       }}
-      title='Scan input folder for more tracks'/>
+      title='Scan input folder for more tracks'>
+        <RefreshIcon/>
+    </AsyncButton>
   )
 
   return (
     <div style={{...style}} title='Click to change the day to process'>
       <div style={{ fontSize: '1.5rem' }}>Days left to process { refresh }</div>
       {
-        remaining.map(([day, gpxs]) => {
+        remaining.map(([day, gpxs], i) => {
           return (
-            <AsyncButton isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
+            <AsyncButton key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
               if (selected !== day) {
                 /*global confirm*/
                 const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost')

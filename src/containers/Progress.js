@@ -69,6 +69,37 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
       .catch((e) => errorHandler(e, modifier));
   }
 
+  const bulkNav = (
+    <div style={{ margin: 'auto' }}>
+      <span className='is-gapless has-text-centered'>
+        <AsyncButton className={'is-warning'} onClick={(e, modifier) => {
+          modifier('is-loading')
+          dispatch(bulkProcess())
+            .then(() => modifier())
+        }}>
+          Bulk process all tracks
+        </AsyncButton>
+      </span>
+    </div>
+  )
+
+  const navNav = (
+    <>
+      <div className='column'>
+          <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>
+            <LeftIcon/>
+            Previous
+          </AsyncButton>
+      </div>
+      <div className='column'>
+          <AsyncButton disabled={!canProceed} className={'is-success'} onClick={onNext}>
+            Continue
+            <RightIcon/>
+          </AsyncButton>
+      </div>
+    </>
+  )
+
   const remainingMessage = (n) => {
     switch (n) {
       case 0:
@@ -106,9 +137,9 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
     toShow = (
       <ul className='is-flexgrow slide-from-top-fade-in' style={{ overflowY: 'auto' }}>
         {
-          remaining.map((track) => {
+          remaining.map((track, i) => {
             return (
-              <li>
+              <li key={i}>
                 { track.get('name') }
               </li>
             )
@@ -162,37 +193,6 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
     );
   }
 
-  const bulkNav = (
-    <div style={{ margin: 'auto' }}>
-      <span className='is-gapless has-text-centered'>
-        <AsyncButton className={'is-warning'} onClick={(e, modifier) => {
-          modifier('is-loading')
-          dispatch(bulkProcess())
-            .then(() => modifier())
-        }}>
-          Bulk process all tracks
-        </AsyncButton>
-      </span>
-    </div>
-  )
-
-  const navNav = (
-    <div>
-      <div className='column'>
-          <AsyncButton disabled={stage === 0} className={'is-warning'} onClick={onPrevious}>
-            <LeftIcon/>
-            Previous
-          </AsyncButton>
-      </div>
-      <div className='column'>
-          <AsyncButton disabled={!canProceed} className={'is-success'} onClick={onNext}>
-            Continue
-            <RightIcon/>
-          </AsyncButton>
-      </div>
-    </div>
-  )
-
   const multipleActions = (
     <div className='columns' style={{padding: '0px 50px 0px 50px'}}>
       <OptionButton className='button icon-button column' onClick={() => dispatch(showHideAll())} description='Toggle all'>
@@ -208,7 +208,7 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   )
 
   let nav = (
-    <div style={{ marginTop: '0.5rem' }}>
+    <div style={{ marginTop: '1.5rem' }}>
       { showList ? null : multipleActions }
       <div className="columns" style={{textAlign: 'center'}}>
         { subNav }
