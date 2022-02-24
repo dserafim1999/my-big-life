@@ -45,7 +45,8 @@ export const CENTER_MAP = 'ui/center_map';
 export const HIGHLIGHT_SEGMENT = 'ui/highlight_segment';
 export const DEHIGHLIGHT_SEGMENT = 'ui/dehighlight_segment';
 export const TOGGLE_CONFIG = 'ui/toggle_config';
-
+export const ADD_POINT_PROMPT = 'ui/add_point_prompt';
+export const REMOVE_POINT_PROMPT = 'ui/remove_point_prompt';
 
 export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';
 export const ADVANCE_TO_ADJUST = 'progress/advance_adjust';

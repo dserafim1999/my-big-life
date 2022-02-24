@@ -90,7 +90,17 @@ export default class PerfMap extends Component {
       return;
     }
     
-    const { center, bounds, zoom, highlighted, segments, dispatch, canUndo, canRedo } = this.props;
+    const {
+      center,
+      bounds,
+      zoom,
+      highlighted,
+      segments,
+      dispatch,
+      canUndo,
+      canRedo,
+      pointPrompt
+    } = this.props;
 
     if (canUndo !== prev.canUndo) {
       this.map.buttons.setEnabled(0, canUndo);
@@ -105,6 +115,22 @@ export default class PerfMap extends Component {
     this.shouldUpdateBounds(bounds, prev.bounds);
     this.shouldUpdateHighlighted(highlighted, prev.highlighted, segments);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
+    this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
+  }
+
+  shouldUpdatePrompt (current, previous) {
+    if (current !== previous) {
+      if (current) {
+        this.map.on('click', (e) => {
+          const { latlng } = e;
+          const { lat, lng } = latlng;
+          const res = { lat: lat, lon: lng };
+          current(res);
+        });
+      } else {
+        this.map.off('click');
+      }
+    }
   }
 
   shouldUpdateZoom (current, previous) {

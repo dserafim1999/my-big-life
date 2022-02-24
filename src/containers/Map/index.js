@@ -12,7 +12,8 @@ const mapStateToProps = (state) => {
     segments: state.get('tracks').get('segments'),
     details: state.get('ui').get('details'),
     canUndo: history.get('past').count() !== 0,
-    canRedo: history.get('future').count() !== 0
+    canRedo: history.get('future').count() !== 0,
+    pointPrompt: state.get('ui').get('pointPrompt')
   }
 }
   

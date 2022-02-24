@@ -10,7 +10,9 @@ import {
   CENTER_MAP,
   HIGHLIGHT_SEGMENT,
   DEHIGHLIGHT_SEGMENT,
-  TOGGLE_CONFIG
+  TOGGLE_CONFIG,
+  ADD_POINT_PROMPT,
+  REMOVE_POINT_PROMPT
 } from '../actions';
 
 const initialState = fromJS({ highlighted: Set([]), alerts: [] });
@@ -58,6 +60,10 @@ const ui = (state = initialState, action) => {
         return state.update('highlighted', (h) => h.delete(action.segmentId));
       case TOGGLE_CONFIG:
         return state.set('showConfig', !state.get('showConfig'));
+      case ADD_POINT_PROMPT:
+        return state.set('pointPrompt', action.callback)
+      case REMOVE_POINT_PROMPT:
+        return state.delete('pointPrompt')
       default:
         return state;
     }
