@@ -67,7 +67,7 @@ let MainContainer = ({ showConfig, dispatch, ...props }) => {
   }
 
   return (
-      <Dropzone id="container" onDrop={onDrop} onKeyUp={keyHandler} onKeyDown={downKeyHandler}>
+      <Dropzone id="container" onDrop={onDrop}>
           <Router>
               <Routes>
                   <Route path='/' element={<SideBar/>}/>
@@ -82,11 +82,13 @@ let MainContainer = ({ showConfig, dispatch, ...props }) => {
                       }
                   <Route path='/*' element={<></>}/> 
               </Routes>
+              <div id='container' onKeyUp={keyHandler} onKeyDown={downKeyHandler} > 
+                <AlertBox/>
+                <SideBar/>
+                <Progress onNext={ onNext } onPrevious={ onPrevious } />
+                <Map/>
+              </div>
               { showConfig ? <ConfigPane /> : null }
-              <AlertBox/>
-              <SideBar/>
-              <Progress onNext={ onNext } onPrevious={ onPrevious } />
-              <Map/>
           </Router>
       </Dropzone>
   );

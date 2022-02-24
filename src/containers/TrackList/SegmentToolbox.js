@@ -160,19 +160,9 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <AsyncButton 
-                        className={(editing ? btnHighlight : btn)}
-                        onClick={
-                            (e, modifier) => {
-                                modifier('is-loading');
-                                toggleEditing(id)(e);
-                            }
-                        }
-                    >
-                        <Tooltip title="Edit Segment"  placement="top" arrow>
-                                <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                        </Tooltip>
-                    </AsyncButton>
+                    <SegmentButton typeClass={(editing ? btnHighlight : btn )} description={'Edit Segment'} onClick={toggleEditing(id)}>
+                        <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+                    </SegmentButton>
 
                     <SegmentButton typeClass={(pointDetails ? btnHighlight : btn )} description={'View Segment Points'} onClick={toggleDetails(id)}>
                         <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />

@@ -19,8 +19,8 @@ export default class AsyncButton extends Component {
 
   onClick (e) {
     if (this.props.onClick) {
-      this.props.onClick(e, (className) => {
-        findDOMNode(this.btnRef).className = this.createClassName(className, filter)
+      this.props.onClick(e, (className, filter) => {
+        findDOMNode(this.btnRef.current).className = this.createClassName(className, filter)
       });
     }
   }
@@ -28,7 +28,7 @@ export default class AsyncButton extends Component {
   onFileRead (text) {
     if (this.props.onRead) {
       this.props.onRead(text, (className, filter) => {
-        findDOMNode(this.btnRef).className = this.createClassName(className, filter);
+        findDOMNode(this.btnRef.current).className = this.createClassName(className, filter);
       })
     }
   }
