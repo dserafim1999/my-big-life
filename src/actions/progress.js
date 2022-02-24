@@ -3,6 +3,8 @@ import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from '
 import { fitSegments, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { addPossibilities } from '../actions/segments';
+import { clearAll } from '../actions/tracks';
+import { addAlert } from '../actions/ui';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
@@ -11,6 +13,12 @@ const segmentsToJson = (state) => {
       name: segment.get('name')
     }
   }).toJS()
+}
+
+export const handleError = (error, dispatch) => {
+  if (error.message === 'Failed to fetch') {
+    dispatch(toggleConfig());
+  }
 }
 
 export const updateConfig = (config) => ({
@@ -42,10 +50,16 @@ export const saveConfig = (config) => {
     }
     return fetch(getState().get('progress').get('server') + '/config', options)
       .then((response) => response.json())
+      .catch((err) => {
+        dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
+        throw err;
+      })
       .then((config) => {
-        dispatch(toggleConfig())
-        // Request server state if address has changed
-        // dispatch(requestServerState())
+        dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
+        if (getState().get('progress').get('step') < 0) {
+          dispatch(requestServerState());
+        }
+        dispatch(toggleConfig());
       })
   }
 }
@@ -101,11 +115,20 @@ export const completeTrip = (segmentId, from, to, index) => {
 const updateState = (dispatch, json, getState, reverse = false) => {
   resetId();
   
+  if (!json) {
+    return;
+  }
+
   dispatch(setServerState(json.step, json.queue, json.currentDay, json.life));
+  if (json.step < 0) {
+    dispatch(clearAll());
+    return;
+  }
+
   dispatch(removeTracksFor(json.track.segments, json.track.name));
 
-  const segments = getState().get('tracks').get('segments').keySeq().toJS()
-  dispatch(fitSegments(...segments))
+  const segments = getState().get('tracks').get('segments').keySeq().toJS();
+  dispatch(fitSegments(...segments));
 }
 
 export const requestServerState = () => {
@@ -117,7 +140,7 @@ export const requestServerState = () => {
     fetch(getState().get('progress').get('server') + '/current', options)
       .then((response) => response.json())
       .catch((err) => {
-        console.log(err)
+        handleError(err, dispatch);
       })
       .then((json) => {
         updateState(dispatch, json, getState)

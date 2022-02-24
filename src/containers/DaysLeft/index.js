@@ -33,6 +33,7 @@ const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges }) => {
   const refresh = (
     <AsyncButton
+      className={'icon-button'}
       style={{ float: 'right', border: '0px' }}
       onClick={(e, modifier) => {
         modifier('is-loading')

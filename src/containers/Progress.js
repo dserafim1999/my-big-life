@@ -7,7 +7,8 @@ import {
   nextStep, 
   previousStep,
   bulkProcess,
-  loadLIFE
+  loadLIFE,
+  reloadQueue
 } from '../actions/progress'  
 import { toggleRemainingTracks, addAlert } from '../actions/ui'
 import {
@@ -35,12 +36,11 @@ import DaysLeft from './DaysLeft'
 let Progress = ({ dispatch, stage, canProceed, remaining, showList, segmentsCount }) => {
   let Pane
   switch (stage) {
-    case ADJUST_STAGE:
-    case PREVIEW_STAGE:
-      Pane = TrackList
-      break
     case ANNOTATE_STAGE:
       Pane = SemanticEditor
+      break
+    default:
+      Pane = TrackList
       break
   }
 
@@ -196,11 +196,20 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList, segmentsCoun
       </div>
     )
 
-    detailsLabel = (
-      <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
-        { remainingMessage(remaining.count()) }
-      </div>
-    )
+    if (segmentsCount !== 0) {
+      detailsLabel = (
+        <div style={{ color: 'gray', textAlign: 'center', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(toggleRemainingTracks())}>
+          { remainingMessage(remaining.count()) }
+        </div>
+      )
+      subNav = navNav
+    } else if (stage !== -2) {
+      detailsLabel = (
+        <div style={{ color: 'gray', textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }} className='clickable' onClick={() => dispatch(reloadQueue())}>
+          Rescan Folder
+        </div>
+      )
+    }
 
     subNav = navNav
   }

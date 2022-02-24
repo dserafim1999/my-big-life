@@ -29,7 +29,7 @@ const ACTION_REACTION = {
 }
 
 const initialState = fromJS({
-    step: 0,
+    step: -2,
     remainingTracks: [],
     server: 'http://localhost:5000'
 })
