@@ -14,6 +14,13 @@ import { Tooltip } from '@mui/material';
 
 import PlusIcon from '@mui/icons-material/Add';
 
+const segmentStartTime = (segment) => {
+  return segment.get('points').get(0).get('time');
+}
+
+const segmentEndTime = (segment) => {
+  return segment.get('points').get(-1).get('time');
+}
 
 const TrackInfo = ({ dispatch, track, segments }) => {
   const id = track.get('id');
@@ -65,10 +72,10 @@ const TrackInfo = ({ dispatch, track, segments }) => {
         {
           segments
             .sort((a, b) => {
-              if (a.get('start').isSame(b.get('start'))) {
-                return a.get('end').diff(b.get('end'))
+              if (segmentStartTime(a).isSame(segmentStartTime(b))) {
+                return segmentEndTime(a).diff(segmentEndTime(b));
               } else {
-                return a.get('start').diff(b.get('start'))
+                return segmentStartTime(a).diff(segmentStartTime(b));
               }
             })
             .map((s, i) => <SegmentInfo dispatch={dispatch} segment={s} track={track} key={i} />)

@@ -44,8 +44,8 @@ let SegmentButton = ({children, typeClass, description, onClick}) => {
 
 let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     const id = segment.get('id');
-    const start = segment.get('start');
-    const end = segment.get('end');
+    const start = segment.get('points').get(0).get('time');
+    const end = segment.get('points').get(-1).get('time');
     const editing = segment.get('editing');
     const splitting = segment.get('splitting');
     const joining = segment.get('joining');

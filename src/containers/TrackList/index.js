@@ -4,18 +4,28 @@ import { connect } from 'react-redux';
 import Card from "../Card";
 import TrackInfo from './TrackInfo';
 
+import CircleIcon from '@mui/icons-material/Circle';
+
+const segmentStartTime = (segment) => {
+  return segment.get('points').get(0).get('time');
+}
+
+const segmentEndTime = (segment) => {
+  return segment.get('points').get(-1).get('time');
+}
+
 let TrackList = ({ dispatch, tracks, segments, className, step }) => {
     const findStart = (seg) =>
-        seg.get('segments').map((s) => segments.get(s).get('start')).sort((_a, _b) => _a.get('start').diff(_b.get('start'))).get(0);
+      seg.get('segments').map((s) => segmentStartTime(segments).sort((_a, _b) => segmentStartTime(_a).diff(segmentEndTime(_b)))).get(0);
     
     if (tracks.count() !== 0) {
         return (
             <ul style={{padding: 0}}>
                 {
                     tracks.valueSeq().sort((a, b) => {
-                        const aStart = findStart(a)
-                        const bStart = findStart(b)
-                        return aStart.get('start').diff(bStart.get('start'))
+                        const aStart = findStart(a);
+                        const bStart = findStart(b);
+                        return segmentStartTime(aStart).diff(segmentEndTime(bStart));
                       })
                       .map((track, i) => {
                         const trackSegments = track.get('segments').map((id) => segments.get(id));
@@ -25,18 +35,16 @@ let TrackList = ({ dispatch, tracks, segments, className, step }) => {
             </ul>
         )
     } else {
-        let message = null
+        let message = null;
         if (step === -2) {
           message = <span className='button is-large is-loading' style={{ border: 0 }}>Loading...</span>
         } else {
           message = (
             <div style={{ width: '70%' }}>
-              <div>
-                <i className='fa fa-check-circle-o' style={{ color: 'rgb(191, 191, 191)' }} />
-              </div>
+              <CircleIcon color="rgb(191, 191, 191)"/>
               There are no more files in the input folder
             </div>
-          )
+          );
         }
         return (
           <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'center', width: '100%' }}>
