@@ -87,7 +87,6 @@ const TrackInfo = ({ dispatch, track, segments }) => {
         </div>
       </ul>
       <br/>
-      <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
     </div>
   )
 }

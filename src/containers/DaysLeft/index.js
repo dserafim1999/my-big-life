@@ -6,10 +6,10 @@ import AsyncButton from '../../components/AsyncButton'
 
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-const POINTS_PER_KB = 7.2
+const POINTS_PER_KB = 7.2;
 
 const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
-  const mDate = moment(date)
+  const mDate = moment(date);
   return (
     <div className='clickable day-left' style={{ marginTop: '0.5rem', padding: '0.2rem', borderRadius: '3px', border: '1px #bbb ' + (isSelected ? 'solid' : 'dashed') }}>
       <div>
@@ -27,10 +27,10 @@ const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
         }
       </div>
     </div>
-  )
+  );
 }
 
-let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges }) => {
+let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent }) => {
   const refresh = (
     <AsyncButton
       className={'icon-button'}
@@ -43,11 +43,20 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges }) => {
       title='Scan input folder for more tracks'>
         <RefreshIcon/>
     </AsyncButton>
-  )
+  );
 
   return (
     <div style={{...style}} title='Click to change the day to process'>
       <div style={{ fontSize: '1.5rem' }}>Days left to process { refresh }</div>
+      {
+        lifesExistent.map((file) => {
+          return (
+            <div style={{ marginTop: '0.5rem', padding: '0.2rem', borderRadius: '3px', border: '1px #bbb dashed', opacity: 0.7 }}>
+              <i>{ file }</i>
+            </div>
+          )
+        })
+      }
       {
         remaining.map(([day, gpxs], i) => {
           return (
@@ -71,17 +80,18 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges }) => {
         })
       }
     </div>
-  )
+  );
 }
 
 const mapStateToProps = (state) => {
   return {
+    lifesExistent: state.get('progress').get('lifeQueue') || [],
     remaining: state.get('progress').get('remainingTracks'),
     selected: state.get('progress').get('daySelected'),
     hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('progress').get('step') !== 0
   }
 }
 
-DaysLeft = connect(mapStateToProps)(DaysLeft)
+DaysLeft = connect(mapStateToProps)(DaysLeft);
 
-export default DaysLeft
+export default DaysLeft;

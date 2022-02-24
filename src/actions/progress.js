@@ -64,12 +64,13 @@ export const saveConfig = (config) => {
   }
 }
 
-export const setServerState = (step, tracksRemaining, daySelected, life) => {
+export const setServerState = (step, tracksRemaining, daySelected, life, lifeQueue) => {
   return {
     step,
     life,
     tracksRemaining,
     daySelected,
+    lifeQueue,
     type: SET_SERVER_STATE
   }
 }
@@ -119,7 +120,7 @@ const updateState = (dispatch, json, getState, reverse = false) => {
     return;
   }
 
-  dispatch(setServerState(json.step, json.queue, json.currentDay, json.life));
+  dispatch(setServerState(json.step, json.queue, json.currentDay, json.life, json.lifeQueue));
   if (json.step < 0) {
     dispatch(clearAll());
     return;

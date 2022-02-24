@@ -251,7 +251,9 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList, segmentsCoun
   return (
     <Card width="400" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <ProgressBar />
+      <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
       { toShow }
+      <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
       { nav }
     </Card>
   )
