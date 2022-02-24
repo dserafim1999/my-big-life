@@ -69,10 +69,12 @@ const extendSegment = (state, action) => {
         }
     }
 
+    const points = state.get('segments').get(id).get('points');
+
     let point = fromJS({
       lat: action.lat,
       lon: action.lon,
-      time: extrapolateTime(state.get('segments').get(id).get('points'), action.index)
+      time: points.count() === 1 ? points.get(0).get('time').clone().add(1000) : extrapolateTime(points, action.index)
     });
  
     return state.updateIn(['segments', id, 'points'], (points) => {
