@@ -6,16 +6,16 @@ export default function updatePoints (segment, current, previous, color, filter)
   if (segment.polyline && segment.points) {
     const update = (polylinePoints, markers) => {
       current.forEach((point, i) => {
-        const lat = point.get('lat')
-        const lng = point.get('lon')
-        polylinePoints[i].lat = lat
-        polylinePoints[i].lng = lng
+        const lat = point.get('lat');
+        const lng = point.get('lon');
+        polylinePoints[i].lat = lat;
+        polylinePoints[i].lng = lng;
 
-        markers[i].setLatLng([lat, lng])
-        markers[i].index = i
-        markers[i].previous = i - 1
-        markers[i].next = i + 1
-        markers[i].type = 'NORMAL'
+        markers[i].setLatLng([lat, lng]);
+        markers[i].index = i;
+        markers[i].previous = i - 1;
+        markers[i].next = i + 1;
+        markers[i].type = 'NORMAL';
       });
 
       return polylinePoints;

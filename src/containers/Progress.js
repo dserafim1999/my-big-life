@@ -32,7 +32,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import DaysLeft from './DaysLeft'
 
-let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
+let Progress = ({ dispatch, stage, canProceed, remaining, showList, segmentsCount }) => {
   let Pane
   switch (stage) {
     case ADJUST_STAGE:
@@ -216,7 +216,7 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
   }
 
   const multipleActions = (
-    <div className='columns' style={{padding: '0px 50px 0px 50px'}}>
+    <div className='columns fade-in' style={{padding: '0px 50px 0px 50px'}}>
       <OptionButton className='button icon-button column' onClick={() => dispatch(showHideAll())} description='Toggle all'>
         <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
       </OptionButton>
@@ -231,7 +231,7 @@ let Progress = ({ dispatch, stage, canProceed, remaining, showList }) => {
 
   let nav = (
     <div style={{ marginTop: '1.5rem' }}>
-      { showList ? null : multipleActions }
+      { (!showList) && (segmentsCount > 1 && stage !== ANNOTATE_STAGE) ? multipleActions : null }
       <div className="columns" style={{textAlign: 'center'}}>
         { subNav }
       </div>
@@ -253,7 +253,8 @@ const mapStateToProps = (state) => {
     stage: state.get('progress').get('step'),
     showList: state.get('ui').get('showRemainingTracks'),
     remaining: state.get('progress').get('remainingTracks'),
-    canProceed: state.get('tracks').get('tracks').count() > 0
+    canProceed: state.get('tracks').get('tracks').count() > 0,
+    segmentsCount: state.get('tracks').get('segments').count()
   }
 }
 

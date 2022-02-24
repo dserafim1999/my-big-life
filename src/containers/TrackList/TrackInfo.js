@@ -53,7 +53,7 @@ const TrackInfo = ({ dispatch, track, segments }) => {
       <div style={{fontSize: '1.5rem'}}>
         {title}
       </div>
-      <span style={{fontSize: '0.8rem', color: 'gray'}}>{segments.length} segment{segments.count() === 1 ? '' : 's'}, {totalPoints} points</span>
+      <span style={{fontSize: '0.8rem', color: 'gray'}}>{segments.count()} segment{segments.count() === 1 ? '' : 's'}, {totalPoints} points</span>
       <ul style={{listStyleType: 'none', margin: 0, padding: 0}}>
         {
           segments
