@@ -81,8 +81,23 @@ const updateLIFE = (state, action) => {
   return state.set('LIFE', new Map({ text, warning }));
 }
 
+const removeTrack = (state, action) => {
+  const { trackId } = action;
+
+  action.undo = (self, newState) => {
+    return state;
+  }
+
+  let cState = state;
+  state.get('tracks').get(trackId).get('segments').forEach((seg) => {
+    cState = cState.deleteIn(['segments', seg]);
+  })
+  return cState.deleteIn(['tracks', trackId]);
+}
+
 const ACTION_REACTION = {
     'track/add': addTrack,
+    'track/remove': removeTrack,
     'track/add_multiple': addMultipleTracks,
     'track/update_name': updateTrackName,
     'track/toggle_renaming': toggleTrackRenaming,

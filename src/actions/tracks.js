@@ -3,7 +3,8 @@ import {
   ADD_MULTIPLE_TRACKS, 
   TOGGLE_TRACK_RENAMING,
   UPDATE_TRACK_NAME,
-  UPDATE_LIFE
+  UPDATE_LIFE,
+  REMOVE_TRACK
 } from ".";
 
 import { Set } from 'immutable';
@@ -88,10 +89,15 @@ export const showHideAll = () => {
   }
 }
 
+export const removeTrack = (trackId) => ({
+  trackId,
+  type: REMOVE_TRACK
+})
+
 export const clearAll = () => {
   return (dispatch, getState) => {
     getState().get('tracks').get('tracks').keySeq().forEach((t) => {
-      alert('Not yet implemented')
+      dispatch(removeTrack(t))
     });
   }
 }
