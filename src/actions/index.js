@@ -29,6 +29,7 @@ export const SELECT_POINT_IN_MAP = 'segment/select_point_in_map';
 export const DESELECT_POINT_IN_MAP = 'segment/deselect_point_in_map';
 export const SELECT_POINT = 'segment/select_point';
 export const DESELECT_POINT = 'segment/deselect_point';
+export const UPDATE_POINT = 'segment/update_point';
 export const STRAIGHT_SELECTED = 'segment/straight_selected';
 export const INTERPOLATED_TIME_SELECTED = 'segment/interpolated_time_selected';
 export const UPDATE_TRANSPORTATION_TIME = 'segment/update_transformation_time';
