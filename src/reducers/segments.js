@@ -154,7 +154,7 @@ const splitSegment = (state, action) => {
 
     
     state = state.updateIn(['segments', id, 'points'], (points) => {
-      return points.slice(0, action.index + 3);
+      return points.slice(0, action.index + 1);
     })
     
     state = updateSegment(state, id);
@@ -555,7 +555,7 @@ const addNewSegment = (state, action) => {
   const seg = createSegmentObj(trackId, [point]);
   return state
     .setIn(['segments', seg.get('id')], seg)
-    .updateIn(['tracks', trackId, 'segments'], (segs) => segs.push(seg.get('id')));
+    .updateIn(['tracks', trackId, 'segments'], (segs) => segs.add(seg.get('id')));
 }
 
 const ACTION_REACTION = {

@@ -1,23 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { 
-    toggleSegmentVisibility,
-    toggleSegmentEditing,
-    toggleSegmentSplitting,
-    toggleSegmentJoining,
-    toggleSegmentPointDetails,
-    toggleTimeFilter,
-    updateTimeFilterSegment,
-    removeSegment,
-  } from '../../actions/segments';
+  toggleSegmentVisibility,
+  toggleSegmentEditing,
+  removeSegment,
+  toggleSegmentSplitting,
+  toggleSegmentJoining,
+  toggleSegmentPointDetails,
+  toggleTimeFilter,
+  updateTimeFilterSegment,
+  fitSegment
+} from '../../actions/segments';
 
-import { 
-    updateBounds,
-    addAlert,
-    removeAlert
-} from '../../actions/ui';
+import { addAlert, removeAlert } from '../../actions/ui';
 import TimeSlider from '../../components/TimeSlider';
-import AsyncButton from '../../components/AsyncButton';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,6 +28,9 @@ import TimeFilterIcon from '@mui/icons-material/EventNote';
 import { Col } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
 
+const INFO_TIME = 100;
+const btnHighlight = 'icon-button is-success';
+const btn = 'icon-button';
 
 let SegmentButton = ({children, typeClass, description, onClick}) => {
     return (
@@ -42,156 +42,121 @@ let SegmentButton = ({children, typeClass, description, onClick}) => {
     );
 }
 
-let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
-    const id = segment.get('id');
-    const start = segment.get('points').get(0).get('time');
-    const end = segment.get('points').get(-1).get('time');
-    const editing = segment.get('editing');
-    const splitting = segment.get('splitting');
-    const joining = segment.get('joining');
-    const pointDetails = segment.get('pointDetails');
-    const bounds = segment.get('bounds');
-    const showTimeFilter = segment.get('showTimeFilter');
-    const filterStart = segment.get('timeFilter').get(0);
-    const filterEnd = segment.get('timeFilter').get(1);
+const EDIT_ALERT = (
+  <div>
+    <div>Editing is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+    <div>Drag existing points to move their position. Right-click to remove them.</div>
+    <div>Drag or click in the (+) marker to add a point.</div>
+  </div>
+);
+
+const JOIN_ALERT = (
+  <div>
+    <div>Joining is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+    <div>The possible joins are highlighted, click them to join.</div>
+  </div>
+);
+
+const SPLIT_ALERT = (
+  <div>
+    <div>Splitting is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+    <div>Click on a marker to split the segment</div>
+  </div>
+);
+
+const toggleAlert = (dispatch, ref, alert, should) => {
+  if (should) {
+    dispatch(removeAlert(null, ref));
+  } else {
+    dispatch(addAlert(alert, 'success', INFO_TIME, ref));
+  }
+}
+    
+let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joining, pointDetails, showTimeFilter, filterStart, filterEnd }) => {
+  const toggleTrack = () => dispatch(toggleSegmentVisibility(segmentId));
   
-    const INFO_TIME = 100;
+  const toggleEditing = () => {
+    dispatch(toggleSegmentEditing(segmentId));
+    toggleAlert(dispatch, 'EDIT_INFO', EDIT_ALERT, editing);
+  }
 
-    const btnHighlight = isPopup ? 'icon-popup-button is-success' : 'icon-button is-success';
-    const btn = isPopup ? 'icon-popup-button' : 'icon-button';
+  const deleteSegment = () => dispatch(removeSegment(segmentId));
+  
+  const toggleJoining = () => {
+    dispatch(toggleSegmentJoining(segmentId));
+    toggleAlert(dispatch, 'JOIN_INFO', JOIN_ALERT, editing);
+  }
 
-    const toggleTrack = (segmentId) => {
-        return () => dispatch(toggleSegmentVisibility(segmentId));
-    }
+  const toggleSplitting = () => {
+    dispatch(toggleSegmentSplitting(segmentId));
+    toggleAlert(dispatch, 'SPLIT_INFO', SPLIT_ALERT, editing);
+  }
 
-    const toggleEditing = (segmentId) => {
-        return () => {
-            dispatch(toggleSegmentEditing(segmentId))
-      
-            const ref = 'EDIT_INFO';
-            if (!editing) {
-              const action = addAlert((
-                <div>
-                  <div>Editing is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
-                  <div>Drag existing points to move their position. Right-click to remove them.</div>
-                  <div>Drag or click on the (+) marker to add a point.</div>
-                </div>
-              ), 'success', INFO_TIME, ref);
-              dispatch(action);
-            } else {
-              dispatch(removeAlert(null, ref));
-            }
-        }
-    }
-    
-    const deleteSegment = (segmentId) => {
-        return () => dispatch(removeSegment(segmentId));
-    }
-    
-    const fitToSegment = () => {
-        return () => dispatch(updateBounds(bounds));
-    }
-    
-    const toggleSplitting = (segmentId) => {
-        return () => {
-            dispatch(toggleSegmentSplitting(segmentId));
-      
-            const ref = 'SPLIT_INFO';
-            if (!splitting) {
-              const action = addAlert((
-                <div>
-                  <div>Splitting is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
-                  <div>Click on a marker to split the segment</div>
-                </div>
-              ), 'success', INFO_TIME, ref);
-              dispatch(action);
-            } else {
-              dispatch(removeAlert(null, ref));
-            }
-        }
-    }
-    
-    const toggleJoining = (segmentId) => {
-        return () => {
-            try {
-              dispatch(toggleSegmentJoining(segmentId));
-      
-              const ref = 'JOIN_INFO';
-              if (!joining) {
-                const action = addAlert((
-                  <div>
-                    <div>Joining is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
-                    <div>The possible joins are highlighted, click them to join.</div>
-                  </div>
-                ), 'success', INFO_TIME, ref);
-                dispatch(action);
-              } else {
-                dispatch(removeAlert(null, ref));
-              }
-            } catch (e) {
-              dispatch(addAlert(e.message));
-            }
-        }
-    } 
-    
-    const toggleDetails = (segmentId) => {
-        return () => dispatch(toggleSegmentPointDetails(segmentId));
-    }
-    
-    const updateFilter = (segmentIndex) => {
-        return (lower, higher) => dispatch(updateTimeFilterSegment(segmentIndex, lower, higher));
-    }
-
-    const toggleTF = (segmentIndex) => {
-        return () => {
-          dispatch(toggleTimeFilter(segmentIndex));
-        }
-    }
+  const fitToSegment = () => dispatch(fitSegment(segmentId));
+  const toggleDetails = () => dispatch(toggleSegmentPointDetails(segmentId));
+  const updateFilter = (lower, higher) => dispatch(updateTimeFilterSegment(segmentId, lower, higher));
+  const toggleTF = () => dispatch(toggleTimeFilter(segmentId));
 
     return (
         <div>
             <div style={{ width: '100%' }} className='control has-addons'>
                 <Col>
-                    <SegmentButton typeClass={btn} description={'Toggle Segment Visibility'} onClick={toggleTrack(id)}>
+                    <SegmentButton typeClass={btn} description={'Toggle Segment Visibility'} onClick={toggleTrack}>
                         <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
                     </SegmentButton>
 
-                    <SegmentButton typeClass={btn} description={'Focus on Segment'} onClick={fitToSegment()}>
+                    <SegmentButton typeClass={btn} description={'Focus on Segment'} onClick={fitToSegment}>
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(editing ? btnHighlight : btn )} description={'Edit Segment'} onClick={toggleEditing(id)}>
+                    <SegmentButton typeClass={(editing ? btnHighlight : btn )} description={'Edit Segment'} onClick={toggleEditing}>
                         <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(pointDetails ? btnHighlight : btn )} description={'View Segment Points'} onClick={toggleDetails(id)}>
+                    <SegmentButton typeClass={(pointDetails ? btnHighlight : btn )} description={'Inspect Points'} onClick={toggleDetails}>
                         <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(splitting ? btnHighlight : btn )} description={'Split Segment'} onClick={toggleSplitting(id)}>
+                    <SegmentButton typeClass={(splitting ? btnHighlight : btn )} description={'Split Segment'} onClick={toggleSplitting}>
                         <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                                         
-                    <SegmentButton typeClass={(joining ? btnHighlight : btn )} description={'Join Segment'} onClick={toggleJoining(id)}>
+                    <SegmentButton typeClass={(joining ? btnHighlight : btn )} description={'Join Segment'} onClick={toggleJoining}>
                         <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Filter Points by Time'} onClick={toggleTF(id)}>
+                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Filter Points by Time'} onClick={toggleTF}>
                         <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                     
-                    <SegmentButton typeClass={btn} toggleable={false} description={'Delete Segment'} onClick={deleteSegment(id)}>
+                    <SegmentButton typeClass={btn} toggleable={false} description={'Delete Segment'} onClick={deleteSegment}>
                         <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                 </Col>
             </div>
             {
             showTimeFilter
-                ? <TimeSlider start={start} initialStart={filterStart} end={end} initialEnd={filterEnd} onChange={updateFilter(id)}/>
+                ? <TimeSlider start={start} initialStart={filterStart} end={end} initialEnd={filterEnd} onChange={updateFilter}/>
                 : null
             }
         </div>
     );
 }
 
-export default SegmentToolbox;
+const mapStateToProps = (state, { segmentId }) => {
+  const segment = state.get('tracks').get('segments').get(segmentId);
+  return {
+    segmentId,
+    start: segment.getStartTime(),
+    end: segment.getStartTime(),
+    editing: segment.get('editing'),
+    splitting: segment.get('splitting'),
+    joining: segment.get('joining'),
+    pointDetails: segment.get('pointDetails'),
+    showTimeFilter: segment.get('showTimeFilter'),
+    filterStart: segment.get('timeFilter').get(0),
+    filterEnd: segment.get('timeFilter').get(1)
+  }
+}
+
+export default connect(mapStateToProps)(SegmentToolbox);

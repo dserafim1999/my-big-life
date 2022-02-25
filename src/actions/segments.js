@@ -31,9 +31,16 @@ import {
 } from ".";
 
 import { completeTrip } from './progress';
-import { addAlert, removeAlert } from './ui';
+import { updateBounds, centerMap, addAlert, removeAlert } from './ui';
 import moment from "moment";
 
+export const centerPointOnMap = (segmentId, index) => {
+  return (dispatch, getState) => {
+    const { lat, lon } = getState()
+      .get('tracks').get('segments').get(segmentId).get('points').get(index);
+    dispatch(centerMap(lat, lon));
+  }
+}
 
 export const extendSegment = (segmentId, index, lat, lon) => {
   return {
@@ -122,9 +129,9 @@ export const joinSegment = (segmentId, index, details) => {
 }
 
 export const fitSegment = (segmentId) => {
-  return {
-      segmentId,
-      type: FIT_SEGMENT
+  return (dispatch, getState) => {
+    const bounds = getState().get('tracks').get('segments').get(segmentId).get('bounds');
+    dispatch(updateBounds(bounds));
   }
 }
 

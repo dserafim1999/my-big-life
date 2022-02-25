@@ -1,10 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import Card from "../Card";
-import TrackInfo from './TrackInfo';
-
-import CircleIcon from '@mui/icons-material/Circle';
+import Track from './Track';
 
 const segmentStartTime = (segment) => {
   return segment.get('points').get(0).get('time');
@@ -29,7 +26,9 @@ let TrackList = ({ dispatch, tracks, segments, className, step }) => {
                       })
                       .map((track, i) => {
                         const trackSegments = track.get('segments').map((id) => segments.get(id));
-                        return <TrackInfo dispatch={dispatch} track={track} segments={trackSegments} key={i} />
+                        const segmentCount = trackSegments.count();
+                        const pointCount = trackSegments.reduce((x, segment) => x + segment.pointCount(), 0);
+                        return <Track trackId={track.get('id')} segmentCount={segmentCount} pointCount={pointCount} key={i} />
                       })
                 }
             </ul>
