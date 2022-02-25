@@ -19,9 +19,9 @@ const SegmentInfo = ({ dispatch, segment }) => {
   const end = segment.get('points').get(-1).get('time');
   const display = segment.get('display');
   const color = segment.get('color');
-  const metrics = segment.get('metrics').toJS();
+  const metrics = segment.get('metrics');
 
-  let distance = metrics.totalDistance;
+  let distance = metrics.distance;
   let avrgVel = metrics.averageVelocity;
 
   const centerOnPoint = (index) => {

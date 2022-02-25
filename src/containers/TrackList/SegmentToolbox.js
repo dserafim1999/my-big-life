@@ -50,7 +50,7 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
     const splitting = segment.get('splitting');
     const joining = segment.get('joining');
     const pointDetails = segment.get('pointDetails');
-    const bounds = segment.get('bounds').toJS();
+    const bounds = segment.get('bounds');
     const showTimeFilter = segment.get('showTimeFilter');
     const filterStart = segment.get('timeFilter').get(0);
     const filterEnd = segment.get('timeFilter').get(1);
@@ -100,7 +100,7 @@ let SegmentToolbox = ({ dispatch, segment, isPopup=false }) => {
             if (!splitting) {
               const action = addAlert((
                 <div>
-                  <div>Spliting is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
+                  <div>Splitting is only possible at certain zoom levels. Zoom in if you can't see any markers.</div>
                   <div>Click on a marker to split the segment</div>
                 </div>
               ), 'success', INFO_TIME, ref);

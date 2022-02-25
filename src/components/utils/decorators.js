@@ -136,7 +136,7 @@ const TimeSpan = (props) => {
   const { timezone } = Entity.get(props.entityKey).getData();
 
   return (
-    <span onMouseEnter={() => console.log(timezone)} style={style} {...props}>{props.children}</span>
+    <span onMouseEnter={() => console.log(timezone)} style={style}>{props.children}</span>
   );
 }
 

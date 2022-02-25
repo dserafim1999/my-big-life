@@ -1,4 +1,4 @@
-import { createTrackObj } from "./utils";
+import { createTrackObj } from "../records";
 import segments from "./segments";
 import { Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
