@@ -9,7 +9,9 @@ import {
   CENTER_MAP,
   DEHIGHLIGHT_SEGMENT,
   HIGHLIGHT_SEGMENT,
-  TOGGLE_CONFIG
+  TOGGLE_CONFIG,
+  HIGHLIGHT_POINT,
+  DEHIGHLIGHT_POINT
 } from "."
 
 import { min, max } from "../utils";
@@ -99,6 +101,16 @@ export const highlightSegment = (segmentsIds) => ({
 export const dehighlightSegment = (segmentsIds) => ({
   segmentsIds,
   type: DEHIGHLIGHT_SEGMENT
+})
+
+export const highlightPoint = (points) => ({
+  points,
+  type: HIGHLIGHT_POINT
+})
+
+export const dehighlightPoint = (points) => ({
+  points,
+  type: DEHIGHLIGHT_POINT
 })
 
 export const toggleConfig = () => {

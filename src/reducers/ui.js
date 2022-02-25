@@ -12,10 +12,16 @@ import {
   DEHIGHLIGHT_SEGMENT,
   TOGGLE_CONFIG,
   ADD_POINT_PROMPT,
-  REMOVE_POINT_PROMPT
+  REMOVE_POINT_PROMPT,
+  HIGHLIGHT_POINT,
+  DEHIGHLIGHT_POINT
 } from '../actions';
 
-const initialState = fromJS({ highlighted: Set([]), alerts: [] });
+const initialState = fromJS({
+  highlightedPoints: [],
+  highlighted: Set([]),
+  alerts: []
+});
 
 const ui = (state = initialState, action) => {
     switch (action.type) {
@@ -64,6 +70,18 @@ const ui = (state = initialState, action) => {
         return state.update('highlighted', (highlighted) => {
           return action.segmentsIds.reduce((highlighted, segId) => {
             return highlighted.delete(segId);
+          }, highlighted);
+        });
+      case HIGHLIGHT_POINT:
+        return state.update('highlightedPoints', (highlighted) => {
+          return action.points.reduce((highlighted, point) => {
+            return highlighted.push(point);
+          }, highlighted);
+        });
+      case DEHIGHLIGHT_POINT:
+        return state.update('highlightedPoints', (highlighted) => {
+          return action.points.reduce((highlighted, point) => {
+            return highlighted.remove(highlighted.indexOf(point));
           }, highlighted);
         });
       case TOGGLE_CONFIG:
