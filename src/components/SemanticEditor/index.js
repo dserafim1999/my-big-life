@@ -7,6 +7,8 @@ import decorate from './decorate';
 import { selectNextEntity } from './selectNextEntity';
 
 import SuggestionBox from '../SuggestionBox';
+import WarningIcon from '@mui/icons-material/Warning';
+import { Tooltip } from '@mui/material';
 
 class SemanticEditor extends Component {
   constructor (props) {
@@ -157,19 +159,44 @@ class SemanticEditor extends Component {
     const { selected, list, show, box: { left, top } } = suggestions;
 
     return (
-      <div>
-        <Editor
-          editorState={editorState}
-          onChange={this.onChange.bind(this)}
-          stripPastedStyles={true}
-          onDownArrow={this.onDownArrow.bind(this)}
-          onUpArrow={this.onUpArrow.bind(this)}
-          handleReturn={this.onReturn.bind(this)}
-          onEscape={this.onEsc.bind(this)}
-          onTab={this.onTab.bind(this)}
-          ref={this.editorRef}
-          spellcheck={false}
-        />
+      <div style={{ display: 'flex', fontFamily: 'monospace' }}>
+        <div style={{ display: 'flex' }}>
+          <ol style={{ paddingRight: '6px' }}>
+            {
+              editorState.getCurrentContent().getBlockMap().keySeq().map((blockKey, i) => {
+                const block = document.querySelector('[data-offset-key="' + blockKey + '-0-0"][data-block=true]');
+                const stl = {};
+                if (block) {
+                  stl.height = block.offsetHeight + 'px';
+                }
+                i++;
+                return (
+                  <li style={{ color: '#d3d6db', textAlign: 'right', ...stl }}>
+                    {
+                      this.warning && this.warning.location.start.line === i
+                        ? <Tooltip title={this.warning.message} placement="top" arrow><WarningIcon color='#fcda73'/></Tooltip>
+                        : i
+                    }
+                  </li>
+                );
+              })
+            }
+          </ol>
+        </div>
+        <div style={{ display: 'flex' }}>
+          <Editor
+            editorState={editorState}
+            onChange={this.onChange.bind(this)}
+            stripPastedStyles={true}
+            onDownArrow={this.onDownArrow.bind(this)}
+            onUpArrow={this.onUpArrow.bind(this)}
+            handleReturn={this.onReturn.bind(this)}
+            onEscape={this.onEsc.bind(this)}
+            onTab={this.onTab.bind(this)}
+            ref={this.editorRef}
+            spellcheck={false}
+          />
+        </div>
         <SuggestionBox
           left={left}
           top={top}
