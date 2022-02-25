@@ -54,6 +54,16 @@ export default class PerfMap extends Component {
      */
     this.segments = {};
     this.pointHighlights = [];
+    this.fitBounds = null;
+    this.updateFitBounds();
+  }
+
+  updateFitBounds () {
+    const floatContainer = document.querySelector('#float-container');
+    const left = floatContainer ? floatContainer.offsetWidth : 0;
+    this.fitBounds = {
+      paddingTopLeft: [left, 0]
+    };
   }
 
   componentDidMount () {
@@ -63,6 +73,8 @@ export default class PerfMap extends Component {
     this.map = map(m, {
       // bounds: this.props.bounds
       zoomControl: false,
+      zoomDelta: 0.4,
+      zoomSnap: 0.4,
       minZoom: 2,
       maxBounds: world,
       maxBoundsViscosity: 1
@@ -79,7 +91,7 @@ export default class PerfMap extends Component {
 
     setupTileLayers(this.map);
 
-    this.map.fitWorld();
+    this.map.fitWorld(this.fitBounds);
     this.map.on('zoomend', this.onZoomEnd.bind(this));
   }
 
@@ -112,6 +124,8 @@ export default class PerfMap extends Component {
     if (canRedo !== prev.canRedo) {
       this.map.buttons.setEnabled(1, canRedo);
     }
+
+    this.updateFitBounds();
 
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
@@ -308,7 +322,10 @@ export default class PerfMap extends Component {
       tBounds = latLngBounds(bounds.toJS());
     }
     if (bounds !== prev) {
-      this.map.fitBounds(tBounds);
+      this.map.fitBounds(tBounds, {
+        ...this.fitBounds,
+        maxZoom: this.map.getBoundsZoom(tBounds, true)
+      });
     }
   }
 

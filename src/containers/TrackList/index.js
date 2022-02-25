@@ -41,7 +41,6 @@ let TrackList = ({ dispatch, tracks, segments, className, step }) => {
         } else {
           message = (
             <div style={{ width: '70%' }}>
-              <CircleIcon color="rgb(191, 191, 191)"/>
               There are no more files in the input folder
             </div>
           );
