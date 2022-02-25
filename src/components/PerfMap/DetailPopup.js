@@ -194,7 +194,7 @@ class EditPoint extends Component {
             {
               editable
               ? <input type='number' className='input is-small' value={lat} onChange={this.onChange.bind(this, 'lat')} />
-              : lat
+              : <div style={{ fontSize: '1.1rem' }}>{lat}</div>
             }
           </div>
         </div>
@@ -206,7 +206,7 @@ class EditPoint extends Component {
             {
               editable
               ? <input type='number' className='input is-small' value={lon} onChange={this.onChange.bind(this, 'lon')} />
-              : lon
+              : <div style={{ fontSize: '1.1rem' }}>{lon}</div>
             }
           </div>
         </div>
@@ -229,7 +229,7 @@ class EditPoint extends Component {
                     onBlur={this.validateDate.bind(this)}
                     step={1} />
                   )
-                : datetime
+                : <div style={{ fontSize: '1.1rem' }}>{datetime}</div>
             }
           </div>
         </div>
