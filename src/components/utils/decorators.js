@@ -8,13 +8,13 @@ import {
 
 const TimeSpan = (props) => {
   const { dispatch, references } = Entity.get(props.entityKey).getData();
-  const segmentsToHighlight = [references.from, references.to].filter((x) => x).map((x) => x.segmentId);
+  //const segmentsToHighlight = [references.from, references.to].filter((x) => x).map((x) => x.segmentId);
 
   const onMouseEnter = () => {
-    dispatch(highlightSegment(segmentsToHighlight));
+    //dispatch(highlightSegment(segmentsToHighlight));
   }
   const onMouseLeave = () => {
-    dispatch(dehighlightSegment(segmentsToHighlight));
+    //dispatch(dehighlightSegment(segmentsToHighlight));
   }
 
   return (

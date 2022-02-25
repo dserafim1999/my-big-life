@@ -12,7 +12,7 @@ const segmentsToJson = (state) => {
       points: segment.get('points'),
       name: segment.get('name')
     }
-  }).toJS()
+  }).toJS();
 }
 
 export const handleError = (error, dispatch) => {
@@ -35,13 +35,13 @@ export const getConfig = (cb) => {
     return fetch(getState().get('progress').get('server') + '/config', options)
       .then((response) => response.json())
       .then((config) => {
-        dispatch(updateConfig(config))
-      })
+        dispatch(updateConfig(config));
+    });
   }
 }
 
 export const saveConfig = (config) => {
-  config._ = null
+  config._ = null;
   return (dispatch, getState) => {
     const options = {
       method: 'POST',
@@ -53,14 +53,14 @@ export const saveConfig = (config) => {
       .catch((err) => {
         dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
         throw err;
-      })
-      .then((config) => {
+    })
+    .then((config) => {
         dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
         if (getState().get('progress').get('step') < 0) {
           dispatch(requestServerState());
         }
         dispatch(toggleConfig());
-      })
+    });
   }
 }
 
@@ -84,7 +84,7 @@ export const loadLIFE = (content) => {
     }
     return fetch(getState().get('progress').get('server') + '/loadLIFE', options)
       .catch((e) => console.error(e))
-      .then((response) => response.json())
+      .then((response) => response.json());
   }
 }
 
@@ -142,10 +142,10 @@ export const requestServerState = () => {
       .then((response) => response.json())
       .catch((err) => {
         handleError(err, dispatch);
-      })
-      .then((json) => {
+    })
+    .then((json) => {
         updateState(dispatch, json, getState)
-      })
+    });
   }
 }
 
@@ -160,13 +160,13 @@ export const previousStep = () => {
       .catch((err) => console.log(err))
       .then((json) => {
         updateState(dispatch, json, getState, true);
-      })
+      });
   }
 }
 
 export const nextStep = () => {
   return (dispatch, getState) => {
-    const hasLIFE = getState().get('tracks').get('LIFE')
+    const hasLIFE = getState().get('tracks').get('LIFE');
     const options = {
       method: 'POST',
       mode: 'cors',
@@ -177,7 +177,7 @@ export const nextStep = () => {
         },
         LIFE: hasLIFE ? hasLIFE.get('text') : null,
         changes: getState().get('tracks').get('history').get('past').map((undo) => {
-          return { ...undo, undo: null }
+          return { ...undo, undo: null };
         })
       })
     }
@@ -185,8 +185,8 @@ export const nextStep = () => {
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => {
-        updateState(dispatch, json, getState)
-      })
+        updateState(dispatch, json, getState);
+      });
   }
 }
 
@@ -200,16 +200,16 @@ export const removeTracksFor = (segments, name) => {
 
 export const redo = () => {
   return (dispatch, getState) => {
-    const state = getState().get('tracks')
-    let toPut = state.get('history').get('future').get(-1)
+    const state = getState().get('tracks');
+    let toPut = state.get('history').get('future').get(-1);
     if (toPut) {
-      toPut.undo = null
+      toPut.undo = null;
       dispatch({
         type: REDO
-      })
-      return dispatch(toPut)
+      });
+      return dispatch(toPut);
     } else {
-      return state
+      return state;
     }
   }
 }
@@ -260,5 +260,19 @@ export const bulkProcess = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
+export const getLocationSuggestion = (point) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('progress').get('server');
+    return fetch(addr + '/location?lat=' + point.get('lat') + '&lon=' + point.get('lon'), options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((location) => location.other.map((x) => x.label));
   }
 }

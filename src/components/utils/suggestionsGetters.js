@@ -3,20 +3,28 @@ import {
   updateTransportationMode,
   selectPointInMap,
   deselectPointInMap
-} from '../../actions/segments'
+} from '../../actions/segments';
+
+import {
+  getLocationSuggestion
+} from '../../actions/progress';
 
 const filterSuggestions = (text, suggestions) => {
-  let filtered = suggestions.filter((s) => s.match(text))
-  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase())
-  filtered = filtered.length === 0 ? suggestions : filtered
-  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase())
-  return filtered
+  let filtered = suggestions.filter((s) => s.match(text));
+  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase());
+  filtered = filtered.length === 0 ? suggestions : filtered;
+  filtered = filtered.filter((s) => s.toLowerCase() !== text.toLowerCase());
+  return filtered;
 }
 
 const createPlaceSuggestions = (index) => (
   {
     type: 'TEXT',
     getter: (text, data, callback) => {
+      const { dispatch, references } = data;
+      dispatch(getLocationSuggestion(references.point))
+        .then((response) => callback(filterSuggestions(data.value, response)));
+      // getLocationSuggestion(references)
       // const from = data.segment.get('locations').get(index)
       // if (from) {
       //   return callback(filterSuggestions(data.value, from.get('other').map((l) => l.get('label')).toJS()))
@@ -25,7 +33,7 @@ const createPlaceSuggestions = (index) => (
       // }
     },
     setter: (text, data) => {
-      // const { dispatch, segment } = data
+      const { dispatch, segment } = data;
       // dispatch(updateLocationName(segment.get('id'), text, !index))
     }
   }

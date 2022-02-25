@@ -39,8 +39,8 @@ const StyleMappings = {
   'Trip': (trip, content, lineKeys, more) => {
     const refs = { ...more, references: trip.references };
     content = StyleMappings['Timespan'](trip.timespan, content, lineKeys, refs);
-    content = StyleMappings['LocationFrom'](trip.locationFrom, content, lineKeys, refs);
-    content = StyleMappings['Location'](trip.locationTo, content, lineKeys, refs);
+    content = StyleMappings['LocationFrom'](trip.locationFrom, content, lineKeys, { ...more, references: trip.references.from });
+    content = StyleMappings['Location'](trip.locationTo, content, lineKeys, { ...more, references: trip.references.to });
     trip.tmodes.forEach((tmode) => {
       content = StyleMappings[tmode.type](tmode, content, lineKeys, refs);
     })
