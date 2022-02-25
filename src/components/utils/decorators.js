@@ -1,24 +1,32 @@
-import React from 'react'
-import { Entity } from 'draft-js'
+import React from 'react';
+import { Entity } from 'draft-js';
 
 import {
   highlightSegment,
   dehighlightSegment
-} from '../../actions/ui'
+} from '../../actions/ui';
 
 const TimeSpan = (props) => {
   const onMouseEnter = () => {
-    const { dispatch, segment } = Entity.get(props.entityKey).getData()
-    dispatch(highlightSegment(segment.get('id')))
+    const { dispatch, references } = Entity.get(props.entityKey).getData();
+    if (Array.isArray(references)) {
+      // dispatch(highlightSegment(segment.get('id')));
+    } else {
+      dispatch(highlightSegment(references));
+    }
   }
   const onMouseLeave = () => {
-    const { dispatch, segment } = Entity.get(props.entityKey).getData()
-    dispatch(dehighlightSegment(segment.get('id')))
+    const { dispatch, references } = Entity.get(props.entityKey).getData();
+    if (Array.isArray(references)) {
+      // dispatch(highlightSegment(segment.get('id')));
+    } else {
+      dispatch(dehighlightSegment(references));
+    }
   }
 
   return (
     <span onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter} onClick={() => (console.log(Entity.get(props.entityKey).getData()))} className='clickable' style={{ backgroundColor: '#42afe3', color: 'white', padding: '3px 5px 3px 5px', borderRadius: '3px' }} {...props}>{props.children}</span>
-  )
+  );
 }
 
 const getEntityStrategy = (type) => {
@@ -27,12 +35,12 @@ const getEntityStrategy = (type) => {
       (character) => {
         const entityKey = character.getEntity()
         if (entityKey === null) {
-          return false
+          return false;
         }
-        return Entity.get(entityKey).getType() === type
+        return Entity.get(entityKey).getType() === type;
       },
       callback
-    )
+    );
   }
 }
 
@@ -60,5 +68,9 @@ export default [
   {
     strategy: getEntityStrategy('Semantic'),
     component: TimeSpan
+  },
+  {
+    strategy: getEntityStrategy('Day'),
+    component: TimeSpan
   }
-]
+];
