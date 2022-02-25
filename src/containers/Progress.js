@@ -1,7 +1,7 @@
 import React from 'react'
 import { ADJUST_STAGE, PREVIEW_STAGE, ANNOTATE_STAGE } from '../constants'
 import { connect } from 'react-redux'
-import TrackList from './TrackList'
+import TrackList from './TrackRepresentation/TrackList'
 import SemanticEditor from '../components/SemanticEditor.js'
 import { 
   nextStep, 
