@@ -1,4 +1,4 @@
-import peg from 'pegjs'
+import peg from 'pegjs';
 
 const simpleParserString = String.raw`
 {
@@ -60,13 +60,12 @@ Stay
   return { type: 'Stay', timespan, location, comment, details }
   }
 /*
-
 First
   = day:DayDate nl? value:Start { return { day, value } }
   / value:Start { return { day: undefined, value } }
 
 Start
-= h:OneOf nl? r:Start { return [h, ...r] }
+  = h:OneOf nl? r:Start { return [h, ...r] }
   / nl r:Start { return r }
   / h:OneOf { return [h] }
   / nl { return [] }
@@ -80,9 +79,7 @@ OneOf
   = Trip
   / Stay
   / Comment
-
 */
-
 Timespan
   = start:Time "-" finish:Time ":" {
   return d('Timespan', { start, finish } , { length: start.marks.length + finish.marks.length + 1 })
@@ -93,13 +90,13 @@ Time
 
 Trip
   = timespan:Timespan _ locationFrom:LocationFrom _ locationTo:Location details:Details* comment:_ tmodes:TModes {
-    return { type: 'Trip', timespan, locationFrom, locationTo, details, comment, tmodes }
+  return { type: 'Trip', timespan, locationFrom, locationTo, details, comment, tmodes }
   }
 
 Location
   = [^\n\[\{;]* {
-    const value = text().trim()
-    return d('Location', { value }, { length: value.length })
+  const value = text().trim()
+  return d('Location', { value }, { length: value.length })
   }
 
 LocationFrom
@@ -110,6 +107,8 @@ LocationFrom
   / h:[^\n\[\{;] r:LocationFrom {
   return d('LocationFrom', { value: h + r.value }, { length: 1 + r.marks.length })
   }
+
+
 
 TMode
   = __ timespan:Timespan details:Details*  _ {
@@ -132,7 +131,6 @@ Semantic
 Details
   = _ r:Tag { return r }
   / _ r:Semantic { return r }
-
 _
   = Comment
   / [ \t]*
@@ -141,7 +139,7 @@ __
   = [ \t]+
 
 Comment
-  = ';' r:[^\n]* { return d('Comment', {value: r.join('')} }
+  = ';' r:[^\n]* { return d('Comment', {value: r.join('')}) }
 `
 
-export default peg.generate(simpleParserString, { cache: true })
+export default peg.generate(simpleParserString, { cache: true });

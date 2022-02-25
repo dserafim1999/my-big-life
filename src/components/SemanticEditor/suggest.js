@@ -24,10 +24,13 @@ export default (editorState, getter, stateSetter, refs, tsuggestions) => {
     if (suggestionGetter) {
       const { getter, setter, disposer } = suggestionGetter;
 
+      tsuggestions.show = false;
+      stateSetter(tsuggestions);
+
       getter(value, entity.getData(), (suggestions) => {
         // const show = hide ? false : (suggestions.length > 0) && shouldShow
-        const show = (suggestions.length > 0) || shouldShow;
-        console.log(show, suggestions.length > 0, shouldShow);
+        const show = (suggestions.length > 0) && shouldShow;
+        
         let ranges = [];
         block.findEntityRanges((c) => c.getEntity() === entityKey, (begin, end) => ranges.push({ begin, end }));
         const { begin, end } = ranges[0];

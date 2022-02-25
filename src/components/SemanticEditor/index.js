@@ -4,6 +4,7 @@ import { Editor, Modifier, CompositeDecorator, EditorState, SelectionState } fro
 import suggest from './suggest';
 
 import decorate from './decorate';
+import { selectNextEntity } from './selectNextEntity';
 
 import SuggestionBox from '../SuggestionBox';
 
@@ -115,7 +116,7 @@ class SemanticEditor extends Component {
 
   onSuggestionSelect (suggestion) {
     const { editorState, suggestions } = this.state;
-    const { data, setter, details } = this.state.suggestions;
+    const { details } = this.state.suggestions;
     
     let range = SelectionState.createEmpty(details.key);
     range = range.merge({
@@ -139,46 +140,9 @@ class SemanticEditor extends Component {
 
   onTab (e) {
     e.preventDefault();
-    const { editorState } = this.state;
-
-    const sel = editorState.getSelection();
-    const startKey = sel.getStartKey();
-    const sindex = sel.getStartOffset();
-    let content = editorState.getCurrentContent();
-    const lineKey = content.getBlockMap().keySeq();
-    const line = lineKey.findIndex((lk) => lk === startKey);
-
-    const findBlockEntities = (block) => {
-      let ranges = [];
-      block.findEntityRanges((c) => c.getEntity() !== null, (begin, end) => ranges.push({ begin, end }));
-      return ranges;
-    }
-
-    lineKey.slice(line).find((lk) => {
-      const block = content.getBlockForKey(lk);
-      const index = lk === startKey ? sindex : 0;
-      let ranges = findBlockEntities(block);
-      const range = ranges.find((range) => range.begin > index);
-
-      // found a next entity to jump
-      if (range) {
-        const newSel = sel.merge({
-          anchorKey: lk,
-          focusKey: lk,
-          anchorOffset: range.begin,
-          focusOffset: range.begin
-        });
-        const editorState = EditorState.forceSelection(this.state.editorState, newSel);
-        this.onChange(editorState);
-
-        return true;
-      } else {
-        // if there are no tag or semantic information, initialize it
-        // if there is but is empty, remove
-      }
-
-      return false;
-    })
+    const backwards = e.shiftKey;
+    let { editorState } = this.state;
+    this.onChange(selectNextEntity(editorState, backwards));
   }
 
   onEsc () {

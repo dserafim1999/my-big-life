@@ -13,7 +13,7 @@ export default function findSuggestionBoxPosition (editorRef, last) {
   let sbLeft = 0
   let sbTop = 0
   if (_sel.rangeCount) {
-    const parent = getValidParent(_sel.baseNode).parentElement.parentElement
+    const parent = getValidParent(_sel.baseNode)
     const rect = parent.getBoundingClientRect()
     return {
       left: rect.left,
