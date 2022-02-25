@@ -1,5 +1,6 @@
 import React from 'react';
 import { Entity } from 'draft-js';
+import { Set } from 'immutable';
 
 import {
   highlightSegment,
@@ -8,110 +9,122 @@ import {
   dehighlightPoint
 } from '../../actions/ui';
 
+const SOLARIZED = {
+  YELLOW: '#b58900',
+  ORANGE: '#cb4b16',
+  RED: '#dc322f',
+  MAGENTA: '#d33682',
+  VIOLET: '#6c71c4',
+  BLUE: '#268bd2',
+  CYAN: '#2aa198',
+  GREEN: '#859900',
+  L15: '#002b36',
+  L20: '#073642',
+  L45: '#586e75',
+  L50: '#657b83',
+  L60: '#839496',
+  L65: '#93a1a1',
+  L92: '#eee8d5',
+  L97: '#fdf6e3'
+}
+
+
 const STYLES = {
   '_': {
     color: '#268bd2',
     backgroundColor: '#eef6fc',
     padding: '1px 2px 1px 2px',
     borderRadius: '4px',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    borderBottom: '1px solid #f0f1f2'
+  },
+  'Time': {
+    color: SOLARIZED.GREEN
   },
   'Comment': {
     color: 'rgba(128, 128, 128, 0.4)',
-    fontWeight: 'bold'
+    border: 0
+  },
+  'LocationFrom': {
+    color: SOLARIZED.CYAN
+  },
+  'Location': {
+    color: SOLARIZED.BLUE
+  },
+  'Timezone': {
+    color: SOLARIZED.L65
+  },
+  'Day': {
+    color: SOLARIZED.L50
+  },
+  'Tag': {
+    color: SOLARIZED.YELLOW
+  },
+  'Semantic': {
+    color: SOLARIZED.YELLOW
   }
-}
-
-const TimeSpan = (props) => {
-  const { dispatch, references } = Entity.get(props.entityKey).getData();
-  const segmentsToHighlight = references ? [references.from, references.to, references.segmentId].filter((x) => x).map((x) => x.segmentId) : [];
-  const onMouseEnter = () => {
-    if (references) {
-      const refs = references.point || references.to || references.from;
-      if (refs) {
-        dispatch(highlightPoint([refs.point || refs]));
-        dispatch(highlightSegment(segmentsToHighlight));
-      }
-    }
-  }
-  const onMouseLeave = () => {
-    if (references) {
-      const refs = references.point || references.to || references.from;
-      if (refs) {
-        dispatch(dehighlightPoint([refs.point || refs]));
-        dispatch(dehighlightSegment(segmentsToHighlight));
-      }
-    }
-  }
-
-  return (
-    <span
-      onMouseLeave={onMouseLeave}
-      onMouseEnter={onMouseEnter}
-      className='clickable'
-      style={STYLES._}
-    >{props.children}</span>
-  );
 }
 
 const extractReferences = (references) => {
-  let point, segmentId;
-  if (references) {
-    if (references.point) {
-      point = references.point;
-      segmentId = references.segmentId;
-    } else if (references.from || references.to) {
-      const { from, to } = references;
-      if (from) {
-        point = from.point;
-        segmentId = from.segmentId;
-      } else if (to) {
-        point = to.point;
-        segmentId = to.segmentId;
-      }
+  let points = []
+  let segments = []
+  references = references || {}
+  if (references.point) {
+    points = [references.point]
+    segments = [references.segmentId]
+  } else {
+    const { from, to } = references
+    if (from) {
+      points.push(from.point)
+      segments.push(from.segmentId)
+    }
+    if (to) {
+      points.push(to.point)
+      segments.push(to.segmentId)
     }
   }
-  return { segmentId, point };
+
+  return {
+    points,
+    segments: Set(segments).toJS()
+  }
 }
 
 const Reference = (props) => {
   const { dispatch, references } = Entity.get(props.entityKey).getData();
-  const { segmentId, point } = extractReferences(references);
+  const { segments, points } = extractReferences(references);
   const onMouseEnter = () => {
-    if (segmentId !== undefined) {
-      dispatch(highlightSegment([segmentId]));
+    if (segments.length > 0) {
+      dispatch(highlightSegment(segments));
     }
-    if (point) {
-      dispatch(highlightPoint([point]));
+    if (points.length > 0) {
+      dispatch(highlightPoint(points));
     }
   }
   const onMouseLeave = () => {
-    if (segmentId !== undefined) {
-      dispatch(dehighlightSegment([segmentId]));
+    if (segments.length > 0) {
+      dispatch(dehighlightSegment(segments));
     }
-    if (point) {
-      dispatch(dehighlightPoint([point]));
+    if (points.length > 0) {
+      dispatch(dehighlightPoint(points));
     }
   }
 
+  const type = Entity.get(props.entityKey).getType();
+  const typeStyles = STYLES[type] ? STYLES[type] : {};
+  const style = { ...STYLES._, ...typeStyles };
+
   return (
-    <a onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter} style={STYLES._} {...props}>{props.children}</a>
+    <a onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter} style={style}>{props.children}</a>
   );
 }
 
-const CommentComp = (props) => {
+const TokenSpan = (props) => {
+  const type = Entity.get(props.entityKey).getType();
+  const typeStyles = STYLES[type] ? STYLES[type] : {};
+  const style = { ...STYLES._, ...typeStyles };
   return (
-    <span
-      style={STYLES['Comment']}
-    >{props.children}</span>
-  );
-}
-
-const Day = (props) => {
-  return (
-    <span
-      style={STYLES['Comment']}
-    >{props.children}</span>
+    <span style={style}>{props.children}</span>
   );
 }
 
@@ -157,10 +170,14 @@ export default [
   },
   {
     strategy: getEntityStrategy('Day'),
-    component: Day
+    component: TokenSpan
   },
   {
     strategy: getEntityStrategy('Comment'),
-    component: CommentComp
+    component: TokenSpan
+  },
+  {
+    strategy: getEntityStrategy('Timezone'),
+    component: TokenSpan
   }
 ];

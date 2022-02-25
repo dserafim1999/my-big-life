@@ -36,6 +36,13 @@ const StyleMappings = {
   'LocationFrom': generalMapping,
   'Location': generalMapping,
   'Comment': generalMapping,
+  'Timezone': (timezone, content, lineKeys, more) => {
+    content = generalMapping(timezone, content, lineKeys, more)
+    if (timezone.comment) {
+      content = StyleMappings['Comment'](timezone.comment, content, lineKeys, more)
+    }
+    return content
+  },
   'Trip': (trip, content, lineKeys, more) => {
     const refs = { ...more, references: trip.references };
     content = StyleMappings['Timespan'](trip.timespan, content, lineKeys, refs);
@@ -46,7 +53,7 @@ const StyleMappings = {
     })
     trip.details.forEach((detail) => {
       content = StyleMappings[detail.type](detail, content, lineKeys, refs);
-    })
+    });
     return content;
   },
   'TMode': (tmode, content, lineKeys, more) => {
@@ -54,7 +61,10 @@ const StyleMappings = {
     content = StyleMappings['Timespan'](tmode.timespan, content, lineKeys, more);
     tmode.details.forEach((detail) => {
       content = StyleMappings[detail.type](detail, content, lineKeys, more);
-    })
+    });
+    if (tmode.comment) {
+      content = StyleMappings['Comment'](tmode.comment, content, lineKeys, more);
+    }
     return content;
   },
   'Timespan': (time, content, lineKeys, more) => {
