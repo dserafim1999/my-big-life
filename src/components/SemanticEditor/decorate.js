@@ -72,23 +72,23 @@ const StyleMappings = {
   }
 }
 
-const decorateAstRoot = (content, root, lineKeys) => {
+const decorateAstRoot = (content, root, lineKeys, more) => {
     content = StyleMappings['Day'](root.day, content, lineKeys);
     root.blocks.forEach((block) => {
-      content = StyleMappings[block.type](block, content, lineKeys, { /* dispatch */ })
+      content = StyleMappings[block.type](block, content, lineKeys, more);
     });
     return content;
   }
   
-  const decorateWithAst = (previousAst, text, content, lineKeys) => {
+  const decorateWithAst = (previousAst, text, content, lineKeys, segments, more) => {
     let ast;
     try {
-      ast = buildLifeAst(text);
+      ast = buildLifeAst(text, segments);
     } catch (e) {
       return [content, null, e];
     }
   
-    content = decorateAstRoot(content, ast, lineKeys);
+    content = decorateAstRoot(content, ast, lineKeys, more);
     return [content, ast, null];
   }
   
@@ -112,7 +112,7 @@ const decorate = (previousAst, editorState, segments, dispatch) => {
   });
   content = Modifier.applyEntity(content, ts, null);
 
-  const res = decorateWithAst(previousAst, text, content, lineKeys);
+  const res = decorateWithAst(previousAst, text, content, lineKeys, segments, { dispatch });
   content = res[0];
   ast = res[1];
   warning = res[2];

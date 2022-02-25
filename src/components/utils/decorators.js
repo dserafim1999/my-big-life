@@ -7,21 +7,14 @@ import {
 } from '../../actions/ui';
 
 const TimeSpan = (props) => {
+  const { dispatch, references } = Entity.get(props.entityKey).getData();
+  const segmentsToHighlight = [references.from, references.to].filter((x) => x).map((x) => x.segmentId);
+
   const onMouseEnter = () => {
-    const { dispatch, references } = Entity.get(props.entityKey).getData();
-    if (Array.isArray(references)) {
-      // dispatch(highlightSegment(references));
-    } else {
-      //dispatch(highlightSegment(references));
-    }
+    dispatch(highlightSegment(segmentsToHighlight));
   }
   const onMouseLeave = () => {
-    const { dispatch, references } = Entity.get(props.entityKey).getData();
-    if (Array.isArray(references)) {
-      // dispatch(highlightSegment(references));
-    } else {
-      //dispatch(dehighlightSegment(references));
-    }
+    dispatch(dehighlightSegment(segmentsToHighlight));
   }
 
   return (

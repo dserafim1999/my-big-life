@@ -11,13 +11,16 @@ import decorate from './decorate';
 class SemanticEditor extends Component {
   constructor (props) {
     super(props);
+    this.previousAst = null;
+    this.warning = null;
+    this.timeout = null;
+
     const editorRef = React.createRef();
     
     const { state, strategies } = this.props;
     const decorator = new CompositeDecorator(strategies);
-    const editorState = EditorState.createWithContent(state, decorator);
-
-    this.previousAst= null;
+    
+    const editorState = this.decorate(EditorState.createWithContent(state, decorator));
 
     this.state = {
       editorState
@@ -28,7 +31,21 @@ class SemanticEditor extends Component {
     if (prev.initial !== this.props.initial) {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
+    } else if (prev.segments !== this.props.segments) {
+      const editorState = this.decorate(this.state.editorState);
+      this.setState({editorState});
     }
+  }
+
+  decorate (editorState) {
+    let warning;
+    [editorState, this.previousAst, warning] = decorate(this.previousAst, editorState, this.props.segments, this.props.dispatch);
+    if (warning) {
+      this.warning = warning;
+    } else {
+      this.warning = null;
+    }
+    return editorState;
   }
 
   onChange (editorState) {
@@ -45,14 +62,10 @@ class SemanticEditor extends Component {
     }
 
     this.timeout = setTimeout(() => {
-      let warning;
-      [editorState, this.previousAst, warning] = decorate(this.previousAst, editorState);
-      if (warning) {
-        console.log(warning);
-      } 
-      this.setState({editorState})
-        this.timeout = null
-    }, 0);
+      editorState = this.decorate(editorState);
+      this.setState({editorState});
+      this.timeout = null;
+    }, 100);
   }
 
   render () {
