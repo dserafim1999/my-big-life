@@ -10,17 +10,17 @@ const TimeSpan = (props) => {
   const onMouseEnter = () => {
     const { dispatch, references } = Entity.get(props.entityKey).getData();
     if (Array.isArray(references)) {
-      // dispatch(highlightSegment(segment.get('id')));
+      // dispatch(highlightSegment(references));
     } else {
-      dispatch(highlightSegment(references));
+      //dispatch(highlightSegment(references));
     }
   }
   const onMouseLeave = () => {
     const { dispatch, references } = Entity.get(props.entityKey).getData();
     if (Array.isArray(references)) {
-      // dispatch(highlightSegment(segment.get('id')));
+      // dispatch(highlightSegment(references));
     } else {
-      dispatch(dehighlightSegment(references));
+      //dispatch(dehighlightSegment(references));
     }
   }
 
