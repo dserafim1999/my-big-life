@@ -269,4 +269,14 @@ export const updatePoint = (segmentId, index, lat, lon, time) => ({
   type: UPDATE_POINT
 })
   
-  
+export const getTransportationModesFor = (segmentId, startIndex) => {
+  return (_, getState) => {
+    const tmodes = getState().get('tracks').get('segments').get(segmentId).get('transportationModes');
+    for (let tmode of tmodes.values()) {
+      if (tmode.get('from') <= startIndex) {
+        return tmode.get('classification').entrySeq().sort((a, b) => (a[1] < b[1])).map((x) => x[0]).toJS();
+      }
+    }
+    return ['walk', 'vehicle', 'subway', 'airplane'];
+  }
+}
