@@ -3,7 +3,7 @@ import {
 } from '../records';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { List, Map, fromJS } from 'immutable';
-import { PointRecord } from 'records';
+import { PointRecord } from '../records';
 import moment from 'moment';
 
 const segmentStartTime = (segment) => {
