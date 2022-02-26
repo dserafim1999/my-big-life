@@ -4,7 +4,8 @@ import {
   TOGGLE_TRACK_RENAMING,
   UPDATE_TRACK_NAME,
   UPDATE_LIFE,
-  REMOVE_TRACK
+  REMOVE_TRACK,
+  DISPLAY_CANONICAL_TRIPS
 } from ".";
 
 import { Set } from 'immutable';
@@ -36,6 +37,11 @@ export const addMultipleTracks = (tracks, options) => {
     dispatch(fitSegments(...diff.toJS()));
   }
 }
+
+export const displayCanonicalTrips = (trips) => ({
+  trips,
+  type: DISPLAY_CANONICAL_TRIPS
+})
 
 export const toggleTrackRenaming = (trackId) => {
     return {

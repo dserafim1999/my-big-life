@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { 
-  toggleSegmentVisibility,
+import {
   toggleSegmentEditing,
   removeSegment,
   toggleSegmentSplitting,
@@ -31,14 +30,22 @@ const INFO_TIME = 100;
 const btnHighlight = 'icon-button is-success';
 const btn = 'icon-button';
 
-let SegmentButton = ({children, typeClass, description, onClick}) => {
-    return (
-        <a className={typeClass + ' button'} onClick={onClick}>    
-            <Tooltip title={description}  placement="top" arrow>  
-                { children }
-            </Tooltip>
-        </a>
-    );
+let SegmentButton = ({children, description, onClick, highlighted, disabled}) => {
+  const className = ['button', 'icon-button'];
+  if (highlighted) {
+    className.push('is-success', 'is-outlined');
+  }
+  if (disabled) {
+    className.push('is-disabled');
+  }
+  
+  return (
+      <a className={className.join(' ')} onClick={disabled ? null : onClick}>    
+          <Tooltip title={description}  placement="top" arrow>  
+              { children }
+          </Tooltip>
+      </a>
+  );
 }
 
 const EDIT_ALERT = (
@@ -99,31 +106,31 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
         <div>
             <div style={{ width: '100%' }} className='control has-addons'>
                 <Col>
-                    <SegmentButton typeClass={btn} description={'Focus on Segment'} onClick={fitToSegment}>
+                    <SegmentButton description={'Focus on Segment'} onClick={fitToSegment}>
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(editing ? btnHighlight : btn )} description={'Edit Segment'} onClick={toggleEditing}>
+                    <SegmentButton highlighted={editing} description={'Edit Segment'} onClick={toggleEditing}>
                         <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(pointDetails ? btnHighlight : btn )} description={'Inspect Points'} onClick={toggleDetails}>
+                    <SegmentButton highlighted={pointDetails} description={'Inspect Points'} onClick={toggleDetails}>
                         <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(splitting ? btnHighlight : btn )} description={'Split Segment'} onClick={toggleSplitting}>
+                    <SegmentButton highlighted={splitting} description={'Split Segment'} onClick={toggleSplitting}>
                         <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                                         
-                    <SegmentButton typeClass={(joining ? btnHighlight : btn )} description={'Join Segment'} onClick={toggleJoining}>
+                    <SegmentButton highlighted={joining} disabled={!start} description={'Join Segment'} onClick={toggleJoining}>
                         <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton typeClass={(showTimeFilter ? btnHighlight : btn )} description={'Filter Points by Time'} onClick={toggleTF}>
+                    <SegmentButton highlighted={showTimeFilter} disabled={!start} description={'Filter Points by Time'} onClick={toggleTF}>
                         <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                     
-                    <SegmentButton typeClass={btn} toggleable={false} description={'Delete Segment'} onClick={deleteSegment}>
+                    <SegmentButton toggleable={false} description={'Delete Segment'} onClick={deleteSegment}>
                         <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                 </Col>

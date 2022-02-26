@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
-import { DISPLAY_CANONICAL_TRIPS, REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
-import { fitSegments, toggleConfig } from './ui';
+import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
+import { fitSegments, fitTracks, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { addPossibilities } from '../actions/segments';
-import { clearAll } from '../actions/tracks';
+import { clearAll, displayCanonicalTrips } from '../actions/tracks';
 import { addAlert } from '../actions/ui';
 
 const segmentsToJson = (state) => {
@@ -277,11 +277,6 @@ export const getLocationSuggestion = (point) => {
   }
 }
 
-export const displayCanonicalTrips = (trips) => ({
-  trips,
-  type: DISPLAY_CANONICAL_TRIPS
-})
-
 export const loadCanonicalTrips = () => {
   return (dispatch, getState) => {
     const options = {
@@ -294,6 +289,8 @@ export const loadCanonicalTrips = () => {
       .catch((e) => console.error(e))
       .then((trips) => {
         dispatch(displayCanonicalTrips(trips));
+        dispatch(toggleConfig());
+        dispatch(fitTracks(0));
       });
   }
 }

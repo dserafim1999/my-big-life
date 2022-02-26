@@ -48,7 +48,7 @@ const POINT_DEFAULTS = {
   time: null
 }
 
-class PointRecord extends Record(POINT_DEFAULTS) {
+export class PointRecord extends Record(POINT_DEFAULTS) {
   distance (point, unit = 'km') {
     return haversine(
       point.get('lat'),
@@ -171,10 +171,12 @@ export class TrackRecord extends Record({
   id: -1,
   name: '',
   renaming: false,
-  segments: List([])
+  segments: Set([])
 }) {
   constructor (defaultValues) {
-    defaultValues.id = defaultValues.id || generateTrackId();
+    const { id } = defaultValues;
+    defaultValues.id = (id === undefined || id === null) ? id : generateTrackId();
+    defaultValues.segments = Set.isSet(defaultValues.segments) ? defaultValues.segments : Set(defaultValues.segments);
     super(defaultValues, 'Track');
   }
 }
