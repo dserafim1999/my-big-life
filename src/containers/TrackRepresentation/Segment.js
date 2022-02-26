@@ -6,9 +6,11 @@ import {
 
 import SegmentToolbox from './SegmentToolbox';
 
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
-import ClockIcon from '@mui/icons-material/AccessTime';
-import { display } from '@mui/system';
+
+import { toggleSegmentVisibility } from '../../actions/segments';
+import { Tooltip } from '@mui/material';
 
 const metricsStyle = {
   fontSize: '0.8rem',
@@ -27,7 +29,7 @@ const middleStatsDown = {
 
 const middleStatsUp = {
   ...middleStatsDown,
-  paddingTop: '1rem'
+  paddingTop: '0.5rem'
 }
 
 const middleStatsChild = {
@@ -54,9 +56,16 @@ const SegmentStartEnd = ({ dispatch, segmentId, index, time }) => {
 }
 
 const Segment = ({ dispatch, segmentId, points, start, end, display, color, metrics, distance, averageVelocity }) => {
+  const toggleTrack = () => dispatch(toggleSegmentVisibility(segmentId));
+  
   const style = {
     borderLeft: '10px solid ' + color,
-    paddingLeft: '2%'
+    paddingLeft: '2%',
+    opacity: display ? 1 : 0.5,
+  }
+
+  const fadeStyle = {
+    fontWeight: 200
   }
 
   return (
@@ -64,15 +73,21 @@ const Segment = ({ dispatch, segmentId, points, start, end, display, color, metr
       <div style={style}>
         <div>
           <div style={middleStatsUp} >
-            <CalendarIcon style={{ fontSize: '0.8rem', verticalAlign: 'baseline' }} /> {end.fromNow()}
-            <ClockIcon style={{ fontSize: '0.8rem', verticalAlign: 'baseline' }} /> {start.to(end, true)}
+            <CalendarIcon style={{ fontSize: '0.8rem', verticalAlign: 'baseline' }} /> {end.fromNow()} <span style={fadeStyle}> during </span> {start.to(end, true)}
           </div>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <SegmentStartEnd segmentId={segmentId} index={0} time={start} dispatch={dispatch} />
+
+            <a className={'icon-button button'} onClick={toggleTrack}>    
+              <Tooltip title={'Toggle Segment Visibility'}  placement="top" arrow>  
+                <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+              </Tooltip>
+            </a>
+
             <SegmentStartEnd segmentId={segmentId} index={-1} time={end} dispatch={dispatch} />
           </div>
           <div style={metricsStyle}>
-            {points.count()} points, { distance.toFixed(2) } km at { averageVelocity.toFixed(2) } km/h
+            { distance.toFixed(3) } km <span style={fadeStyle}>at</span> { averageVelocity.toFixed(2) } km/h
           </div>
         </div>
 

@@ -16,7 +16,6 @@ import {
 import { addAlert, removeAlert } from '../../actions/ui';
 import TimeSlider from '../../components/TimeSlider';
 
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
@@ -73,7 +72,6 @@ const toggleAlert = (dispatch, ref, alert, should) => {
 }
     
 let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joining, pointDetails, showTimeFilter, filterStart, filterEnd }) => {
-  const toggleTrack = () => dispatch(toggleSegmentVisibility(segmentId));
   
   const toggleEditing = () => {
     dispatch(toggleSegmentEditing(segmentId));
@@ -101,10 +99,6 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
         <div>
             <div style={{ width: '100%' }} className='control has-addons'>
                 <Col>
-                    <SegmentButton typeClass={btn} description={'Toggle Segment Visibility'} onClick={toggleTrack}>
-                        <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-                    </SegmentButton>
-
                     <SegmentButton typeClass={btn} description={'Focus on Segment'} onClick={fitToSegment}>
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>

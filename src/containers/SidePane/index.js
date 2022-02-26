@@ -76,7 +76,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         buttons = <NavigationButtons onPrevious={onPrevious} onNext={onNext} canProceed={canProceed} stage={stage} />;
     }
     return (
-        <Card width="425" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <Card width="350" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
             <ProgressBar state={stage}/>
 
             <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
