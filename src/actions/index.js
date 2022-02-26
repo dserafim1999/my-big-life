@@ -59,3 +59,5 @@ export const UNDO = 'progress/undo';
 export const REDO = 'progress/redo';
 export const UPDATE_CONFIG = 'progress/update_config';
 export const DISPLAY_CANONICAL_TRIPS = 'progress/canonical_trips';
+export const DISPLAY_CANONICAL_LOCATIONS = 'progress/canonical_locations';
+export const HIDE_CANONICAL = 'progress/hide_canonical';

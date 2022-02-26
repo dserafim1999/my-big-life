@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { addAlert, toggleRemainingTracks } from '../../actions/ui';
 import { nextStep, previousStep, bulkProcess, loadLIFE, reloadQueue } from '../../actions/progress';
+import { hideCanonical } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
@@ -23,7 +24,7 @@ const errorHandler = (dispatch, err, modifier) => {
     setTimeout(() => modifier(''), 2000);
 }
 
-let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segmentsCount }) => {
+let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segmentsCount, canonical }) => {
     const style = {
         height: '100%',
         display: 'flex',
@@ -75,10 +76,16 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
     );
 
     let buttons;
-    if (showList) {
-        buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />;
+    if (canonical) {
+        buttons = (
+          <a className='button is-primary' onClick={() => dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
+        );
     } else {
-        buttons = <NavigationButtons onPrevious={onPrevious} onNext={onNext} canProceed={canProceed} stage={stage} />;
+        if (showList) {
+            buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />
+        } else {
+            buttons = <NavigationButtons onPrevious={onPrevious} onNext={onNext} canProceed={canProceed} stage={stage} />
+        }
     }
     return (
         <Card width="350" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
@@ -99,6 +106,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
 const mapStateToProps = (state) => {
   return {
     stage: state.get('progress').get('step'),
+    canonical: state.get('tracks').get('canonical'),
     showList: state.get('ui').get('showRemainingTracks'),
     remainingCount: state.get('progress').get('remainingTracks').count(),
     canProceed: state.get('tracks').get('tracks').count() > 0,

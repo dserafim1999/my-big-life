@@ -3,7 +3,7 @@ import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from '
 import { fitSegments, fitTracks, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { addPossibilities } from '../actions/segments';
-import { clearAll, displayCanonicalTrips } from '../actions/tracks';
+import { clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
 import { addAlert } from '../actions/ui';
 
 const segmentsToJson = (state) => {
@@ -289,6 +289,24 @@ export const loadCanonicalTrips = () => {
       .catch((e) => console.error(e))
       .then((trips) => {
         dispatch(displayCanonicalTrips(trips));
+        dispatch(toggleConfig());
+        dispatch(fitTracks(0));
+      });
+  }
+}
+
+export const loadCanonicalLocations = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('progress').get('server');
+    return fetch(addr + '/canonicalLocations', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((trips) => {
+        dispatch(displayCanonicalLocations(trips));
         dispatch(toggleConfig());
         dispatch(fitTracks(0));
       });

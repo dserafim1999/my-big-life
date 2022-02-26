@@ -75,6 +75,7 @@ const displayCanonicalTrips = (state, action) => {
   }
 
   return state
+    .set('canonical', 'trips')
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => tracks.clear().set(canonicalTrack.id, canonicalTrack))
@@ -84,6 +85,43 @@ const displayCanonicalTrips = (state, action) => {
         return segments.set(segment.id, segment);
       }, segments);
     });
+}
+
+const displayCanonicalLocations = (state, action) => {
+  const { trips } = action;
+  const canonicalSegments = trips.map((trip, i) => {
+    return new SegmentRecord({
+      trackId: 0,
+      id: i,
+      label: trip.label,
+      color: colors(i),
+      points: pointsToRecord(trip.points)
+    });
+  })
+  const canonicalTrack = new TrackRecord({
+    id: 0,
+    segments: new List(canonicalSegments.map((trip) => trip.id))
+  });
+
+  if (!state.get('alternate')) {
+    state = state.set('alternate', state);
+  }
+
+  return state
+    .set('canonical', 'locations')
+    .updateIn(['history', 'past'], (past) => past.clear())
+    .updateIn(['history', 'future'], (future) => future.clear())
+    .updateIn(['tracks'], (tracks) => tracks.clear().set(canonicalTrack.id, canonicalTrack))
+    .updateIn(['segments'], (segments) => {
+      segments = segments.clear();
+      return canonicalSegments.reduce((segments, segment) => {
+        return segments.set(segment.id, segment);
+      }, segments);
+    });
+}
+
+const hideCanonical = (state, action) => {
+  return state.get('alternate');
 }
 
 const undo = (state, action) => {
@@ -138,6 +176,8 @@ const ACTION_REACTION = {
     'progress/undo': undo,
     'progress/redo': redo,
     'progress/canonical_trip': displayCanonicalTrips,
+    'progress/canonical_locations': displayCanonicalLocations,
+    'progress/hide_canonical': displayCanonicalTrips,
 }
 
 

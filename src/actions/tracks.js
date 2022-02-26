@@ -5,7 +5,9 @@ import {
   UPDATE_TRACK_NAME,
   UPDATE_LIFE,
   REMOVE_TRACK,
-  DISPLAY_CANONICAL_TRIPS
+  DISPLAY_CANONICAL_TRIPS,
+  DISPLAY_CANONICAL_LOCATIONS,
+  HIDE_CANONICAL
 } from ".";
 
 import { Set } from 'immutable';
@@ -41,6 +43,15 @@ export const addMultipleTracks = (tracks, options) => {
 export const displayCanonicalTrips = (trips) => ({
   trips,
   type: DISPLAY_CANONICAL_TRIPS
+})
+
+export const displayCanonicalLocations = (trips) => ({
+  trips,
+  type: DISPLAY_CANONICAL_LOCATIONS
+})
+
+export const hideCanonical = () => ({
+  type: HIDE_CANONICAL
 })
 
 export const toggleTrackRenaming = (trackId) => {

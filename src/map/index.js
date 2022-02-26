@@ -41,7 +41,8 @@ const DEFAULT_PROPS = {
     minZoom: 2,
     maxBounds: new L.LatLngBounds([[90,-200],[-90,200]]),
     maxBoundsViscosity: 1
-  }
+  },
+  segmentsAreMarkers: true
 }
 
 export default class LeafletMap extends Component {
@@ -145,6 +146,19 @@ export default class LeafletMap extends Component {
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
+    this.shouldUpdateSegmentsArePoints(this.props, prev);
+  }
+
+  shouldUpdateSegmentsArePoints (current, previous) {
+    const { segmentsArePoints } = current;
+    if (segmentsArePoints !== previous.segmentsArePoints) {
+      Object.keys(this.segments).forEach((segment) => {
+        segment = this.segments[segment];
+        if (segment) {
+          segment.polyline.setStyle({ opacity: segmentsArePoints ? 0 : 1 });
+        }
+      })
+    }
   }
 
   shouldUpdatePrompt (current, previous) {
@@ -261,14 +275,14 @@ export default class LeafletMap extends Component {
   }
 
   onZoomEnd (e) {
-    const { detailLevel, decorationLevel } = this.props;
+    const { detailLevel, decorationLevel, segmentsArePoints } = this.props;
     const currentZoom = this.map.getZoom();
-    if (currentZoom >= detailLevel || currentZoom >= decorationLevel) {
+    if (currentZoom >= detailLevel || currentZoom >= decorationLevel || segmentsArePoints) {
       // add layers
       Object.keys(this.segments).forEach((s) => {
         if (this.segments[s]) {
           const { details, transportation, layergroup } = this.segments[s];
-          if (layergroup.hasLayer(details) === false && currentZoom >= detailLevel) {
+          if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
             layergroup.addLayer(details);
           }
 
@@ -282,7 +296,7 @@ export default class LeafletMap extends Component {
       Object.keys(this.segments).forEach((s) => {
         if (this.segments[s]) {
           const { details, transportation, layergroup } = this.segments[s];
-          if (layergroup.hasLayer(details) === true) {
+          if (layergroup.hasLayer(details) === true && !segmentsArePoints) {
             layergroup.removeLayer(details);
           }
 

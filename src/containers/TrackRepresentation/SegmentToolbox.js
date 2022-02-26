@@ -110,7 +110,7 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton highlighted={editing} description={'Edit Segment'} onClick={toggleEditing}>
+                    <SegmentButton highlighted={editing} description={'Edit Segment'} onClick={toggleEditing} disabled={!start}>
                         <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
@@ -118,7 +118,7 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
                         <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
 
-                    <SegmentButton highlighted={splitting} description={'Split Segment'} onClick={toggleSplitting}>
+                    <SegmentButton highlighted={splitting} description={'Split Segment'} onClick={toggleSplitting} disabled={!start}>
                         <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                                         
@@ -130,7 +130,7 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
                         <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                     
-                    <SegmentButton toggleable={false} description={'Delete Segment'} onClick={deleteSegment}>
+                    <SegmentButton toggleable={false} description={'Delete Segment'} onClick={deleteSegment} disabled={!start}>
                         <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
                     </SegmentButton>
                 </Col>
