@@ -35,20 +35,20 @@ export const STRAIGHT_SELECTED = 'segment/straight_selected';
 export const INTERPOLATED_TIME_SELECTED = 'segment/interpolated_time_selected';
 export const UPDATE_TRANSPORTATION_TIME = 'segment/update_transformation_time';
 
-export const UPDATE_BOUNDS = 'ui/bounds';
 export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
 export const SHOW_TRACK_DETAILS = 'ui/show_track_details';
-export const UPDATE_INTERNAL_BOUNDS = 'ui/internal_bounds'
 export const ADD_ALERT = 'ui/add_alert';
 export const REMOVE_ALERT = 'ui/remove_alert';
-export const CENTER_MAP = 'ui/center_map';
-export const HIGHLIGHT_SEGMENT = 'ui/highlight_segment';
-export const DEHIGHLIGHT_SEGMENT = 'ui/dehighlight_segment';
-export const HIGHLIGHT_POINT = 'ui/highlight_point';
-export const DEHIGHLIGHT_POINT = 'ui/dehighlight_point';
 export const TOGGLE_CONFIG = 'ui/toggle_config';
-export const ADD_POINT_PROMPT = 'ui/add_point_prompt';
-export const REMOVE_POINT_PROMPT = 'ui/remove_point_prompt';
+
+export const UPDATE_BOUNDS = 'map/bounds';
+export const CENTER_MAP = 'map/center_map';
+export const HIGHLIGHT_SEGMENT = 'map/highlight_segment';
+export const DEHIGHLIGHT_SEGMENT = 'map/dehighlight_segment';
+export const HIGHLIGHT_POINT = 'map/highlight_point';
+export const DEHIGHLIGHT_POINT = 'map/dehighlight_point';
+export const ADD_POINT_PROMPT = 'map/add_point_prompt';
+export const REMOVE_POINT_PROMPT = 'map/remove_point_prompt';
 
 export const REMOVE_TRACKS_FOR = 'progress/remove_track_for';
 export const ADVANCE_TO_ADJUST = 'progress/advance_adjust';

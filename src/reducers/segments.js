@@ -1,7 +1,5 @@
 import {
-  calculateBounds,
   createSegmentObj,
-  calculateMetrics
 } from '../records';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { List, Map, fromJS } from 'immutable';

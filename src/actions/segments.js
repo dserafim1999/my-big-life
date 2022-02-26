@@ -2,7 +2,6 @@ import {
   ADD_SEGMENT_POINT, 
   CHANGE_SEGMENT_POINT, 
   EXTEND_SEGMENT, 
-  FIT_SEGMENT, 
   JOIN_SEGMENT, 
   REMOVE_SEGMENT, 
   REMOVE_SEGMENT_POINT, 
@@ -26,12 +25,12 @@ import {
   INTERPOLATED_TIME_SELECTED,
   UPDATE_POINT,
   ADD_NEW_SEGMENT,
-  REMOVE_POINT_PROMPT,
-  ADD_POINT_PROMPT
 } from ".";
 
 import { completeTrip } from './progress';
-import { updateBounds, centerMap, addAlert, removeAlert } from './ui';
+import { addAlert, removeAlert } from './ui';
+import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
+
 import moment from "moment";
 
 export const centerPointOnMap = (segmentId, index) => {
@@ -73,24 +72,19 @@ export const addSegmentPoint = (segmentId, index, lat, lon) => {
 export const addNewSegment = (trackId) => {
   return (dispatch, getState) => {
     dispatch(addAlert('Click on the map to insert one point', 'success', 3, 'point-prompt'));
-    dispatch({
-      callback: (point) => {
-        point.time = moment();
+    dispatch(addPointPrompt((point) => {
+      point.time = moment();
 
-        dispatch({
-          trackId,
-          point,
-          type: ADD_NEW_SEGMENT
-        });
+      dispatch({
+        trackId,
+        point,
+        type: ADD_NEW_SEGMENT
+      });
 
-        dispatch({
-          type: REMOVE_POINT_PROMPT
-        });
+      dispatch(removePointPrompt());
 
-        dispatch(removeAlert(null, 'point-prompt'));
-      },
-      type: ADD_POINT_PROMPT
-    });
+      dispatch(removeAlert(null, 'point-prompt'));
+    }))
   }
 }
 

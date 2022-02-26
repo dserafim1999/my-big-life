@@ -54,16 +54,26 @@ export default class LeafletMap extends Component {
      */
     this.segments = {};
     this.pointHighlights = [];
-    this.fitBounds = null;
-    this.updateFitBounds();
   }
 
-  updateFitBounds () {
-    const floatContainer = document.querySelector('#float-container');
-    const left = floatContainer ? floatContainer.offsetWidth : 0;
-    this.fitBounds = {
-      paddingTopLeft: [left, 0]
-    };
+  getBoundsObj () {
+    const { fitBounds } = this.props;
+    if (typeof fitBounds === 'function') {
+      return fitBounds();
+    } else {
+      return fitBounds;
+    }
+  }
+
+  fitBounds (where) {
+    this.map.fitBounds(where, {
+      maxZoom: this.map.getBoundsZoom(where, true),
+      ...this.getBoundsObj()
+    });
+  }
+
+  fitWorld () {
+    this.map.fitWorld(this.getBoundsObj());
   }
 
   componentDidMount () {
@@ -91,7 +101,7 @@ export default class LeafletMap extends Component {
 
     setupTileLayers(this.map);
 
-    this.map.fitWorld(this.fitBounds);
+    this.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
   }
 
@@ -124,8 +134,6 @@ export default class LeafletMap extends Component {
     if (canRedo !== prev.canRedo) {
       this.map.buttons.setEnabled(1, canRedo);
     }
-
-    this.updateFitBounds();
 
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
@@ -322,10 +330,7 @@ export default class LeafletMap extends Component {
       tBounds = latLngBounds([[bounds.minLat, bounds.minLon], [bounds.maxLat, bounds.maxLon]]);
     }
     if (bounds !== prev) {
-      this.map.fitBounds(tBounds, {
-        ...this.fitBounds,
-        maxZoom: this.map.getBoundsZoom(tBounds, true)
-      });
+      this.fitBounds(tBounds);
     }
   }
 
@@ -393,7 +398,7 @@ export default class LeafletMap extends Component {
 
   render () {
     return (
-      <div id='map' ref={this.mapRef} style={{ height: '100%', zIndex: '1', position: 'absolute' }}></div>
+      <div id='map' ref={this.mapRef} style={{zIndex: 1, position: 'absolute', height: '100%'}}></div>
     );
   }
 }

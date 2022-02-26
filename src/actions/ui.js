@@ -16,6 +16,7 @@ import {
 
 import { getConfig } from "./progress";
 import { BoundsRecord } from '../records';
+import { updateBounds } from "./map";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -27,31 +28,6 @@ export const fitSegments = (...segmentIds) => {
     }, new BoundsRecord());
 
     dispatch(updateBounds(bounds));
-  }
-}
-
-export const updateBounds = (bounds) => {
-    return {
-      bounds,
-      type: UPDATE_BOUNDS
-    }
-}
-
-export const hideDetails = () => {
-  return {
-    type: HIDE_TRACK_DETAILS
-  }
-}
-export const showDetails = () => {
-  return {
-    type: SHOW_TRACK_DETAILS
-  }
-}
-
-export const updateInternalBounds = (bounds) => {
-  return {
-    bounds,
-    type: UPDATE_INTERNAL_BOUNDS
   }
 }
 
@@ -78,34 +54,6 @@ export const toggleRemainingTracks = () => {
     type: TOGGLE_REMAINING_TRACKS
   }
 }
-
-export const centerMap = (lat, lon) => {
-  return {
-    lat,
-    lon,
-    type: CENTER_MAP
-  }
-}
-
-export const highlightSegment = (segmentsIds) => ({
-  segmentsIds,
-  type: HIGHLIGHT_SEGMENT
-})
-
-export const dehighlightSegment = (segmentsIds) => ({
-  segmentsIds,
-  type: DEHIGHLIGHT_SEGMENT
-})
-
-export const highlightPoint = (points) => ({
-  points,
-  type: HIGHLIGHT_POINT
-})
-
-export const dehighlightPoint = (points) => ({
-  points,
-  type: DEHIGHLIGHT_POINT
-})
 
 export const toggleConfig = () => {
   const action = {
