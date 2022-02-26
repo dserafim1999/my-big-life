@@ -1,6 +1,6 @@
-import { createTrackObj } from "../records";
+import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj } from "../records";
 import segments from "./segments";
-import { Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 
 export const addTrack = (state, action) => {
@@ -54,6 +54,30 @@ const removeTracksFor = (state, action) => {
     return addTrack(state, act);
 }
 
+const displayCanonicalTrips = (state, action) => {
+  const { trips } = action;
+  const canonicalSegments = trips.filter((trip) => trip.points.length > 1).map((trip, i) => {
+    return new SegmentRecord({
+      trackId: 0,
+      id: trip.id,
+      points: pointsToRecord(trip.points)
+    });
+  });
+  const canonicalTrack = new TrackRecord({
+    segments: new List(canonicalSegments.map((trip) => trip.id))
+  });
+
+  state = state.set('alternate', state)
+    .updateIn(['tracks'], (tracks) => tracks.clear().set(canonicalTrack.id, canonicalTrack))
+    .updateIn(['segments'], (segments) => {
+      segments = segments.clear();
+      return canonicalSegments.reduce((segments, segment) => {
+        return segments.set(segment.id, segment);
+      }, segments);
+    });
+  return state;
+}
+
 const undo = (state, action) => {
   let toPut = state.get('history').get('past').get(-1);
   if (toPut) {
@@ -105,6 +129,7 @@ const ACTION_REACTION = {
     'progress/remove_track_for': removeTracksFor,
     'progress/undo': undo,
     'progress/redo': redo,
+    'progress/canonical_trip': displayCanonicalTrips,
 }
 
 

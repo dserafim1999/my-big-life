@@ -8,6 +8,18 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 
 const POINTS_PER_KB = 7.2;
 
+const GPXStyle = { paddingLeft: '1rem', fontSize: '0.9rem' };
+const GPXOfDay = ({ date, size }) => {
+  size = size / 1000;
+  date = moment(new Date(date));
+  const pointsPredicted = Math.floor(size * POINTS_PER_KB);
+  return (
+    <div style={GPXStyle}>
+      { date.format('LT') } • { Math.round(size) }kb • ~{ pointsPredicted } points
+    </div>
+  );
+}
+
 const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
   const mDate = moment(date);
   return (
@@ -17,12 +29,8 @@ const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
       </div>
       <div>
         {
-          gpxs.map((gpx, i) => {
-            const size = gpx.get('size') / 1000
-            const pointsPredicted = size * POINTS_PER_KB
-            return (
-              <div key={i} style={{ paddingLeft: '1rem', fontSize: '0.9rem' }}>{ moment(gpx.get('start')).format('LT') } • { Math.round(size) }kb • ~{ Math.floor(pointsPredicted) } points</div>
-            )
+          gpxs.map((gpx, key) => {
+            return <GPXOfDay key={key} date={gpx.get('start')} size={gpx.get('size')} />
           }).toJS()
         }
       </div>
@@ -72,8 +80,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
               }
             }}>
               <Day
-                date={day}
-                gpxs={gpxs}
+                date={day} gpxs={gpxs}
                 isSelected={selected === day} />
             </AsyncButton>
           )

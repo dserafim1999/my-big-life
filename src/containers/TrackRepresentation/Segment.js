@@ -46,13 +46,17 @@ const SegmentStartEnd = ({ dispatch, segmentId, index, time }) => {
       dispatch(centerPointOnMap(segmentId, index));
     }
   }
-  return (
-    <div className={'date-' + descr} onClick={centerOnPoint(index)}>
-      <div style={{ fontSize: '0.7rem', color: '#aaa' }}>{ descr }</div>
-      <div>{time.format('L')}</div>
-      <div>{time.format('LT')}</div>
-    </div>
-  )
+  if (time) {
+    return (
+      <div className={'date-' + descr} onClick={centerOnPoint(index)}>
+        <div style={{ fontSize: '0.7rem', color: '#aaa' }}>{ descr }</div>
+        <div>{time.format('L')}</div>
+        <div>{time.format('LT')}</div>
+      </div>
+    );
+  } else {
+    return (<div></div>);
+  }
 }
 
 const Segment = ({ dispatch, segmentId, points, start, end, display, color, metrics, distance, averageVelocity }) => {
@@ -73,7 +77,13 @@ const Segment = ({ dispatch, segmentId, points, start, end, display, color, metr
       <div style={style}>
         <div>
           <div style={middleStatsUp} >
-            <CalendarIcon style={{ fontSize: '0.8rem', verticalAlign: 'baseline' }} /> {end.fromNow()} <span style={fadeStyle}> during </span> {start.to(end, true)}
+            {
+              start && end
+              ? <>
+                  <CalendarIcon style={{ fontSize: '0.8rem', verticalAlign: 'baseline' }} /> {end.fromNow()} <span style={fadeStyle}> during </span> {start.to(end, true)}
+                </>
+              : null
+            }
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SegmentStartEnd segmentId={segmentId} index={0} time={start} dispatch={dispatch} />

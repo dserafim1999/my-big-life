@@ -58,3 +58,4 @@ export const TOGGLE_REMAINING_TRACKS = 'progress/toggle_remaining_tracks';
 export const UNDO = 'progress/undo';
 export const REDO = 'progress/redo';
 export const UPDATE_CONFIG = 'progress/update_config';
+export const DISPLAY_CANONICAL_TRIPS = 'progress/canonical_trips';
