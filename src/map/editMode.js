@@ -1,4 +1,3 @@
-import React from 'react';
 import { DivIcon, Polyline, FeatureGroup } from 'leaflet';
 import { createMarker, setupMarker } from './utils';
 

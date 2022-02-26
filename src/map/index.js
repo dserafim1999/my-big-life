@@ -1,4 +1,4 @@
-import { map, latLngBounds, LatLng } from 'leaflet';
+import { map, latLngBounds } from 'leaflet';
 import React, { Component } from 'react';
 import { Set } from 'immutable';
 import { findDOMNode } from 'react-dom';
@@ -9,14 +9,14 @@ import {
   addSegmentPoint,
   removeSegmentPoint,
   joinSegment
-} from '../../actions/segments';
+} from '../actions/segments';
 
 import {
   undo, 
   redo
-} from '../../actions/progress';
+} from '../actions/progress';
 
-import { toggleConfig } from '../../actions/ui'
+import { toggleConfig } from '../actions/ui'
 
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';
@@ -31,7 +31,7 @@ import buildTransportationModeRepresentation from './buildTransportationModeRepr
 import pointActionMode from './pointActionMode';
 import { createMarker, createPointIcon } from './utils';
 
-export default class PerfMap extends Component {
+export default class LeafletMap extends Component {
   constructor (props) {
     super(props);
 

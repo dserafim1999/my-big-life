@@ -1,5 +1,5 @@
 import React from 'react'
-import { FeatureGroup, Marker, DivIcon } from 'leaflet'
+import { FeatureGroup } from 'leaflet'
 import { renderToString } from 'react-dom/server'
 
 import StopIcon from '@mui/icons-material/Stop';

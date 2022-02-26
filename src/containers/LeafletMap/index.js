@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import PerfMap from "../../components/PerfMap";
+import PerfMap from "../../map";
 
 const mapStateToProps = (state) => {
   const history = state.get('tracks').get('history');
@@ -18,6 +18,6 @@ const mapStateToProps = (state) => {
   }
 }
   
-const Map = connect(mapStateToProps)(PerfMap);  
+const LeafletMap = connect(mapStateToProps)(PerfMap);  
 
-export default Map;
+export default LeafletMap;

@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import Map from "../Map";
+import LeafletMap from "../LeafletMap";
 
 import SideBar from "../../components/SideBar";
 import Dropzone from "../../components/Dropzone";
@@ -81,7 +81,7 @@ let MainContainer = ({ showConfig, dispatch, step }) => {
                 //<SideBar/>}
                 }
                 <SidePane/>
-                <Map/>
+                <LeafletMap/>
               </div>
               { showConfig ? <ConfigPane /> : null }
           </Router>
