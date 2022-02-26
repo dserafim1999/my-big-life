@@ -1,4 +1,3 @@
-import { diff } from 'deep-diff';
 import { EditorState, SelectionState, Modifier, Entity } from 'draft-js';
 import buildLifeAst from './buildLifeAst';
 

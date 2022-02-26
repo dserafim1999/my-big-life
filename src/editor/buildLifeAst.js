@@ -1,4 +1,4 @@
-import LIFEParser from '../utils/life.peg.js';
+import LIFEParser from './life.peg.js';
 import moment from 'moment';
 import { Map } from 'immutable';
 

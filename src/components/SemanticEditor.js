@@ -1,20 +1,16 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { fromJS } from 'immutable'
-import { ContentState } from 'draft-js'
-import SemanticEditor from './SemanticEditor/index.js'
+import React from 'react';
+import { connect } from 'react-redux';
+import { ContentState } from 'draft-js';
+import Editor from '../editor/index.js';
 
-import decorators from './utils/decorators'
-import suggestionsGetters from './utils/suggestionsGetters'
-import createTextRepresentation from './utils/createTextRepresentation'
-
-import { updateLIFE } from '../actions/tracks'
+import decorators from '../editor/decorators';
+import suggestionsGetters from '../editor/suggestionsGetters';
 
 let SE = ({ dispatch, segments, life }) => {
-  const state = ContentState.createFromText(life)
+  const state = ContentState.createFromText(life);
 
   return (
-    <SemanticEditor
+    <Editor
       state={ state }
       segments={ segments }
       dispatch={ dispatch }
@@ -25,17 +21,17 @@ let SE = ({ dispatch, segments, life }) => {
         //dispatch(updateLIFE(editorState.getCurrentContent().getPlainText()), warning)
       }}
     >
-    </SemanticEditor>
-  )
+    </Editor>
+  );
 }
 
 const mapStateToProps = (state) => {
     return {
       segments: state.get('tracks').get('segments'),
       life: state.get('progress').get('initLIFE') || ''
-    }
+    };
   }
   
-SE = connect(mapStateToProps)(SE)
+SE = connect(mapStateToProps)(SE);
 
-export default SE
+export default SE;

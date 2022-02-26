@@ -7,7 +7,6 @@ import { nextStep, previousStep, bulkProcess, loadLIFE, reloadQueue } from '../.
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
-import MultipleActionsButtons from '../../components/Buttons/MultipleActionsButtons';
 import PaneDrawer from '../../components/PaneDrawer';
 import PaneContent from '../../components/PaneContent';
 import ProgressBar from '../../components/ProgressBar';
@@ -82,14 +81,6 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
 
             <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
             <PaneContent showList={showList} stage={stage} />
-
-            {
-            /*
-                <MultipleActionsButtons
-                    onShowHide={onShowHide} onDownload={onDownload} onClear={onClear}
-                    segmentsCount={segmentsCount} stage={stage} />
-            */
-            }
 
             <div style={{ marginTop: '0.5rem' }}>
                 <div className='columns is-gapless' style={{ marginBottom: 0 }}>
