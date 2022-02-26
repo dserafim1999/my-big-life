@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { addAlert, toggleRemainingTracks } from '../../actions/ui';
-import { clearAll, downloadAll, showHideAll } from '../../actions/tracks';
 import { nextStep, previousStep, bulkProcess, loadLIFE, reloadQueue } from '../../actions/progress';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
@@ -30,9 +29,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         display: 'flex',
         flexDirection: 'column'
     };
-    const onShowHide = () => dispatch(showHideAll());
-    const onDownload = () => dispatch(downloadAll());
-    const onClear = () => dispatch(clearAll());
+    
     const toggleList = () => dispatch(toggleRemainingTracks());
 
     const onPrevious = (e, modifier) => {
@@ -69,6 +66,14 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
             })
     }
 
+    const progress = (
+        <ProgressBar state={stage}>
+          <span>Preview</span>
+          <span>Adjust</span>
+          <span>Annotate</span>
+        </ProgressBar>
+    );
+
     let buttons;
     if (showList) {
         buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />;
@@ -77,8 +82,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
     }
     return (
         <Card width="350" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-            <ProgressBar state={stage}/>
-
+            { progress }
             <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
             <PaneContent showList={showList} stage={stage} />
 

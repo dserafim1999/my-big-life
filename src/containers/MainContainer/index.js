@@ -20,7 +20,7 @@ import { undo, redo } from '../../actions/progress';
 import SidePane from "../SidePane";
 
 let MainContainer = ({ showConfig, dispatch, step }) => {
-  
+
   const onDrop = (e) => {
     let dt = e.dataTransfer
     let files = dt.files
