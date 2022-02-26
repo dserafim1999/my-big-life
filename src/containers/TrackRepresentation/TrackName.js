@@ -8,6 +8,7 @@ import {
 
 import CheckIcon from '@mui/icons-material/Check';
 import DownloadIcon from '@mui/icons-material/Download';
+import { Tooltip } from '@mui/material';
 
 const TrackName = ({ dispatch, trackId, renaming, name }) => {
   const updateName = (e) => {
@@ -30,9 +31,11 @@ const TrackName = ({ dispatch, trackId, renaming, name }) => {
     )
   } else {
     let downloadButton = (
-        <a className='float-right clickable icon' onClick={onDownload}>
-          <DownloadIcon />
-        </a>
+      <a className='float-right button icon-button column is-gapless is-text-centered' onClick={onDownload}>    
+            <Tooltip title={'Download Track'}  placement="top" arrow>  
+                <DownloadIcon/>
+            </Tooltip>
+      </a>
     );
       
     return (

@@ -16,10 +16,10 @@ import { loadFiles } from "../../GPXParser";
 import { FeaturesData } from "../../components/SideBar/FeaturesData";
 import AlertBox from "../AlertBox";
 
-import { nextStep, undo, redo } from '../../actions/progress';
-import Progress from '../Progress';
+import { undo, redo } from '../../actions/progress';
+import SidePane from "../SidePane";
 
-let MainContainer = ({ showConfig, dispatch, ...props }) => {
+let MainContainer = ({ showConfig, dispatch, step }) => {
   
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -36,16 +36,6 @@ let MainContainer = ({ showConfig, dispatch, ...props }) => {
       dispatch(addMultipleTracks(r));
     });
 
-  }
-
-  const onNext = (e) => {
-    dispatch(nextStep())
-      .then(() => {
-        console.log('hey')
-      })
-  }
-
-  const onPrevious = (e) => {
   }
 
   let metaDown = false
@@ -90,7 +80,7 @@ let MainContainer = ({ showConfig, dispatch, ...props }) => {
                 {
                 //<SideBar/>}
                 }
-                <Progress onNext={ onNext } onPrevious={ onPrevious } />
+                <SidePane/>
                 <Map/>
               </div>
               { showConfig ? <ConfigPane /> : null }
@@ -101,6 +91,7 @@ let MainContainer = ({ showConfig, dispatch, ...props }) => {
 
 const mapStateToProps = (state) => {
   return {
+    step: state.get('progress').get('step'),
     showConfig: state.get('ui').get('showConfig')
   }
 }

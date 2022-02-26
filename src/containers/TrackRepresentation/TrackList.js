@@ -7,7 +7,7 @@ const LOADING = <span className='button is-large is-loading' style={{ border: 0 
 
 const EMPTY_FOLDER = (
   <div style={{ width: '70%' }}>
-    There are no more files at the input folder
+    There are no more files in the input folder
   </div>
 );
 

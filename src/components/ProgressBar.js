@@ -1,20 +1,19 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
 
 let ProgressBar = ({ state, children }) => {
-  const none = {}
-  const active = { className: 'active' }
-  const highlight = { className: 'hl' }
-  const TIP_SIZE = 0
-  const width = ((100 - TIP_SIZE) / 5) + '%'
+  const none = {};
+  const active = { className: 'active' };
+  const highlight = { className: 'hl' };
+  const TIP_SIZE = 0;
+  const width = ((100 - TIP_SIZE) / 5) + '%';
 
   const selector = (current, index) => {
     if (current === index) {
-      return highlight
+      return highlight;
     } else if (current > index) {
-      return active
+      return active;
     } else {
-      return none
+      return none;
     }
   }
 
@@ -35,29 +34,29 @@ let ProgressBar = ({ state, children }) => {
         <span { ...selector(state, 2) }>Annotate</span>
       </div>
     </div>
-  )
+  );
 }
 
 const STEPS = [
   { name: 'Preview' },
   { name: 'Adjust' },
   { name: 'Annotate' }
-]
+];
 
 const ProgressBall = ({ style }) => {
   return (
     <div style={{ ...style, borderRadius: '50%' }}></div>
-  )
+  );
 }
 
 const ProgressRuler = ({ style }) => {
-  const _style = { flexGrow: 2, display: 'inline-block' }
+  const _style = { flexGrow: 2, display: 'inline-block' };
   return (
     <div style={_style}>
       <div style={{ backgroundColor: 'white', width: '110%', height: '5px', marginLeft: '-5%', ...style }}>
       </div>
     </div>
-  )
+  );
 }
 
 const BALL_STYLE = {
@@ -66,60 +65,60 @@ const BALL_STYLE = {
   display: 'inline-block',
   backgroundColor: 'white',
   zIndex: 100
-}
+};
 
 ProgressBar = ({ state, ballStyle, children }) => {
-  ballStyle = ballStyle || BALL_STYLE
-  const borderColor = '#97cd76'
+  ballStyle = ballStyle || BALL_STYLE;
+  const borderColor = '#97cd76';
 
-  const p = 20
-  const rulerBeforeStyle = { background: borderColor }
-  const rulerAfterStyle = { background: '#c3c3c3' }
-  const rulerSelectedStyle = { background: 'linear-gradient(to right, ' + borderColor + ' 0%,' + borderColor + ' ' + p + '%,#c3c3c3 ' + p + '%,#c3c3c3 100%)' }
+  const p = 20;
+  const rulerBeforeStyle = { background: borderColor };
+  const rulerAfterStyle = { background: '#c3c3c3' };
+  const rulerSelectedStyle = { background: 'linear-gradient(to right, ' + borderColor + ' 0%,' + borderColor + ' ' + p + '%,#c3c3c3 ' + p + '%,#c3c3c3 100%)' };
 
-  const ballAfterStyle = { ...ballStyle, border: '4px solid lightgrey', backgroundColor: 'white' }
-  const ballSelectedStyle = { ...ballStyle, border: '4px solid ' + borderColor, width: '20px', height: '20px' }
-  const ballBeforeStyle = { ...ballStyle, border: '4px solid ' + borderColor, backgroundColor: borderColor }
+  const ballAfterStyle = { ...ballStyle, border: '4px solid lightgrey', backgroundColor: 'white' };
+  const ballSelectedStyle = { ...ballStyle, border: '4px solid ' + borderColor, width: '20px', height: '20px' };
+  const ballBeforeStyle = { ...ballStyle, border: '4px solid ' + borderColor, backgroundColor: borderColor };
 
-  const labelBaseStyle = { color: 'rgba(0, 0, 0, 0.5)', fontWeight: 'bold' }
-  const labelBeforeStyle = labelBaseStyle
-  const labelAfterStyle = labelBeforeStyle
-  const labelSelectedStyle = { ...labelBaseStyle, color: 'black' }
+  const labelBaseStyle = { color: 'rgba(0, 0, 0, 0.5)', fontWeight: 'bold' };
+  const labelBeforeStyle = labelBaseStyle;
+  const labelAfterStyle = labelBeforeStyle;
+  const labelSelectedStyle = { ...labelBaseStyle, color: 'black' };
 
   const Spacer = ( i ) => {
-    <div style={{ flexGrow: 2 }} key={i}></div>
+    <div style={{ flexGrow: 2 }} key={i}></div>;
   }
 
   const _steps = STEPS.reduce((prev, step, i) => {
-    prev.push(step)
-    prev.push(null)
-    return prev
-  }, [null])
+    prev.push(step);
+    prev.push(null);
+    return prev;
+  }, [null]);
   const stepPointers = (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {
         _steps.map((step, i, arr) => {
           if (step) {
-            let stl = ballBeforeStyle
-            const s = (i / 2) - 0.5
+            let stl = ballBeforeStyle;
+            const s = (i / 2) - 0.5;
             if (state === s) {
-              stl = ballSelectedStyle
+              stl = ballSelectedStyle;
             } else if (state < s) {
-              stl = ballAfterStyle
+              stl = ballAfterStyle;
             }
-            return (<ProgressBall style={stl} key={i}/>)
+            return (<ProgressBall style={stl} key={i}/>);
           } else {
             if (i === 0 || (arr.length - 1) === i) {
-              return Spacer(i)
+              return Spacer(i);
             } else {
-              let stl = rulerBeforeStyle
-              const s = (i / 2) - 1
+              let stl = rulerBeforeStyle;
+              const s = (i / 2) - 1;
               if (state === s) {
-                stl = rulerSelectedStyle
+                stl = rulerSelectedStyle;
               } else if (state < s) {
-                stl = rulerAfterStyle
+                stl = rulerAfterStyle;
               }
-              return (<ProgressRuler style={stl} key={i}/>)
+              return (<ProgressRuler style={stl} key={i}/>);
             }
           }
         })
@@ -127,33 +126,33 @@ ProgressBar = ({ state, ballStyle, children }) => {
     </div>
   )
 
-  const forceEqualSize = true
-  const equalSize = (100 / STEPS.filter((s) => s && s.name).length) + '%'
+  const forceEqualSize = true;
+  const equalSize = (100 / STEPS.filter((s) => s && s.name).length) + '%';
 
   const stepLabels = (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {
         STEPS.reduce((result, step, i) => {
           if (step) {
-            let stl = labelBeforeStyle
-            const s = i
+            let stl = labelBeforeStyle;
+            const s = i;
             if (state === s) {
-              stl = labelSelectedStyle
+              stl = labelSelectedStyle;
             } else if (state < s) {
-              stl = labelAfterStyle
+              stl = labelAfterStyle;
             }
             result.push(
               <div style={{ flexGrow: 2, textAlign: 'center', width: forceEqualSize ? equalSize : null, ...stl }} key={i}>{ step.name }</div>
-              )
+            );
             if (STEPS.length - 1 !== i) {
-              result.push(Spacer(i))
+              result.push(Spacer(i));
             }
           }
-          return result
+          return result;
         }, [])
       }
     </div>
-  )
+  );
 
   return (
     <div>
@@ -161,15 +160,7 @@ ProgressBar = ({ state, ballStyle, children }) => {
 
       { stepLabels }
     </div>
-  )
+  );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    state: state.get('progress').get('step') || 0
-  }
-}
-
-ProgressBar = connect(mapStateToProps)(ProgressBar)
-
-export default ProgressBar
+export default ProgressBar;
