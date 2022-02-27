@@ -9,11 +9,9 @@ import ConfigPane from '../ConfigPane';
 import AlertBox from "../AlertBox";
 import SidePane from "../SidePane";
 
-let MainContainer = ({ keyHandler, downKeyHandler, showConfig, step }) => {
-
-
+let MainContainer = ({ onKeyUp, onKeyDown, showConfig, step }) => {
   return (
-        <div id='container' onKeyUp={keyHandler} onKeyDown={downKeyHandler} > 
+        <div id='container' onKeyUp={onKeyUp} onKeyDown={onKeyDown} > 
           <AlertBox/>
           {
           //<SideBar/>}

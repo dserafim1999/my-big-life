@@ -11,30 +11,33 @@ const buttonStyle = {
   flexGrow: 1
 }
 
-const NavigationButtons = ({ canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal }) => {
+const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal }) => {
+  const prevClassName = 'is-warning' + (isLoadingPrevious ? ' is-loading' : '');
+  const nextClassName = 'is-success' + (isLoadingNext ? ' is-loading' : '');
+
   const previous = (
-    <AsyncButton style={buttonStyle} disabled={!canPrevious} className={'is-warning'} onClick={onPrevious}>
+    <AsyncButton style={buttonStyle} disabled={!canPrevious || isLoadingPrevious} className={prevClassName} onClick={onPrevious}>
         <LeftIcon/>
         Previous
     </AsyncButton>
   );
 
   const skip = (
-    <AsyncButton style={buttonStyle} disabled={!canSkip} className={'is-warning'} onClick={onSkip}>
+    <AsyncButton style={buttonStyle} disabled={!canSkip || isLoadingPrevious} className={prevClassName} onClick={onSkip}>
         Skip Day
         <SkipIcon/>
     </AsyncButton>
   );
 
   const next = (
-    <AsyncButton style={buttonStyle} disabled={!canProceed} className={'is-success'} onClick={onNext}>
+    <AsyncButton style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
         Continue
         <RightIcon/>
     </AsyncButton>
   );
 
   const save = (
-    <AsyncButton style={buttonStyle} disabled={!canProceed} className={'is-success'} onClick={onNext}>
+    <AsyncButton style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
         Save
         <SaveIcon/>
     </AsyncButton>

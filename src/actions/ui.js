@@ -11,7 +11,8 @@ import {
   HIGHLIGHT_SEGMENT,
   TOGGLE_CONFIG,
   HIGHLIGHT_POINT,
-  DEHIGHLIGHT_POINT
+  DEHIGHLIGHT_POINT,
+  SET_LOADING
 } from "."
 
 import { getConfig } from "./progress";
@@ -85,3 +86,9 @@ export const toggleConfig = () => {
     }
   }
 }
+
+export const setLoading = (ref, is) => ({
+  is,
+  ref,
+  type: SET_LOADING
+})

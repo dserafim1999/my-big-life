@@ -1,14 +1,16 @@
-import { fromJS } from 'immutable';
+import { Map, List, Set } from 'immutable';
 import { 
   ADD_ALERT,
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
   TOGGLE_CONFIG,
+  SET_LOADING,
 } from '../actions';
 
-const initialState = fromJS({
-  alerts: [],
-  transportationModes: []
+const initialState = Map({
+  alerts: List(),
+  loading: Set(),
+  transportationModes: List()
 });
 
 const ui = (state = initialState, action) => {
@@ -40,6 +42,15 @@ const ui = (state = initialState, action) => {
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
       case TOGGLE_CONFIG:
         return state.set('showConfig', !state.get('showConfig'));
+      case SET_LOADING:
+        return state.update('loading', (loading) => {
+          const { is, ref } = action;
+          if (is) {
+            return loading.add(ref);
+          } else {
+            return loading.remove(ref);
+          }
+        })
       default:
         return state;
     }

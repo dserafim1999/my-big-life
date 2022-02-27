@@ -3,20 +3,14 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import SideBar from "../components/SideBar";
 import Dropzone from "../components/Dropzone";
 import MainContainer from './MainContainer';
-
-import ConfigPane from './ConfigPane';
 
 import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
-import { FeaturesData } from "../components/SideBar/FeaturesData";
-import AlertBox from "./AlertBox";
-
-import { undo, redo } from '../actions/progress';
-import SidePane from "./SidePane";
+import { toggleRemainingTracks, toggleConfig } from '../actions/ui';
+import { undo, redo, nextStep, previousStep, skipDay } from '../actions/progress';
 
 let App = ({ showConfig, step, dispatch }) => {
 
@@ -39,19 +33,31 @@ let App = ({ showConfig, step, dispatch }) => {
 
   let metaDown = false
   const downKeyHandler = (event) => {
-    const { keyCode } = event
-    metaDown = (keyCode === 91 || keyCode === 224 || keyCode === 17)
+    const { keyCode } = event;
+    const key = String.fromCharCode(event.keyCode);
+
+    if (event.ctrlKey || metaDown) {
+      switch (key) {
+        case 'Y': return dispatch(redo());
+        case 'Z': return dispatch(undo());
+        case 'F':
+          if (step === 0) {
+            return dispatch(skipDay());
+          } else {
+            return dispatch(previousStep());
+          }
+        case 'G': return dispatch(nextStep());
+        case 'B': return dispatch(toggleConfig());
+        case 'I': return dispatch(toggleRemainingTracks());
+      }
+    }
+    metaDown = (keyCode === 91 || keyCode === 224 || keyCode === 17);
   }
 
   const keyHandler = (event, e2) => {
-    const { keyCode } = event
-    const key = String.fromCharCode(event.keyCode)
-    if ((event.ctrlKey || metaDown) && key === 'Z') {
-      dispatch(undo())
-    } else if ((event.ctrlKey || metaDown) && key === 'Y') {
-      dispatch(redo())
-    } else if (keyCode === 91 || keyCode === 224 || keyCode === 17) {
-      metaDown = false
+    const { keyCode } = event;
+    if (metaDown && (keyCode === 91 || keyCode === 224 || keyCode === 17)) {
+      metaDown = false;
     }
   }
 
@@ -75,8 +81,8 @@ let App = ({ showConfig, step, dispatch }) => {
               */
             }
             <MainContainer
-              keyHandler={keyHandler}
-              downKeyHandler={downKeyHandler}
+              onKeyUp={keyHandler}
+              onKeyDown={downKeyHandler}
               showConfig={showConfig}
               step={step} 
             />
