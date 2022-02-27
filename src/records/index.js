@@ -170,7 +170,6 @@ export const createSegmentObj = (trackId, points, location, transModes, nSegs, c
 export class TrackRecord extends Record({
   id: -1,
   name: '',
-  renaming: false,
   segments: Set([])
 }) {
   constructor (defaultValues) {

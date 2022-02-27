@@ -1,43 +1,57 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  downloadTrack,
-  toggleTrackRenaming,
-  updateTrackName
-} from '../../actions/tracks';
+import React, { Component } from 'react';
 
 import CheckIcon from '@mui/icons-material/Check';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Tooltip } from '@mui/material';
 
-const TrackName = ({ dispatch, trackId, renaming, name }) => {
-  const updateName = (e) => {
-    if (e.type) {
-      const val = e.target.value;
-      dispatch(updateTrackName(trackId, val));
+export default class TrackName extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      renaming: false,
+      name: props.track.get('name') || 'Untitled.gpx'
     }
   }
-  const toggleEditing = () => dispatch(toggleTrackRenaming(trackId));
-  const onDownload = () => dispatch(downloadTrack(trackId));
 
-  if (renaming) {
-    return (
-      <div className='control is-grouped has-addons'>
-        <input className='input' type='text' value={name} onChange={updateName} />
-        <a className='button is-info' onClick={toggleEditing}>
-          <CheckIcon />
-        </a>
-      </div>
-    )
-  } else {
-    let downloadButton = (
-      <a className='float-right button icon-button column is-gapless is-text-centered' onClick={onDownload}>    
+  updateName (e) {
+    this.state.name = e.target.value;
+    this.setState(this.state);
+  }
+
+  toggleEditing () {
+    if (this.state.renaming) {
+      this.props.onRename(this.state.name);
+    }
+    
+    this.state.renaming = !this.state.renaming;
+    this.setState(this.state);
+  }
+
+  render () {
+    const { renaming, name } = this.state;
+    const { onDownload } = this.props;
+    const toggleEditing = this.toggleEditing.bind(this);
+    let downloadButton = null;
+
+    if (renaming) {
+      return (
+        <div className='control is-grouped has-addons'>
+          <input className='input' type='text' value={name} onChange={this.updateName.bind(this)} />
+          <a className='button is-info' onClick={toggleEditing}>
+            <CheckIcon/>
+          </a>
+        </div>
+      );
+    } else {
+        downloadButton = (
+          <a className='float-right clickable icon' onClick={onDownload}>
             <Tooltip title={'Download Track'}  placement="top" arrow>  
-                <DownloadIcon/>
+              <DownloadIcon />
             </Tooltip>
-      </a>
-    );
-      
+          </a>
+        );
+    }
+  
     return (
       <div>
         { downloadButton }
@@ -46,14 +60,3 @@ const TrackName = ({ dispatch, trackId, renaming, name }) => {
     );
   }
 }
-
-const mapStateToProps = (state, { trackId }) => {
-  const { name, renaming } = state.get('tracks').get('tracks').get(trackId);
-  return {
-    name: name || 'Untitled.gpx',
-    trackId,
-    renaming
-  }
-}
-
-export default connect(mapStateToProps)(TrackName);

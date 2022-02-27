@@ -3,6 +3,11 @@ import { connect } from 'react-redux';
 
 import Track from './Track';
 
+import {
+  downloadTrack,
+  updateTrackName
+} from '../../actions/tracks';
+
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;
 
 const EMPTY_FOLDER = (
@@ -25,7 +30,10 @@ let TrackList = ({ dispatch, tracks, className, step }) => {
             <ul style={{padding: 0}}>
                 {
                   tracks.map((track, i) => {
-                    return <Track trackId={track} key={i} />
+                    const trackId = track.get('id');
+                    const updateName = (newName) => dispatch(updateTrackName(trackId, newName));
+                    const onDownload = () => dispatch(downloadTrack(trackId));
+                    return <Track trackId={trackId} key={i} onRename={updateName} onDownload={onDownload} />;
                   })
                 }
             </ul>
@@ -54,12 +62,11 @@ const mapStateToProps = (state) => {
   const tracks = state
     .get('tracks').get('tracks').valueSeq().sort((a, b) => {
       return findStart(a).diff(findStart(b));
-    })
-    .map((segment) => segment.get('id'));
+    });
 
   return {
-    step: state.get('progress').get('step'),
-    tracks
+    tracks,
+    step: state.get('progress').get('step')
   }
 }
   
