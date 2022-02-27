@@ -59,8 +59,7 @@ export default {
     type: 'TEXT',
     getter: (text, data, callback) => {
       const { dispatch, references } = data;
-      console.log(data)
-      console.log(references)
+      
       if (references) {
         const { segmentId, index } = references.from;
         dispatch(getTransportationModesFor(segmentId, index, references.to.index, (suggestions) => {

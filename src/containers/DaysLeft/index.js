@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { changeDayToProcess, reloadQueue } from '../../actions/progress'
+import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress'
 import AsyncButton from '../../components/AsyncButton'
 
 import RefreshIcon from '@mui/icons-material/Refresh'
+import CloseIcon from '@mui/icons-material/Close'
 
 const POINTS_PER_KB = 7.2;
 
@@ -20,10 +21,19 @@ const GPXOfDay = ({ date, size }) => {
   );
 }
 
-const Day = ({ date, gpxs, isSelected, onSelectDay }) => {
+const crossStyle = {
+  float: 'right',
+  textDecoration: 'none',
+  marginTop: '-4px'
+}
+
+const Day = ({ date, gpxs, isSelected, onSelectDay, onDismiss }) => {
   const mDate = moment(date);
   return (
     <div className='clickable day-left' style={{ marginTop: '0.5rem', padding: '0.2rem', borderRadius: '3px', border: '1px #bbb ' + (isSelected ? 'solid' : 'dashed') }}>
+      <a className='button is-link is-small is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
+        <CloseIcon sx={{ fontSize: '0.7rem' }}/>
+      </a>
       <div>
         <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: 'gray' }}>{ mDate.fromNow() }</span></span>
       </div>
@@ -67,6 +77,10 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
       }
       {
         remaining.map(([day, gpxs], i) => {
+          const dismiss = (e) => {
+            e.preventDefault();
+            dispatch(dismissDay(day));
+          }
           return (
             <AsyncButton key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
               if (selected !== day) {
@@ -81,7 +95,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
             }}>
               <Day
                 date={day} gpxs={gpxs}
-                isSelected={selected === day} />
+                isSelected={selected === day} onDismiss={dismiss}/>
             </AsyncButton>
           )
         })

@@ -272,6 +272,22 @@ export const reloadQueue = () => {
   }
 }
 
+export const dismissDay = (day) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        day
+      })
+    }
+    return fetch(getState().get('progress').get('server') + '/removeDay', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
 export const bulkProcess = () => {
   return (dispatch, getState) => {
     const options = {
