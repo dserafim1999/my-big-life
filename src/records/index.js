@@ -175,7 +175,7 @@ export class TrackRecord extends Record({
 }) {
   constructor (defaultValues) {
     const { id } = defaultValues;
-    defaultValues.id = (id === undefined || id === null) ? id : generateTrackId();
+    defaultValues.id = (id === undefined || id === null) ? generateTrackId() : id;
     defaultValues.segments = Set.isSet(defaultValues.segments) ? defaultValues.segments : Set(defaultValues.segments);
     super(defaultValues, 'Track');
   }
