@@ -99,7 +99,15 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         if (showList) {
             buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />
         } else {
-            buttons = <NavigationButtons onPrevious={onPrevious} canSkip={stage === 0 && remainingCount > 1} onSkip={onSkip} onNext={onNext} canProceed={canProceed} canPrevious={stage !== 0}/>
+            buttons = (
+                <NavigationButtons
+                    isFinal={stage === 2} 
+                    onPrevious={onPrevious}
+                    onSkip={onSkip} onNext={onNext} 
+                    canSkip={stage === 0 && remainingCount > 1} 
+                    canProceed={canProceed} canPrevious={stage !== 0}
+                />
+            );
         }
     }
     return (

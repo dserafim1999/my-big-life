@@ -32,7 +32,7 @@ import pointActionMode from './pointActionMode';
 import { createMarker, createPointIcon } from './utils';
 
 const DEFAULT_PROPS = {
-  detailLevel: 18,
+  detailLevel: 8,
   decorationLevel: 8,
   mapCreation: {
     zoomControl: false,
