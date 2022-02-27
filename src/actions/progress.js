@@ -288,6 +288,19 @@ export const dismissDay = (day) => {
   }
 }
 
+export const skipDay = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors'
+    }
+    return fetch(getState().get('progress').get('server') + '/skipDay', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
 export const bulkProcess = () => {
   return (dispatch, getState) => {
     const options = {

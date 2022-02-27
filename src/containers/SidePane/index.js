@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { addAlert, toggleRemainingTracks } from '../../actions/ui';
-import { nextStep, previousStep, bulkProcess, loadLIFE, reloadQueue } from '../../actions/progress';
 import { hideCanonical } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
@@ -11,6 +10,15 @@ import PaneDrawer from '../../components/PaneDrawer';
 import PaneContent from '../../components/PaneContent';
 import ProgressBar from '../../components/ProgressBar';
 import Card from '../Card';
+
+import {
+    skipDay,
+    nextStep,
+    previousStep,
+    bulkProcess,
+    loadLIFE,
+    reloadQueue
+  } from '../../actions/progress';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -38,6 +46,13 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         dispatch(previousStep())
             .then(() => modifier())
             .catch((e) => errorHandler(dispatch, e, modifier));
+    }
+
+    const onSkip = (e, modifier) => {
+        modifier('is-loading');
+        dispatch(skipDay())
+        .then(() => modifier())
+        .catch((e) => errorHandler(dispatch, e, modifier));
     }
 
     const onNext = (e, modifier) => {
@@ -84,7 +99,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         if (showList) {
             buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />
         } else {
-            buttons = <NavigationButtons onPrevious={onPrevious} onNext={onNext} canProceed={canProceed} stage={stage} />
+            buttons = <NavigationButtons onPrevious={onPrevious} canSkip={stage === 0 && remainingCount > 1} onSkip={onSkip} onNext={onNext} canProceed={canProceed} canPrevious={stage !== 0}/>
         }
     }
     return (
