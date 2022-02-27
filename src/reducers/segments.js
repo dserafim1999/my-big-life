@@ -2,7 +2,7 @@ import {
   createSegmentObj,
 } from '../records';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
-import { List, Map, fromJS } from 'immutable';
+import { Set, List, Map, fromJS } from 'immutable';
 import { PointRecord } from '../records';
 import moment from 'moment';
 
@@ -562,6 +562,30 @@ const addNewSegment = (state, action) => {
     .updateIn(['tracks', trackId, 'segments'], (segs) => segs.add(seg.get('id')));
 }
 
+const setTransportationModes = (state, action) => {
+  const { modes } = action;
+
+  let touched = Set([]);
+  modes.map((mode) => {
+    const { label } = mode;
+    const { segmentId } = mode.from;
+
+    const to = segmentId === mode.to.segmentId ? mode.to.index : -1;
+    const from = mode.from.index;
+
+    state = state.updateIn(['segments', segmentId, 'transportationModes'], (transp) => {
+      if (!touched.has(segmentId)) {
+        transp = transp.clear();
+        touched = touched.add(segmentId);
+      }
+
+      return transp.push(Map({ from, to, label }));
+    });
+  });
+
+  return state;
+}
+
 const ACTION_REACTION = {
     'segment/toggle_visibility': toggleSegmentVisibility,
     'segment/toggle_edit': toggleSegmentEditing,
@@ -582,6 +606,7 @@ const ACTION_REACTION = {
     'segment/time_filter': updateTimeFilterSegment,
 
     'segment/update_location_name': updateLocationName,
+    'segment/set_transportation_modes': setTransportationModes,
     'segment/update_transportation_mode': updateTransportationMode,
     'segment/update_transportation_time': updateTransportationTime,
     'segment/select_point_in_map': selectPointInMap,

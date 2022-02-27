@@ -33,7 +33,7 @@ import { createMarker, createPointIcon } from './utils';
 
 const DEFAULT_PROPS = {
   detailLevel: 18,
-  decorationLevel: 12,
+  decorationLevel: 8,
   mapCreation: {
     zoomControl: false,
     zoomDelta: 0.4,

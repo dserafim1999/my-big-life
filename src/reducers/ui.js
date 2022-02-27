@@ -7,7 +7,8 @@ import {
 } from '../actions';
 
 const initialState = fromJS({
-  alerts: []
+  alerts: [],
+  transportationModes: []
 });
 
 const ui = (state = initialState, action) => {

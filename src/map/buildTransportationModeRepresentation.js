@@ -5,13 +5,19 @@ import { renderToString } from 'react-dom/server'
 import StopIcon from '@mui/icons-material/Stop';
 import WalkIcon from '@mui/icons-material/DirectionsWalk';
 import CarIcon from '@mui/icons-material/DirectionsCar';
+import TrainIcon from '@mui/icons-material/DirectionsRailway';
+import PlaneIcon from '@mui/icons-material/Flight';
+import BoatIcon from '@mui/icons-material/DirectionsBoat';
 import QuestionIcon from '@mui/icons-material/QuestionMark';
 import { createPointIcon, createMarker } from './utils';
 
 const LABEL_TO_ICON = {
-  'Stop': (color) => createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)),
-  'Foot': (color) => createPointIcon(color, renderToString(<WalkIcon className='center' sx={{ fontSize: 16 }}/>)),
-  'Vehicle': (color) => createPointIcon(color, renderToString(<CarIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'stop': (color) => createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'foot': (color) => createPointIcon(color, renderToString(<WalkIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'vehicle': (color) => createPointIcon(color, renderToString(<CarIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'airplane': (color) => createPointIcon(color, renderToString(<PlaneIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'train': (color) => createPointIcon(color, renderToString(<TrainIcon className='center' sx={{ fontSize: 16 }}/>)),
+  'boat': (color) => createPointIcon(color, renderToString(<BoatIcon className='center' sx={{ fontSize: 16 }}/>)),
   '?': (color) => createPointIcon(color, renderToString(<QuestionIcon className='center' sx={{ fontSize: 16 }}/>))
 }
 
@@ -50,7 +56,7 @@ export default (lseg, segment) => {
     tModes = transModes.map((mode) => {
       const from = mode.get('from');
       const to = mode.get('to');
-      const label = mode.get('label');
+      const label = mode.get('label').toLocaleLowerCase();
 
       lastTo = to;
       return buildVerticalMarker(pts[from], pts[from + 1], pts[from - 1], label);

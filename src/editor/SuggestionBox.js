@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const SuggestionBox = ({ left, top, selected, onSelect, suggestions, show }) => {
   const style = {
@@ -32,4 +32,4 @@ const SuggestionBox = ({ left, top, selected, onSelect, suggestions, show }) => 
   )
 }
 
-export default SuggestionBox
+export default SuggestionBox;

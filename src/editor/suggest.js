@@ -1,7 +1,7 @@
 import { Entity } from 'draft-js';
 import findSuggestionBoxPosition from './findSuggestionBoxPosition';
 
-export default (editorState, getter, stateSetter, refs, tsuggestions) => {
+export default (editorState, getter, stateSetter, ref, tsuggestions) => {
   const sel = editorState.getSelection();
   const startKey = sel.getStartKey();
   const index = sel.getStartOffset();
@@ -40,7 +40,7 @@ export default (editorState, getter, stateSetter, refs, tsuggestions) => {
           disposer,
           list: suggestions,
           selected: -1,
-          box: findSuggestionBoxPosition(refs.editor, tsuggestions.box),
+          box: findSuggestionBoxPosition(ref, tsuggestions.box),
           setter,
           data: entity.getData(),
           details: { begin, end, key: startKey }

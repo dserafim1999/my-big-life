@@ -25,11 +25,13 @@ import {
   INTERPOLATED_TIME_SELECTED,
   UPDATE_POINT,
   ADD_NEW_SEGMENT,
+  SET_TRANSPORTATION_MODES,
 } from ".";
 
 import { completeTrip } from './progress';
 import { addAlert, removeAlert } from './ui';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
+import { requestTransportationSuggestions } from './progress';
 
 import moment from "moment";
 
@@ -270,14 +272,26 @@ export const updatePoint = (segmentId, index, lat, lon, time) => ({
   type: UPDATE_POINT
 })
   
-export const getTransportationModesFor = (segmentId, startIndex) => {
-  return (_, getState) => {
-    const tmodes = getState().get('tracks').get('segments').get(segmentId).get('transportationModes');
+export const getTransportationModesFor = (segmentId, startIndex, endIndex, callback) => {
+  return (dispatch, getState) => {
+    const segment = getState().get('tracks').get('segments').get(segmentId);
+    const tmodes = segment.get('transportationModes');
     for (let tmode of tmodes.values()) {
-      if (tmode.get('from') <= startIndex) {
-        return tmode.get('classification').entrySeq().sort((a, b) => (a[1] < b[1])).map((x) => x[0]).toJS();
+      const classf = tmode.get('classification')
+      if (tmode.get('from') <= startIndex && classf) {
+        return callback(classf.entrySeq().sort((a, b) => (a[1] < b[1])).map((x) => x[0]).toJS());
       }
     }
-    return ['walk', 'vehicle', 'subway', 'airplane'];
+    
+    const points = segment.get('points').slice(startIndex, endIndex);
+    dispatch(requestTransportationSuggestions(points.toJS()))
+      .then((suggestions) => {
+        callback(Object.keys(suggestions).sort((a, b) => suggestions[b] - suggestions[a]));
+      });
   }
 }
+
+export const setTransportationModes = (modes) => ({
+  modes,
+  type: SET_TRANSPORTATION_MODES
+})

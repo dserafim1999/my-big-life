@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 
 import { 
   Editor as DraftEditor,
@@ -25,7 +25,7 @@ class Editor extends Component {
     this.warning = null;
     this.timeout = null;
 
-    const editorRef = React.createRef();
+    this.editorRef = createRef();
     
     const { state, strategies } = this.props;
     const decorator = new CompositeDecorator(strategies);
@@ -93,6 +93,10 @@ class Editor extends Component {
       editorState = this.decorate(editorState);
       this.setState({editorState, suggestions: this.state.suggestions});
       this.timeout = null;
+
+      if (this.props.onChange) {
+        this.props.onChange(editorState, this.previousAst);
+      }
     }, 100);
   }
 
@@ -184,7 +188,7 @@ class Editor extends Component {
     };
 
     return (
-      <div style={editorStyle} onClick={() => this.refs.editor.focus()}>
+      <div style={editorStyle} onClick={() => this.editorRef.current.focus()}>
         <div style={flexStyle}>
           <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
             {
