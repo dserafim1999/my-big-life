@@ -74,13 +74,13 @@ class Editor extends Component {
     }, this.editorRef.current, this.state.suggestions);
   }
 
-  onChange (editorState) {
+  onChange (editorState, shouldSuggest = true) {
     const previousText = this.state.editorState.getCurrentContent().getPlainText();
     const currentText = editorState.getCurrentContent().getPlainText();
     
     this.setState({editorState, suggestions: this.state.suggestions});
 
-    if (previousText === currentText) {
+    if (previousText === currentText && shouldSuggest) {
       this.suggest(editorState);
       return;
     }
@@ -131,14 +131,18 @@ class Editor extends Component {
   }
 
   onSuggestionSelect (suggestion) {
-    const { editorState, suggestions } = this.state;
-    const { details } = this.state.suggestions;
+    const { editorState } = this.state;
+    const { details, entityType, data } = this.state.suggestions;
+    const isClosed = data.astBranch.closed || false;
+    const { key, begin, end } = details;
+
+    let range = SelectionState.createEmpty(key);
     
-    let range = SelectionState.createEmpty(details.key);
     range = range.merge({
-      anchorOffset: details.begin,
-      focusOffset: details.end
+      anchorOffset: entityType === 'Tag' ? begin + 1 : begin,
+      focusOffset: entityType === 'Tag' && isClosed ? end - 1 : end
     });
+
     let content = editorState.getCurrentContent();
     content = Modifier.replaceText(content, range, suggestion);
     // TODO replace value in entity
@@ -147,11 +151,11 @@ class Editor extends Component {
       hasFocus: false
     });
     newEditorState = EditorState.acceptSelection(newEditorState, sl);
-    suggestions.show = false;
-    this.setState({
-      editorState: newEditorState,
-      suggestions
-    });
+    this.onChange(newEditorState, false);
+
+    // Hides suggestion box
+    this.state.suggestions.show = false;
+    this.setState(this.state);
   }
 
   onTab (e) {
