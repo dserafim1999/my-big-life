@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
 import { fitSegments, fitTracks, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
-import { addPossibilities } from '../actions/segments';
+import { toggleSegmentJoining, addPossibilities } from '../actions/segments';
 import { clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
 import { addAlert } from '../actions/ui';
 
@@ -127,6 +127,28 @@ const updateState = (dispatch, json, getState, reverse = false) => {
   }
 
   dispatch(removeTracksFor(json.track.segments, json.track.name));
+
+
+  // joins two consecutive segments that don't connect
+  const step = getState().get('progress').get('step');
+  if (step === 0 || step === 1) {
+    getState()
+      .get('tracks').get('segments').valueSeq()
+      .sort((a, b) => {
+        return a.getStartTime().diff(b.getStartTime());
+      })
+      .forEach((segment, i, arr) => {
+        const next = arr.get(i + 1);
+        if (next) {
+          const from = segment.get('points').get(-1);
+          const to = next.get('points').get(0);
+          const distance = from.distance(to);
+          if (distance > 20 * 0.001) {
+            dispatch(toggleSegmentJoining(segment.get('id')));
+          }
+        }
+      });
+  }
 
   const segments = getState().get('tracks').get('segments').keySeq().toJS();
   dispatch(fitSegments(...segments));
