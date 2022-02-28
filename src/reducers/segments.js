@@ -14,9 +14,12 @@ const segmentEndTime = (segment) => {
   return segment.get('points').get(-1).get('time');
 }
 
-// TODO compute metrics
 const updateSegment = (state, id) => {
-    return state;
+  return state.updateIn(['segments', id], (segment) =>
+    segment
+      .computeBounds()
+      .computeMetrics()
+  );
 }
 
 const changeSegmentPoint = (state, action) => {
@@ -192,7 +195,7 @@ const splitSegment = (state, action) => {
       action.hasDoneUndo = false;
       return state;
     } else {
-      return toggleSegmentProp(state, id, 'splitting');
+      return toggleSegmentProp(state, id, 'splitting', false);
     }
 }
 
@@ -277,7 +280,7 @@ const joinSegment = (state, action) => {
     }
   });
 
-  state = toggleSegmentProp(state, action.segmentId, 'joining');
+  state = toggleSegmentProp(state, action.segmentId, 'joining', false);
   state = segments(state, removeSegmentAction(details.segment));
 
   return updateSegment(state, action.segmentId);
@@ -295,17 +298,10 @@ const toggleTimeFilter = (state, action) => {
   });
 }
 
-const defaultPropSet = ['editing', 'splitting', 'joining', 'pointDetails', 'showTimeFilter'];
-
 // sets prop as true and false to others, in order to indicate the active feature
-const toggleSegmentProp = (state, id, prop, propSet = defaultPropSet) => {
-  const data = state.get('segments').get(id);
-
-  propSet.forEach((p) => {
-    state = state.setIn(['segments', id, p], (p === prop ? !data.get(p) : false))
-  });
-
-  return state;
+const toggleSegmentProp = (state, id, prop, force) => {
+  return state
+    .updateIn(['segments', id], (seg) => seg.toggleMode(prop, force));
 }    
 
 const toggleSegmentVisibility = (state, action) => {

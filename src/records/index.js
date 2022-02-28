@@ -79,16 +79,6 @@ export class PointRecord extends Record(POINT_DEFAULTS) {
   }
 }
 
-const ModeRecord = Record({
-  point: false,
-  split: false,
-  join: false,
-  details: false,
-  filter: false,
-  timeFilterStart: null,
-  timeFilterEnd: null
-});
-
 const MetricsRecord = Record({
   distance: 0,
   averageVelocity: 0
@@ -102,7 +92,6 @@ const SEGMENT_DEFAULT_PROPS = {
   bounds: new BoundsRecord(),
   display: true,
   color: 'black',
-  // editing: new ModeRecord({}),
   metrics: new MetricsRecord({}),
 
   pointDetails: false,
@@ -163,6 +152,25 @@ export class SegmentRecord extends Record(SEGMENT_DEFAULT_PROPS) {
   }
   pointCount() {
     return this.points.count();
+  }
+  toggleMode (mode, forceVal) {
+    const val = this.get(mode);
+    return this
+      .set('pointDetails', false)
+      .set('splitting', false)
+      .set('joining', false)
+      .set('editing', false)
+      .set('showTimeFilter', false)
+      .set(mode, forceVal === undefined ? !val : !!forceVal);
+  }
+  disableModes () {
+    return this.toggleMode('pointDetails', false);
+  }
+  computeBounds () {
+    return this.set('bounds', computeBounds(this.points));
+  }
+  computeMetrics () {
+    return this.set('metrics', computeMetrics(this.points));
   }
 }
 
