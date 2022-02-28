@@ -1,7 +1,56 @@
 import { Entity } from 'draft-js';
 import findSuggestionBoxPosition from './findSuggestionBoxPosition';
 
-export default (editorState, getter, stateSetter, ref, tsuggestions) => {
+const removeDuplicates = (arr) => (
+  arr.filter((loc, i, arr) => {
+    if (i === 0) {
+      return true;
+    } else {
+      const prev = arr[i - 1];
+      return prev !== loc;
+    }
+  })
+)
+
+const findLocationsInAst = (ast, value) => {
+  let locations = [];
+  if (ast && ast.blocks) {
+    for (let block of ast.blocks) {
+      if (block.location) {
+        locations.push(block.location.value);
+      }
+      if (block.locationFrom) {
+        locations.push(block.locationFrom.value);
+      }
+      if (block.locationTo) {
+        locations.push(block.locationTo.value);
+      }
+    }
+  }
+  
+  const c = removeDuplicates(locations);
+
+  const a = c.filter((loc, i, arr) => {
+    if (loc === value) {
+      return false;
+    }
+    if (i === 0 && arr.length > 1) {
+      return arr[i + 1] === value;
+    }
+    if (i > 0 && i < arr.length - 2) {
+      return arr[i - 1] === value || arr[i + 1] === value;
+    }
+    if (i < arr.length - 1) {
+      return arr[i - 1] === value;
+    }
+    return false;
+  });
+  
+  return removeDuplicates(a);
+}
+
+
+export default (editorState, getter, stateSetter, ref, tsuggestions, previousAst) => {
   const sel = editorState.getSelection();
   const startKey = sel.getStartKey();
   const index = sel.getStartOffset();
@@ -27,8 +76,13 @@ export default (editorState, getter, stateSetter, ref, tsuggestions) => {
       tsuggestions.show = false;
       stateSetter(tsuggestions);
 
+      const clocs = findLocationsInAst(previousAst, value);
+
       getter(value, entity.getData(), (suggestions) => {
         // const show = hide ? false : (suggestions.length > 0) && shouldShow
+        suggestions.unshift(...clocs, value);
+        suggestions = removeDuplicates(suggestions.filter((loc) => loc !== value));
+        
         const show = (suggestions.length > 0) && shouldShow;
         
         let ranges = [];
