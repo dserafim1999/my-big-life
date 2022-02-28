@@ -19,7 +19,8 @@ import { Tooltip } from '@mui/material';
 const metricsStyle = {
   fontSize: '0.8rem',
   color: 'gray',
-  margin: '0.1rem 0'
+  margin: '0.1rem 0',
+  textAlign: 'center'
 }
 
 const middleStatsBase = {

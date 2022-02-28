@@ -104,7 +104,7 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
 
     return (
         <div>
-            <div style={{ width: '100%' }} className='control has-addons'>
+            <div style={{ width: '100%', textAlign:'center' }} className='control has-addons'>
                 <Col>
                     <SegmentButton description={'Focus on Segment'} onClick={fitToSegment}>
                         <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
