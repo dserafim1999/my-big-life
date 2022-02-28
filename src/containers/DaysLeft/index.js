@@ -80,7 +80,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
     }
 
     return (
-      <AsyncButton key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
+      <AsyncButton title='Change day to process' key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
         if (selected !== day) {
           /*global confirm*/
           const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost');

@@ -270,7 +270,7 @@ class EditPoint extends Component {
           ? (
             <div className='has-text-right'>
               <a className='button is-link is-small' onClick={this.onReset.bind(this)}>Reset</a>
-              <AsyncButton className={'button is-primary is-small' + (!this.hasChanged() ? ' is-disabled' : '')} onClick={this.onSave.bind(this)}>
+              <AsyncButton title='Save changes' className={'button is-primary is-small' + (!this.hasChanged() ? ' is-disabled' : '')} onClick={this.onSave.bind(this)}>
                 Save
               </AsyncButton>
             </div>

@@ -16,28 +16,28 @@ const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPr
   const nextClassName = 'is-success' + (isLoadingNext ? ' is-loading' : '');
 
   const previous = (
-    <AsyncButton style={buttonStyle} disabled={!canPrevious || isLoadingPrevious} className={prevClassName} onClick={onPrevious}>
+    <AsyncButton title='Previous Step' style={buttonStyle} disabled={!canPrevious || isLoadingPrevious} className={prevClassName} onClick={onPrevious}>
         <LeftIcon/>
         Previous
     </AsyncButton>
   );
 
   const skip = (
-    <AsyncButton style={buttonStyle} disabled={!canSkip || isLoadingPrevious} className={prevClassName} onClick={onSkip}>
+    <AsyncButton title='Skip day being processed' style={buttonStyle} disabled={!canSkip || isLoadingPrevious} className={prevClassName} onClick={onSkip}>
         Skip Day
         <SkipIcon/>
     </AsyncButton>
   );
 
   const next = (
-    <AsyncButton style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
+    <AsyncButton title='Continue to next Step' style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
         Continue
         <RightIcon/>
     </AsyncButton>
   );
 
   const save = (
-    <AsyncButton style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
+    <AsyncButton title='Save day to server' style={buttonStyle} disabled={!canProceed || isLoadingNext} className={nextClassName} onClick={onNext}>
         Save
         <SaveIcon/>
     </AsyncButton>

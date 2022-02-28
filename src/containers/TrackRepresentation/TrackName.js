@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
+
 import CheckIcon from '@mui/icons-material/Check';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Tooltip } from '@mui/material';
+
+import AsyncButton from '../../components/AsyncButton';
 
 const dateFormatter = (name) => {
   return moment(name.slice(0, -4)).format('ddd, MMM Do YYYY');
@@ -70,11 +72,12 @@ export default class TrackName extends Component {
       );
     } else {
         downloadButton = (
-          <a className='float-right clickable icon' onClick={onDownload}>
-            <Tooltip title={'Download Track'}  placement="top" arrow>  
-              <DownloadIcon />
-            </Tooltip>
-          </a>
+          <AsyncButton
+            className={'icon-button button float-right'}
+            onClick={onDownload}
+            title='Download Track'>
+              <DownloadIcon/>
+          </AsyncButton>
         );
     }
   

@@ -14,7 +14,7 @@ const BulkButtons = ({ onBulkClick, onLifeRead }) => {
   return (
     <div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <span className='is-gapless has-text-centered control has-addons'>
-        <AsyncButton className={'is-warning'} onClick={onBulkClick} style={warningBorderStyle}>
+        <AsyncButton title='Bulk process all tracks in input folder' className={'is-warning'} onClick={onBulkClick} style={warningBorderStyle}>
           Bulk process all tracks
         </AsyncButton>
 

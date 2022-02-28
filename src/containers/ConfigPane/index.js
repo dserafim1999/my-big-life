@@ -171,6 +171,7 @@ class ConfigPane extends Component {
             dispatch(toggleConfig())
           }}>Cancel</button>
           <AsyncButton onClick={(e, modifier) => {
+            title='Save Configuration Settings'
             modifier('is-loading')
             onSubmit()
             modifier()

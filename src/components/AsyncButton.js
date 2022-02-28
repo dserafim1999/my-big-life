@@ -1,9 +1,12 @@
+import { Tooltip } from '@mui/material';
 import React, { Component, createRef } from 'react';
 import { findDOMNode } from 'react-dom';
 
 export default class AsyncButton extends Component {
   constructor (props) {
     super(props);
+
+    this.title = props.title;
     this.btnRef = createRef();
     this.state = {
       className: '',
@@ -69,15 +72,19 @@ export default class AsyncButton extends Component {
       )
     } else if (this.props.isDiv) {
       return (
-        <div className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
-          { this.state.content || this.props.children }
-        </div>
+        <Tooltip title={this.title}  placement="top" arrow>  
+          <div className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
+            { this.state.content || this.props.children }
+          </div>
+        </Tooltip>
       );
     } else {
       return (
-        <a className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
-          { this.state.content || this.props.children }
-        </a>
+        <Tooltip title={this.title}  placement="top" arrow>  
+          <a className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
+            { this.state.content || this.props.children }
+          </a>
+        </Tooltip>
       );
     }
   }

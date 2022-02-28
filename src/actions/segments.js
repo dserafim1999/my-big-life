@@ -28,10 +28,9 @@ import {
   SET_TRANSPORTATION_MODES,
 } from ".";
 
-import { completeTrip } from './progress';
 import { addAlert, removeAlert } from './ui';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
-import { requestTransportationSuggestions } from './progress';
+import { completeTrip, requestTransportationSuggestions } from './progress';
 
 import moment from "moment";
 
@@ -43,33 +42,28 @@ export const centerPointOnMap = (segmentId, index) => {
   }
 }
 
-export const extendSegment = (segmentId, index, lat, lon) => {
-  return {
+export const extendSegment = (segmentId, index, lat, lon) => ({
     segmentId,
     index,
     lat,
     lon,
     type: EXTEND_SEGMENT
-  }
-}
+})
 
-export const splitSegment = (segmentId, index) => {
-  return {
+
+export const splitSegment = (segmentId, index) => ({
       index,
       segmentId,
       type: SPLIT_SEGMENT
-  }
-}
+})
 
-export const addSegmentPoint = (segmentId, index, lat, lon) => {
-  return {
+export const addSegmentPoint = (segmentId, index, lat, lon) => ({
       segmentId,
       index,
       lat,
       lon,
       type: ADD_SEGMENT_POINT
-  }
-}
+})
 
 export const addNewSegment = (trackId) => {
   return (dispatch, getState) => {
@@ -90,39 +84,31 @@ export const addNewSegment = (trackId) => {
   }
 }
 
-export const removeSegmentPoint = (segmentId, index) => {
-  return {
+export const removeSegmentPoint = (segmentId, index) => ({
       segmentId,
       index,
       type: REMOVE_SEGMENT_POINT
-  }
-}
+})
 
-export const changeSegmentPoint = (segmentId, index, lat, lon) => {
-  return {
+export const changeSegmentPoint = (segmentId, index, lat, lon) => ({
       segmentId,
       index,
       lat,
       lon,
       type: CHANGE_SEGMENT_POINT
-  }
-}
+})
 
-export const removeSegment = (segmentId) => {
-  return {
+export const removeSegment = (segmentId) => ({
       segmentId,
       type: REMOVE_SEGMENT
-  }
-}
+})
 
-export const joinSegment = (segmentId, index, details) => {
-  return {
+export const joinSegment = (segmentId, index, details) => ({
     index,
     segmentId,
     details,
     type: JOIN_SEGMENT
-  }
-}
+})
 
 export const fitSegment = (segmentId) => {
   return (dispatch, getState) => {
@@ -131,42 +117,32 @@ export const fitSegment = (segmentId) => {
   }
 }
 
-export const updateTimeFilterSegment = (segmentId, lower, upper) => {
-  return {
+export const updateTimeFilterSegment = (segmentId, lower, upper) => ({
     segmentId,
     lower,
     upper,
     type: UPDATE_TIME_FILTER_SEGMENT
-  }
-}
+})
 
-export const toggleTimeFilter = (segmentId) => {
-  return {
+export const toggleTimeFilter = (segmentId) => ({
     segmentId,
     type: TOGGLE_TIME_FILTER
-  }
-}
+})
 
-export const toggleSegmentVisibility = (segmentId) => {
-    return {
+export const toggleSegmentVisibility = (segmentId) => ({
       segmentId,
       type: TOGGLE_SEGMENT_VISIBILITY
-    }
-}
+})
   
-export const toggleSegmentEditing = (segmentId) => {
-    return {
+export const toggleSegmentEditing = (segmentId) => ({
       segmentId,
       type: TOGGLE_SEGMENT_EDITING
-    }
-}
+})
   
-export const toggleSegmentSplitting = (segmentId) => {
-    return {
+export const toggleSegmentSplitting = (segmentId) => ({
       segmentId,
       type: TOGGLE_SEGMENT_SPLITTING
-    }
-}
+})
 
 export const toggleSegmentJoining = (segmentId) => {
   return (dispatch, getState) => {
@@ -183,23 +159,18 @@ export const toggleSegmentJoining = (segmentId) => {
   }
 }
 
-export const addPossibilities = (segmentId, points, index, weight = 0.5) => {
-  return {
+export const addPossibilities = (segmentId, points, index, weight = 0.5) => ({
     segmentId,
     points,
     index,
     weight,
     type: ADD_POSSIBILITIES
-  }
-}
+})
 
-export const toggleSegmentPointDetails = (segmentId) => {
-  return {
+export const toggleSegmentPointDetails = (segmentId) => ({
     segmentId,
     type: TOGGLE_SEGMENT_POINT_DETAILS
-
-  }
-}
+})
 
 export const updateLocationName = (segmentId, name, start) => ({
   name,
