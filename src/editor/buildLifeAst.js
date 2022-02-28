@@ -98,7 +98,7 @@ const findPointInSegments = (date, segments, reverse = false, untilLast = false)
 }
 
 const timeToMoment = (day, time) => {
-  return moment(day + ' ' + time.slice(0, 2) + ':' + time.slice(2));
+  return moment((new Date(day + ' ' + time.slice(0, 2) + ':' + time.slice(2))).toISOString());
 }
 
 export default (text, segments) => {

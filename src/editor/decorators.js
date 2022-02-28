@@ -1,5 +1,4 @@
 import React from 'react';
-import { Entity } from 'draft-js';
 import { Set } from 'immutable';
 
 import {
@@ -91,7 +90,8 @@ const extractReferences = (references) => {
 }
 
 const Reference = (props) => {
-  const { dispatch, references } = Entity.get(props.entityKey).getData();
+  const contentState = props.contentState;
+  const { dispatch, references } = contentState.getEntity(props.entityKey).getData();
   const { segments, points } = extractReferences(references);
   const onMouseEnter = () => {
     if (segments.length > 0) {
@@ -110,7 +110,7 @@ const Reference = (props) => {
     }
   }
 
-  const type = Entity.get(props.entityKey).getType();
+  const type = contentState.getEntity(props.entityKey).getType();
   const typeStyles = STYLES[type] ? STYLES[type] : {};
   const style = { ...STYLES._, ...typeStyles };
 
@@ -120,7 +120,8 @@ const Reference = (props) => {
 }
 
 const TokenSpan = (props) => {
-  const type = Entity.get(props.entityKey).getType();
+  const contentState = props.contentState;
+  const type = contentState.getEntity(props.entityKey).getType();
   const typeStyles = STYLES[type] ? STYLES[type] : {};
   const style = { ...STYLES._, ...typeStyles };
   return (
@@ -129,11 +130,13 @@ const TokenSpan = (props) => {
 }
 
 const TimeSpan = (props) => {
-  const type = Entity.get(props.entityKey).getType();
+  const contentState = props.contentState;
+
+  const type = contentState.getEntity(props.entityKey).getType();
   const typeStyles = STYLES[type] ? STYLES[type] : {};
   const style = { ...STYLES._, ...typeStyles };
 
-  const { dispatch, references } = Entity.get(props.entityKey).getData();
+  const { dispatch, references } = contentState.getEntity(props.entityKey).getData();
   const { segments, points } = extractReferences(references);
 
   const onMouseEnter = () => {
@@ -159,14 +162,14 @@ const TimeSpan = (props) => {
 }
 
 const getEntityStrategy = (type) => {
-  return (contentBlock, callback) => {
+  return (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges(
       (character) => {
         const entityKey = character.getEntity()
         if (entityKey === null) {
           return false;
         }
-        return Entity.get(entityKey).getType() === type;
+        return contentState.getEntity(entityKey).getType() === type;
       },
       callback
     );

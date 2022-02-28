@@ -1,4 +1,5 @@
 import React, { Component, createRef } from 'react';
+import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
 
 import { 
   Editor as DraftEditor,
@@ -100,26 +101,6 @@ class Editor extends Component {
     }, 100);
   }
 
-  onUpArrow (e) {
-    let { list, selected, show } = this.state.suggestions;
-
-    if (show) {
-      e.preventDefault();
-      this.state.suggestions.selected = Math.abs(selected - 1) % list.length;
-      this.setState(this.state);
-    }
-  }
-
-  onDownArrow (e) {
-    let { list, selected, show } = this.state.suggestions;
-
-    if (show) {
-      e.preventDefault();
-      this.state.suggestions.selected = Math.abs(selected + 1) % list.length;
-      this.setState(this.state);
-    }
-  }
-
   onReturn (e) {
     let { list, selected } = this.state.suggestions;
     if (selected >= 0) {
@@ -158,9 +139,32 @@ class Editor extends Component {
     this.setState(this.state);
   }
 
-  onTab (e) {
-    e.preventDefault();
-    const isBackwards = e.shiftKey;
+  myKeyBindingFn(e) {
+    if (e.keyCode === 9 /* `TAB` key */ ) {
+      e.preventDefault();
+      if (e.shiftKey) {
+        return 'editor-back-tab';
+      } else {
+        return 'editor-tab';
+      }
+    } else if (e.keyCode === 27 /* `ESC` key */) {
+      return 'editor-esc'; 
+    } else if (e.keyCode === 38 /* `UP` key */) {
+      console.log(this.state);
+      if (this.state.suggestions.show){
+         e.preventDefault();
+        return 'editor-up';
+      } 
+    } else if (e.keyCode === 40 /* `DOWN` key */) {
+      if (this.state.suggestions.show){
+        e.preventDefault();
+        return 'editor-down'; 
+      } 
+    } 
+    return getDefaultKeyBinding(e);
+  }
+
+  onTab (isBackwards) {
     let { editorState } = this.state;
     this.onChange(selectNextEntity(editorState, isBackwards));
   }
@@ -171,6 +175,47 @@ class Editor extends Component {
       this.setState(this.state);
     }
   }
+
+  onUpArrow () {
+    let { list, selected, show } = this.state.suggestions;
+
+    if (show) {
+      this.state.suggestions.selected = Math.abs(selected - 1) % list.length;
+      this.setState(this.state);
+    }
+  }
+
+  
+  onDownArrow () {
+    let { list, selected, show } = this.state.suggestions;
+    
+    if (show) {
+      this.state.suggestions.selected = Math.abs(selected + 1) % list.length;
+      this.setState(this.state);
+    }
+  }
+  
+  handleKeyCommand(command, e) {
+    switch(command) {
+      case 'editor-tab':
+        this.onTab(false);
+        return 'handled';
+      case 'editor-back-tab':
+        this.onTab(true);
+        return 'handled';
+      case 'editor-esc':
+        this.onEsc();
+        return 'handled';
+      case 'editor-up':
+        this.onUpArrow();
+        return 'handled';
+      case 'editor-down':
+        this.onDownArrow();
+        return 'handled';
+      default:
+          return 'not-handled';
+    }
+  } 
 
   render () {
     const { editorState, suggestions } = this.state;
@@ -207,11 +252,9 @@ class Editor extends Component {
             editorState={editorState}
             onChange={this.onChange.bind(this)}
             stripPastedStyles={true}
-            onDownArrow={this.onDownArrow.bind(this)}
-            onUpArrow={this.onUpArrow.bind(this)}
             handleReturn={this.onReturn.bind(this)}
-            onEscape={this.onEsc.bind(this)}
-            onTab={this.onTab.bind(this)}
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            keyBindingFn={this.myKeyBindingFn.bind(this)}
             ref={this.editorRef}
             spellcheck={false}
           />

@@ -1,4 +1,3 @@
-import { Entity } from 'draft-js';
 import findSuggestionBoxPosition from './findSuggestionBoxPosition';
 
 const removeDuplicates = (arr) => (
@@ -52,6 +51,7 @@ const findLocationsInAst = (ast, value) => {
 
 export default (editorState, getter, stateSetter, ref, tsuggestions, previousAst) => {
   const sel = editorState.getSelection();
+  const contentState = editorState.getCurrentContent();
   const startKey = sel.getStartKey();
   const index = sel.getStartOffset();
   let content = editorState.getCurrentContent();
@@ -63,8 +63,8 @@ export default (editorState, getter, stateSetter, ref, tsuggestions, previousAst
   if (entityKey === null && index > 0) {
     entityKey = block.getEntityAt(index - 1);
   }
-  if (entityKey !== null && Entity.get(entityKey)) {
-    const entity = Entity.get(entityKey);
+  if (entityKey !== null && contentState.getEntity(entityKey)) {
+    const entity = contentState.getEntity(entityKey);
     const type = entity.getType();
     const { value } = entity.getData();
 
