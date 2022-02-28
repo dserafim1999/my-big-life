@@ -44,9 +44,9 @@ const TrackSegments = ({ dispatch, segments, track }) => {
             );
           }
           return (
-            <div>
+            <div key={i}>
               { dt }
-              <Segment segment={segment} key={i} />
+              <Segment segment={segment} />
             </div>
           );
         })

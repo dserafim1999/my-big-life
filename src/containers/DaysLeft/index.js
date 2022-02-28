@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
 import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress';
+import { toggleRemainingTracks } from '../../actions/ui';
 import AsyncButton from '../../components/AsyncButton';
 
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const POINTS_PER_KB = 7.2;
 
@@ -58,8 +61,8 @@ const Day = ({ date, gpxs, isSelected, onSelectDay, onDismiss }) => {
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent }) => {
   const refresh = (
     <AsyncButton
-      className={'icon-button'}
-      style={{ float: 'right', border: '0px' }}
+      className={'icon-button button'}
+      style={{ float: 'right'}}
       onClick={(e, modifier) => {
         modifier('is-loading')
         dispatch(reloadQueue())
@@ -95,9 +98,19 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
     );
   });
 
+  const back = (
+    <AsyncButton
+      className={'icon-button button'}
+      style={{ float: 'left'}}
+      onClick={() => dispatch(toggleRemainingTracks())}
+      title='Go back to edit day'>
+        <ChevronLeftIcon/>
+    </AsyncButton>
+  );
+
   return (
     <div style={{...style, paddingBottom: '1rem'}} title='Click to change the day to process'>
-      <div style={{ fontSize: '1.5rem' }}>Days left to process { refresh }</div>
+      <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ back } Days Left { refresh }</div>
       {
         lifesExistent.map((file) => {
           return (

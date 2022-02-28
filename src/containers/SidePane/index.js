@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { addAlert, toggleRemainingTracks } from '../../actions/ui';
+import { addAlert } from '../../actions/ui';
 import { hideCanonical } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
-import PaneDrawer from '../../components/PaneDrawer';
 import PaneContent from '../../components/PaneContent';
 import ProgressBar from '../../components/ProgressBar';
 import Card from '../Card';
@@ -37,8 +36,6 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         display: 'flex',
         flexDirection: 'column'
     };
-    
-    const toggleList = () => dispatch(toggleRemainingTracks());
 
     const onPrevious = (e, modifier) => {
         modifier('is-loading');
@@ -121,7 +118,6 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
                 <div className='columns is-gapless' style={{ marginBottom: 0 }}>
                     { buttons }
                 </div>
-                <PaneDrawer onClick={toggleList} remainingCount={remainingCount} showList={showList} />
             </div>
         </Card>
     );
