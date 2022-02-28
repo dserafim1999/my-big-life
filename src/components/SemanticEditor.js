@@ -6,6 +6,7 @@ import Editor from '../editor/index.js';
 import decorators from '../editor/decorators';
 import suggestionsGetters from '../editor/suggestionsGetters';
 import { setTransportationModes } from '../actions/segments';
+import { setLIFE } from '../actions/progress';
 
 let SE = ({ dispatch, segments, life }) => {
   const state = ContentState.createFromText(life);
@@ -17,7 +18,7 @@ let SE = ({ dispatch, segments, life }) => {
       dispatch={ dispatch }
       strategies={ decorators }
       suggestionGetters={ suggestionsGetters }
-      onChange={(stateEditor, ast) => {
+      onChange={(stateEditor, ast, text) => {
         const modes = [];
         const isValidTMode = (mode) => {
           return ['foot', 'vehicle', 'train', 'boat', 'airplane']
@@ -55,6 +56,7 @@ let SE = ({ dispatch, segments, life }) => {
           from: mode.references.from
         }));
         dispatch(setTransportationModes(mappedModes));
+        dispatch(setLIFE(text));
       }}
     >
     </Editor>

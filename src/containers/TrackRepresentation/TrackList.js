@@ -10,12 +10,6 @@ import {
 
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;
 
-const EMPTY_FOLDER = (
-  <div style={{ width: '70%' }}>
-    There are no more files in the input folder
-  </div>
-);
-
 const style = {
   display: 'flex',
   alignItems: 'center',
@@ -41,7 +35,7 @@ let TrackList = ({ dispatch, tracks, className, step }) => {
     } else {
       return (
         <div style={style}>
-          { step === -2 ? LOADING : EMPTY_FOLDER }
+          { step === -2 ? LOADING : null }
         </div>
       );
     }

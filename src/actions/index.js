@@ -63,3 +63,5 @@ export const UPDATE_CONFIG = 'progress/update_config';
 export const DISPLAY_CANONICAL_TRIPS = 'progress/canonical_trips';
 export const DISPLAY_CANONICAL_LOCATIONS = 'progress/canonical_locations';
 export const HIDE_CANONICAL = 'progress/hide_canonical';
+export const SET_LIFE = 'progress/set_life';
+export const RESET_HISTORY = 'progress/reset_history';

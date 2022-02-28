@@ -89,7 +89,7 @@ export default class LeafletMap extends Component {
   }
 
   componentDidMount () {
-    const { mapCreation, children } = this.props;
+    const { mapCreation } = this.props;
     const m = findDOMNode(this.mapRef.current);
     this.map = map(m, mapCreation);
 

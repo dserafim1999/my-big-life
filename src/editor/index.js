@@ -95,7 +95,7 @@ class Editor extends Component {
       this.timeout = null;
 
       if (this.props.onChange) {
-        this.props.onChange(editorState, this.previousAst);
+        this.props.onChange(editorState, this.previousAst, currentText);
       }
     }, 100);
   }

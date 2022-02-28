@@ -1,11 +1,12 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import moment from 'moment'
-import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress'
-import AsyncButton from '../../components/AsyncButton'
+import React from 'react';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress';
+import AsyncButton from '../../components/AsyncButton';
 
-import RefreshIcon from '@mui/icons-material/Refresh'
-import CloseIcon from '@mui/icons-material/Close'
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
 
 const POINTS_PER_KB = 7.2;
 
@@ -20,6 +21,12 @@ const GPXOfDay = ({ date, size }) => {
     </div>
   );
 }
+
+const EMPTY_FOLDER = (
+  <div style={{ margin: 'auto', marginTop: '1rem', color: 'rgb(191, 191, 191)' }}>
+    <CheckIcon style={{ color: 'rgb(191, 191, 191)' }} /> Every day is processed
+  </div>
+);
 
 const crossStyle = {
   float: 'right',
@@ -63,6 +70,31 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
     </AsyncButton>
   );
 
+  const remainingDays = remaining.map(([day, gpxs], i) => {
+    const dismiss = (e) => {
+      e.preventDefault();
+      dispatch(dismissDay(day));
+    }
+
+    return (
+      <AsyncButton key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
+        if (selected !== day) {
+          /*global confirm*/
+          const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost');
+          if (go) {
+            modifier('loaderr');
+            dispatch(changeDayToProcess(day))
+              .then(() => modifier());
+          }
+        }
+      }}>
+        <Day
+          gpxs={gpxs} date={day}
+          isSelected={selected === day} onDismiss={dismiss}/>
+      </AsyncButton>
+    );
+  });
+
   return (
     <div style={{...style, paddingBottom: '1rem'}} title='Click to change the day to process'>
       <div style={{ fontSize: '1.5rem' }}>Days left to process { refresh }</div>
@@ -76,29 +108,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
         })
       }
       {
-        remaining.map(([day, gpxs], i) => {
-          const dismiss = (e) => {
-            e.preventDefault();
-            dispatch(dismissDay(day));
-          }
-          return (
-            <AsyncButton key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
-              if (selected !== day) {
-                /*global confirm*/
-                const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost')
-                if (go) {
-                  modifier('loaderr')
-                  dispatch(changeDayToProcess(day))
-                    .then(() => modifier())
-                }
-              }
-            }}>
-              <Day
-                date={day} gpxs={gpxs}
-                isSelected={selected === day} onDismiss={dismiss}/>
-            </AsyncButton>
-          )
-        })
+        remaining.count() > 0 ? remainingDays : EMPTY_FOLDER
       }
     </div>
   );

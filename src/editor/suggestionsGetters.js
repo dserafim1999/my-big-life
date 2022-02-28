@@ -59,6 +59,10 @@ export default {
     type: 'TEXT',
     getter: (text, data, callback) => {
       const { dispatch, references } = data;
+
+      if (!references) {
+        return;
+      }
       
       if (references) {
         const { segmentId, index } = references.from;

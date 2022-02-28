@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
-import { REDO, REMOVE_TRACKS_FOR, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
+import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
 import { fitSegments, fitTracks, toggleConfig } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from '../actions/segments';
-import { clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
+import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
 import { addAlert, setLoading } from '../actions/ui';
 
 const segmentsToJson = (state) => {
@@ -126,12 +126,12 @@ const updateState = (dispatch, json, getState, reverse = false) => {
     return;
   }
 
-  dispatch(removeTracksFor(json.track.segments, json.track.name));
-
+  dispatch(removeTracksFor(json.track.segments, json.track.name, true));
+  dispatch(resetHistory());
 
   // joins two consecutive segments that don't connect
   const step = getState().get('progress').get('step');
-  if (step === 0 || step === 1) {
+  if (step === 0) {
     getState()
       .get('tracks').get('segments').valueSeq()
       .sort((a, b) => {
@@ -189,7 +189,7 @@ export const previousStep = () => {
 export const nextStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('continue-button', true));
-    const hasLIFE = getState().get('tracks').get('LIFE');
+    const hasLIFE = getState().get('progress').get('LIFE');
     const options = {
       method: 'POST',
       mode: 'cors',
@@ -198,7 +198,7 @@ export const nextStep = () => {
           name: getState().get('tracks').get('tracks').first().get('name') || '',
           segments: segmentsToJson(getState())
         },
-        LIFE: hasLIFE ? hasLIFE.get('text') : null,
+        LIFE: hasLIFE || '',
         changes: getState().get('tracks').get('history').get('past').map((undo) => {
           return { ...undo, undo: null };
         })
@@ -379,3 +379,8 @@ export const requestTransportationSuggestions = (points) => {
       .catch((e) => console.error(e));
   }
 }
+
+export const setLIFE = (text) => ({
+  text,
+  type: SET_LIFE
+})

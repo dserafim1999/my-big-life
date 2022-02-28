@@ -16,8 +16,7 @@ import {
     nextStep,
     previousStep,
     bulkProcess,
-    loadLIFE,
-    reloadQueue
+    loadLIFE
   } from '../../actions/progress';
 
 const errorHandler = (dispatch, err, modifier) => {
@@ -95,7 +94,7 @@ let SidePane = ({ dispatch, stage, canProceed, remainingCount, showList, segment
         buttons = (
           <a className='button is-primary' onClick={() => dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
         );
-    } else {
+    } else if (remainingCount > 0) {
         if (showList) {
             buttons = <BulkButtons onBulkClick={onBulkClick} onLifeRead={onLifeRead} />
         } else {

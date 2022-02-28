@@ -151,6 +151,12 @@ const updateLIFE = (state, action) => {
   return state.set('LIFE', new Map({ text, warning }));
 }
 
+const resetHistory = (state, action) => {
+  return state
+    .updateIn(['history', 'future'], (history) => history.clear())
+    .updateIn(['history', 'past'], (history) => history.clear());
+}
+
 const removeTrack = (state, action) => {
   const { trackId } = action;
 
@@ -172,6 +178,7 @@ const ACTION_REACTION = {
     'track/update_name': updateTrackName,
     'track/toggle_renaming': toggleTrackRenaming,
     'track/update_life': updateLIFE,
+    'progress/reset_history': resetHistory,
     'progress/remove_track_for': removeTracksFor,
     'progress/undo': undo,
     'progress/redo': redo,

@@ -7,7 +7,8 @@ import {
   REMOVE_TRACK,
   DISPLAY_CANONICAL_TRIPS,
   DISPLAY_CANONICAL_LOCATIONS,
-  HIDE_CANONICAL
+  HIDE_CANONICAL,
+  RESET_HISTORY
 } from ".";
 
 import { Set } from 'immutable';
@@ -68,6 +69,10 @@ export const updateTrackName = (trackId, newName) => {
       type: UPDATE_TRACK_NAME
     }
 }
+
+export const resetHistory = () => ({
+  type: RESET_HISTORY
+})
 
 const MS_REG = /.[0-9]{3}Z$/;
 
