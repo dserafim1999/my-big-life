@@ -26,6 +26,17 @@ export class BoundsRecord extends Record({
       .set('maxLon', max(this.maxLon, bounds.get('maxLon')));
   }
 
+  scale (ratio) {
+    const lat = this.minLat + (this.maxLat - this.minLat) / 2;
+    const lon = this.minLon + (this.maxLon - this.minLon) / 2;
+    const latDiff = (this.maxLat - this.minLat) * ratio;
+    const lonDiff = (this.maxLon - this.minLon) * ratio;
+    return this
+      .set('minLat', lat - latDiff)
+      .set('maxLat', lat + latDiff)
+      .set('minLon', lon - lonDiff)
+      .set('maxLon', lon + lonDiff);
+  }
 }
 
 export const computeBounds = (points) => {

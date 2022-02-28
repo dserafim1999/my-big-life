@@ -7,9 +7,19 @@ import { Tooltip } from '@mui/material';
 export default class TrackName extends Component {
   constructor (props) {
     super(props);
-    this.state = {
+    this.state = this.initialState();
+  }
+
+  initialState () {
+    return {
       renaming: false,
-      name: props.track.get('name') || 'Untitled.gpx'
+      name: this.props.track.get('name') || 'Untitled.gpx'
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.track !== this.props.track) {
+      this.setState(this.initialState());
     }
   }
 
