@@ -2,11 +2,9 @@ import {
   ADD_ALERT,
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
-  TOGGLE_CONFIG,
   SET_LOADING
 } from "."
 
-import { getConfig } from "./progress";
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
 
@@ -60,21 +58,6 @@ export const fitTracks = (...trackIds) => {
 export const toggleRemainingTracks = () => {
   return {
     type: TOGGLE_REMAINING_TRACKS
-  }
-}
-
-export const toggleConfig = () => {
-  const action = {
-    type: TOGGLE_CONFIG
-  }
-  return (dispatch, getState) => {
-    if (!getState().get('ui').get('showConfig')) {
-      dispatch(getConfig())
-        .then(() => dispatch(action))
-        .catch(() => dispatch(action));
-    } else {
-      dispatch(action)
-    }
   }
 }
 

@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
-import { fitSegments, fitTracks, toggleConfig } from './ui';
+import { fitSegments, fitTracks } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from '../actions/segments';
 import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
@@ -17,7 +17,7 @@ const segmentsToJson = (state) => {
 
 export const handleError = (error, dispatch) => {
   if (error.message === 'Failed to fetch') {
-    dispatch(toggleConfig());
+    //TODO route to config
   }
 }
 
@@ -26,7 +26,8 @@ export const updateConfig = (config) => ({
   type: UPDATE_CONFIG
 })
 
-export const getConfig = (cb) => {
+export const getConfig = (dispatch) => {
+  dispatch(setLoading('config', true));
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
@@ -34,9 +35,8 @@ export const getConfig = (cb) => {
     }
     return fetch(getState().get('progress').get('server') + '/config', options)
       .then((response) => response.json())
-      .then((config) => {
-        dispatch(updateConfig(config));
-    });
+      .then((config) => dispatch(updateConfig(config)))
+      .then(() => dispatch(setLoading('config', false)));
   }
 }
 
@@ -56,10 +56,7 @@ export const saveConfig = (config) => {
     })
     .then((config) => {
         dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
-        if (getState().get('progress').get('step') < 0) {
-          dispatch(requestServerState());
-        }
-        dispatch(toggleConfig());
+        // TODO go to last route
     });
   }
 }
@@ -340,7 +337,7 @@ export const loadCanonicalTrips = () => {
       .catch((e) => console.error(e))
       .then((trips) => {
         dispatch(displayCanonicalTrips(trips));
-        dispatch(toggleConfig());
+        // TODO go to last route
         dispatch(fitTracks(0));
       });
   }
@@ -358,7 +355,7 @@ export const loadCanonicalLocations = () => {
       .catch((e) => console.error(e))
       .then((trips) => {
         dispatch(displayCanonicalLocations(trips));
-        dispatch(toggleConfig());
+        // TODO go to last route
         dispatch(fitTracks(0));
       });
   }

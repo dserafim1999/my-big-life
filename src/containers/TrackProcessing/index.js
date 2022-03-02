@@ -31,7 +31,7 @@ const errorHandler = (dispatch, err, modifier) => {
     setTimeout(() => modifier(''), 2000);
 }
 
-class SidePane extends Component {
+class TrackProcessing extends Component {
     constructor(props) {
         super(props);
 
@@ -90,8 +90,10 @@ class SidePane extends Component {
     }
     
     render () {
+        const { showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed} = this.props;
+
         const progress = (
-            <ProgressBar state={this.props.stage}>
+            <ProgressBar state={step}>
               <span>Preview</span>
               <span>Adjust</span>
               <span>Annotate</span>
@@ -99,23 +101,23 @@ class SidePane extends Component {
         );
     
         let buttons;
-        if (this.props.canonical) {
+        if (canonical) {
             buttons = (
               <a className='button is-primary' onClick={() => this.dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
             );
-        } else if (this.props.remainingCount > 0) {
-            if (this.props.showList) {
+        } else if (remainingCount > 0) {
+            if (showList) {
                 buttons = <BulkButtons onBulkClick={this.onBulkClick} onLifeRead={this.onLifeRead} />
             } else {
                 buttons = (
                     <NavigationButtons
-                        isFinal={this.props.stage === 2}
-                        isLoadingNext={this.props.isLoadingNext}
-                        isLoadingPrevious={this.props.isLoadingPrevious} 
+                        isFinal={step === 2}
+                        isLoadingNext={isLoadingNext}
+                        isLoadingPrevious={isLoadingPrevious} 
                         onPrevious={this.onPrevious}
                         onSkip={this.onSkip} onNext={this.onNext} 
-                        canSkip={this.props.stage === 0 && this.props.remainingCount > 1} 
-                        canProceed={this.props.canProceed} canPrevious={this.props.stage !== 0}
+                        canSkip={step === 0 && remainingCount > 1} 
+                        canProceed={canProceed} canPrevious={step !== 0}
                     />
                 );
             }
@@ -124,7 +126,7 @@ class SidePane extends Component {
             <Card width="375" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 { progress }
                 <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
-                <PaneContent showList={this.props.showList} stage={this.props.stage} />
+                <PaneContent showList={showList} stage={step} />
     
                 <div style={{ marginTop: '0.5rem' }}>
                     <div className='columns is-gapless' style={{ marginBottom: 0 }}>
@@ -138,7 +140,7 @@ class SidePane extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    stage: state.get('progress').get('step'),
+    step: state.get('progress').get('step'),
     canonical: state.get('tracks').get('canonical'),
     showList: state.get('ui').get('showRemainingTracks'),
     remainingCount: state.get('progress').get('remainingTracks').count(),
@@ -149,4 +151,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(SidePane);
+export default connect(mapStateToProps)(TrackProcessing);

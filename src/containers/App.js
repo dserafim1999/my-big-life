@@ -50,7 +50,6 @@ let App = ({ showConfig, step, dispatch }) => {
             return dispatch(previousStep());
           }
         case 'G': return dispatch(nextStep());
-        case 'B': return dispatch(toggleConfig());
         case 'I': return dispatch(toggleRemainingTracks());
       }
     }
@@ -93,8 +92,7 @@ let App = ({ showConfig, step, dispatch }) => {
 };
 
 const mapStateToProps = (state) => ({
-  step: state.get('progress').get('step'),
-  showConfig: state.get('ui').get('showConfig')
+  step: state.get('progress').get('step')
 });
 
 export default connect(mapStateToProps)(App);

@@ -40,7 +40,6 @@ export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
 export const SHOW_TRACK_DETAILS = 'ui/show_track_details';
 export const ADD_ALERT = 'ui/add_alert';
 export const REMOVE_ALERT = 'ui/remove_alert';
-export const TOGGLE_CONFIG = 'ui/toggle_config';
 export const SET_LOADING = 'ui/set_loading';
 
 export const UPDATE_BOUNDS = 'map/bounds';

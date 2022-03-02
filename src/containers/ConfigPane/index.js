@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import {
   saveConfig,
   loadCanonicalTrips,
-  loadCanonicalLocations
+  loadCanonicalLocations,
+  getConfig
 } from '../../actions/progress';
-import { toggleConfig } from '../../actions/ui';
+
 import AsyncButton from '../../components/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
 
@@ -25,8 +26,15 @@ const style = {
 }
 
 class ConfigPane extends Component {
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    dispatch(getConfig(dispatch));
+  }
+
   render () {
-    const { dispatch, address, config } = this.props;
+    const { dispatch, address, config, isLoading } = this.props;
 
     const onSubmit = (e) => {
       // e.preventDefault()
@@ -60,7 +68,7 @@ class ConfigPane extends Component {
     }
 
     let serverSpecific = <div></div>;
-    if (config) {
+    if (config && !isLoading) {
       let timezones = [];
       for (let tz = -12; tz < 15; tz++) {
         timezones.push(
@@ -165,16 +173,13 @@ class ConfigPane extends Component {
 
           </div>
         </section>
-        <footer style={{ textAlign: 'right' }} className='control'>
-          <button className='button is-link' onClick={(e) => {
-            e.preventDefault()
-            dispatch(toggleConfig())
-          }}>Cancel</button>
-          <AsyncButton onClick={(e, modifier) => {
+        <footer style={{ textAlign: 'right' }} className='control'> 
+          <AsyncButton 
             title='Save Configuration Settings'
-            modifier('is-loading')
-            onSubmit()
-            modifier()
+            onClick={(e, modifier) => {
+              modifier('is-loading')
+              onSubmit()
+              modifier()
           }} > Save </AsyncButton>
         </footer>
       </div>
@@ -186,7 +191,8 @@ const mapStateToProps = (state) => {
   const serverConfig = state.get('progress').get('config');
   return {
     address: state.get('progress').get('server'),
-    config: serverConfig ? serverConfig.toJS() : null
+    config: serverConfig ? serverConfig.toJS() : null,
+    isLoading: state.get('ui').get('loading').has('config')
   };
 }
 

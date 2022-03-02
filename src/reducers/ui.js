@@ -3,7 +3,6 @@ import {
   ADD_ALERT,
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
-  TOGGLE_CONFIG,
   SET_LOADING,
 } from '../actions';
 
@@ -40,8 +39,6 @@ const ui = (state = initialState, action) => {
         return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));  
       case TOGGLE_REMAINING_TRACKS:
         return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
-      case TOGGLE_CONFIG:
-        return state.set('showConfig', !state.get('showConfig'));
       case SET_LOADING:
         return state.update('loading', (loading) => {
           const { is, ref } = action;

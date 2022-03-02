@@ -16,8 +16,6 @@ import {
   redo
 } from '../actions/progress';
 
-import { toggleConfig } from '../actions/ui'
-
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';
 
@@ -101,7 +99,6 @@ export default class LeafletMap extends Component {
       canRedo: this.props.canRedo,
       undo: () => dispatch(undo()),
       redo: () => dispatch(redo()),
-      config: () => dispatch(toggleConfig())
     })
 
 
