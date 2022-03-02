@@ -83,7 +83,6 @@ const findPointInSegments = (date, segments, reverse = false, untilLast = false)
             if (untilLast) {
               previous = { segmentId, index: i - 1, point };
             } else {
-              console.log('original')
               return { segmentId, index: i - 1, point };
             }
           } else if (previous) {

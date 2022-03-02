@@ -1,10 +1,6 @@
 import React from 'react';
 import { Polyline, FeatureGroup } from 'leaflet';
-import { createPointsFeatureGroup, renderToDiv, createPointIcon, createMarker } from './utils';
-import SegmentToolbox from '../containers/TrackRepresentation/SegmentToolbox';
-
-import store from '../store';
-import { Provider } from 'react-redux';
+import { createPointsFeatureGroup, createPointIcon, createMarker } from './utils';
 
 import StopIcon from '@mui/icons-material/Stop';
 import PlayIcon from '@mui/icons-material/PlayArrow';

@@ -150,7 +150,6 @@ class Editor extends Component {
     } else if (e.keyCode === 27 /* `ESC` key */) {
       return 'editor-esc'; 
     } else if (e.keyCode === 38 /* `UP` key */) {
-      console.log(this.state);
       if (this.state.suggestions.show){
          e.preventDefault();
         return 'editor-up';

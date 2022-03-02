@@ -1,4 +1,3 @@
-import React from 'react';
 import { createPointsFeatureGroup, createPointIcon } from './utils';
 import { LatLng, Marker } from 'leaflet';
 
@@ -23,6 +22,7 @@ export default function updatePoints (segment, current, previous, color, filter)
 
     let polylinePoints = segment.polyline.getLatLngs();
     let markers = segment.points;
+
     if (current.count() < previous.count()) {
       // remove points
       const len = previous.count() - current.count();

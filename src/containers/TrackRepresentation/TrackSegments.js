@@ -29,7 +29,7 @@ const TrackSegments = ({ dispatch, segments, track }) => {
           let dt = null;
           const nowTime = segment.getStartTime();
           const prevSegment = segments.get(i - 1);
-          const prevTime = prevSegment.getStartTime();
+          const prevTime = prevSegment.getEndTime();
           if (i > 0 && nowTime && prevTime) {
             const dtVal = nowTime.from(prevTime, true);
             const action = () => dispatch(updateBounds(computeBounds([segment.get('points').get(0), prevSegment.get('points').get(-1)]).scale(1.4)));

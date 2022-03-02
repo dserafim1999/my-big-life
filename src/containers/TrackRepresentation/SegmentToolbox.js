@@ -148,7 +148,7 @@ const mapStateToProps = (state, { segment }) => {
   return {
     segmentId: segment.get('id'),
     start: segment.getStartTime(),
-    end: segment.getStartTime(),
+    end: segment.getEndTime(),
     editing: segment.get('editing'),
     splitting: segment.get('splitting'),
     joining: segment.get('joining'),

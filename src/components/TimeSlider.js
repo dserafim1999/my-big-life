@@ -23,8 +23,6 @@ export default class TimeSlider extends Component {
       left,
       right
     }
-    
-    this.timer = null;
   }
 
   onChange (value) {
@@ -32,13 +30,10 @@ export default class TimeSlider extends Component {
       left: value[0],
       right: value[1]
     });
-
+    
     if (this.props.onChange) {
       const { lower, upper } = this.getDates();
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.props.onChange(lower, upper)
-      }, 200);
+      this.props.onChange(lower, upper)
     }
   }
 
@@ -48,10 +43,10 @@ export default class TimeSlider extends Component {
 
     const leftRatio = this.state.left / 100;
     const rightRatio = this.state.right / 100;
-
+    
     const lower = moment(start + diff * leftRatio);
     const upper = moment(start + diff * rightRatio);
-
+    
     return {
       lower,
       upper
@@ -68,7 +63,7 @@ export default class TimeSlider extends Component {
             withBars 
             thumbClassName='handle'
             className='slider'
-            onChange={this.onChange.bind(this)} 
+            onAfterChange={this.onChange.bind(this)} 
          />
         <div className='navbar'>
           <div className='navbar-left'>
