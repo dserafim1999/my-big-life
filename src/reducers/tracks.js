@@ -184,7 +184,7 @@ const ACTION_REACTION = {
     'progress/redo': redo,
     'progress/canonical_trip': displayCanonicalTrips,
     'progress/canonical_locations': displayCanonicalLocations,
-    'progress/hide_canonical': displayCanonicalTrips,
+    'progress/hide_canonical': hideCanonical,
 }
 
 

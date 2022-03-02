@@ -6,7 +6,7 @@ export default class AsyncButton extends Component {
   constructor (props) {
     super(props);
 
-    this.title = props.title;
+    this.title = props.title !== undefined ? props.title : '';
     this.btnRef = createRef();
     this.state = {
       className: '',
