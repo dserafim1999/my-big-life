@@ -18,6 +18,8 @@ import {
     loadLIFE,
     requestServerState
   } from '../../actions/progress';
+import { updateBounds } from '../../actions/map';
+import { BoundsRecord } from '../../records';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -36,16 +38,20 @@ class TrackProcessing extends Component {
         super(props);
 
         this.dispatch = this.props.dispatch;
+
+        // sets bounds to reset map
+        this.bounds = new BoundsRecord().setWithCoords(90, -200, -90, 200);
     }
 
     componentDidMount() {
+        this.dispatch(clearAll());
         this.dispatch(requestServerState());
     }
 
     componentWillUnmount() {
         this.dispatch(clearAll());
         this.dispatch(resetHistory());
-        //TODO center map
+        this.dispatch(updateBounds(this.bounds));
     }
 
     onPrevious = (e, modifier) => {

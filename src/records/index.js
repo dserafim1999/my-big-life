@@ -25,6 +25,13 @@ export class BoundsRecord extends Record({
       .set('maxLat', max(this.maxLat, bounds.get('maxLat')))
       .set('maxLon', max(this.maxLon, bounds.get('maxLon')));
   }
+  setWithCoords (minLat, minLon, maxLat, maxLon) {
+    return this
+      .set('minLat', minLat)
+      .set('minLon', minLon)
+      .set('maxLat', maxLat)
+      .set('maxLon', maxLon);
+  }
 
   scale (ratio) {
     const lat = this.minLat + (this.maxLat - this.minLat) / 2;
