@@ -5,12 +5,15 @@ import { connect } from 'react-redux'
 
 import Dropzone from "../components/Dropzone";
 import MainContainer from './MainContainer';
+import SideBar from '../components/SideBar';
+
 
 import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
 import { toggleRemainingTracks, toggleConfig } from '../actions/ui';
 import { undo, redo, nextStep, previousStep, skipDay } from '../actions/progress';
+import { FeaturesData } from "../components/SideBar/FeaturesData";
 
 let App = ({ showConfig, step, dispatch }) => {
 
@@ -64,22 +67,20 @@ let App = ({ showConfig, step, dispatch }) => {
   return (
       <Dropzone id="container" onDrop={onDrop}>
         <Router>
-            {/*
-              <Routes>
-                  <Route path='/' element={<SideBar/>}/>
-                      {
-                      FeaturesData.map(menu => (
-                          <Route 
-                            key={menu.id}
-                            path={menu.route} 
-                            element={menu.component}
-                          />
-                      ))
-                      }
-                  <Route path='/*' element={<></>}/> 
-              </Routes>
-              */
-            }
+            <Routes>
+                <Route path='/' element={<></>}/>
+                    {
+                    FeaturesData.map(menu => (
+                        <Route 
+                          key={menu.id}
+                          path={menu.route} 
+                          element={menu.component}
+                        />
+                    ))
+                    }
+                <Route path='/*' element={<></>}/> 
+            </Routes>
+            <SideBar/>
             <MainContainer
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}

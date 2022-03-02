@@ -19,8 +19,6 @@ let store = createStore(
   reducers,
   Map({}),
   process.env.NODE_ENV === 'development' ? applyMiddleware(thunk, loggerMiddleware) : applyMiddleware(thunkMiddleware)
-)
-
-store.dispatch(requestServerState())
+);
 
 export default store;

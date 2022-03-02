@@ -4,7 +4,6 @@ import { nanoid } from "nanoid";
 
 import SearchBar from "../SearchBar";
 import LifeEditor from "../LifeEditor";
-import TrackProcessing from "../TrackProcessing";
 import VisualQuerying from "../VisualQuerying";
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,6 +12,7 @@ import EditLocationIcon from '@mui/icons-material/EditLocation';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Settings from "../Settings";
+import SidePane from "../../containers/TrackProcessing";
 
 export const FeaturesData = [
     {
@@ -26,7 +26,7 @@ export const FeaturesData = [
         title: "Track Processing",
         icon: <EditLocationIcon fontSize="large"/>,
         route: "/track-processing",
-        component: <TrackProcessing/>,
+        component: <SidePane/>,
         id: nanoid()
     },
     {

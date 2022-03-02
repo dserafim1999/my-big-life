@@ -44,7 +44,7 @@ export const TOGGLE_CONFIG = 'ui/toggle_config';
 export const SET_LOADING = 'ui/set_loading';
 
 export const UPDATE_BOUNDS = 'map/bounds';
-export const CENTER_MAP = 'map/center_map';
+export const CENTER_MAP = 'map/center';
 export const HIGHLIGHT_SEGMENT = 'map/highlight_segment';
 export const DEHIGHLIGHT_SEGMENT = 'map/dehighlight_segment';
 export const HIGHLIGHT_POINT = 'map/highlight_point';
