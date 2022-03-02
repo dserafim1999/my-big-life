@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
+import { getDefaultKeyBinding } from 'draft-js';
 
 import { 
   Editor as DraftEditor,
@@ -19,7 +19,7 @@ import Gutter from './Gutter';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Tooltip } from '@mui/material';
 
-class Editor extends Component {
+class SemanticEditor extends Component {
   constructor (props) {
     super(props);
     this.previousAst = null;
@@ -267,4 +267,4 @@ class Editor extends Component {
   }
 }
 
-export default Editor;
+export default SemanticEditor;

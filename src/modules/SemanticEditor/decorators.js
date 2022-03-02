@@ -6,7 +6,7 @@ import {
   dehighlightSegment,
   highlightPoint,
   dehighlightPoint
-} from '../actions/map';
+} from '../../actions/map';
 
 const SOLARIZED = {
   YELLOW: '#b58900',

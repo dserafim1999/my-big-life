@@ -9,12 +9,12 @@ import {
   addSegmentPoint,
   removeSegmentPoint,
   joinSegment
-} from '../actions/segments';
+} from '../../actions/segments';
 
 import {
   undo, 
   redo
-} from '../actions/progress';
+} from '../../actions/progress';
 
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';

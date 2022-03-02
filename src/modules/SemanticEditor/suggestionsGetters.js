@@ -1,14 +1,10 @@
 import {
-  updateLocationName,
-  updateTransportationMode,
-  selectPointInMap,
-  deselectPointInMap,
   getTransportationModesFor
-} from '../actions/segments';
+} from '../../actions/segments';
 
 import {
   getLocationSuggestion
-} from '../actions/progress';
+} from '../../actions/progress';
 
 const filterSuggestions = (text, suggestions) => {
   let filtered = suggestions.filter((s) => s.match(text));

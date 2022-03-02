@@ -6,9 +6,9 @@ import { clearAll, hideCanonical, resetHistory } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
-import PaneContent from '../../components/PaneContent';
-import ProgressBar from '../../components/ProgressBar';
-import Card from '../Card';
+import PaneContent from './PaneContent';
+import ProgressBar from './ProgressBar';
+import Card from '../../containers/Card';
 
 import {
     skipDay,

@@ -2,19 +2,19 @@ import React from "react";
 
 import { nanoid } from "nanoid";
 
-import SearchBar from "../SearchBar";
-import LifeEditor from "../LifeEditor";
-import VisualQuerying from "../VisualQuerying";
+import SearchBar from "./SearchBar";
+import LifeEditor from "./LifeEditor";
+import VisualQuerying from "./VisualQuerying";
 
 import SearchIcon from '@mui/icons-material/Search';
 import AssignmentIcon from '@mui/icons-material/AssignmentInd';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import SettingsIcon from '@mui/icons-material/Settings';
-import TrackProcessing from "../../containers/TrackProcessing";
-import ConfigPane from "../../containers/ConfigPane";
+import TrackProcessing from "./TrackProcessing";
+import ConfigPane from "../containers/ConfigPane";
 
-export const FeaturesData = [
+export const ModuleRoutes = [
     {
         title: "Search",
         icon: <SearchIcon fontSize="large"/>,

@@ -1,18 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ContentState } from 'draft-js';
-import Editor from '../editor/index.js';
+import SemanticEditor from '../../modules/SemanticEditor';
 
-import decorators from '../editor/decorators';
-import suggestionsGetters from '../editor/suggestionsGetters';
-import { setTransportationModes } from '../actions/segments';
-import { setLIFE } from '../actions/progress';
+import decorators from '../../modules/SemanticEditor/decorators';
+import suggestionsGetters from '../../modules/SemanticEditor/suggestionsGetters';
+import { setTransportationModes } from '../../actions/segments';
+import { setLIFE } from '../../actions/progress';
 
 let SE = ({ dispatch, segments, life }) => {
   const state = ContentState.createFromText(life);
 
   return (
-    <Editor
+    <SemanticEditor
       state={ state }
       segments={ segments }
       dispatch={ dispatch }
@@ -59,7 +59,7 @@ let SE = ({ dispatch, segments, life }) => {
         dispatch(setLIFE(text));
       }}
     >
-    </Editor>
+    </SemanticEditor>
   );
 }
 

@@ -6,7 +6,7 @@ import Stack from 'react-bootstrap/Stack';
 import { getActiveRoute, isEquals } from "../../utils";
 
 import IconButton from "@mui/material/IconButton";
-import { FeaturesData } from "./FeaturesData";
+import { ModuleRoutes } from "../../modules/ModuleRoutes";
 
 
 const Wrapper = styled.div`
@@ -38,9 +38,9 @@ const SideBar = () => {
 
     return (
         <Wrapper>
-            <Stack direction="horizontal" gap={FeaturesData.length}>
+            <Stack direction="horizontal" gap={ModuleRoutes.length}>
             {
-                FeaturesData.map(menu => (
+                ModuleRoutes.map(menu => (
                     <IconButton 
                         key={menu.id}
                         size="small" 

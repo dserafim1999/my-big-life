@@ -7,7 +7,7 @@ import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';
 import CheckIcon from '@mui/icons-material/Check';
 
-import AsyncButton from '../components/AsyncButton';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 const flexAlignStyle = {
   display: 'flex',

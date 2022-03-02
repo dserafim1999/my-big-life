@@ -6,7 +6,7 @@ import {
   updatePoint,
   deselectPoint,
   straightSelected
-} from '../actions/segments';
+} from '../../actions/segments';
 
 export default (lseg, current, dispatch) => {
   return (e) => {

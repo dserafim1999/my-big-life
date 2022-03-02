@@ -5,7 +5,7 @@ import moment from 'moment';
 import CheckIcon from '@mui/icons-material/Check';
 import DownloadIcon from '@mui/icons-material/Download';
 
-import AsyncButton from '../../components/AsyncButton';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 const dateFormatter = (name) => {
   return moment(name.slice(0, -4)).format('ddd, MMM Do YYYY');

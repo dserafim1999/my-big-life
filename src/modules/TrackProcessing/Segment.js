@@ -1,8 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  centerPointOnMap
-} from '../../actions/segments';
 
 import {
   centerMap

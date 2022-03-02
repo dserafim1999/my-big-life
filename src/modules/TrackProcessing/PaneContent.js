@@ -1,8 +1,8 @@
 import React from 'react';
-import { ANNOTATE_STAGE } from '../constants';
-import TrackList from '../containers/TrackRepresentation/TrackList';
-import SemanticEditor from './SemanticEditor';
-import DaysLeft from '../containers/DaysLeft';
+import { ANNOTATE_STAGE } from '../../constants';
+import TrackList from './TrackList';
+import SemanticEditor from '../../components/SemanticEditor';
+import DaysLeft from './DaysLeft';
 
 const PaneContent = ({ remainingCount, showList, stage }) => {
   let content;

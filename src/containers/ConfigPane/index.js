@@ -7,7 +7,7 @@ import {
   getConfig
 } from '../../actions/progress';
 
-import AsyncButton from '../../components/AsyncButton';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
 
 const style = {

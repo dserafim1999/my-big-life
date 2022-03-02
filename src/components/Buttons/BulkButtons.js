@@ -1,5 +1,5 @@
 import React from 'react';
-import AsyncButton from '../AsyncButton';
+import AsyncButton from './AsyncButton';
 
 const BulkButtons = ({ onBulkClick, onLifeRead }) => {
   const warningBorderStyle = {

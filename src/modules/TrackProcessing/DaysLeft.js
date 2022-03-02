@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress';
 import { toggleRemainingTracks } from '../../actions/ui';
-import AsyncButton from '../../components/AsyncButton';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CloseIcon from '@mui/icons-material/Close';

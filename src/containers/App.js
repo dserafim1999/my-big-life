@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import Dropzone from "../components/Dropzone";
+import Dropzone from "../containers/Dropzone";
 import MainContainer from './MainContainer';
 import SideBar from '../components/SideBar';
 
@@ -11,9 +11,9 @@ import SideBar from '../components/SideBar';
 import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
-import { toggleRemainingTracks, toggleConfig } from '../actions/ui';
+import { toggleRemainingTracks } from '../actions/ui';
 import { undo, redo, nextStep, previousStep, skipDay } from '../actions/progress';
-import { FeaturesData } from "../components/SideBar/FeaturesData";
+import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, step, dispatch }) => {
 
@@ -69,7 +69,7 @@ let App = ({ showConfig, step, dispatch }) => {
             <Routes>
                 <Route path='/' element={<></>}/>
                     {
-                    FeaturesData.map(menu => (
+                    ModuleRoutes.map(menu => (
                         <Route 
                           key={menu.id}
                           path={menu.route} 
