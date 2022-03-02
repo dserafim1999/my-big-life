@@ -1,37 +1,33 @@
-import React from "react";
+import React, { Component } from "react";
 
-import styled from "styled-components";
+import Draggable from 'react-draggable';
 
-const Wrapper = styled.div`
-    position: absolute;
-    width: ${props => props.width}px;
-    height: ${props => props.height}px;
-    background-color: white;
-    border-radius: 15px;
-    
-    z-index: 500;
-    top: ${props => props.top}%;
-    left: ${props => props.left}%;
-    transform: translate(-${props => props.top}%, -${props => props.left}%);
-`;
+const wrapper = {
+    position: 'fixed',
+    width: '375px',
+    backgroundColor: 'white',
+    borderRadius: '15px',
+    zIndex: '1000'
+}
 
-const Content = styled.div`
-    width: 100%;
-    height: 100%;
+export default class Card extends Component {
 
-    padding: 10px;
-`;
+    constructor(props) {
+        super(props);
+    }
 
-const Card = (props) => {
-    const { children, width, height, top, left, content } = props;
 
-    return (
-        <Wrapper width={width} height={height} top={top} left={left}>
-            <Content>
-              { children }
-            </Content>
-        </Wrapper>
-    )
+    render() {
+        const { children } = this.props;
+
+        return (
+            <Draggable>
+                <div style={wrapper}>
+                    <div style={{width: '100%', height: '100%', padding: '10px'}} >
+                        { children }
+                    </div>
+                </div>
+            </Draggable>
+        )
+    }
 };
-
-export default Card;
