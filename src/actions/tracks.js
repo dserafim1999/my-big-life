@@ -8,7 +8,8 @@ import {
   DISPLAY_CANONICAL_TRIPS,
   DISPLAY_CANONICAL_LOCATIONS,
   HIDE_CANONICAL,
-  RESET_HISTORY
+  RESET_HISTORY,
+  DISPLAY_TRIPS
 } from ".";
 
 import { Set } from 'immutable';
@@ -40,6 +41,11 @@ export const addMultipleTracks = (tracks, options) => {
     dispatch(fitSegments(...diff.toJS()));
   }
 }
+
+export const displayAllTrips = (trips) => ({
+  trips,
+  type: DISPLAY_TRIPS
+})
 
 export const displayCanonicalTrips = (trips) => ({
   trips,

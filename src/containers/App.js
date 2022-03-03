@@ -12,7 +12,7 @@ import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
 import { toggleRemainingTracks } from '../actions/ui';
-import { undo, redo, nextStep, previousStep, skipDay } from '../actions/progress';
+import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/progress';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, step, dispatch }) => {
@@ -79,7 +79,7 @@ let App = ({ showConfig, step, dispatch }) => {
                     }
                 <Route path='/*' element={<></>}/> 
             </Routes>
-            <SideBar/>
+            <SideBar dispatch={dispatch}/>
             <MainContainer
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}

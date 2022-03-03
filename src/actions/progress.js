@@ -3,7 +3,7 @@ import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFI
 import { fitSegments, fitTracks } from './ui';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from '../actions/segments';
-import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations } from '../actions/tracks';
+import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations, displayAllTrips } from '../actions/tracks';
 import { addAlert, setLoading } from '../actions/ui';
 
 const segmentsToJson = (state) => {
@@ -163,6 +163,7 @@ export const requestServerState = () => {
         handleError(err, dispatch);
     })
     .then((json) => {
+        dispatch(clearAll());
         updateState(dispatch, json, getState)
     });
   }
@@ -357,6 +358,24 @@ export const loadCanonicalLocations = () => {
         dispatch(displayCanonicalLocations(trips));
         // TODO go to last route
         dispatch(fitTracks(0));
+      });
+  }
+}
+
+
+export const loadTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('progress').get('server');
+    return fetch(addr + '/trips', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((trips) => {
+        dispatch(clearAll());
+        dispatch(displayAllTrips(trips));
       });
   }
 }

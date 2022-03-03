@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Stack from 'react-bootstrap/Stack';
@@ -6,6 +6,7 @@ import { getActiveRoute, isEquals } from "../../utils";
 
 import IconButton from "@mui/material/IconButton";
 import { ModuleRoutes } from "../../modules/ModuleRoutes";
+import { loadTrips } from "../../actions/progress";
 
 
 const wrapper = {
@@ -19,29 +20,60 @@ const wrapper = {
     transform: 'translate(-50%, 0%)'
 }
 
-const SideBar = () => {
-    const [activeRoute, setActiveRoute] = useState('/');
+class SideBar extends Component {
 
-    return (
-        <div style={wrapper}>
-            <Stack direction="horizontal" gap={ModuleRoutes.length}>
-            {
-                ModuleRoutes.map(menu => (
-                    <IconButton 
-                        key={menu.id}
-                        size="small" 
-                        aria-label={menu.title}
-                        onClick={() => setActiveRoute(getActiveRoute())}
-                        className={isEquals(activeRoute, menu.route) ? 'activeIcon' : 'inactiveIcon'}
-                    >  
-                        <Link to={isEquals(activeRoute, menu.route) ? '/' : menu.route}>{menu.icon}</Link>
-                    </IconButton>
-                ))
-            
-            }
-            </Stack>
-        </div>
-    )
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            route: getActiveRoute()
+        }
+    }
+    
+    setActiveRoute() {
+        this.setState({
+            route: getActiveRoute()
+        });
+    }
+    
+    componentDidMount () {        
+        this.setActiveRoute();
+    }
+
+    isEqualRoute(route) {
+        return isEquals(this.state.route, route);
+    }
+
+    render() {
+        const { dispatch } = this.props;
+
+        console.log(this.state.route);
+
+        if (this.isEqualRoute('/')) {
+            dispatch(loadTrips());
+        }
+
+        return (
+            <div style={wrapper}>
+                <Stack direction="horizontal" gap={ModuleRoutes.length}>
+                {
+                    ModuleRoutes.map(menu => (
+                        <IconButton 
+                            key={menu.id}
+                            size="small" 
+                            aria-label={menu.title}
+                            onClick={() => this.setActiveRoute()}
+                            className={this.isEqualRoute(menu.route) ? 'activeIcon' : 'inactiveIcon'}
+                        >  
+                            <Link to={this.isEqualRoute(menu.route) ? '/' : menu.route}>{menu.icon}</Link>
+                        </IconButton>
+                    ))
+                
+                }
+                </Stack>
+            </div>
+        )
+    }
 };
 
 export default SideBar;
