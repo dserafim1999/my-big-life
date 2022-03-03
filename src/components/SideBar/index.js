@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 
 import Stack from 'react-bootstrap/Stack';
 import { getActiveRoute, isEquals } from "../../utils";
@@ -9,35 +8,22 @@ import IconButton from "@mui/material/IconButton";
 import { ModuleRoutes } from "../../modules/ModuleRoutes";
 
 
-const Wrapper = styled.div`
-    position: absolute;
-    padding: 10px 15px 10px 15px;
-    background-color: white;
-    border-radius: 50px;
-    
-    z-index: 500;
-    left: 50%;
-    bottom: 10px;
-    transform: translate(-50%, 0%);
-
-    .active {
-        a {
-            color: black;
-        }
-    }
-
-    .inactive {
-        a {
-            color: grey;
-        }
-    }
-`;
+const wrapper = {
+    position: 'absolute',
+    padding: '10px 15px 10px 15px',
+    backgroundColor: 'white',
+    borderRadius: '50px',
+    zIndex: '500',
+    left: '50%',
+    bottom: '10px',
+    transform: 'translate(-50%, 0%)'
+}
 
 const SideBar = () => {
     const [activeRoute, setActiveRoute] = useState('/');
 
     return (
-        <Wrapper>
+        <div style={wrapper}>
             <Stack direction="horizontal" gap={ModuleRoutes.length}>
             {
                 ModuleRoutes.map(menu => (
@@ -46,7 +32,7 @@ const SideBar = () => {
                         size="small" 
                         aria-label={menu.title}
                         onClick={() => setActiveRoute(getActiveRoute())}
-                        className={isEquals(activeRoute, menu.route) ? 'active' : 'inactive'}
+                        className={isEquals(activeRoute, menu.route) ? 'activeIcon' : 'inactiveIcon'}
                     >  
                         <Link to={isEquals(activeRoute, menu.route) ? '/' : menu.route}>{menu.icon}</Link>
                     </IconButton>
@@ -54,7 +40,7 @@ const SideBar = () => {
             
             }
             </Stack>
-        </Wrapper>
+        </div>
     )
 };
 
