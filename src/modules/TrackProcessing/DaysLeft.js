@@ -10,6 +10,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { DONE_STAGE, PREVIEW_STAGE } from '../../constants';
 
 const POINTS_PER_KB = 7.2;
 
@@ -26,7 +27,7 @@ const GPXOfDay = ({ date, size }) => {
 }
 
 const EMPTY_FOLDER = (
-  <div style={{ margin: 'auto', marginTop: '1rem', color: 'rgb(191, 191, 191)' }}>
+  <div style={{ margin: 'auto', marginTop: '1rem', color: 'rgb(191, 191, 191)', textAlign: 'center' }}>
     <CheckIcon style={{ color: 'rgb(191, 191, 191)' }} /> Every day is processed
   </div>
 );
@@ -58,7 +59,7 @@ const Day = ({ date, gpxs, isSelected, onSelectDay, onDismiss }) => {
   );
 }
 
-let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent }) => {
+let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent, done }) => {
   const refresh = (
     <AsyncButton
       className={'icon-button button'}
@@ -110,7 +111,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
 
   return (
     <div style={{...style, paddingBottom: '1rem'}} title='Click to change the day to process'>
-      <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ back } Days Left { refresh }</div>
+      <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ done ? null : back }{ done ? '' : 'Days Left' }{ refresh }</div>
       {
         lifesExistent.map((file) => {
           return (
@@ -132,7 +133,8 @@ const mapStateToProps = (state) => {
     lifesExistent: state.get('progress').get('lifeQueue') || [],
     remaining: state.get('progress').get('remainingTracks'),
     selected: state.get('progress').get('daySelected'),
-    hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('progress').get('step') !== 0
+    hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('progress').get('step') !== PREVIEW_STAGE,
+    done: state.get('progress').get('step') === DONE_STAGE
   }
 }
 

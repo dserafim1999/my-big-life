@@ -20,6 +20,7 @@ import {
   } from '../../actions/progress';
 import { updateBounds } from '../../actions/map';
 import { BoundsRecord } from '../../records';
+import { DONE_STAGE } from '../../constants';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -96,7 +97,7 @@ class TrackProcessing extends Component {
     }
     
     render () {
-        const { showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed} = this.props;
+        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed} = this.props;
 
         const progress = (
             <ProgressBar state={step}>
@@ -109,7 +110,7 @@ class TrackProcessing extends Component {
         let buttons;
         if (canonical) {
             buttons = (
-              <a className='button is-primary' onClick={() => this.dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
+              <a className='button is-primary' onClick={() => dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
             );
         } else if (remainingCount > 0) {
             if (showList) {
@@ -127,7 +128,10 @@ class TrackProcessing extends Component {
                     />
                 );
             }
+        } else if (step === DONE_STAGE) {
+            dispatch(updateBounds(this.bounds));
         }
+        
         return (
             <Card width="375" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 { progress }

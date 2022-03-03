@@ -118,7 +118,7 @@ const updateState = (dispatch, json, getState, reverse = false) => {
   }
 
   dispatch(setServerState(json.step, json.queue, json.currentDay, json.life, json.lifeQueue));
-  if (json.step < 0) {
+  if (json.step < 0 || json.track == undefined) {
     dispatch(clearAll());
     return;
   }
