@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loadCanonicalTrips, loadCanonicalLocations } from '../../actions/process';
-import { saveConfig, getConfig } from '../../actions/general';
+import { saveConfig, getConfig, updateServer } from '../../actions/general';
 
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
@@ -60,6 +60,11 @@ class ConfigPane extends Component {
             break;
         }
       });
+
+      if (rr['_']['server'] != address) {
+         dispatch(updateServer(rr['_']['server']));    
+      } 
+
       dispatch(saveConfig(rr));
     }
 

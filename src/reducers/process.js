@@ -1,5 +1,5 @@
 import { ADJUST_STAGE, ANNOTATE_STAGE } from '../constants';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 
 const advanceToAdjust = (state, action) => {
     return state.set('step', ADJUST_STAGE);

@@ -6,10 +6,10 @@ import process from './process';
 import map from './map';
 
 const app = combineReducers({
-  tracks: tracks,
+  tracks,
   general,
   process,
   map
-})
+});
 
 export default app;

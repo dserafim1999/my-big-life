@@ -5,6 +5,7 @@ import {
   TOGGLE_REMAINING_TRACKS,
   SET_LOADING,
   UPDATE_CONFIG,
+  UPDATE_SERVER,
 } from '../actions';
 
 const initialState = Map({
@@ -52,6 +53,8 @@ const general = (state = initialState, action) => {
         })
       case UPDATE_CONFIG:
         return state.set('config', new Map(action.config));
+      case UPDATE_SERVER:
+        return state.set('server', action.server)
       default:
         return state;
     }

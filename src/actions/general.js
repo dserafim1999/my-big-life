@@ -3,7 +3,8 @@ import {
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
   SET_LOADING,
-  UPDATE_CONFIG
+  UPDATE_CONFIG,
+  UPDATE_SERVER
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -106,6 +107,13 @@ export const saveConfig = (config) => {
         dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
         // TODO go to last route
     });
+  }
+}
+
+export const updateServer = (server) => {
+  return {
+    server,
+    type: UPDATE_SERVER
   }
 }
 
