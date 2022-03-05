@@ -31,8 +31,7 @@ const ACTION_REACTION = {
 
 const initialState = fromJS({
     step: -2,
-    remainingTracks: [],
-    server: 'http://localhost:5000'
+    remainingTracks: []
 });
 
 const process = (state = initialState, action) => {

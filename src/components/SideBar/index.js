@@ -6,7 +6,7 @@ import { getActiveRoute, isEquals } from "../../utils";
 
 import IconButton from "@mui/material/IconButton";
 import { ModuleRoutes } from "../../modules/ModuleRoutes";
-import { loadTrips } from "../../actions/process";
+import { loadTrips } from "../../actions/general";
 
 
 const wrapper = {

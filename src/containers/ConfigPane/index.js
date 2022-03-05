@@ -186,7 +186,7 @@ class ConfigPane extends Component {
 const mapStateToProps = (state) => {
   const serverConfig = state.get('general').get('config');
   return {
-    address: state.get('process').get('server'),
+    address: state.get('general').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,
     isLoading: state.get('general').get('loading').has('config')
   };

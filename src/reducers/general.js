@@ -10,7 +10,8 @@ import {
 const initialState = Map({
   alerts: List(),
   loading: Set(),
-  transportationModes: List()
+  transportationModes: List(),
+  server: 'http://localhost:5000'
 });
 
 const general = (state = initialState, action) => {

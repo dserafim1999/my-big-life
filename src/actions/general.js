@@ -8,6 +8,7 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
+import { clearAll, displayAllTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -80,7 +81,7 @@ export const getConfig = (dispatch) => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('process').get('server') + '/config', options)
+    return fetch(getState().get('general').get('server') + '/config', options)
       .then((response) => response.json())
       .then((config) => dispatch(updateConfig(config)))
       .then(() => dispatch(setLoading('config', false)));
@@ -95,7 +96,7 @@ export const saveConfig = (config) => {
       mode: 'cors',
       body: JSON.stringify(config)
     }
-    return fetch(getState().get('process').get('server') + '/config', options)
+    return fetch(getState().get('general').get('server') + '/config', options)
       .then((response) => response.json())
       .catch((err) => {
         dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
@@ -105,5 +106,22 @@ export const saveConfig = (config) => {
         dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
         // TODO go to last route
     });
+  }
+}
+
+export const loadTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/trips', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((trips) => {
+        dispatch(clearAll());
+        dispatch(displayAllTrips(trips));
+      });
   }
 }
