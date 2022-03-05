@@ -66,8 +66,8 @@ const mapStateToProps = (state) => {
 
   return {
     tracks,
-    step: state.get('progress').get('step'),
-    remainingCount: state.get('progress').get('remainingTracks').count()
+    step: state.get('process').get('step'),
+    remainingCount: state.get('process').get('remainingTracks').count()
   }
 }
   

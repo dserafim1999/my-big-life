@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/progress';
+import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/process';
 import { toggleRemainingTracks } from '../../actions/ui';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
@@ -130,11 +130,11 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
 
 const mapStateToProps = (state) => {
   return {
-    lifesExistent: state.get('progress').get('lifeQueue') || [],
-    remaining: state.get('progress').get('remainingTracks'),
-    selected: state.get('progress').get('daySelected'),
-    hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('progress').get('step') !== PREVIEW_STAGE,
-    done: state.get('progress').get('step') === DONE_STAGE
+    lifesExistent: state.get('process').get('lifeQueue') || [],
+    remaining: state.get('process').get('remainingTracks'),
+    selected: state.get('process').get('daySelected'),
+    hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('process').get('step') !== PREVIEW_STAGE,
+    done: state.get('process').get('step') === DONE_STAGE
   }
 }
 

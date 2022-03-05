@@ -12,7 +12,7 @@ import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
 import { toggleRemainingTracks } from '../actions/ui';
-import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/progress';
+import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, step, dispatch }) => {
@@ -92,7 +92,7 @@ let App = ({ showConfig, step, dispatch }) => {
 };
 
 const mapStateToProps = (state) => ({
-  step: state.get('progress').get('step')
+  step: state.get('process').get('step')
 });
 
 export default connect(mapStateToProps)(App);

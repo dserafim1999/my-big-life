@@ -5,7 +5,7 @@ import {
   loadCanonicalTrips,
   loadCanonicalLocations,
   getConfig
-} from '../../actions/progress';
+} from '../../actions/process';
 
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
@@ -188,9 +188,9 @@ class ConfigPane extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const serverConfig = state.get('progress').get('config');
+  const serverConfig = state.get('process').get('config');
   return {
-    address: state.get('progress').get('server'),
+    address: state.get('process').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,
     isLoading: state.get('ui').get('loading').has('config')
   };

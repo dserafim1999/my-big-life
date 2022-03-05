@@ -27,11 +27,11 @@ const setLife = (state, action) => {
   }
  
 const ACTION_REACTION = {
-    'progress/advance_adjust': advanceToAdjust,
-    'progress/advance_annotate': advanceToAnnotate,
-    'progress/set_server_state': setServerState,
-    'progress/update_config': updateConfig,
-    'progress/set_life': setLife
+    'process/advance_adjust': advanceToAdjust,
+    'process/advance_annotate': advanceToAnnotate,
+    'process/set_server_state': setServerState,
+    'process/update_config': updateConfig,
+    'process/set_life': setLife
 
 }
 
@@ -41,7 +41,7 @@ const initialState = fromJS({
     server: 'http://localhost:5000'
 });
 
-const progress = (state = initialState, action) => {
+const process = (state = initialState, action) => {
     if (ACTION_REACTION[action.type]) {
         return ACTION_REACTION[action.type](state, action);
     } else {
@@ -49,4 +49,4 @@ const progress = (state = initialState, action) => {
     }
 }
 
-export default progress;
+export default process;

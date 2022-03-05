@@ -1,10 +1,10 @@
 import fetch from 'isomorphic-fetch'
-import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from './'
+import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from '.'
 import { fitSegments, fitTracks } from './ui';
 import { reset as resetId } from '../reducers/idState';
-import { toggleSegmentJoining, addPossibilities } from '../actions/segments';
-import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations, displayAllTrips } from '../actions/tracks';
-import { addAlert, setLoading } from '../actions/ui';
+import { toggleSegmentJoining, addPossibilities } from './segments';
+import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations, displayAllTrips } from './tracks';
+import { addAlert, setLoading } from './ui';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
@@ -33,7 +33,7 @@ export const getConfig = (dispatch) => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/config', options)
+    return fetch(getState().get('process').get('server') + '/config', options)
       .then((response) => response.json())
       .then((config) => dispatch(updateConfig(config)))
       .then(() => dispatch(setLoading('config', false)));
@@ -48,7 +48,7 @@ export const saveConfig = (config) => {
       mode: 'cors',
       body: JSON.stringify(config)
     }
-    return fetch(getState().get('progress').get('server') + '/config', options)
+    return fetch(getState().get('process').get('server') + '/config', options)
       .then((response) => response.json())
       .catch((err) => {
         dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
@@ -79,7 +79,7 @@ export const loadLIFE = (content) => {
       mode: 'cors',
       body: content
     }
-    return fetch(getState().get('progress').get('server') + '/process/loadLIFE', options)
+    return fetch(getState().get('process').get('server') + '/process/loadLIFE', options)
       .catch((e) => console.error(e))
       .then((response) => response.json());
   }
@@ -97,7 +97,7 @@ export const completeTrip = (segmentId, from, to, index) => {
     };
 
     console.log('going to the server');
-    fetch(getState().get('progress').get('server') + '/process/completeTrip', options)
+    fetch(getState().get('process').get('server') + '/process/completeTrip', options)
       .then((response) => response.json())
       // .catch((err) => {
       //   console.log(err);
@@ -127,7 +127,7 @@ const updateState = (dispatch, json, getState, reverse = false) => {
   dispatch(resetHistory());
 
   // joins two consecutive segments that don't connect
-  const step = getState().get('progress').get('step');
+  const step = getState().get('process').get('step');
   if (step === 0) {
     getState()
       .get('tracks').get('segments').valueSeq()
@@ -157,7 +157,7 @@ export const requestServerState = () => {
       method: 'GET',
       mode: 'cors'
     }
-    fetch(getState().get('progress').get('server') + '/process/current', options)
+    fetch(getState().get('process').get('server') + '/process/current', options)
       .then((response) => response.json())
       .catch((err) => {
         handleError(err, dispatch);
@@ -176,7 +176,7 @@ export const previousStep = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/process/previous', options)
+    return fetch(getState().get('process').get('server') + '/process/previous', options)
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => updateState(dispatch, json, getState, true))
@@ -187,7 +187,7 @@ export const previousStep = () => {
 export const nextStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('continue-button', true));
-    const hasLIFE = getState().get('progress').get('LIFE');
+    const hasLIFE = getState().get('process').get('LIFE');
     const options = {
       method: 'POST',
       mode: 'cors',
@@ -203,7 +203,7 @@ export const nextStep = () => {
       })
     }
     console.log(options)
-    return fetch(getState().get('progress').get('server') + '/process/next', options)
+    return fetch(getState().get('process').get('server') + '/process/next', options)
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => updateState(dispatch, json, getState))
@@ -251,7 +251,7 @@ export const changeDayToProcess = (newDay) => {
         day: newDay
       })
     }
-    return fetch(getState().get('progress').get('server') + '/process/changeDay', options)
+    return fetch(getState().get('process').get('server') + '/process/changeDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -264,7 +264,7 @@ export const reloadQueue = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/process/reloadQueue', options)
+    return fetch(getState().get('process').get('server') + '/process/reloadQueue', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -280,7 +280,7 @@ export const dismissDay = (day) => {
         day
       })
     }
-    return fetch(getState().get('progress').get('server') + '/process/removeDay', options)
+    return fetch(getState().get('process').get('server') + '/process/removeDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -293,7 +293,7 @@ export const skipDay = () => {
       method: 'POST',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/process/skipDay', options)
+    return fetch(getState().get('process').get('server') + '/process/skipDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -306,7 +306,7 @@ export const bulkProcess = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/process/bulk', options)
+    return fetch(getState().get('process').get('server') + '/process/bulk', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -319,7 +319,7 @@ export const getLocationSuggestion = (point) => {
       method: 'GET',
       mode: 'cors'
     }
-    const addr = getState().get('progress').get('server');
+    const addr = getState().get('process').get('server');
     return fetch(addr + '/process/location?lat=' + point.get('lat') + '&lon=' + point.get('lon'), options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
@@ -333,7 +333,7 @@ export const loadCanonicalTrips = () => {
       method: 'GET',
       mode: 'cors'
     }
-    const addr = getState().get('progress').get('server');
+    const addr = getState().get('process').get('server');
     return fetch(addr + '/process/canonicalTrips', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
@@ -351,7 +351,7 @@ export const loadCanonicalLocations = () => {
       method: 'GET',
       mode: 'cors'
     }
-    const addr = getState().get('progress').get('server');
+    const addr = getState().get('process').get('server');
     return fetch(addr + '/process/canonicalLocations', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
@@ -370,7 +370,7 @@ export const loadTrips = () => {
       method: 'GET',
       mode: 'cors'
     }
-    const addr = getState().get('progress').get('server');
+    const addr = getState().get('process').get('server');
     return fetch(addr + '/trips', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
@@ -390,7 +390,7 @@ export const requestTransportationSuggestions = (points) => {
         points
       })
     }
-    const addr = getState().get('progress').get('server');
+    const addr = getState().get('process').get('server');
     return fetch(addr + '/process/transportation', options)
       .then((response) => response.json())
       .catch((e) => console.error(e));

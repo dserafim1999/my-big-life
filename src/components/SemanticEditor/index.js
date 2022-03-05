@@ -6,7 +6,7 @@ import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../../modules/SemanticEditor/decorators';
 import suggestionsGetters from '../../modules/SemanticEditor/suggestionsGetters';
 import { setTransportationModes } from '../../actions/segments';
-import { setLIFE } from '../../actions/progress';
+import { setLIFE } from '../../actions/process';
 
 let SE = ({ dispatch, segments, life }) => {
   const state = ContentState.createFromText(life);
@@ -66,7 +66,7 @@ let SE = ({ dispatch, segments, life }) => {
 const mapStateToProps = (state) => {
     return {
       segments: state.get('tracks').get('segments'),
-      life: state.get('progress').get('initLIFE') || ''
+      life: state.get('process').get('initLIFE') || ''
     };
   }
   

@@ -30,7 +30,7 @@ import {
 
 import { addAlert, removeAlert } from './ui';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
-import { completeTrip, requestTransportationSuggestions } from './progress';
+import { completeTrip, requestTransportationSuggestions } from './process';
 
 import moment from "moment";
 

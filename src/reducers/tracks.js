@@ -207,13 +207,13 @@ const ACTION_REACTION = {
     'track/toggle_renaming': toggleTrackRenaming,
     'track/update_life': updateLIFE,
     'track/display_trips': displayTrips,
-    'progress/reset_history': resetHistory,
-    'progress/remove_track_for': removeTracksFor,
-    'progress/undo': undo,
-    'progress/redo': redo,
-    'progress/canonical_trip': displayCanonicalTrips,
-    'progress/canonical_locations': displayCanonicalLocations,
-    'progress/hide_canonical': hideCanonical,
+    'process/reset_history': resetHistory,
+    'process/remove_track_for': removeTracksFor,
+    'process/undo': undo,
+    'process/redo': redo,
+    'process/canonical_trip': displayCanonicalTrips,
+    'process/canonical_locations': displayCanonicalLocations,
+    'process/hide_canonical': hideCanonical,
 }
 
 

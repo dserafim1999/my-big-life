@@ -4,7 +4,7 @@ import {
 
 import {
   getLocationSuggestion
-} from '../../actions/progress';
+} from '../../actions/process';
 
 const filterSuggestions = (text, suggestions) => {
   let filtered = suggestions.filter((s) => s.match(text));

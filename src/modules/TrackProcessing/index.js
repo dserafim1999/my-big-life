@@ -17,7 +17,7 @@ import {
     bulkProcess,
     loadLIFE,
     requestServerState
-  } from '../../actions/progress';
+  } from '../../actions/process';
 import { updateBounds } from '../../actions/map';
 import { BoundsRecord } from '../../records';
 import { DONE_STAGE } from '../../constants';
@@ -150,10 +150,10 @@ class TrackProcessing extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    step: state.get('progress').get('step'),
+    step: state.get('process').get('step'),
     canonical: state.get('tracks').get('canonical'),
     showList: state.get('ui').get('showRemainingTracks'),
-    remainingCount: state.get('progress').get('remainingTracks').count(),
+    remainingCount: state.get('process').get('remainingTracks').count(),
     canProceed: state.get('tracks').get('tracks').count() > 0,
     segmentsCount: state.get('tracks').get('segments').count(),
     isLoadingNext: state.get('ui').get('loading').has('continue-button'),

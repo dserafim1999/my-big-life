@@ -14,7 +14,7 @@ import {
 import {
   undo, 
   redo
-} from '../../actions/progress';
+} from '../../actions/process';
 
 import setupTileLayers from './setupTileLayers';
 import setupControls from './setupControls';
