@@ -14,7 +14,7 @@ import {
 
 import { Set } from 'immutable';
 import { fitSegments } from './general';
-import saveData from "./saveData";
+import saveData from "../modules/TrackProcessing/saveData";
 
 import { toggleSegmentVisibility } from "./segments";
 
