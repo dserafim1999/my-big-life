@@ -588,36 +588,36 @@ const setTransportationModes = (state, action) => {
 }
 
 const ACTION_REACTION = {
-    'segment/toggle_visibility': toggleSegmentVisibility,
-    'segment/toggle_edit': toggleSegmentEditing,
-    'segment/toggle_split': toggleSegmentSplitting,
-    'segment/toggle_join': toggleSegmentJoining,
-    'segment/toggle_point_details': toggleSegmentPointDetails,
-    'segment/toggle_time_filter': toggleTimeFilter,
+    'segments/toggle_visibility': toggleSegmentVisibility,
+    'segments/toggle_edit': toggleSegmentEditing,
+    'segments/toggle_split': toggleSegmentSplitting,
+    'segments/toggle_join': toggleSegmentJoining,
+    'segments/toggle_point_details': toggleSegmentPointDetails,
+    'segments/toggle_time_filter': toggleTimeFilter,
  
-    'segment/change_point': changeSegmentPoint,
-    'segment/remove_point': removeSegmentPoint,
-    'segment/add_point': addSegmentPoint,
+    'segments/change_point': changeSegmentPoint,
+    'segments/remove_point': removeSegmentPoint,
+    'segments/add_point': addSegmentPoint,
  
-    'segment/extend': extendSegment,
-    'segment/remove': removeSegment,
-    'segment/split': splitSegment,
-    'segment/join': joinSegment,
-    'segment/add_possibilities': addPossibilities,
-    'segment/time_filter': updateTimeFilterSegment,
+    'segments/extend': extendSegment,
+    'segments/remove': removeSegment,
+    'segments/split': splitSegment,
+    'segments/join': joinSegment,
+    'segments/add_possibilities': addPossibilities,
+    'segments/time_filter': updateTimeFilterSegment,
 
-    'segment/update_location_name': updateLocationName,
-    'segment/set_transportation_modes': setTransportationModes,
-    'segment/update_transportation_mode': updateTransportationMode,
-    'segment/update_transportation_time': updateTransportationTime,
-    'segment/select_point_in_map': selectPointInMap,
-    'segment/deselect_point_in_map': deselectPointInMap,
-    'segment/select_point': selectPoint,
-    'segment/deselect_point': deselectPoint,
+    'segments/update_location_name': updateLocationName,
+    'segments/set_transportation_modes': setTransportationModes,
+    'segments/update_transportation_mode': updateTransportationMode,
+    'segments/update_transportation_time': updateTransportationTime,
+    'segments/select_point_in_map': selectPointInMap,
+    'segments/deselect_point_in_map': deselectPointInMap,
+    'segments/select_point': selectPoint,
+    'segments/deselect_point': deselectPoint,
 
-    'segment/straight_selected': straightSelected,
-    'segment/update_point': updatePoint,
-    'segment/new': addNewSegment
+    'segments/straight_selected': straightSelected,
+    'segments/update_point': updatePoint,
+    'segments/new': addNewSegment
 }
 
 const segments = (state = [], action) => {

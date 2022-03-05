@@ -200,20 +200,20 @@ const removeTrack = (state, action) => {
 }
 
 const ACTION_REACTION = {
-    'track/add': addTrack,
-    'track/remove': removeTrack,
-    'track/add_multiple': addMultipleTracks,
-    'track/update_name': updateTrackName,
-    'track/toggle_renaming': toggleTrackRenaming,
-    'track/update_life': updateLIFE,
-    'track/display_trips': displayTrips,
-    'process/reset_history': resetHistory,
-    'process/remove_track_for': removeTracksFor,
-    'process/undo': undo,
-    'process/redo': redo,
-    'process/canonical_trip': displayCanonicalTrips,
-    'process/canonical_locations': displayCanonicalLocations,
-    'process/hide_canonical': hideCanonical,
+    'tracks/add': addTrack,
+    'tracks/remove': removeTrack,
+    'tracks/add_multiple': addMultipleTracks,
+    'tracks/update_name': updateTrackName,
+    'tracks/toggle_renaming': toggleTrackRenaming,
+    'tracks/update_life': updateLIFE,
+    'tracks/display_trips': displayTrips,
+    'tracks/reset_history': resetHistory,
+    'tracks/remove_track_for': removeTracksFor,
+    'tracks/undo': undo,
+    'tracks/redo': redo,
+    'tracks/canonical_trip': displayCanonicalTrips,
+    'tracks/canonical_locations': displayCanonicalLocations,
+    'tracks/hide_canonical': hideCanonical,
 }
 
 

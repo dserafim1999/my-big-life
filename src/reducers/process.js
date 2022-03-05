@@ -32,7 +32,6 @@ const ACTION_REACTION = {
     'process/set_server_state': setServerState,
     'process/update_config': updateConfig,
     'process/set_life': setLife
-
 }
 
 const initialState = fromJS({
