@@ -12,7 +12,7 @@ const initialState = Map({
   transportationModes: List()
 });
 
-const ui = (state = initialState, action) => {
+const general = (state = initialState, action) => {
     switch (action.type) {
       case REMOVE_ALERT:
         return state.update('alerts', (alerts) => {
@@ -53,4 +53,4 @@ const ui = (state = initialState, action) => {
     }
 }
 
-export default ui;
+export default general;

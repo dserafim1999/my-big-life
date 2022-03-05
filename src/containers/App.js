@@ -11,7 +11,7 @@ import SideBar from '../components/SideBar';
 import { addMultipleTracks } from '../actions/tracks';
 import { loadFiles } from "../GPXParser";
 
-import { toggleRemainingTracks } from '../actions/ui';
+import { toggleRemainingTracks } from '../actions/general';
 import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addAlert } from '../../actions/ui';
+import { addAlert } from '../../actions/general';
 import { clearAll, hideCanonical, resetHistory } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
@@ -152,12 +152,12 @@ const mapStateToProps = (state) => {
   return {
     step: state.get('process').get('step'),
     canonical: state.get('tracks').get('canonical'),
-    showList: state.get('ui').get('showRemainingTracks'),
+    showList: state.get('general').get('showRemainingTracks'),
     remainingCount: state.get('process').get('remainingTracks').count(),
     canProceed: state.get('tracks').get('tracks').count() > 0,
     segmentsCount: state.get('tracks').get('segments').count(),
-    isLoadingNext: state.get('ui').get('loading').has('continue-button'),
-    isLoadingPrevious: state.get('ui').get('loading').has('previous-button')
+    isLoadingNext: state.get('general').get('loading').has('continue-button'),
+    isLoadingPrevious: state.get('general').get('loading').has('previous-button')
   }
 }
 

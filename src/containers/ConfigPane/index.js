@@ -192,7 +192,7 @@ const mapStateToProps = (state) => {
   return {
     address: state.get('process').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,
-    isLoading: state.get('ui').get('loading').has('config')
+    isLoading: state.get('general').get('loading').has('config')
   };
 }
 

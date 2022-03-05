@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { removeAlert } from '../../actions/ui';
+import { removeAlert } from '../../actions/general';
 
 const mapType = {
   'warning': 'is-warning',
@@ -41,7 +41,7 @@ let AlertBox = ({ dispatch, alerts }) => {
 
 const mapStateToProps = (state) => {
   return {
-    alerts: state.get('ui').get('alerts') || []
+    alerts: state.get('general').get('alerts') || []
   }
 }
 

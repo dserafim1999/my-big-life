@@ -43,11 +43,11 @@ export const STRAIGHT_SELECTED = 'segments/straight_selected';
 export const INTERPOLATED_TIME_SELECTED = 'segments/interpolated_time_selected';
 export const UPDATE_TRANSPORTATION_TIME = 'segments/update_transformation_time';
 
-export const HIDE_TRACK_DETAILS = 'ui/hide_track_details';
-export const SHOW_TRACK_DETAILS = 'ui/show_track_details';
-export const ADD_ALERT = 'ui/add_alert';
-export const REMOVE_ALERT = 'ui/remove_alert';
-export const SET_LOADING = 'ui/set_loading';
+export const HIDE_TRACK_DETAILS = 'general/hide_track_details';
+export const SHOW_TRACK_DETAILS = 'general/show_track_details';
+export const ADD_ALERT = 'general/add_alert';
+export const REMOVE_ALERT = 'general/remove_alert';
+export const SET_LOADING = 'general/set_loading';
 
 export const UPDATE_BOUNDS = 'map/bounds';
 export const CENTER_MAP = 'map/center';

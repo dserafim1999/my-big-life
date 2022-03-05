@@ -8,7 +8,7 @@ import {
   updateTrackName
 } from '../../actions/tracks';
 
-import { toggleRemainingTracks } from '../../actions/ui';
+import { toggleRemainingTracks } from '../../actions/general';
 
 
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;

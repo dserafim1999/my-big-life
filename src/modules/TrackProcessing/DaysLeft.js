@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/process';
-import { toggleRemainingTracks } from '../../actions/ui';
+import { toggleRemainingTracks } from '../../actions/general';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
 import RefreshIcon from '@mui/icons-material/Refresh';

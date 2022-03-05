@@ -12,7 +12,7 @@ import {
   fitSegment
 } from '../../actions/segments';
 
-import { addAlert, removeAlert } from '../../actions/ui';
+import { addAlert, removeAlert } from '../../actions/general';
 import TimeSlider from '../../components/TimeSlider';
 
 import EditIcon from '@mui/icons-material/Edit';

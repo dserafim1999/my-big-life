@@ -13,7 +13,7 @@ import {
 } from ".";
 
 import { Set } from 'immutable';
-import { fitSegments } from './ui';
+import { fitSegments } from './general';
 import saveData from "./saveData";
 
 import { toggleSegmentVisibility } from "./segments";

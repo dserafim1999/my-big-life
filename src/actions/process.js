@@ -1,10 +1,9 @@
 import fetch from 'isomorphic-fetch'
 import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from '.'
-import { fitSegments, fitTracks } from './ui';
+import { fitSegments, fitTracks, addAlert, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
 import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations, displayAllTrips } from './tracks';
-import { addAlert, setLoading } from './ui';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {

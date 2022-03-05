@@ -28,7 +28,7 @@ import {
   SET_TRANSPORTATION_MODES,
 } from ".";
 
-import { addAlert, removeAlert } from './ui';
+import { addAlert, removeAlert } from './general';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
 import { completeTrip, requestTransportationSuggestions } from './process';
 
