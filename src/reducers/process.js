@@ -18,10 +18,6 @@ const setServerState = (state, action) => {
     .set('life', '');
 }
 
-const updateConfig = (state, action) => {
-    return state.set('config', new Map(action.config));
-}
-
 const setLife = (state, action) => {
     return state.set('life', action.text);
   }
@@ -30,7 +26,6 @@ const ACTION_REACTION = {
     'process/advance_adjust': advanceToAdjust,
     'process/advance_annotate': advanceToAnnotate,
     'process/set_server_state': setServerState,
-    'process/update_config': updateConfig,
     'process/set_life': setLife
 }
 

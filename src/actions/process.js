@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
-import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO, UPDATE_CONFIG } from '.'
-import { fitSegments, fitTracks, addAlert, setLoading } from './general';
+import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.'
+import { fitSegments, fitTracks, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
 import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations, displayAllTrips } from './tracks';
@@ -17,46 +17,6 @@ const segmentsToJson = (state) => {
 export const handleError = (error, dispatch) => {
   if (error.message === 'Failed to fetch') {
     //TODO route to config
-  }
-}
-
-export const updateConfig = (config) => ({
-  config,
-  type: UPDATE_CONFIG
-})
-
-export const getConfig = (dispatch) => {
-  dispatch(setLoading('config', true));
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-    return fetch(getState().get('process').get('server') + '/config', options)
-      .then((response) => response.json())
-      .then((config) => dispatch(updateConfig(config)))
-      .then(() => dispatch(setLoading('config', false)));
-  }
-}
-
-export const saveConfig = (config) => {
-  config._ = null;
-  return (dispatch, getState) => {
-    const options = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify(config)
-    }
-    return fetch(getState().get('process').get('server') + '/config', options)
-      .then((response) => response.json())
-      .catch((err) => {
-        dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
-        throw err;
-    })
-    .then((config) => {
-        dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
-        // TODO go to last route
-    });
   }
 }
 

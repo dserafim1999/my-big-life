@@ -2,7 +2,8 @@ import {
   ADD_ALERT,
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
-  SET_LOADING
+  SET_LOADING,
+  UPDATE_CONFIG
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -66,3 +67,43 @@ export const setLoading = (ref, is) => ({
   ref,
   type: SET_LOADING
 })
+
+export const updateConfig = (config) => ({
+  config,
+  type: UPDATE_CONFIG
+})
+
+export const getConfig = (dispatch) => {
+  dispatch(setLoading('config', true));
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    return fetch(getState().get('process').get('server') + '/config', options)
+      .then((response) => response.json())
+      .then((config) => dispatch(updateConfig(config)))
+      .then(() => dispatch(setLoading('config', false)));
+  }
+}
+
+export const saveConfig = (config) => {
+  config._ = null;
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(config)
+    }
+    return fetch(getState().get('process').get('server') + '/config', options)
+      .then((response) => response.json())
+      .catch((err) => {
+        dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
+        throw err;
+    })
+    .then((config) => {
+        dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
+        // TODO go to last route
+    });
+  }
+}

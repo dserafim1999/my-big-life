@@ -48,6 +48,7 @@ export const SHOW_TRACK_DETAILS = 'general/show_track_details';
 export const ADD_ALERT = 'general/add_alert';
 export const REMOVE_ALERT = 'general/remove_alert';
 export const SET_LOADING = 'general/set_loading';
+export const UPDATE_CONFIG = 'general/update_config';
 
 export const UPDATE_BOUNDS = 'map/bounds';
 export const CENTER_MAP = 'map/center';
@@ -62,6 +63,5 @@ export const ADVANCE_TO_ADJUST = 'process/advance_adjust';
 export const ADVANCE_TO_ANNOTATE = 'process/advance_annotate';
 export const SET_SERVER_STATE = 'process/set_server_state';
 export const TOGGLE_REMAINING_TRACKS = 'process/toggle_remaining_tracks';
-export const UPDATE_CONFIG = 'process/update_config';
 export const SET_LIFE = 'process/set_life';
 

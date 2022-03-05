@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  saveConfig,
-  loadCanonicalTrips,
-  loadCanonicalLocations,
-  getConfig
-} from '../../actions/process';
+import { loadCanonicalTrips, loadCanonicalLocations } from '../../actions/process';
+import { saveConfig, getConfig } from '../../actions/general';
 
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
@@ -188,7 +184,7 @@ class ConfigPane extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const serverConfig = state.get('process').get('config');
+  const serverConfig = state.get('general').get('config');
   return {
     address: state.get('process').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,

@@ -4,6 +4,7 @@ import {
   REMOVE_ALERT,
   TOGGLE_REMAINING_TRACKS,
   SET_LOADING,
+  UPDATE_CONFIG,
 } from '../actions';
 
 const initialState = Map({
@@ -48,6 +49,8 @@ const general = (state = initialState, action) => {
             return loading.remove(ref);
           }
         })
+      case UPDATE_CONFIG:
+        return state.set('config', new Map(action.config));
       default:
         return state;
     }
