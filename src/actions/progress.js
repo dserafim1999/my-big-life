@@ -79,7 +79,7 @@ export const loadLIFE = (content) => {
       mode: 'cors',
       body: content
     }
-    return fetch(getState().get('progress').get('server') + '/loadLIFE', options)
+    return fetch(getState().get('progress').get('server') + '/process/loadLIFE', options)
       .catch((e) => console.error(e))
       .then((response) => response.json());
   }
@@ -97,7 +97,7 @@ export const completeTrip = (segmentId, from, to, index) => {
     };
 
     console.log('going to the server');
-    fetch(getState().get('progress').get('server') + '/completeTrip', options)
+    fetch(getState().get('progress').get('server') + '/process/completeTrip', options)
       .then((response) => response.json())
       // .catch((err) => {
       //   console.log(err);
@@ -157,7 +157,7 @@ export const requestServerState = () => {
       method: 'GET',
       mode: 'cors'
     }
-    fetch(getState().get('progress').get('server') + '/current', options)
+    fetch(getState().get('progress').get('server') + '/process/current', options)
       .then((response) => response.json())
       .catch((err) => {
         handleError(err, dispatch);
@@ -176,7 +176,7 @@ export const previousStep = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/previous', options)
+    return fetch(getState().get('progress').get('server') + '/process/previous', options)
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => updateState(dispatch, json, getState, true))
@@ -202,7 +202,8 @@ export const nextStep = () => {
         })
       })
     }
-    return fetch(getState().get('progress').get('server') + '/next', options)
+    console.log(options)
+    return fetch(getState().get('progress').get('server') + '/process/next', options)
       .then((response) => response.json())
       .catch((err) => console.log(err))
       .then((json) => updateState(dispatch, json, getState))
@@ -250,7 +251,7 @@ export const changeDayToProcess = (newDay) => {
         day: newDay
       })
     }
-    return fetch(getState().get('progress').get('server') + '/changeDay', options)
+    return fetch(getState().get('progress').get('server') + '/process/changeDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -263,7 +264,7 @@ export const reloadQueue = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/reloadQueue', options)
+    return fetch(getState().get('progress').get('server') + '/process/reloadQueue', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -279,7 +280,7 @@ export const dismissDay = (day) => {
         day
       })
     }
-    return fetch(getState().get('progress').get('server') + '/removeDay', options)
+    return fetch(getState().get('progress').get('server') + '/process/removeDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -292,7 +293,7 @@ export const skipDay = () => {
       method: 'POST',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/skipDay', options)
+    return fetch(getState().get('progress').get('server') + '/process/skipDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -305,7 +306,7 @@ export const bulkProcess = () => {
       method: 'GET',
       mode: 'cors'
     }
-    return fetch(getState().get('progress').get('server') + '/bulkProcess', options)
+    return fetch(getState().get('progress').get('server') + '/process/bulk', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
@@ -319,7 +320,7 @@ export const getLocationSuggestion = (point) => {
       mode: 'cors'
     }
     const addr = getState().get('progress').get('server');
-    return fetch(addr + '/location?lat=' + point.get('lat') + '&lon=' + point.get('lon'), options)
+    return fetch(addr + '/process/location?lat=' + point.get('lat') + '&lon=' + point.get('lon'), options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((location) => location.other.map((x) => x.label));
@@ -333,7 +334,7 @@ export const loadCanonicalTrips = () => {
       mode: 'cors'
     }
     const addr = getState().get('progress').get('server');
-    return fetch(addr + '/canonicalTrips', options)
+    return fetch(addr + '/process/canonicalTrips', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((trips) => {
@@ -351,7 +352,7 @@ export const loadCanonicalLocations = () => {
       mode: 'cors'
     }
     const addr = getState().get('progress').get('server');
-    return fetch(addr + '/canonicalLocations', options)
+    return fetch(addr + '/process/canonicalLocations', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((trips) => {
@@ -390,7 +391,7 @@ export const requestTransportationSuggestions = (points) => {
       })
     }
     const addr = getState().get('progress').get('server');
-    return fetch(addr + '/transportation', options)
+    return fetch(addr + '/process/transportation', options)
       .then((response) => response.json())
       .catch((e) => console.error(e));
   }

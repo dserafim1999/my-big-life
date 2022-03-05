@@ -47,8 +47,6 @@ class SideBar extends Component {
     render() {
         const { dispatch } = this.props;
 
-        console.log(this.state.route);
-
         if (this.isEqualRoute('/')) {
             dispatch(loadTrips());
         }
