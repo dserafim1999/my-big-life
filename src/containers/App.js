@@ -82,6 +82,14 @@ let App = ({ showConfig, view, dispatch }) => {
                     }
                 <Route path='/*' element={<></>}/> 
             </Routes>
+            {
+              // Shows components for active view that don't have a dedicated route (over the main view)
+              ModuleRoutes.map(menu => {
+                if (!menu.route && menu.view === view) {
+                  return menu.component;
+                }
+              })
+            }
             <SideBar dispatch={dispatch}/>
             <MainContainer
               onKeyUp={keyHandler}

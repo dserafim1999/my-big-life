@@ -6,8 +6,9 @@ import Stack from 'react-bootstrap/Stack';
 import IconButton from "@mui/material/IconButton";
 import { getRoute, ModuleRoutes } from "../../modules/ModuleRoutes";
 import { connect } from "react-redux";
-import { updateView } from "../../actions/general";
+import { loadTrips, updateView } from "../../actions/general";
 import { MAIN_VIEW } from "../../constants";
+import { getActiveRoute } from "../../utils";
 
 
 const wrapper = {
@@ -28,6 +29,7 @@ class SideBar extends Component {
     }
     
     componentDidMount () {
+       
     }
 
     isActiveView(view) {
@@ -42,7 +44,12 @@ class SideBar extends Component {
     }
 
     render() {
-        const { dispatch } = this.props;
+         const { dispatch } = this.props;
+         
+         //temporary
+         if (getActiveRoute() === '/') {
+             dispatch(loadTrips());
+         }
 
         return (
             <div style={wrapper}>
