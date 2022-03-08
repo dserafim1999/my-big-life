@@ -1,4 +1,5 @@
 import { Map, List, Set } from 'immutable';
+import { getInitialView, ModuleRoutes } from '../modules/ModuleRoutes';
 
 
 
@@ -53,18 +54,24 @@ const updateServer = (state, action) => {
   return state.set('server', action.server);
 }
 
+const updateView = (state, action) => {
+  return state.set('activeView', action.view);
+}
+
 const ACTION_REACTION = {
   'general/remove_alert': removeAlert,
   'general/add_alert': addAlert,
   'general/set_loading': setLoading,
   'general/update_config': updateConfig,
   'general/update_server': updateServer,
+  'general/update_view': updateView,
   'process/toggle_remaining_tracks': toggleRemainingTracks,
 }
 
 const initialState = Map({
   alerts: List(),
   loading: Set(),
+  activeView: getInitialView(),
   transportationModes: List(),
   server: 'http://localhost:5000'
 });

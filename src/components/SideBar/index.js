@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Stack from 'react-bootstrap/Stack';
-import { getActiveRoute, isEquals } from "../../utils";
 
 import IconButton from "@mui/material/IconButton";
-import { ModuleRoutes } from "../../modules/ModuleRoutes";
-import { loadTrips } from "../../actions/general";
+import { getRoute, ModuleRoutes } from "../../modules/ModuleRoutes";
+import { connect } from "react-redux";
+import { updateView } from "../../actions/general";
+import { MAIN_VIEW } from "../../constants";
 
 
 const wrapper = {
@@ -24,32 +25,24 @@ class SideBar extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            route: getActiveRoute()
-        }
     }
     
-    setActiveRoute() {
-        this.setState({
-            route: getActiveRoute()
-        });
-    }
-    
-    componentDidMount () {        
-        this.setActiveRoute();
+    componentDidMount () {
     }
 
-    isEqualRoute(route) {
-        return isEquals(this.state.route, route);
+    isActiveView(view) {
+        const { activeView } = this.props;
+        return activeView === view;
+    }
+
+    routeTo(view) {
+        const route = getRoute(view);
+        
+        return this.isActiveView(view) ? '/' : route;
     }
 
     render() {
         const { dispatch } = this.props;
-
-        if (this.isEqualRoute('/')) {
-            dispatch(loadTrips());
-        }
 
         return (
             <div style={wrapper}>
@@ -60,10 +53,10 @@ class SideBar extends Component {
                             key={menu.id}
                             size="small" 
                             aria-label={menu.title}
-                            onClick={() => this.setActiveRoute()}
-                            className={this.isEqualRoute(menu.route) ? 'activeIcon' : 'inactiveIcon'}
+                            onClick={() => dispatch(this.isActiveView(menu.view) ? updateView(MAIN_VIEW) : updateView(menu.view))}
+                            className={this.isActiveView(menu.view) ? 'activeIcon' : 'inactiveIcon'}
                         >  
-                            <Link to={this.isEqualRoute(menu.route) ? '/' : menu.route}>{menu.icon}</Link>
+                            <Link to={this.routeTo(menu.view)}>{menu.icon}</Link>
                         </IconButton>
                     ))
                 
@@ -73,5 +66,13 @@ class SideBar extends Component {
         )
     }
 };
+
+const mapStateToProps = (state) => {
+    return {
+        activeView: state.get('general').get('activeView')
+    };
+  }
+  
+SideBar = connect(mapStateToProps)(SideBar);
 
 export default SideBar;

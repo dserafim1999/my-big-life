@@ -4,7 +4,8 @@ import {
   TOGGLE_REMAINING_TRACKS,
   SET_LOADING,
   UPDATE_CONFIG,
-  UPDATE_SERVER
+  UPDATE_SERVER,
+  UPDATE_VIEW
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -110,12 +111,15 @@ export const saveConfig = (config) => {
   }
 }
 
-export const updateServer = (server) => {
-  return {
+export const updateServer = (server) => ({
     server,
     type: UPDATE_SERVER
-  }
-}
+})
+
+export const updateView = (view) => ({
+  view,
+  type: UPDATE_VIEW
+})
 
 export const loadTrips = () => {
   return (dispatch, getState) => {

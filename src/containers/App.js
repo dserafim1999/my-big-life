@@ -15,7 +15,7 @@ import { toggleRemainingTracks } from '../actions/general';
 import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
-let App = ({ showConfig, step, dispatch }) => {
+let App = ({ showConfig, view, dispatch }) => {
 
   const onDrop = (e) => {
     let dt = e.dataTransfer
@@ -69,13 +69,16 @@ let App = ({ showConfig, step, dispatch }) => {
             <Routes>
                 <Route path='/' element={<></>}/>
                     {
-                    ModuleRoutes.map(menu => (
-                        <Route 
-                          key={menu.id}
-                          path={menu.route} 
-                          element={menu.component}
-                        />
-                    ))
+                      ModuleRoutes.map(menu => {
+                          if (menu.route) {
+                            return <Route 
+                              key={menu.id}
+                              path={menu.route} 
+                              element={menu.component}
+                            />
+                          }
+                        }
+                      )
                     }
                 <Route path='/*' element={<></>}/> 
             </Routes>
@@ -84,7 +87,7 @@ let App = ({ showConfig, step, dispatch }) => {
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}
               showConfig={showConfig}
-              step={step} 
+              view={view}
             />
           </Router>
       </Dropzone>
@@ -92,7 +95,7 @@ let App = ({ showConfig, step, dispatch }) => {
 };
 
 const mapStateToProps = (state) => ({
-  step: state.get('process').get('step')
+  view: state.get('general').get('activeView')
 });
 
 export default connect(mapStateToProps)(App);
