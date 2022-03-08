@@ -248,6 +248,6 @@ const tracks = (state = initialState, action) => {
   } else {
       return result;
   }
-  }
+}
 
 export default tracks;

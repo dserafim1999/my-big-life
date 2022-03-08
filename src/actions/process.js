@@ -147,7 +147,6 @@ export const nextStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('continue-button', true));
     const hasLIFE = getState().get('process').get('LIFE');
-    console.log(hasLIFE)
     const options = {
       method: 'POST',
       mode: 'cors',

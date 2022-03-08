@@ -626,6 +626,6 @@ const segments = (state = [], action) => {
     } else {
       return state;
     }
-  }
+}
 
 export default segments;

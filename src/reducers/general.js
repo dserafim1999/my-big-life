@@ -1,12 +1,66 @@
 import { Map, List, Set } from 'immutable';
-import { 
-  ADD_ALERT,
-  REMOVE_ALERT,
-  TOGGLE_REMAINING_TRACKS,
-  SET_LOADING,
-  UPDATE_CONFIG,
-  UPDATE_SERVER,
-} from '../actions';
+
+
+
+const removeAlert  = (state, action) => {
+  return state.update('alerts', (alerts) => {
+    let index;
+    if (action.alert) {
+      index = alerts.findIndex((a) => a === action.alert);
+    } else if (action.ref) {
+      index = alerts.findIndex((a) => a.ref === action.ref);
+    }
+
+    if (index !== undefined) {
+      return alerts.delete(index);
+    } else {
+      return alerts;
+    }
+  });
+}
+
+const addAlert = (state, action) => {
+  if (action.ref) {
+    const index = state.get('alerts').findIndex((a) => a.ref === action.ref);
+    if (index !== -1) {
+      return state;
+    }
+  }
+
+  return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref })); 
+}
+
+const toggleRemainingTracks = (state, action) => {
+  return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
+}
+
+const setLoading = (state, action) => {
+  return state.update('loading', (loading) => {
+    const { is, ref } = action;
+    if (is) {
+      return loading.add(ref);
+    } else {
+      return loading.remove(ref);
+    }
+  });
+}
+
+const updateConfig  = (state, action) => {
+  return state.set('config', new Map(action.config));
+}
+
+const updateServer = (state, action) => {
+  return state.set('server', action.server);
+}
+
+const ACTION_REACTION = {
+  'general/remove_alert': removeAlert,
+  'general/add_alert': addAlert,
+  'general/set_loading': setLoading,
+  'general/update_config': updateConfig,
+  'general/update_server': updateServer,
+  'process/toggle_remaining_tracks': toggleRemainingTracks,
+}
 
 const initialState = Map({
   alerts: List(),
@@ -16,48 +70,11 @@ const initialState = Map({
 });
 
 const general = (state = initialState, action) => {
-    switch (action.type) {
-      case REMOVE_ALERT:
-        return state.update('alerts', (alerts) => {
-          let index;
-          if (action.alert) {
-            index = alerts.findIndex((a) => a === action.alert);
-          } else if (action.ref) {
-            index = alerts.findIndex((a) => a.ref === action.ref);
-          }
-
-          if (index !== undefined) {
-            return alerts.delete(index);
-          } else {
-            return alerts;
-          }
-        });
-      case ADD_ALERT:
-        if (action.ref) {
-          const index = state.get('alerts').findIndex((a) => a.ref === action.ref);
-          if (index !== -1) {
-            return state;
-          }
-        }
-        return state.update('alerts', (alerts) => alerts.push({ type: action.alertType, message: action.message, duration: action.duration, ref: action.ref }));  
-      case TOGGLE_REMAINING_TRACKS:
-        return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
-      case SET_LOADING:
-        return state.update('loading', (loading) => {
-          const { is, ref } = action;
-          if (is) {
-            return loading.add(ref);
-          } else {
-            return loading.remove(ref);
-          }
-        })
-      case UPDATE_CONFIG:
-        return state.set('config', new Map(action.config));
-      case UPDATE_SERVER:
-        return state.set('server', action.server)
-      default:
-        return state;
-    }
+  if (ACTION_REACTION[action.type]) {
+    return ACTION_REACTION[action.type](state, action);
+  } else {
+    return state;
+  }
 }
 
 export default general;
