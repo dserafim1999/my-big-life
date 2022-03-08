@@ -1,5 +1,4 @@
 import { Map, List, Set } from 'immutable';
-import { MAIN_VIEW } from '../constants';
 import { getInitialView, ModuleRoutes } from '../modules/ModuleRoutes';
 
 
@@ -72,7 +71,7 @@ const ACTION_REACTION = {
 const initialState = Map({
   alerts: List(),
   loading: Set(),
-  activeView: MAIN_VIEW,
+  activeView: getInitialView(),
   transportationModes: List(),
   server: 'http://localhost:5000'
 });

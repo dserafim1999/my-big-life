@@ -35,6 +35,12 @@ class SideBar extends Component {
         return activeView === view;
     }
 
+    routeTo(view) {
+        const route = getRoute(view);
+        
+        return this.isActiveView(view) ? '/' : route;
+    }
+
     render() {
         const { dispatch } = this.props;
 
@@ -50,7 +56,7 @@ class SideBar extends Component {
                             onClick={() => dispatch(this.isActiveView(menu.view) ? updateView(MAIN_VIEW) : updateView(menu.view))}
                             className={this.isActiveView(menu.view) ? 'activeIcon' : 'inactiveIcon'}
                         >  
-                            {menu.icon}
+                            <Link to={this.routeTo(menu.view)}>{menu.icon}</Link>
                         </IconButton>
                     ))
                 

@@ -7,12 +7,12 @@
   float: right;
 }
 
-.activeIcon {
-    color: black !important;
+.activeIcon a {
+    color: black;
 }
 
-.inactiveIcon {
-  color: grey !important;
+.inactiveIcon a {
+  color: grey;
 }
 
 .clickable {
