@@ -65,31 +65,21 @@ let App = ({ showConfig, view, dispatch }) => {
 
   return (
       <Dropzone id="container" onDrop={onDrop}>
-        <Router>
-            <Routes>
-                <Route path='/' element={<></>}/>
-                    {
-                      ModuleRoutes.map(menu => {
-                          if (menu.route) {
-                            return <Route 
-                              key={menu.id}
-                              path={menu.route} 
-                              element={menu.component}
-                            />
-                          }
-                        }
-                      )
-                    }
-                <Route path='/*' element={<></>}/> 
-            </Routes>
-            <SideBar dispatch={dispatch}/>
+            { 
+              ModuleRoutes.map(menu => {
+                  if (menu.view == view) {
+                    return menu.component
+                  }
+                }
+              )
+            }
+            <SideBar/>
             <MainContainer
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}
               showConfig={showConfig}
               view={view}
             />
-          </Router>
       </Dropzone>
   );
 };
