@@ -32,7 +32,7 @@ export const ModuleRoutes = [
     {
         title: "LIFE Editor",
         icon: <AssignmentIcon fontSize="large"/>,
-        route: "/life-editor",
+        route: "/LIFE-editor",
         component: <LifeEditor/>,
         id: nanoid()
     },

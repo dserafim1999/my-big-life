@@ -14,19 +14,19 @@ const setServerState = (state, action) => {
     .set('remainingTracks', fromJS(action.tracksRemaining))
     .set('daySelected', action.daySelected)
     .set('initLIFE', action.life)
-    .set('lifeQueue', action.lifeQueue)
-    .set('life', '');
+    .set('LIFEQueue', action.lifeQueue)
+    .set('LIFE', '');
 }
 
 const setLife = (state, action) => {
-    return state.set('life', action.text);
+    return state.set('LIFE', action.text);
   }
  
 const ACTION_REACTION = {
     'process/advance_adjust': advanceToAdjust,
     'process/advance_annotate': advanceToAnnotate,
     'process/set_server_state': setServerState,
-    'process/set_life': setLife
+    'process/set_LIFE': setLife
 }
 
 const initialState = fromJS({

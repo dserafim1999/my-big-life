@@ -205,7 +205,7 @@ const ACTION_REACTION = {
     'tracks/add_multiple': addMultipleTracks,
     'tracks/update_name': updateTrackName,
     'tracks/toggle_renaming': toggleTrackRenaming,
-    'tracks/update_life': updateLIFE,
+    'tracks/update_LIFE': updateLIFE,
     'tracks/display_trips': displayTrips,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,

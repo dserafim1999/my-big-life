@@ -147,6 +147,7 @@ export const nextStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('continue-button', true));
     const hasLIFE = getState().get('process').get('LIFE');
+    console.log(hasLIFE)
     const options = {
       method: 'POST',
       mode: 'cors',
@@ -161,7 +162,7 @@ export const nextStep = () => {
         })
       })
     }
-    console.log(options)
+    
     return fetch(getState().get('general').get('server') + '/process/next', options)
       .then((response) => response.json())
       .catch((err) => console.log(err))
@@ -338,7 +339,10 @@ export const requestTransportationSuggestions = (points) => {
   }
 }
 
-export const setLIFE = (text) => ({
-  text,
-  type: SET_LIFE
-})
+export const setLIFE = (text) => {
+  console.log(text)
+  return {
+    text,
+    type: SET_LIFE
+  }
+}

@@ -130,7 +130,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
 
 const mapStateToProps = (state) => {
   return {
-    lifesExistent: state.get('process').get('lifeQueue') || [],
+    lifesExistent: state.get('process').get('LIFEQueue') || [],
     remaining: state.get('process').get('remainingTracks'),
     selected: state.get('process').get('daySelected'),
     hasChanges: state.get('tracks').get('history').get('past').count() !== 0 || state.get('process').get('step') !== PREVIEW_STAGE,

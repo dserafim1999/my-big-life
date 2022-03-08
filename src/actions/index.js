@@ -3,7 +3,7 @@ export const REMOVE_TRACK = 'tracks/remove';
 export const ADD_MULTIPLE_TRACKS = 'tracks/add_multiple';
 export const UPDATE_TRACK_NAME = 'tracks/update_name';
 export const TOGGLE_TRACK_RENAMING = 'tracks/toggle_renaming';
-export const UPDATE_LIFE = 'tracks/update_life';
+export const UPDATE_LIFE = 'tracks/update_LIFE';
 export const DISPLAY_TRIPS = 'tracks/display_trips';
 export const RESET_HISTORY = 'tracks/reset_history';
 export const REMOVE_TRACKS_FOR = 'tracks/remove_track_for';
@@ -64,5 +64,5 @@ export const ADVANCE_TO_ADJUST = 'process/advance_adjust';
 export const ADVANCE_TO_ANNOTATE = 'process/advance_annotate';
 export const SET_SERVER_STATE = 'process/set_server_state';
 export const TOGGLE_REMAINING_TRACKS = 'process/toggle_remaining_tracks';
-export const SET_LIFE = 'process/set_life';
+export const SET_LIFE = 'process/set_LIFE';
 
