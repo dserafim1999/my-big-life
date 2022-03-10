@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import LifeEditor from "./LifeEditor";
 import VisualQuerying from "./VisualQuerying";
 
+import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import AssignmentIcon from '@mui/icons-material/AssignmentInd';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
@@ -15,6 +16,7 @@ import TrackProcessing from "./TrackProcessing";
 import ConfigPane from "../containers/ConfigPane";
 import { CONFIG_PANEL, LIFE_EDITOR, MAIN_VIEW, SEARCH_BAR, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
 import { getActiveRoute } from "../utils";
+import MainView from "./MainView";
 
 export const getRoute = (view) => {
     const activeView = ModuleRoutes.find((module) => module.view === view);
@@ -33,6 +35,13 @@ export const getInitialView = () => {
 }
 
 export const ModuleRoutes = [
+    {
+        title: "Main",
+        view: MAIN_VIEW,
+        icon: <HomeIcon fontSize="large"/>,
+        component: <MainView/>,
+        id: nanoid()
+    },
     {
         title: "Search",
         icon: <SearchIcon fontSize="large"/>,
