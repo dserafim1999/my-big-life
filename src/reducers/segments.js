@@ -443,7 +443,7 @@ const updateTransportationTime = (state, action) => {
           return tmode.set('from', timeIndex);
         }
       } else {
-        if (egmentEndTime(seg).format('HHmm') === time) {
+        if (segmentEndTime(seg).format('HHmm') === time) {
           return tmode;
         } else {
           return tmode.set('to', timeIndex);

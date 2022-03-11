@@ -25,7 +25,7 @@ const angleBetween = (a, b) => {
   return Math.tanh((a.lat - b.lat) / (a.lon - b.lon)) * -1;
 }
 
-const buildVerticalMarker = (start, next, previous, label) => {
+const buildVerticalMarker = (color, start, next, previous, label) => {
   let angle = 0;
   if (next) {
     angle = angleBetween(start, next);
@@ -35,18 +35,12 @@ const buildVerticalMarker = (start, next, previous, label) => {
 
   const iconCreator = LABEL_TO_ICON[label] || LABEL_TO_ICON['?'];
 
-  const m = (
-    <div style={{ transform: 'rotate(' + angle + 'rad)' }}>
-      <div style={{ width: '2px', height: '14px', backgroundColor: 'black' }}></div>
-      <Icon style={{ position: 'relative', top: '5px', left: '-6px', color: 'black', fontSize: '12px' }}/>
-    </div>
-  );
-
-  return createMarker(pts[from], iconCreator(segment.get('color')))
+  return createMarker(start, iconCreator(color))
 }
 
 export default (lseg, segment) => {
   const transModes = segment.get('transportationModes');
+  const color = segment.get('color');
   let tModes = [];
   let lastTo;
   const pts = segment.get('points').toJS();
@@ -54,14 +48,19 @@ export default (lseg, segment) => {
   if (transModes && transModes.count() > 0) {
     // debugger
     tModes = transModes.map((mode) => {
+      console.log(mode);
       const from = mode.get('from');
       const to = mode.get('to');
       const label = mode.get('label').toLocaleLowerCase();
-
-      lastTo = to;
-      return buildVerticalMarker(pts[from], pts[from + 1], pts[from - 1], label);
+  
+      lastTo = to - 1;
+      return buildVerticalMarker(color, pts[from], pts[from + 1], pts[from - 1], label);
     }).toJS();
-    tModes.push(buildVerticalMarker(pts[lastTo], null, pts[lastTo - 1]));
+
+    console.log(pts)
+    console.log(lastTo)
+
+    tModes.push(buildVerticalMarker(color, pts[lastTo], null, pts[lastTo - 1]));
   }
 
   return new FeatureGroup(tModes);
