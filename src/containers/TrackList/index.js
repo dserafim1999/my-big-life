@@ -8,9 +8,6 @@ import {
   updateTrackName
 } from '../../actions/tracks';
 
-import { toggleRemainingTracks } from '../../actions/general';
-
-
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;
 
 const style = {
@@ -31,9 +28,8 @@ let TrackList = ({ dispatch, tracks, className, step, remainingCount }) => {
                     const trackId = track.get('id');
                     const updateName = (newName) => dispatch(updateTrackName(trackId, newName));
                     const onDownload = () => dispatch(downloadTrack(trackId));
-                    const onToggleList = () => dispatch(toggleRemainingTracks());
                     
-                    return <Track trackId={trackId} key={i} onRename={updateName} onDownload={onDownload} onToggleRemainingTracks={onToggleList} remaining={remaining} />;
+                    return <Track trackId={trackId} key={i} onRename={updateName} onDownload={onDownload} remaining={remaining} />;
                   })
                 }
             </ul>

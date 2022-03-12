@@ -5,7 +5,7 @@ import TrackSegments from './TrackSegments';
 
 const pluralize = (singular, count) => (count === 1 ? singular : singular + 's');
 
-const Track = ({ track, pointCount, segmentCount, onRename, onDownload, onToggleRemainingTracks, remaining }) => {
+const Track = ({ track, pointCount, segmentCount, onRename, onDownload, remaining }) => {
   return (
     <div className='fade-in'>
       <div style={{fontSize: '1.5rem'}}>
@@ -14,7 +14,6 @@ const Track = ({ track, pointCount, segmentCount, onRename, onDownload, onToggle
             onRename={onRename}
             onDownload={onDownload}
             editable={false}
-            onClick={onToggleRemainingTracks}
             daysLeft={remaining} />
       </div>
       <span style={{fontSize: '0.8rem', color: 'gray'}}>

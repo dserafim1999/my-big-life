@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addAlert } from '../../actions/general';
+import { toggleRemainingTracks, addAlert } from '../../actions/general';
 import { clearAll, hideCanonical, resetHistory } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
@@ -76,6 +76,12 @@ class TrackProcessing extends Component {
             .catch((e) => errorHandler(this.dispatch, e, modifier));
     }
 
+    onChangeDay = (e, modifier) => {
+        this.dispatch(toggleRemainingTracks())
+            .then(() => modifier())
+            .catch((e) => errorHandler(this.dispatch, e, modifier));
+    }
+
     onBulkClick = (e, modifier) => {
         modifier('is-loading')
         this.dispatch(bulkProcess())
@@ -123,7 +129,8 @@ class TrackProcessing extends Component {
                         isLoadingPrevious={isLoadingPrevious} 
                         onPrevious={this.onPrevious}
                         onSkip={this.onSkip} onNext={this.onNext} 
-                        canSkip={step === 0 && remainingCount > 1} 
+                        onChangeDay={this.onChangeDay}
+                        canSkip={step === 0 && remainingCount > 1 && canProceed} 
                         canProceed={canProceed} canPrevious={step !== 0}
                     />
                 );
@@ -139,7 +146,7 @@ class TrackProcessing extends Component {
                 <PaneContent showList={showList} stage={step} />
     
                 <div style={{ marginTop: '0.5rem' }}>
-                    <div className='columns is-gapless' style={{ marginBottom: 0 }}>
+                    <div className='columns is-gapless is-centered' style={{ marginBottom: 0 }}>
                         { buttons }
                     </div>
                 </div>
