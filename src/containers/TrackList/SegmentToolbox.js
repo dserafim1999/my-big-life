@@ -26,7 +26,7 @@ import TimeFilterIcon from '@mui/icons-material/EventNote';
 import { Col } from 'react-bootstrap';
 import { Tooltip } from '@mui/material';
 
-const INFO_TIME = 100;
+const INFO_TIME = 5;
 const btnHighlight = 'icon-button is-success';
 const btn = 'icon-button';
 

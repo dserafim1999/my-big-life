@@ -15,7 +15,7 @@ let AlertBox = ({ dispatch, alerts }) => {
     left: '50%',
     width: '50%',
     marginLeft: '-25%',
-    zIndex: 700
+    zIndex: 1000
   };
 
   const deleteAlert = (alert) => {
