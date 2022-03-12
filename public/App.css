@@ -42,6 +42,32 @@
   height: 2em !important;
 }
 
+.button.is-blue:hover, .button.is-info.is-hovered {
+  background-color: #20384c;
+  border-color: transparent;
+  color: #fff;
+}
+.button.is-blue {
+  background-color: #284760;
+  border-color: transparent;
+  color: #fff;
+}
+
+.button.is-red:hover, .button.is-info.is-hovered {
+  background-color: #821d1d;
+  border-color: transparent;
+  color: #fff;
+}
+.button.is-red {
+  background-color: #a42525;
+  border-color: transparent;
+  color: #fff;
+}
+
+a.button {
+  text-decoration: none;
+}
+
 .slider {
   width: 100%;
   height: 20px
@@ -438,4 +464,26 @@
   height: 38px !important;
   /* border-width: 3px; */
   z-index: 1000;
+}
+
+/* Scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }

@@ -223,7 +223,8 @@ class SemanticEditor extends Component {
     const gutterStyle = {
       paddingRight: '6px',
       color: '#d3d6db',
-      textAlign: 'right'
+      textAlign: 'right',
+      paddingLeft: '2.5rem'
     };
 
     const flexStyle = {
@@ -232,7 +233,9 @@ class SemanticEditor extends Component {
 
     const editorStyle = {
       ...flexStyle,
-      fontFamily: 'monospace'
+      fontFamily: 'monospace',
+      overflowY: 'auto', 
+      maxHeight: '460px'
     };
 
     return (

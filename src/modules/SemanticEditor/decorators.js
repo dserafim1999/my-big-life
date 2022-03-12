@@ -10,13 +10,13 @@ import {
 
 const SOLARIZED = {
   YELLOW: '#b58900',
-  ORANGE: '#cb4b16',
+  ORANGE: '#d4683b',
   RED: '#dc322f',
-  MAGENTA: '#d33682',
-  VIOLET: '#6c71c4',
-  BLUE: '#268bd2',
-  CYAN: '#2aa198',
-  GREEN: '#859900',
+  MAGENTA: '#dc322f',
+  VIOLET: '#54589c',
+  BLUE: '#4d8cb8',
+  CYAN: '#71a8ad',
+  GREEN: '#4a9945',
   L15: '#002b36',
   L20: '#073642',
   L45: '#586e75',
@@ -31,7 +31,7 @@ const SOLARIZED = {
 const STYLES = {
   '_': {
     color: '#268bd2',
-    backgroundColor: '#eef6fc',
+    backgroundColor: '#ebebeb',
     padding: '1px 2px 1px 2px',
     borderRadius: '4px',
     fontWeight: 'bold',

@@ -17,9 +17,9 @@ const RULER_DEFAULT_STYLE = {
 const ProgressBar = ({ state, ballStyle, rulerStyle, children }) => {
   ballStyle = ballStyle || BALL_DEFAULT_STYLE;
   rulerStyle = rulerStyle || RULER_DEFAULT_STYLE;
-  const borderColor = '#97cd76';
+  const borderColor = '#284760';
 
-  const p = 20;
+  const p = 10;
   const rulerBeforeStyle = { background: borderColor };
   const rulerAfterStyle = { background: '#c3c3c3' };
   const rulerSelectedStyle = { background: 'linear-gradient(to right, ' + borderColor + ' 0%,' + borderColor + ' ' + p + '%,#c3c3c3 ' + p + '%,#c3c3c3 100%)' };
@@ -28,10 +28,10 @@ const ProgressBar = ({ state, ballStyle, rulerStyle, children }) => {
   const ballSelectedStyle = { ...ballStyle, border: '4px solid ' + borderColor, width: '20px', height: '20px' };
   const ballBeforeStyle = { ...ballStyle, border: '4px solid ' + borderColor, backgroundColor: borderColor };
 
-  const labelBaseStyle = { color: 'rgba(0, 0, 0, 0.5)', fontWeight: 'bold' };
+  const labelBaseStyle = { color: 'rgba(0, 0, 0, 0.25)', fontWeight: 'light' };
   const labelBeforeStyle = labelBaseStyle;
   const labelAfterStyle = labelBeforeStyle;
-  const labelSelectedStyle = { ...labelBaseStyle, color: 'black' };
+  const labelSelectedStyle = { ...labelBaseStyle, color: borderColor , fontWeight: 'bold' };
 
   const _steps = children.reduce((prev, step, i) => {
     prev.push(step);

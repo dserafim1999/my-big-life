@@ -12,10 +12,8 @@ const buttonStyle = {
 }
 
 const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal, onChangeDay }) => {
-  const prevClassName = 'is-warning' + (isLoadingPrevious ? ' is-loading' : '');
-  const nextClassName = 'is-success' + (isLoadingNext ? ' is-loading' : '');
-
-  console.log("canProceed: " + canProceed)
+  const prevClassName = 'is-blue' + (isLoadingPrevious ? ' is-loading' : '');
+  const nextClassName = 'is-blue' + (isLoadingNext ? ' is-loading' : '');
 
   const previous = canPrevious ? (
     <AsyncButton title='Previous Step' style={buttonStyle} disabled={isLoadingPrevious} className={prevClassName} onClick={onPrevious}>
@@ -39,7 +37,7 @@ const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPr
   ) : null;
 
   const changeDay = (
-    <AsyncButton title='Change Day To Process' style={buttonStyle} disabled={isLoadingNext} onClick={onChangeDay}>
+    <AsyncButton title='Change Day To Process' style={buttonStyle} className={'is-light'} disabled={isLoadingNext} onClick={onChangeDay}>
         Change Day
     </AsyncButton>
   );

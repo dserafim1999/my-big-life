@@ -35,18 +35,18 @@ const EMPTY_FOLDER = (
 const crossStyle = {
   float: 'right',
   textDecoration: 'none',
-  marginTop: '-4px'
+  fontSize: '0.5rem',
 }
 
 const Day = ({ date, gpxs, isSelected, onSelectDay, onDismiss }) => {
   const mDate = moment(date);
   return (
-    <div className='clickable day-left' style={{ marginTop: '0.5rem', padding: '0.2rem', borderRadius: '3px', border: '1px #bbb ' + (isSelected ? 'solid' : 'dashed') }}>
-      <a className='button is-link is-small is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
+    <div className='clickable day-left' style={{ padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
+      <a className='button is-red is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
         <CloseIcon sx={{ fontSize: '0.7rem' }}/>
       </a>
       <div>
-        <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: 'gray' }}>{ mDate.fromNow() }</span></span>
+        <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: isSelected? 'white' : 'grey' }}>{ mDate.fromNow() }</span></span>
       </div>
       <div>
         {
@@ -81,7 +81,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
     }
 
     return (
-      <AsyncButton title='Change day to process' key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
+      <AsyncButton  key={i} isDiv={true} withoutBtnClass={true} onClick={(e, modifier) => {
         if (selected !== day) {
           /*global confirm*/
           const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost');
@@ -121,9 +121,11 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
           )
         })
       }
+      <div style={{overflowY: 'auto', maxHeight: '460px'}}>
       {
         remaining.count() > 0 ? remainingDays : EMPTY_FOLDER
       }
+      </div>
     </div>
   );
 }
