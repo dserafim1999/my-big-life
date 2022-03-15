@@ -77,9 +77,7 @@ class TrackProcessing extends Component {
     }
 
     onChangeDay = (e, modifier) => {
-        this.dispatch(toggleRemainingTracks())
-            .then(() => modifier())
-            .catch((e) => errorHandler(this.dispatch, e, modifier));
+        this.dispatch(toggleRemainingTracks());
     }
 
     onBulkClick = (e, modifier) => {
@@ -103,7 +101,7 @@ class TrackProcessing extends Component {
     }
     
     render () {
-        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed} = this.props;
+        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed, daysLeft} = this.props;
 
         const progress = (
             <ProgressBar state={step}>
@@ -132,6 +130,7 @@ class TrackProcessing extends Component {
                         onChangeDay={this.onChangeDay}
                         canSkip={step === 0 && remainingCount > 1 && canProceed} 
                         canProceed={canProceed} canPrevious={step !== 0}
+                        daysLeft={daysLeft}
                     />
                 );
             }
@@ -146,7 +145,7 @@ class TrackProcessing extends Component {
                 <PaneContent showList={showList} stage={step} />
     
                 <div style={{ marginTop: '0.5rem' }}>
-                    <div className='columns is-gapless is-centered' style={{ marginBottom: 0 }}>
+                    <div className='columns is-centered' style={{ marginBottom: 0, textAlign: 'center' }}>
                         { buttons }
                     </div>
                 </div>
@@ -162,6 +161,7 @@ const mapStateToProps = (state) => {
     showList: state.get('general').get('showRemainingTracks'),
     remainingCount: state.get('process').get('remainingTracks').count(),
     canProceed: state.get('tracks').get('tracks').count() > 0,
+    daysLeft: state.get('tracks').count() > 0 ? state.get('tracks').count() : 0,
     segmentsCount: state.get('tracks').get('segments').count(),
     isLoadingNext: state.get('general').get('loading').has('continue-button'),
     isLoadingPrevious: state.get('general').get('loading').has('previous-button')

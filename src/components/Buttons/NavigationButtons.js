@@ -11,7 +11,7 @@ const buttonStyle = {
   flexGrow: 1
 }
 
-const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal, onChangeDay }) => {
+const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal, onChangeDay, daysLeft }) => {
   const prevClassName = 'is-blue' + (isLoadingPrevious ? ' is-loading' : '');
   const nextClassName = 'is-blue' + (isLoadingNext ? ' is-loading' : '');
 
@@ -38,7 +38,10 @@ const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPr
 
   const changeDay = (
     <AsyncButton title='Change Day To Process' style={buttonStyle} className={'is-light'} disabled={isLoadingNext} onClick={onChangeDay}>
-        Change Day
+        <span style={{ cursor: 'pointer' }}>
+            <div>Change Day</div>
+            <div style={{fontSize: '0.7rem', fontWeight: 'bold'}}>({daysLeft} day{daysLeft > 1 ? 's' : ''} remaining)</div>
+        </span>
     </AsyncButton>
   );
 

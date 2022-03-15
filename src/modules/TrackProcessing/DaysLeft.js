@@ -38,7 +38,7 @@ const crossStyle = {
   fontSize: '0.5rem',
 }
 
-const Day = ({ date, gpxs, isSelected, onSelectDay, onDismiss }) => {
+const Day = ({ date, gpxs, isSelected, onDismiss }) => {
   const mDate = moment(date);
   return (
     <div className='clickable day-left' style={{ padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
@@ -87,8 +87,8 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
           const go = !hasChanges || confirm('Do you wish to change days?\n\nAll changes made to the current day will be lost');
           if (go) {
             modifier('loaderr');
-            dispatch(changeDayToProcess(day))
-              .then(() => modifier());
+            dispatch(changeDayToProcess(day)).then(() => modifier());
+            dispatch(toggleRemainingTracks());
           }
         }
       }}>

@@ -57,7 +57,7 @@ export default class TrackName extends Component {
 
   render () {
     const { renaming, name } = this.state;
-    const { daysLeft, onDownload } = this.props;
+    const { onDownload } = this.props;
     const toggleEditing = this.toggleEditing.bind(this);
     let downloadButton = null;
 
@@ -86,7 +86,6 @@ export default class TrackName extends Component {
         { downloadButton }
         <a onClick={toggleEditing} style={{ color: '#666', display: 'flex', alignItems: 'flex-start' }}>
             <span style={{}}>{name}</span>
-            <span style={{ fontSize: '0.9rem', textDecoration: 'underline', fontWeight: 'bold', color: '#777' }}>{ daysLeft }</span>
         </a>
       </div>
     );
