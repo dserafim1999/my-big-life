@@ -7,8 +7,10 @@ import SkipIcon from '@mui/icons-material/SkipNext';
 import SaveIcon from '@mui/icons-material/Check';
 
 const buttonStyle = {
-  flex: 1,
-  flexGrow: 1
+  paddingLeft: '0.5rem',
+  paddingRight: '0.5rem',
+  marginLeft: '0.25rem',
+  marginRight: '0.25rem',
 }
 
 const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPrevious, canSkip, onSkip, onNext, canProceed, isFinal, onChangeDay, daysLeft }) => {

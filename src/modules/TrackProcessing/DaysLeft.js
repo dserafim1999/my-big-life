@@ -121,7 +121,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
           )
         })
       }
-      <div style={{overflowY: 'auto', maxHeight: '460px'}}>
+      <div style={{overflowY: 'auto', maxHeight: '460px', minWidth: 'max-content'}}>
       {
         remaining.count() > 0 ? remainingDays : EMPTY_FOLDER
       }

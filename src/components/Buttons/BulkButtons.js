@@ -3,12 +3,16 @@ import AsyncButton from './AsyncButton';
 
 const BulkButtons = ({ onBulkClick, onLifeRead }) => {
   const warningBorderStyle = {
-    border: '1px solid rgba(17, 17, 17, 0.1)'
+    border: '1px solid rgba(17, 17, 17, 0.1)',
+    marginLeft: '0.25rem',
+    marginRight: '0.25rem',
   }
 
   const lifeBtnStyle = {
     ...warningBorderStyle,
-    lineHeight: 'inherit'
+    lineHeight: 'inherit',
+    marginLeft: '0.25rem',
+    marginRight: '0.25rem',
   }
 
   return (

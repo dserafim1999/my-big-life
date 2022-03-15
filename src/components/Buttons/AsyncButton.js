@@ -49,6 +49,7 @@ export default class AsyncButton extends Component {
   }
 
   render () {
+    const { style } = this.props;
     const classes = this.createClassName();
     if (this.props.isFile) {
       const id='fkdhf';
@@ -71,7 +72,7 @@ export default class AsyncButton extends Component {
         }
       }
       return (
-       <div className={classes} ref={this.btnRef}>
+       <div style={style} className={classes} ref={this.btnRef}>
           <input type='file' id={id} style={{display: 'none'}} onChange={onChange}/>
           <label htmlFor={id}>
             { this.state.content || this.props.children }
@@ -81,7 +82,7 @@ export default class AsyncButton extends Component {
     } else if (this.props.isDiv) {
       return (
         <Tooltip title={this.title}  placement="top" arrow>  
-          <div className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
+          <div style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
             { this.state.content || this.props.children }
           </div>
         </Tooltip>
@@ -89,7 +90,7 @@ export default class AsyncButton extends Component {
     } else {
       return (
         <Tooltip title={this.title}  placement="top" arrow>  
-          <a className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
+          <a style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
             { this.state.content || this.props.children }
           </a>
         </Tooltip>
