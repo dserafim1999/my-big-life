@@ -41,7 +41,7 @@ const crossStyle = {
 const Day = ({ date, gpxs, isSelected, onDismiss }) => {
   const mDate = moment(date);
   return (
-    <div className='clickable day-left' style={{ padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
+    <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
       <a className='button is-red is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
         <CloseIcon sx={{ fontSize: '0.7rem' }}/>
       </a>
@@ -63,7 +63,7 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
   const refresh = (
     <AsyncButton
       className={'icon-button button'}
-      style={{ float: 'right'}}
+      style={{ float: done ? 'none' : 'right'}}
       onClick={(e, modifier) => {
         modifier('is-loading')
         dispatch(reloadQueue())

@@ -161,7 +161,7 @@ const mapStateToProps = (state) => {
     showList: state.get('general').get('showRemainingTracks'),
     remainingCount: state.get('process').get('remainingTracks').count(),
     canProceed: state.get('tracks').get('tracks').count() > 0,
-    daysLeft: state.get('tracks').count() > 0 ? state.get('tracks').count() : 0,
+    daysLeft: state.get('process').get('remainingTracks').count() > 0 ? state.get('process').get('remainingTracks').count() : 0,
     segmentsCount: state.get('tracks').get('segments').count(),
     isLoadingNext: state.get('general').get('loading').has('continue-button'),
     isLoadingPrevious: state.get('general').get('loading').has('previous-button')
