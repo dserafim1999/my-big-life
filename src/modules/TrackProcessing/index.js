@@ -141,8 +141,8 @@ class TrackProcessing extends Component {
         return (
             <Card width="375" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 { progress }
-                <div style={{borderBottom: "2px solid #F0F0F0"}}></div>
-                <PaneContent showList={showList} stage={step} />
+                <div style={{marginTop: '15px'}}/>
+                <PaneContent showList={showList} stage={step}/>
     
                 <div style={{ marginTop: '0.5rem' }}>
                     <div className='columns is-centered' style={{ marginBottom: 0, textAlign: 'center' }}>

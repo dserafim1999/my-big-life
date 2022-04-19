@@ -46,7 +46,7 @@ const SegmentStartEnd = ({ onClick, index, time}) => {
     return (
       <div className={'date-' + descr} onClick={onClick}>
         <div style={{ fontSize: '0.7rem', color: '#aaa' }}>{ descr }</div>
-        <div>{time.format('L')}</div>
+        <div>{time.format('DD/MM/YYYY')}</div>
         <div>{time.format('LT')}</div>
       </div>
     );
