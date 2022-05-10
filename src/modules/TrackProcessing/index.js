@@ -139,7 +139,7 @@ class TrackProcessing extends Component {
         }
         
         return (
-            <Card width="375" height="" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+            <Card width="375" top="99" left="99" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 { progress }
                 <div style={{marginTop: '15px'}}/>
                 <PaneContent showList={showList} stage={step}/>

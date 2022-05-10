@@ -89,7 +89,8 @@ const displayCanonicalTrips = (state, action) => {
 
 const displayTrips = (state, action) => {
   const { trips } = action;
-  const _segments = trips.filter((trip) => trip.points.length > 1).map((trip, i) => {
+  //const _segments = trips.filter((trip) => trip.points.length > 1).map((trip, i) => {
+  const _segments = trips.map((trip, i) => {
     return new SegmentRecord({
       trackId: 0,
       id: trip.id,
@@ -97,18 +98,21 @@ const displayTrips = (state, action) => {
       points: pointsToRecord(trip.points)
     });
   });
+
   const track = new TrackRecord({
     id: 0,
     segments: new List(_segments.map((trip) => trip.id))
   });
-
 
   return state
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => tracks.clear().set(track.id, track))
     .updateIn(['segments'], (segments) => {
-      segments = segments.clear();
+      segments = segments.clear(); 
+      console.log(_segments.reduce((segments, segment) => {
+        return segments.set(segment.id, segment)
+      }, segments))
       return _segments.reduce((segments, segment) => {
         return segments.set(segment.id, segment);
       }, segments);

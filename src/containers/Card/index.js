@@ -4,7 +4,6 @@ import Draggable from 'react-draggable';
 
 const wrapper = {
     position: 'fixed',
-    width: '375px',
     backgroundColor: 'white',
     borderRadius: '15px',
     zIndex: '1000'
@@ -18,11 +17,12 @@ export default class Card extends Component {
 
 
     render() {
-        const { children } = this.props;
+        const { width, children } = this.props;
+        const cardStyle =  {...wrapper, width: width+"px"}
 
         return (
             <Draggable>
-                <div style={wrapper}>
+                <div style={cardStyle}>
                     <div style={{width: '100%', height: '100%', padding: '10px'}} >
                         { children }
                     </div>
