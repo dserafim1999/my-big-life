@@ -4,7 +4,7 @@ import Card from "../../containers/Card";
 
 const LifeEditor = () => {
     return (
-        <Card width="200" height="200" top="50" left="50">
+        <Card width={200} verticalOffset={50} horizontalOffset={50}>
             <p>Life Editor</p>
         </Card>
     )
