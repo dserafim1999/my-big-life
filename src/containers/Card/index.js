@@ -11,7 +11,7 @@ const wrapper = {
 }
 
 const Card = ({ width, verticalOffset, horizontalOffset, children, isDraggable = true }) => {
-    const innerWidth = window.innerWidth - horizontalOffset;
+    const innerWidth = window.innerWidth - width;
     const innerHeight = window.innerHeight;
 
     var initState = {
