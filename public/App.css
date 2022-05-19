@@ -487,3 +487,14 @@ a.button {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+/* Queries */
+
+.stayQuery {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px #ddd;
+  background: #284760;
+  font-style: #ffffff;
+}

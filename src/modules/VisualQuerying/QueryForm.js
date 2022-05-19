@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { executeQuery } from '../../actions/queries';
 
 import AsyncButton from '../../components/Buttons/AsyncButton';
+import Card from "../../containers/Card";
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
@@ -40,8 +41,6 @@ const QueryForm = ({dispatch, isLoading}) =>  {
         interval.end = interval.end !== '--:--' ? interval.end.format("HH:mm") : interval.end;
         range2.start = range2.start !== '--:--' ? range2.start.format("HH:mm") : range2.start; 
         range2.end = range2.end !== '--:--' ? range2.end.format("HH:mm") : range2.end;
-
-        console.log(range1)
         
         if (fullQuery) {
             dispatch(executeQuery(
@@ -76,7 +75,7 @@ const QueryForm = ({dispatch, isLoading}) =>  {
     const queryButtonClass = 'is-blue' + (isLoading ? ' is-loading' : '');
     
     return (
-        <div>
+        <Card width={275} verticalOffset={1} horizontalOffset={1}>
             <form>
                 <h6>Start</h6>
                 <div id="range1">
@@ -377,7 +376,7 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                     } > Query 
                 </AsyncButton>
             </footer>
-        </div> 
+        </Card> 
     )
 }
 

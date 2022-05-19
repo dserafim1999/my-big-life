@@ -1,13 +1,12 @@
 import React from "react";
 
-import Card from "../../containers/Card";
 import QueryForm from "./QueryForm"
+import QueryTimeline from "./QueryTimeline"
 
 const VisualQuerying = () => {
     return (
-        <Card width={275} verticalOffset={1} horizontalOffset={1}>
-            <QueryForm></QueryForm>
-        </Card>
+        //<QueryTimeline/>
+        <QueryForm/>
     )
 };
 

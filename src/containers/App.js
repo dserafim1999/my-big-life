@@ -16,24 +16,6 @@ import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actio
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, view, dispatch }) => {
-
-  const onDrop = (e) => {
-    let dt = e.dataTransfer
-    let files = dt.files
-
-    loadFiles(files, (tracks) => {
-      const r = tracks.map((track) => {
-        const { gpx, name } = track
-        return {
-          segments: gpx.trk.map((trk) => trk.trkseg.map((seg) => seg.trkpt)),
-          name
-        }
-      })
-      dispatch(addMultipleTracks(r));
-    });
-
-  }
-
   let metaDown = false
   const downKeyHandler = (event) => {
     const { keyCode } = event;
@@ -64,7 +46,6 @@ let App = ({ showConfig, view, dispatch }) => {
   }
 
   return (
-      <Dropzone id="container" onDrop={onDrop}>
         <Router>
             <Routes>
                 <Route path='/' element={<></>}/>
@@ -98,7 +79,6 @@ let App = ({ showConfig, view, dispatch }) => {
               view={view}
             />
           </Router>
-      </Dropzone>
   );
 };
 
