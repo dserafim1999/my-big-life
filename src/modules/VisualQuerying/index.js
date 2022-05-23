@@ -5,8 +5,8 @@ import QueryTimeline from "./QueryTimeline"
 
 const VisualQuerying = () => {
     return (
-        //<QueryTimeline/>
-        <QueryForm/>
+        <QueryTimeline/>
+        //<QueryForm/>
     )
 };
 

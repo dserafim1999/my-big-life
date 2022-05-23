@@ -7,21 +7,20 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
-import { executeQuery } from '../../actions/queries';
+import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery } from '../../actions/queries';
 import { connect } from 'react-redux';
 
-const QueryTimeline = ({ dispatch }) => {
+const QueryTimeline = ({ dispatch, query }) => {
     const timelineWidthPercentage = 7/8;
     const fullWidth = window.innerWidth * timelineWidthPercentage;
     const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage);
     const height = 100;
-    const stayWidth = 200;
+    const stayWidth = 225;
 
     const timelineRef = useRef();
     
     const [id, setId] = useState(0);
     const [queryBlocks, setQueryBlocks] = useState([]);
-    const [queryState, setQueryState] = useState([]);
 
     const defaultRoute = {
         "route":"",
@@ -32,20 +31,15 @@ const QueryTimeline = ({ dispatch }) => {
         "temporalEndRange":"0min"
     };
 
-    const getId = () => {
-        var _id = id;
-        setId(_id + 1);
-        return _id;
-    }
-
-    const updateQueryState = (id, state) => {
-        const index = queryBlocks.findIndex((x) => x.id === id);
-
-        if (index !== -1) {
-            queryBlocks[index] = state;
-            setQueryBlocks(queryBlocks);
-        }
-    }
+    const defaultStay = {
+        location: 'local',
+        spatialRange: '0m',
+        start: '--:--',
+        end: '--:--',
+        duration: "duration",
+        temporalEndRange: "0min",
+        temporalStartRange: "0min"
+    };
 
     const connectStayWithRoute = (stay1, route, stay2) => {
         route.start = stay1.end;
@@ -60,84 +54,80 @@ const QueryTimeline = ({ dispatch }) => {
 
         // TODO improve detection
         if (inBounds && e.target.className.includes("timeline")) {
-            var block = {
-                id: getId(),
-                startX: startX,
-                width: stayWidth,
-                maxWidth: timelineRef.current.offsetWidth,
-                maxHeight: height,
-                onChange: (id, state) => updateQueryState(id, state)
-            };
-            setQueryBlocks([...queryBlocks, block]);
-        }
-        
-        // TEST
-        // if (queryState.length >= 1) {
+            var stayId;
 
-        //     const lastStay = queryState[queryState.length - 1];
+            if(query.size > 0) {
+                const routeId = id;
+                stayId = routeId + 1;
+                
+                dispatch(addQueryStayAndRoute(defaultStay, stayId, defaultRoute, routeId));                
+            } else {
+                stayId = id;
 
-        //     const queryTail = connectStayWithRoute(
-        //         lastStay, 
-        //         defaultRoute, 
-        //         {
-        //             "location":"local",
-        //             "start": "00:00",
-        //             "end": "23:59",
-        //             "spatialRange":"0m",
-        //             "temporalStartRange":"0min",
-        //             "temporalEndRange":"0min",
-        //             "duration":"duration"
-        //         })
+                dispatch(addQueryStay(defaultStay, stayId));
+            }
             
-        //     queryState.push(...queryTail)
-        //     setQueryState(queryState);
-        // } else {
-        //     setQueryState([...queryState, {
-        //         "location":"local",
-        //         "start": "04:04",
-        //         "end": "05:05",
-        //         "spatialRange":"0m",
-        //         "temporalStartRange":"0min",
-        //         "temporalEndRange":"0min",
-        //         "duration":"duration"
-        //     }]);
-        // }
+            setId(stayId + 1);
+            newQueryBlock(stayId, startX);
+        }
+    }
+
+    const newQueryBlock = (stayId, startX) => {
+        const block = {
+            id: stayId,
+            startX: startX,
+            width: stayWidth,
+            maxWidth: timelineRef.current.offsetWidth,
+            maxHeight: height,
+            queryState: defaultStay,
+        };
+        setQueryBlocks([...queryBlocks, block]);
     }
 
     const onSubmit = () => {
-        console.log(queryState)
+        dispatch(executeQuery(
+            {
+                "data": [
+                    {
+                        "date": "--/--/----"
+                    },
+                    ...query.toArray()
+                ]
+            })
+        );
     }
 
     const onDelete = () => {
         setId(0);
         setQueryBlocks([]);
-        setQueryState([]);
+        dispatch(resetQuery());
     }
 
-    const onStayRemove = (id) => {
-        if(id % 2 == 0) { //stays always have pair index
-            if (id === 0) {
-                if (queryState.length == 0) {
-                    queryState.splice(id, 1);
-                } else {
-                    queryState.splice(id, 2); //removes first route associated to first stay
-                }
-            } else if (id === queryState.length - 1){
-                queryState.splice(id - 1, 2); //removes last route and stay from end
-            } else { //reconnects stays deleted one was inbetween of 
-                const queryTail = connectStayWithRoute(
-                    queryState[id - 2],
-                    defaultRoute,
-                    queryState[id + 2]);
-                queryState.splice(id - 1, 4, ...queryTail);
-            }
+    // const onStayRemove = (id) => {
+    //     //TODO fix
+    //     if(id % 2 == 0) { //stays always have pair index
+    //         if (id === 0) {
+    //             if (queryState.length == 0) {
+    //                 queryState.splice(id, 1);
+    //             } else {
+    //                 queryState.splice(id, 2); //removes first route associated to first stay
+    //             }
+    //         } else if (id === queryState.length - 1){
+    //             queryState.splice(id - 1, 2); //removes last route and stay from end
+    //         } else { //reconnects stays deleted one was inbetween of 
+    //             const queryTail = connectStayWithRoute(
+    //                 queryState[id - 2],
+    //                 defaultRoute,
+    //                 queryState[id + 2]);
+    //             queryState.splice(id - 1, 4, ...queryTail);
+    //         }
 
-            setQueryState(queryState);
-        } else {
-            console.error("not a stay")
-        }
+    //         setQueryState(queryState);
+    //     } else {
+    //         console.error("not a stay")
+    //     }
         
-    }
+    // }
 
     return (
         <div onDoubleClick={onDoubleClick} style={{width: "100%"}}>
@@ -148,7 +138,7 @@ const QueryTimeline = ({ dispatch }) => {
                 horizontalOffset={50} 
                 isDraggable={false}
             >
-                <Container>
+                <Container style={{height: "100%"}}>
                     <Row>
                         <Col sm={11} className='timeline' ref={timelineRef}>
                             {queryBlocks.map((block, i) => {
@@ -185,6 +175,8 @@ const QueryTimeline = ({ dispatch }) => {
     )
 };
 
-const mapStateToProps = (state) => { return {}; }
+const mapStateToProps = (state) => { return {
+    query: state.get('queries').get('query')
+}; }
   
 export default connect(mapStateToProps)(QueryTimeline);

@@ -67,3 +67,8 @@ export const SET_SERVER_STATE = 'process/set_server_state';
 export const TOGGLE_REMAINING_TRACKS = 'process/toggle_remaining_tracks';
 export const SET_LIFE = 'process/set_LIFE';
 
+export const UPDATE_QUERY_BLOCK = 'queries/update_query_block';
+export const ADD_QUERY_STAY = 'queries/add_query_stay';
+export const ADD_QUERY_STAY_AND_ROUTE = 'queries/add_query_stay_and_route';
+export const REMOVE_QUERY_STAY = 'queries/remove_query_stay';
+export const RESET_QUERY = 'queries/reset_query';

@@ -110,9 +110,6 @@ const displayTrips = (state, action) => {
     .updateIn(['tracks'], (tracks) => tracks.clear().set(track.id, track))
     .updateIn(['segments'], (segments) => {
       segments = segments.clear(); 
-      console.log(_segments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment)
-      }, segments))
       return _segments.reduce((segments, segment) => {
         return segments.set(segment.id, segment);
       }, segments);
