@@ -1,13 +1,12 @@
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
-import TempIcon from '@mui/icons-material/Adjust';
 import { IconButton } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
 import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
-import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery } from '../../actions/queries';
+import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import { connect } from 'react-redux';
 
 const QueryTimeline = ({ dispatch, query }) => {
@@ -20,33 +19,31 @@ const QueryTimeline = ({ dispatch, query }) => {
     const timelineRef = useRef();
     
     const [id, setId] = useState(0);
+    const [idToRemove, setIdToRemove] = useState(null);
     const [queryBlocks, setQueryBlocks] = useState([]);
 
     const defaultRoute = {
-        "route":"",
-        "duration":"duration",
-        "start": "--:--",
-        "end": "--:--",
-        "temporalStartRange":"0min",
-        "temporalEndRange":"0min"
+        route: "",
+        duration:"",
+        start: "",
+        end: "",
+        temporalStartRange: "",
+        temporalEndRange: ""
     };
 
     const defaultStay = {
-        location: 'local',
-        spatialRange: '0m',
-        start: '--:--',
-        end: '--:--',
-        duration: "duration",
-        temporalEndRange: "0min",
-        temporalStartRange: "0min"
+        location: "",
+        spatialRange: "",
+        start: "",
+        end: "",
+        duration: "",
+        temporalEndRange: "",
+        temporalStartRange: ""
     };
 
-    const connectStayWithRoute = (stay1, route, stay2) => {
-        route.start = stay1.end;
-        route.end = stay2.start;
-
-        return [route, stay2];        
-    }
+    useEffect(() => {
+        setQueryBlocks(queryBlocks.filter((x) => x.id !== idToRemove));
+    },[idToRemove]);
 
     const onDoubleClick = (e) => {
         const startX = e.screenX - relativeOffset;
@@ -60,11 +57,16 @@ const QueryTimeline = ({ dispatch, query }) => {
                 const routeId = id;
                 stayId = routeId + 1;
                 
-                dispatch(addQueryStayAndRoute(defaultStay, stayId, defaultRoute, routeId));                
+                dispatch(addQueryStayAndRoute(
+                    {...defaultStay, id: stayId},
+                    stayId,
+                    {...defaultRoute, id: routeId},
+                    routeId
+                ));                
             } else {
                 stayId = id;
 
-                dispatch(addQueryStay(defaultStay, stayId));
+                dispatch(addQueryStay({...defaultStay, id: stayId}, stayId));
             }
             
             setId(stayId + 1);
@@ -79,7 +81,8 @@ const QueryTimeline = ({ dispatch, query }) => {
             width: stayWidth,
             maxWidth: timelineRef.current.offsetWidth,
             maxHeight: height,
-            queryState: defaultStay,
+            queryState: {...defaultStay, id: stayId},
+            onRemove: onStayRemove
         };
         setQueryBlocks([...queryBlocks, block]);
     }
@@ -97,37 +100,16 @@ const QueryTimeline = ({ dispatch, query }) => {
         );
     }
 
-    const onDelete = () => {
+    const onClearQuery = () => {
         setId(0);
         setQueryBlocks([]);
         dispatch(resetQuery());
     }
 
-    // const onStayRemove = (id) => {
-    //     //TODO fix
-    //     if(id % 2 == 0) { //stays always have pair index
-    //         if (id === 0) {
-    //             if (queryState.length == 0) {
-    //                 queryState.splice(id, 1);
-    //             } else {
-    //                 queryState.splice(id, 2); //removes first route associated to first stay
-    //             }
-    //         } else if (id === queryState.length - 1){
-    //             queryState.splice(id - 1, 2); //removes last route and stay from end
-    //         } else { //reconnects stays deleted one was inbetween of 
-    //             const queryTail = connectStayWithRoute(
-    //                 queryState[id - 2],
-    //                 defaultRoute,
-    //                 queryState[id + 2]);
-    //             queryState.splice(id - 1, 4, ...queryTail);
-    //         }
-
-    //         setQueryState(queryState);
-    //     } else {
-    //         console.error("not a stay")
-    //     }
-        
-    // }
+    const onStayRemove = (id) => {
+        dispatch(removeQueryStay(id));
+        setIdToRemove(id);
+    }
 
     return (
         <div onDoubleClick={onDoubleClick} style={{width: "100%"}}>
@@ -155,18 +137,11 @@ const QueryTimeline = ({ dispatch, query }) => {
                             </Row>
                             <Row>
                                 <div>
-                                    <IconButton onClick={onDelete}>
+                                    <IconButton onClick={onClearQuery}>
                                         <DeleteIcon></DeleteIcon>
                                     </IconButton>
                                 </div>
                             </Row>
-                            {/* <Row>
-                                <div>
-                                    <IconButton onClick={onStayRemove(2)}>
-                                        <TempIcon></TempIcon>
-                                    </IconButton>
-                                </div>
-                            </Row> */}
                         </Col>
                     </Row>
                 </Container>

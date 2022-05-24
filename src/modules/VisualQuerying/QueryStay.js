@@ -1,31 +1,38 @@
-import { TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { connect } from 'react-redux';
 import { updateQueryBlock } from "../../actions/queries";
+import CloseIcon from "@mui/icons-material/Close";
 
-const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState, dispatch}) => {
+const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState, onRemove, dispatch}) => {
     const height = 50;
     const minWidth = 125;
     const minHeight = 50;
     
-    const inputStyle = {
-      margin: '0 auto', 
-      display: 'block', 
-      position: 'relative',
-      width: '30%',
-      top: '50%',
-      transform: 'translateY(-50%)'
+    const inputStyle={
+      border: "none",
+      backgroundColor: "transparent",
+      resize: "none", 
+      outline: "none", 
+      width: "35%", 
+      textAlign: "center"
     }
 
     const footerElementsStyle = {
-      position: 'relative',
-      top: '40%',
-      display: 'flex',
-      justifyContent: 'space-between'
+      position: "relative",
+      top: "40%",
+      display: "flex",
+      justifyContent: "space-between"
+    }
+
+    const deleteButtonStyle = {
+      position: "absolute",
+      top: "-50%",
+      left: "100%",
+      color: "red",
+      cursor: "pointer"
     }
 
     const [state, setState] = useState({
@@ -36,10 +43,21 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     });
 
     const [query, setQuery] = useState(queryState);
+    const [selected, setIsSelected] = useState(false);
+    const [startOpen, setIsStartOpen] = useState(false);
+    const [endOpen, setIsEndOpen] = useState(false);
 
     useEffect(() => {
         dispatch(updateQueryBlock(query, id));
     },[query]);
+
+    const getBackgroundColor = () => {
+      return selected ? 'yellow' : '#284760';
+    }
+
+    const onDoubleClick = () => {
+      setIsSelected(!selected);
+    }
 
     const onResizeStop = (e, direction, ref, delta, position) => {
         const maxHeightDelta = maxHeight - minHeight;
@@ -56,60 +74,18 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
         setState({ x: d.x, y: d.y });
     }
 
-    // return (
-    //     <Rnd
-    //       className="stayQuery"
-    //       size={{ width: state.width, height: state.height }}
-    //       position={{ x: state.x, y: state.y }}
-    //       bounds="parent"
-    //       minHeight={minHeight}
-    //       minWidth={minWidth}
-    //       dragAxis="x"
-    //       onDragStop={onDragStop}
-    //       onResizeStop={onResizeStop}
-    //     >
-    //       <LocalizationProvider dateAdapter={AdapterMoment}>
-    //             <TimePicker
-    //                 value={query["start"]}
-    //                 onChange={(newValue) => setQuery({...query, 'start': newValue})}
-    //                 renderInput={({inputRef, inputProps, InputProps }) => {
-    //                   return (
-    //                         <div>{InputProps?.endAdornment}</div>
-    //                     );
-    //                 }}
-    //             />
-    //       </LocalizationProvider>
-    //       <LocalizationProvider dateAdapter={AdapterMoment}>
-    //         <TimePicker
-    //             value={query["end"]}
-    //             onChange={(newValue) => setQuery({...query, 'end': newValue})}
-    //             renderInput={({inputRef, inputProps, InputProps }) => {
-    //                 return (
-    //                     <div>{InputProps?.endAdornment}</div>
-    //                 );
-    //             }}
-    //         />
-    //       </LocalizationProvider>
-    //       <div style={{width: '100%', textAlign: 'center'}}>
-    //           <input 
-    //             style={{width: '50px'}} 
-    //             value={query["location"]}
-    //             onChange={(e) => setQuery(
-    //               {...query, "location": e.target.value}
-    //             )}/>
-    //           <input 
-    //             style={{width: '30px', marginLeft: '10px'}}
-    //             value={query["spatialRange"]}
-    //             onChange={(e) => setQuery(
-    //               {...query, "spatialRange": e.target.value}
-    //             )}/>
-    //       </div>
-    //     </Rnd>
-    //   );
+    const setStartValue = () => {
+      return query["start"] === "" ? "--:--" : query["start"];
+    }
+
+    const setEndValue = () => {
+      return query["end"] === "" ? "--:--" : query["end"];
+    }
 
     return (
       <Rnd
         className="stayQuery"
+        style={{backgroundColor: getBackgroundColor()}}
         size={{ width: state.width, height: state.height }}
         position={{ x: state.x, y: state.y }}
         bounds="parent"
@@ -118,49 +94,67 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
         dragAxis="x"
         onDragStop={onDragStop}
         onResizeStop={onResizeStop}
+        onDoubleClick={onDoubleClick}
       >
         <div style={{width: '100%', height: '100%'}}>
-          <input style={inputStyle} onChange={(e) => setQuery(
+          {
+            selected && (
+              <div style={deleteButtonStyle}>
+                <CloseIcon onClick={() => onRemove(id)}/>
+              </div>
+            )
+          }
+          <input 
+            style={{...inputStyle, 
+                margin: '0 auto', 
+                display: 'block', 
+                position: 'relative',
+                width: '30%',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'white'
+            }}
+            placeholder="location"
+            onChange={(e) => setQuery(
               {...query, "location": e.target.value}
           )}/>
           <div style={footerElementsStyle}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-                <TimePicker
-                    value={query["start"]}
-                    onChange={(newValue) => setQuery({...query, 'start': newValue.format("HH:mm")})}
-                    renderInput={({inputRef, inputProps, InputProps }) => {
-                      return (
-                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                {InputProps?.endAdornment}
-                                <span ref={inputRef}>{query.start}</span>
-                            </Box>
-                        );
-                    }}
-                />
-            </LocalizationProvider>
+              <TimePicker
+                  value={query["start"]}
+                  open={startOpen}
+                  onChange={(newValue) => setQuery({...query, 'start': newValue.format("HH:mm")})}
+                  onClose={() => setIsStartOpen(false)}
+                  renderInput={({inputRef}) => {
+                    return (
+                          <Box onClick={() => setIsStartOpen(true)} sx={{ display: 'flex', alignItems: 'center', display: "inline-flex", cursor: "text"}}>
+                              <span ref={inputRef}>{setStartValue()}</span>
+                          </Box>
+                      );
+                  }}
+              />
             <input
               id="duration"
               type="text"
-              style={{border: "none", backgroundColor: "transparent", resize: "none", outline: "none", width: "35%", textAlign: "center"}}
+              placeholder="duration"
+              style={inputStyle}
               value={query["duration"]}
                   onChange={(e) => setQuery(
                       {...query, "duration": e.target.value}
               )}
             />
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-                <TimePicker
-                    value={query["end"]}
-                    onChange={(newValue) => setQuery({...query, 'end': newValue.format("HH:mm")})}
-                    renderInput={({inputRef, inputProps, InputProps }) => {
-                        return (
-                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                {InputProps?.endAdornment}
-                                <span ref={inputRef}>{query.end}</span>
-                            </Box>
-                        );
-                    }}
-                />
-            </LocalizationProvider>
+              <TimePicker
+                  value={query["end"]}
+                  open={endOpen}
+                  onChange={(newValue) => setQuery({...query, 'end': newValue.format("HH:mm")})}
+                  onClose={() => setIsEndOpen(false)}
+                  renderInput={({inputRef}) => {
+                      return (
+                        <Box onClick={() => setIsEndOpen(true)} sx={{ display: 'flex', alignItems: 'center', display: "inline-flex", cursor: "text"}}>
+                              <span ref={inputRef}>{setEndValue()}</span>
+                        </Box>
+                      );
+                  }}
+              />
           </div>
         </div>
       </Rnd>

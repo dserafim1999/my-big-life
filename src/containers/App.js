@@ -3,13 +3,11 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import Dropzone from "../containers/Dropzone";
 import MainContainer from './MainContainer';
 import SideBar from '../components/SideBar';
 
-
-import { addMultipleTracks } from '../actions/tracks';
-import { loadFiles } from "../GPXParser";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { toggleRemainingTracks } from '../actions/general';
 import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
@@ -46,6 +44,7 @@ let App = ({ showConfig, view, dispatch }) => {
   }
 
   return (
+    <LocalizationProvider dateAdapter={AdapterMoment}>
         <Router>
             <Routes>
                 <Route path='/' element={<></>}/>
@@ -79,6 +78,7 @@ let App = ({ showConfig, view, dispatch }) => {
               view={view}
             />
           </Router>
+    </LocalizationProvider>
   );
 };
 

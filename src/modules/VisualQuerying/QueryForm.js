@@ -103,20 +103,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                     </div>
                     <div style={inputStyle}>
                         <label style={labelStyle}>Start</label>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker
-                                value={range1["start"]}
-                                onChange={(newValue) => setRange1({...range1, 'start': newValue})}
-                                renderInput={({inputRef, inputProps, InputProps }) => {
-                                    return (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                            {InputProps?.endAdornment}
-                                            <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                        </Box>
-                                    );
-                                }}
-                            />
-                        </LocalizationProvider>
+                        <TimePicker
+                            value={range1["start"]}
+                            onChange={(newValue) => setRange1({...range1, 'start': newValue})}
+                            renderInput={({inputRef, inputProps, InputProps }) => {
+                                return (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                        {InputProps?.endAdornment}
+                                        <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                    </Box>
+                                );
+                            }}
+                        />
                     </div>
                     <div style={inputStyle}>
                         <label style={labelStyle}>End Range</label>
@@ -131,20 +129,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                     </div>
                     <div style={inputStyle}>
                         <label style={labelStyle}>End</label>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker
-                                value={range1["end"]}
-                                onChange={(newValue) => setRange1({...range1, 'end': newValue})}
-                                renderInput={({inputRef, inputProps, InputProps }) => {
-                                    return (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                            {InputProps?.endAdornment}
-                                            <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                        </Box>
-                                    );
-                                }}
-                            />
-                        </LocalizationProvider>
+                        <TimePicker
+                            value={range1["end"]}
+                            onChange={(newValue) => setRange1({...range1, 'end': newValue})}
+                            renderInput={({inputRef, inputProps, InputProps }) => {
+                                return (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                        {InputProps?.endAdornment}
+                                        <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                    </Box>
+                                );
+                            }}
+                        />
                     </div>
                     <div style={inputStyle}>
                         <label style={labelStyle}>Location</label>
@@ -201,20 +197,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>Start</label>
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker
-                                        value={interval["start"]}
-                                        onChange={(newValue) => setInterval({...interval, 'start': newValue})}
-                                        renderInput={({inputRef, inputProps, InputProps }) => {
-                                            return (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                                    {InputProps?.endAdornment}
-                                                    <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                                </Box>
-                                            );
-                                        }}
-                                    />
-                                </LocalizationProvider>
+                                <TimePicker
+                                    value={interval["start"]}
+                                    onChange={(newValue) => setInterval({...interval, 'start': newValue})}
+                                    renderInput={({inputRef, inputProps, InputProps }) => {
+                                        return (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                                {InputProps?.endAdornment}
+                                                <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                            </Box>
+                                        );
+                                    }}
+                                />
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>End Range</label>
@@ -229,20 +223,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>End</label>
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker
-                                        value={interval["end"]}
-                                        onChange={(newValue) => setInterval({...interval, 'end': newValue})}
-                                        renderInput={({inputRef, inputProps, InputProps }) => {
-                                            return (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                                    {InputProps?.endAdornment}
-                                                    <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                                </Box>
-                                            );
-                                        }}
-                                    />
-                                </LocalizationProvider>
+                                <TimePicker
+                                    value={interval["end"]}
+                                    onChange={(newValue) => setInterval({...interval, 'end': newValue})}
+                                    renderInput={({inputRef, inputProps, InputProps }) => {
+                                        return (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                                {InputProps?.endAdornment}
+                                                <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                            </Box>
+                                        );
+                                    }}
+                                />
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>Route</label>
@@ -285,20 +277,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>Start</label>
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker
-                                        value={range2["start"]}
-                                        onChange={(newValue) => setRange2({...range2, 'start': newValue})}
-                                        renderInput={({inputRef, inputProps, InputProps }) => {
-                                            return (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                                    {InputProps?.endAdornment}
-                                                    <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                                </Box>
-                                            );
-                                        }}
-                                    />
-                                </LocalizationProvider>
+                                <TimePicker
+                                    value={range2["start"]}
+                                    onChange={(newValue) => setRange2({...range2, 'start': newValue})}
+                                    renderInput={({inputRef, inputProps, InputProps }) => {
+                                        return (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                                {InputProps?.endAdornment}
+                                                <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                            </Box>
+                                        );
+                                    }}
+                                />
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>End Range</label>
@@ -313,20 +303,18 @@ const QueryForm = ({dispatch, isLoading}) =>  {
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>End</label>
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker
-                                        value={range2["end"]}
-                                        onChange={(newValue) => setRange2({...range2, 'end': newValue})}
-                                        renderInput={({inputRef, inputProps, InputProps }) => {
-                                            return (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
-                                                    {InputProps?.endAdornment}
-                                                    <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
-                                                </Box>
-                                            );
-                                        }}
-                                    />
-                                </LocalizationProvider>
+                                <TimePicker
+                                    value={range2["end"]}
+                                    onChange={(newValue) => setRange2({...range2, 'end': newValue})}
+                                    renderInput={({inputRef, inputProps, InputProps }) => {
+                                        return (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', display: "inline-flex"}}>
+                                                {InputProps?.endAdornment}
+                                                <input ref={inputRef} {...inputProps} style={{marginLeft: "5px"}} />
+                                            </Box>
+                                        );
+                                    }}
+                                />
                             </div>
                             <div style={inputStyle}>
                                 <label style={labelStyle}>Location</label>
