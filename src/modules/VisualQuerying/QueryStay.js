@@ -56,6 +56,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     }
 
     const onDoubleClick = () => {
+      console.log("id:"+id, state.x, state.y)
       setIsSelected(!selected);
     }
 

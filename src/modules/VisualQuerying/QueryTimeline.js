@@ -45,6 +45,10 @@ const QueryTimeline = ({ dispatch, query }) => {
         setQueryBlocks(queryBlocks.filter((x) => x.id !== idToRemove));
     },[idToRemove]);
 
+    useEffect(() => {
+        console.log(query.toJS())
+    },[query]);
+
     const onDoubleClick = (e) => {
         const startX = e.screenX - relativeOffset;
         const inBounds = startX >= 0 && startX <= timelineRef.current.offsetWidth - stayWidth;
@@ -123,8 +127,8 @@ const QueryTimeline = ({ dispatch, query }) => {
                 <Container style={{height: "100%"}}>
                     <Row>
                         <Col sm={11} className='timeline' ref={timelineRef}>
-                            {queryBlocks.map((block, i) => {
-                                return <QueryStay key={i} {...block}/>
+                            {queryBlocks.map((block) => {
+                                return <QueryStay key={block.id} {...block}/>
                             })}
                         </Col>
                         <Col sm={1} style={{borderLeft: '1px solid grey'}}>
