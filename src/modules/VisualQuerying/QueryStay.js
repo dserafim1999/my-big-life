@@ -1,12 +1,11 @@
-import { Box } from "@mui/system";
-import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { connect } from 'react-redux';
 import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
+import CustomTimePicker from "./CustomTimePicker";
 
-const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState, onRemove, dispatch}) => {
+const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove, dispatch}) => {
     const height = 50;
     const minWidth = 125;
     const minHeight = 50;
@@ -38,14 +37,12 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     const [state, setState] = useState({
         width: width,
         height: height,
-        x: startX,
+        x: queryState.x,
         y: (maxHeight - height) / 2 - 10
     });
 
     const [query, setQuery] = useState(queryState);
     const [selected, setIsSelected] = useState(false);
-    const [startOpen, setIsStartOpen] = useState(false);
-    const [endOpen, setIsEndOpen] = useState(false);
 
     useEffect(() => {
         dispatch(updateQueryBlock(query));
@@ -72,15 +69,8 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     }
 
     const onDragStop = (e, d) => { 
-        setState({ x: d.x, y: d.y });
-    }
-
-    const setStartValue = () => {
-      return query["start"] === "" ? "--:--" : query["start"];
-    }
-
-    const setEndValue = () => {
-      return query["end"] === "" ? "--:--" : query["end"];
+      setState({ x: d.x, y: d.y });
+      dispatch(updateQueryBlock({...query, x: d.x}));
     }
 
     return (
@@ -120,18 +110,9 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
               {...query, "location": e.target.value}
           )}/>
           <div style={footerElementsStyle}>
-              <TimePicker
+              <CustomTimePicker
                   value={query["start"]}
-                  open={startOpen}
-                  onChange={(newValue) => setQuery({...query, 'start': newValue.format("HH:mm")})}
-                  onClose={() => setIsStartOpen(false)}
-                  renderInput={({inputRef}) => {
-                    return (
-                          <Box onClick={() => setIsStartOpen(true)} sx={{ display: 'flex', alignItems: 'center', display: "inline-flex", cursor: "text"}}>
-                              <span ref={inputRef}>{setStartValue()}</span>
-                          </Box>
-                      );
-                  }}
+                  onChange={(newValue) => setQuery({...query, 'start': newValue})}
               />
             <input
               id="duration"
@@ -143,18 +124,9 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
                       {...query, "duration": e.target.value}
               )}
             />
-              <TimePicker
+              <CustomTimePicker
                   value={query["end"]}
-                  open={endOpen}
-                  onChange={(newValue) => setQuery({...query, 'end': newValue.format("HH:mm")})}
-                  onClose={() => setIsEndOpen(false)}
-                  renderInput={({inputRef}) => {
-                      return (
-                        <Box onClick={() => setIsEndOpen(true)} sx={{ display: 'flex', alignItems: 'center', display: "inline-flex", cursor: "text"}}>
-                              <span ref={inputRef}>{setEndValue()}</span>
-                        </Box>
-                      );
-                  }}
+                  onChange={(newValue) => setQuery({...query, 'end': newValue})}
               />
           </div>
         </div>

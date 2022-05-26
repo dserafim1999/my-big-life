@@ -3,7 +3,6 @@ import { Map, List, fromJS } from 'immutable';
 const updateQueryBlock = (state, action) => {
   const query = state.toJS()["query"];
   const index = query.findIndex((obj) => obj.id === action.queryBlock.id);
-
   query[index] = action.queryBlock;
 
   return state.setIn(['query'], List(query));

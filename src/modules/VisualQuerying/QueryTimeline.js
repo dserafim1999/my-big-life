@@ -58,13 +58,13 @@ const QueryTimeline = ({ dispatch, query }) => {
                 stayId = routeId + 1;
                 
                 dispatch(addQueryStayAndRoute(
-                    {...defaultStay, id: stayId},
+                    {...defaultStay, id: stayId, x: startX},
                     {...defaultRoute, id: routeId},
                 ));                
             } else {
                 stayId = id;
 
-                dispatch(addQueryStay({...defaultStay, id: stayId}));
+                dispatch(addQueryStay({...defaultStay, id: stayId, x: startX}));
             }
             
             setId(stayId + 1);
@@ -75,11 +75,10 @@ const QueryTimeline = ({ dispatch, query }) => {
     const newQueryBlock = (stayId, startX) => {
         const block = {
             id: stayId,
-            startX: startX,
             width: stayWidth,
             maxWidth: timelineRef.current.offsetWidth,
             maxHeight: height,
-            queryState: {...defaultStay, id: stayId},
+            queryState: {...defaultStay, id: stayId, x: startX},
             onRemove: onStayRemove
         };
         setQueryBlocks([...queryBlocks, block]);
@@ -121,31 +120,25 @@ const QueryTimeline = ({ dispatch, query }) => {
                 horizontalOffset={50} 
                 isDraggable={false}
             >
-                <Container style={{height: "100%"}}>
-                    <Row>
-                        <Col sm={11} className='timeline' ref={timelineRef}>
+                <div style={{width: '100%', height: '100%', display: 'flex'}}>
+                        <div className='timeline' ref={timelineRef} style={{flexGrow: '1', height: '100%'}}>
                             {queryBlocks.map((block) => {
-                                return <QueryStay key={block.id} {...block}/>
+                                return <QueryStay key={block.id} {...block} />
                             })}
-                        </Col>
-                        <Col sm={1} style={{borderLeft: '1px solid grey'}}>
-                            <Row>
-                                <div>
-                                    <IconButton onClick={onSubmit}>
-                                        <SearchIcon></SearchIcon>
-                                    </IconButton>
-                                </div>
-                            </Row>
-                            <Row>
-                                <div>
-                                    <IconButton onClick={onClearQuery}>
-                                        <DeleteIcon></DeleteIcon>
-                                    </IconButton>
-                                </div>
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
+                        </div>
+                        <div style={{borderLeft:'grey 1px solid'}}>
+                            <div>
+                                <IconButton onClick={onSubmit}>
+                                    <SearchIcon></SearchIcon>
+                                </IconButton>
+                            </div>
+                            <div>
+                                <IconButton onClick={onClearQuery}>
+                                    <DeleteIcon></DeleteIcon>
+                                </IconButton>
+                            </div>
+                        </div>
+                </div>
             </Card>
         </div>
     )
