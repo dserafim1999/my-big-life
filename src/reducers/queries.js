@@ -1,17 +1,29 @@
 import { Map, List, fromJS } from 'immutable';
 
 const updateQueryBlock = (state, action) => {
-  return state.setIn(['query', action.blockId], action.query);
+  const query = state.toJS()["query"];
+  const index = query.findIndex((obj) => obj.id === action.queryBlock.id);
+
+  query[index] = action.queryBlock;
+
+  return state.setIn(['query'], List(query));
 }
 
 const addQueryStay = (state, action) => {
-  return state.setIn(['query', action.stayId], action.stay)
+  const query = state.toJS()["query"];
+
+  query.push(action.stay);
+  
+  return state.setIn(['query'], List(query));
 }
 
 const addQueryStayAndRoute = (state, action) => {
-  return state
-      .setIn(['query', action.stayId], action.stay)
-      .setIn(['query', action.routeId], action.route);
+  const query = state.toJS()["query"];
+  
+  query.push(action.route);
+  query.push(action.stay);
+
+  return state.setIn(['query'], List(query));
 }
 
 const connectStayWithRoute = (stay1, route, stay2) => {
@@ -23,39 +35,33 @@ const connectStayWithRoute = (stay1, route, stay2) => {
 
 const removeQueryStay = (state, action) => {
   const query = state.toJS()["query"];
-  console.log(state)
   const index = query.findIndex((obj) => obj.id === action.stayId);
   
-
   if (index % 2 == 0) { //stays always have an even index
     if (index == 0) {
       if (query.length == 0) {
-        query.splice(index, 1);
+        query.splice(index, 1); // removes first stay 
       } else {
-        query.splice(index, 2);
+        query.splice(index, 2); // removes first stay and route
       }
     } else if (index === query.length - 1) {
-      query.splice(index - 1, 2);
-    } else {
+      query.splice(index - 1, 2); // removes last stay and route
+    } else { // removes stay, both routes connected to it and creates new route between the stays the deleted one was between
       const queryTail = connectStayWithRoute(
         query[index - 2],
         query[index + 1],
         query[index + 2]
       );
-
+        
       query.splice(index - 1, 4, ...queryTail);
-    }
-
+    }   
   }
-  console.log(List(query));
-  
-  return state.setIn(["query"], List(query));
 
-  //return state.deleteIn(['query', action.stayId]);
+  return state.setIn(["query"], List(query));
 }
 
-const resetQuery = (state, action) => {
-  return state.setIn(['query'], List());
+const resetQuery = (state) => {
+  return state.setIn(["query"], List());
 }
 
 const ACTION_REACTION = {

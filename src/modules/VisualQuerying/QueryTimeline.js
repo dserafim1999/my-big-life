@@ -6,7 +6,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
-import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
+import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay, executeVisualQuery } from '../../actions/queries';
 import { connect } from 'react-redux';
 
 const QueryTimeline = ({ dispatch, query }) => {
@@ -45,10 +45,6 @@ const QueryTimeline = ({ dispatch, query }) => {
         setQueryBlocks(queryBlocks.filter((x) => x.id !== idToRemove));
     },[idToRemove]);
 
-    useEffect(() => {
-        console.log(query.toJS())
-    },[query]);
-
     const onDoubleClick = (e) => {
         const startX = e.screenX - relativeOffset;
         const inBounds = startX >= 0 && startX <= timelineRef.current.offsetWidth - stayWidth;
@@ -63,14 +59,12 @@ const QueryTimeline = ({ dispatch, query }) => {
                 
                 dispatch(addQueryStayAndRoute(
                     {...defaultStay, id: stayId},
-                    stayId,
                     {...defaultRoute, id: routeId},
-                    routeId
                 ));                
             } else {
                 stayId = id;
 
-                dispatch(addQueryStay({...defaultStay, id: stayId}, stayId));
+                dispatch(addQueryStay({...defaultStay, id: stayId}));
             }
             
             setId(stayId + 1);
@@ -92,15 +86,18 @@ const QueryTimeline = ({ dispatch, query }) => {
     }
 
     const onSubmit = () => {
+        //TODO remove id, x and y from what is sent
+
         dispatch(executeQuery(
-            {
-                "data": [
-                    {
-                        "date": "--/--/----"
-                    },
-                    ...query.toArray()
-                ]
-            })
+                {
+                    "data": [
+                        {
+                            "date": "--/--/----"
+                        },
+                        ...query.toArray()
+                    ]
+                }
+            )
         );
     }
 

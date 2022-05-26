@@ -48,7 +48,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     const [endOpen, setIsEndOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(updateQueryBlock(query, id));
+        dispatch(updateQueryBlock(query));
     },[query]);
 
     const getBackgroundColor = () => {
@@ -56,7 +56,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, onChange, queryState
     }
 
     const onDoubleClick = () => {
-      console.log("id:"+id, state.x, state.y)
+      //console.log("id:"+id, state.x, state.y)
       setIsSelected(!selected);
     }
 

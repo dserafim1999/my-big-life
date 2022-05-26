@@ -24,23 +24,19 @@ export const executeQuery = (params) => {
     }
 }
 
-export const updateQueryBlock = (query, blockId) => ({
-    query,
-    blockId,
+export const updateQueryBlock = (queryBlock) => ({
+    queryBlock,
     type: UPDATE_QUERY_BLOCK
 });
 
-export const addQueryStay = (stay, stayId) => ({
+export const addQueryStay = (stay) => ({
     stay,
-    stayId,
     type: ADD_QUERY_STAY
 });
 
-export const addQueryStayAndRoute = (stay, stayId, route, routeId) => ({
+export const addQueryStayAndRoute = (stay, route) => ({
     stay,
-    stayId,
     route,
-    routeId,
     type: ADD_QUERY_STAY_AND_ROUTE
 });
 
@@ -50,7 +46,7 @@ export const removeQueryStay = (stayId) => ({
 });
 
 export const resetQuery = () => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         dispatch(clearAll());
         dispatch({type: RESET_QUERY});
     }
