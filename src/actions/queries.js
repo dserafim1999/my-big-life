@@ -24,8 +24,8 @@ export const executeQuery = (params) => {
     }
 }
 
-export const updateQueryBlock = (queryBlock) => ({
-    queryBlock,
+export const updateQueryBlock = (block) => ({
+    block,
     type: UPDATE_QUERY_BLOCK
 });
 

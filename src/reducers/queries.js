@@ -2,8 +2,9 @@ import { Map, List, fromJS } from 'immutable';
 
 const updateQueryBlock = (state, action) => {
   const query = state.toJS()["query"];
-  const index = query.findIndex((obj) => obj.id === action.queryBlock.id);
-  query[index] = action.queryBlock;
+  const index = query.findIndex((obj) => obj.queryBlock.id === action.block.queryBlock.id);
+  
+  query[index] = action.block;
 
   return state.setIn(['query'], List(query));
 }
@@ -34,7 +35,7 @@ const connectStayWithRoute = (stay1, route, stay2) => {
 
 const removeQueryStay = (state, action) => {
   const query = state.toJS()["query"];
-  const index = query.findIndex((obj) => obj.id === action.stayId);
+  const index = query.findIndex((obj) => obj.queryBlock.id === action.stayId);
   
   if (index % 2 == 0) { //stays always have an even index
     if (index == 0) {

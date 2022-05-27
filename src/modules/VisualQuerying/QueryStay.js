@@ -1,43 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
-import { connect } from 'react-redux';
 import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomTimePicker from "./CustomTimePicker";
 
-const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove, dispatch}) => {
+const inputStyle={
+  border: "none",
+  backgroundColor: "transparent",
+  resize: "none", 
+  outline: "none", 
+  width: "35%", 
+  textAlign: "center"
+}
+
+const locationInputStyle = {
+  margin: '0 auto', 
+  display: 'block', 
+  position: 'relative',
+  width: '30%',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  color: 'white'
+}
+
+const footerElementsStyle = {
+  position: "relative",
+  top: "40%",
+  display: "flex",
+  justifyContent: "space-between"
+}
+
+const deleteButtonStyle = {
+  position: "absolute",
+  top: "-50%",
+  left: "100%",
+  color: "red",
+  cursor: "pointer"
+}
+
+const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onRemove, dispatch}) => {
     const height = 50;
     const minWidth = 125;
     const minHeight = 50;
-    
-    const inputStyle={
-      border: "none",
-      backgroundColor: "transparent",
-      resize: "none", 
-      outline: "none", 
-      width: "35%", 
-      textAlign: "center"
-    }
-
-    const footerElementsStyle = {
-      position: "relative",
-      top: "40%",
-      display: "flex",
-      justifyContent: "space-between"
-    }
-
-    const deleteButtonStyle = {
-      position: "absolute",
-      top: "-50%",
-      left: "100%",
-      color: "red",
-      cursor: "pointer"
-    }
 
     const [state, setState] = useState({
         width: width,
         height: height,
-        x: queryState.x,
+        x: queryState.queryBlock.x,
         y: (maxHeight - height) / 2 - 10
     });
 
@@ -45,7 +54,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
     const [selected, setIsSelected] = useState(false);
 
     useEffect(() => {
-        dispatch(updateQueryBlock(query));
+      dispatch(updateQueryBlock(query));
     },[query]);
 
     const getBackgroundColor = () => {
@@ -53,7 +62,6 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
     }
 
     const onDoubleClick = () => {
-      //console.log("id:"+id, state.x, state.y)
       setIsSelected(!selected);
     }
 
@@ -68,13 +76,14 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
         });
     }
 
-    const onDragStop = (e, d) => { 
+    const onDrag = (e, d) => { 
       setState({ x: d.x, y: d.y });
-      dispatch(updateQueryBlock({...query, x: d.x}));
+      dispatch(updateQueryBlock({...query, queryBlock:{x: d.x, id: id}}));
     }
 
     return (
       <Rnd
+        id={id}
         className="stayQuery"
         style={{backgroundColor: getBackgroundColor()}}
         size={{ width: state.width, height: state.height }}
@@ -83,7 +92,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
         minHeight={minHeight}
         minWidth={minWidth}
         dragAxis="x"
-        onDragStop={onDragStop}
+        onDrag={onDrag}
         onResizeStop={onResizeStop}
         onDoubleClick={onDoubleClick}
       >
@@ -96,15 +105,7 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
             )
           }
           <input 
-            style={{...inputStyle, 
-                margin: '0 auto', 
-                display: 'block', 
-                position: 'relative',
-                width: '30%',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'white'
-            }}
+            style={{...inputStyle, ...locationInputStyle}}
             placeholder="location"
             onChange={(e) => setQuery(
               {...query, "location": e.target.value}
@@ -134,6 +135,5 @@ const QueryStay = ({id, startX, maxWidth, maxHeight, width, queryState, onRemove
     );
 };
 
-const mapStateToProps = (state) => { return {}; }
 
-export default connect(mapStateToProps)(QueryStay);
+export default QueryStay;
