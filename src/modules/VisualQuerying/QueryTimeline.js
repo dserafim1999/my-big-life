@@ -106,9 +106,10 @@ const QueryTimeline = ({ dispatch, query }) => {
                 const routeBlock = {
                     type: 'route',
                     id: routeId,
-                    dispatch: dispatch,
+                    queryState: allQueryBlocks[i],
                     start: prevStayId.toString(), 
-                    end: nextStayId.toString()
+                    end: nextStayId.toString(),
+                    dispatch: dispatch
                 };
                 
                 queryBlocks.push(routeBlock);

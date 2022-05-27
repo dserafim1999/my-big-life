@@ -14,12 +14,11 @@ const inputStyle={
 }
 
 const locationInputStyle = {
-  margin: '0 auto', 
-  display: 'block', 
   position: 'relative',
   width: '30%',
   top: '50%',
-  transform: 'translateY(-50%)',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   color: 'white'
 }
 
@@ -85,7 +84,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onRemove, dispat
       <Rnd
         id={id}
         className="stayQuery"
-        style={{backgroundColor: getBackgroundColor()}}
+        style={{backgroundColor: getBackgroundColor(), zIndex: "1"}}
         size={{ width: state.width, height: state.height }}
         position={{ x: state.x, y: state.y }}
         bounds="parent"
