@@ -44,6 +44,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     };
 
     const onDoubleClick = (e) => {
+        window.getSelection().empty();
         const startX = e.screenX - relativeOffset;
         var lastStayX;
         const maxX = timelineRef.current.offsetWidth - stayWidth;
@@ -174,16 +175,16 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
             >
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
                         { displayTimeline() }
-                        <div>
+                        <div style={{borderLeft: '1px solid lightgrey'}}>
                             <div>
-                                <AsyncButton title='Submit Query' onClick={onSubmit} className={isQueryLoading ? 'is-loading' : ''}>
+                                <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
                                     <IconButton onClick={onSubmit}>
                                         <SearchIcon></SearchIcon>
                                     </IconButton>
                                 </AsyncButton>
                             </div>
                             <div>
-                                <AsyncButton title='Reset Query' onClick={onClearQuery}>
+                                <AsyncButton title='Reset Query' onClick={onClearQuery} tooltipPlacement={"left"} style={{border: 'none'}}>
                                     <IconButton onClick={onClearQuery}>
                                         <DeleteIcon></DeleteIcon>
                                     </IconButton>

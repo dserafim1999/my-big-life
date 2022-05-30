@@ -41,6 +41,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
     const height = 50;
     const minWidth = 125;
     const minHeight = 50;
+    const y = (maxHeight - height) / 2 - 10;
 
     const [state, setState] = useState({
         width: width,
@@ -48,11 +49,13 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
         x: queryState.queryBlock.x,
         minX: queryState.queryBlock.minX,
         maxX: queryState.queryBlock.maxX,
-        y: (maxHeight - height) / 2 - 10
+        y: y
     });
 
     const [query, setQuery] = useState(queryState);
     const [selected, setIsSelected] = useState(false);
+    const [startOpen, setIsStartOpen] = useState(false);
+    const [endOpen, setIsEndOpen] = useState(false);
 
     useEffect(() => {
       dispatch(updateQueryBlock(query));
@@ -62,7 +65,8 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
       return selected ? 'yellow' : '#284760';
     }
 
-    const onDoubleClick = () => {
+    const onDoubleClick = (e) => {
+      e.preventDefault();
       setIsSelected(!selected);
     }
 
@@ -82,21 +86,37 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
       const stayQueryBlock = onDragStay(id);
       
       if (stayQueryBlock.maxX !== undefined && d.x >= stayQueryBlock.maxX - width) {
-        setState({ x: stayQueryBlock.maxX - width, y: d.y });
+        setState({ x: stayQueryBlock.maxX - width, y: y });
       } else if (stayQueryBlock.minX !== undefined && d.x <= stayQueryBlock.minX + width) {
           if (id === 0) {
-            setState({ x: d.x, y: d.y });
+            setState({ x: d.x, y: y });
           } else {
-            setState({ x: stayQueryBlock.minX + width, y: d.y });
+            setState({ x: stayQueryBlock.minX + width, y: y });
           }
       } else {
-        setState({ x: d.x, y: d.y });
+        setState({ x: d.x, y: y });
       }
       
       updatedQuery.queryBlock.x = state.x;
       updatedQuery.queryBlock.minX = stayQueryBlock.minX;
       updatedQuery.queryBlock.maxX = stayQueryBlock.maxX;
       dispatch(updateQueryBlock(updatedQuery));
+    }
+
+    const onCloseStart = (clear) => {
+      if (clear) {
+        setQuery({...query, 'start': ""});
+      }
+
+      setIsStartOpen(false);
+    }
+
+    const onCloseEnd = (clear) => {
+      if (clear) {
+        setQuery({...query, 'end': ""});
+      }
+
+      setIsEndOpen(false);
     }
 
     return (
@@ -130,8 +150,11 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
           )}/>
           <div style={footerElementsStyle}>
               <CustomTimePicker
+                  open={startOpen}
                   value={query["start"]}
                   onChange={(newValue) => setQuery({...query, 'start': newValue})}
+                  onClick={() => setIsStartOpen(true)}
+                  onClose={(clear) => onCloseStart(clear)}
               />
             <input
               id="duration"
@@ -144,8 +167,11 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
               )}
             />
               <CustomTimePicker
+                  open={endOpen}
                   value={query["end"]}
                   onChange={(newValue) => setQuery({...query, 'end': newValue})}
+                  onClick={() => setIsEndOpen(true)}
+                  onClose={(clear) => onCloseEnd(clear)}
               />
           </div>
         </div>
