@@ -132,7 +132,6 @@ export const loadTrips = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((trips) => {
-        console.log(trips)
         dispatch(clearAll());
         dispatch(displayAllTrips(trips));
       });

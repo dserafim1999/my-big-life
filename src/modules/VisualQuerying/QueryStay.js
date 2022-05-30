@@ -37,7 +37,7 @@ const deleteButtonStyle = {
   cursor: "pointer"
 }
 
-const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onRemove, dispatch}) => {
+const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
     const height = 50;
     const minWidth = 125;
     const minHeight = 50;
@@ -46,6 +46,8 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onRemove, dispat
         width: width,
         height: height,
         x: queryState.queryBlock.x,
+        minX: queryState.queryBlock.minX,
+        maxX: queryState.queryBlock.maxX,
         y: (maxHeight - height) / 2 - 10
     });
 
@@ -76,8 +78,25 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onRemove, dispat
     }
 
     const onDrag = (e, d) => { 
-      setState({ x: d.x, y: d.y });
-      dispatch(updateQueryBlock({...query, queryBlock:{x: d.x, id: id}}));
+      const updatedQuery = query;
+      const stayQueryBlock = onDragStay(id);
+      
+      if (stayQueryBlock.maxX !== undefined && d.x >= stayQueryBlock.maxX - width) {
+        setState({ x: stayQueryBlock.maxX - width, y: d.y });
+      } else if (stayQueryBlock.minX !== undefined && d.x <= stayQueryBlock.minX + width) {
+          if (id === 0) {
+            setState({ x: d.x, y: d.y });
+          } else {
+            setState({ x: stayQueryBlock.minX + width, y: d.y });
+          }
+      } else {
+        setState({ x: d.x, y: d.y });
+      }
+      
+      updatedQuery.queryBlock.x = state.x;
+      updatedQuery.queryBlock.minX = stayQueryBlock.minX;
+      updatedQuery.queryBlock.maxX = stayQueryBlock.maxX;
+      dispatch(updateQueryBlock(updatedQuery));
     }
 
     return (

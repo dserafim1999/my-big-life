@@ -14,10 +14,9 @@ import AsyncButton from '../../components/Buttons/AsyncButton';
 
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
-    //TODO check if these still make sense
-    const timelineWidthPercentage = 7/8;
+    const timelineWidthPercentage = 7/8; // sets percentage of width card will occupy
     const fullWidth = window.innerWidth * timelineWidthPercentage;
-    const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage);
+    const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
     const height = 100;
     const stayWidth = 225;
 
@@ -47,11 +46,12 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const onDoubleClick = (e) => {
         const startX = e.screenX - relativeOffset;
         var lastStayX;
+        const maxX = timelineRef.current.offsetWidth - stayWidth;
         
         lastStayX = query.size > 0 ? query.toJS().pop().queryBlock.x : undefined;
 
         // only creates stay if inside timeline bounds and if position is after last stay
-        const inBounds = startX <= timelineRef.current.offsetWidth - stayWidth &&
+        const inBounds = startX <= maxX &&
             (lastStayX === undefined) ? 
                 startX >= 0 :
                 startX > lastStayX;
@@ -81,10 +81,17 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         }
     }
 
+    const onDragStay = (id) => {
+        const allQueryBlocks = query.toJS();
+        const stayQueryBlock = allQueryBlocks.find((obj) => obj.queryBlock.id === id).queryBlock;
+
+        return stayQueryBlock;
+    }
+
     const displayTimeline = () => {
         const queryBlocks = [];
         const allQueryBlocks = query.toJS();
-
+        
         for (var i = 0; i < allQueryBlocks.length; i++) {
             if (i % 2 === 0) {
                 const stayBlock = {
@@ -95,6 +102,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                     maxHeight: height,
                     queryState: allQueryBlocks[i],
                     dispatch: dispatch,
+                    onDragStay: onDragStay,
                     onRemove: onStayRemove
                 };
 
