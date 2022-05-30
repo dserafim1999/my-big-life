@@ -272,6 +272,19 @@ export const bulkProcess = () => {
   }
 }
 
+export const rawBulkProcess = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    return fetch(getState().get('general').get('server') + '/process/rawBulk', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
 export const getLocationSuggestion = (point) => {
   return (dispatch, getState) => {
     const options = {

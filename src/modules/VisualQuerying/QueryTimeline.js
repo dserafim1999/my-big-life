@@ -9,10 +9,11 @@ import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
 import QueryRoute from './QueryRoute';
 
-import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay, executeVisualQuery } from '../../actions/queries';
+import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 
-const QueryTimeline = ({ dispatch, query }) => {
+const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     //TODO check if these still make sense
     const timelineWidthPercentage = 7/8;
     const fullWidth = window.innerWidth * timelineWidthPercentage;
@@ -130,36 +131,8 @@ const QueryTimeline = ({ dispatch, query }) => {
         );
     }
 
-    /*const newQueryBlock = (stayId, queryState, routeId = null) => {
-        const stayblock = {
-            type: 'stay',
-            id: stayId,
-            width: stayWidth,
-            maxWidth: timelineRef.current.offsetWidth,
-            maxHeight: height,
-            queryState: queryState,
-            onRemove: onStayRemove
-        };
-
-        if (routeId !== null) {
-
-            const prevStayId = (query.toJS()).pop().queryBlock.id;
-
-            const routeBlock = {
-                type: 'route',
-                id: routeId,
-                start: prevStayId.toString(), 
-                end: stayId.toString()
-            }
-            setQueryBlocks([...queryBlocks, routeBlock, stayblock]);
-        } else {
-            setQueryBlocks([...queryBlocks, stayblock]);
-        }
-    }*/
-
     const onSubmit = () => {
         //TODO remove id, x and y from what is sent
-
         dispatch(executeQuery(
                 {
                     "data": [
@@ -193,16 +166,20 @@ const QueryTimeline = ({ dispatch, query }) => {
             >
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
                         { displayTimeline() }
-                        <div style={{borderLeft:'grey 1px solid'}}>
+                        <div>
                             <div>
-                                <IconButton onClick={onSubmit}>
-                                    <SearchIcon></SearchIcon>
-                                </IconButton>
+                                <AsyncButton title='Submit Query' onClick={onSubmit} className={isQueryLoading ? 'is-loading' : ''}>
+                                    <IconButton onClick={onSubmit}>
+                                        <SearchIcon></SearchIcon>
+                                    </IconButton>
+                                </AsyncButton>
                             </div>
                             <div>
-                                <IconButton onClick={onClearQuery}>
-                                    <DeleteIcon></DeleteIcon>
-                                </IconButton>
+                                <AsyncButton title='Reset Query' onClick={onClearQuery}>
+                                    <IconButton onClick={onClearQuery}>
+                                        <DeleteIcon></DeleteIcon>
+                                    </IconButton>
+                                </AsyncButton>
                             </div>
                         </div>
                 </div>
@@ -212,7 +189,8 @@ const QueryTimeline = ({ dispatch, query }) => {
 };
 
 const mapStateToProps = (state) => { return {
-    query: state.get('queries').get('query')
+    query: state.get('queries').get('query'),
+    isQueryLoading: state.get('general').get('loading').get('query-button')
 }; }
   
 export default connect(mapStateToProps)(QueryTimeline);

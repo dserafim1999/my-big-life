@@ -15,6 +15,7 @@ import {
     nextStep,
     previousStep,
     bulkProcess,
+    rawBulkProcess,
     loadLIFE,
     requestServerState
   } from '../../actions/process';
@@ -86,6 +87,12 @@ class TrackProcessing extends Component {
             .then(() => modifier());
     }
 
+    onRawBulkClick = (e, modifier) => {
+        modifier('is-loading')
+        this.dispatch(rawBulkProcess())
+            .then(() => modifier());
+    }
+
     onLifeRead = (text, modifier) => {
         modifier('is-loading');
         this.dispatch(loadLIFE(text))
@@ -118,7 +125,7 @@ class TrackProcessing extends Component {
             );
         } else if (remainingCount > 0) {
             if (showList) {
-                buttons = <BulkButtons onBulkClick={this.onBulkClick} onLifeRead={this.onLifeRead} />
+                buttons = <BulkButtons onBulkClick={this.onBulkClick} onRawBulkClick={this.onRawBulkClick} onLifeRead={this.onLifeRead} />
             } else {
                 buttons = (
                     <NavigationButtons
