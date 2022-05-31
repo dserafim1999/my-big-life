@@ -15,6 +15,7 @@ export const executeQuery = (params) => {
             .then((response) => response.json())
             .catch((e) => console.error(e))
             .then((res) => {
+                console.log(params)
                 dispatch(setLoading('query-button', false));
                 dispatch(clearAll());
                 dispatch(displayAllTrips(res.segments));

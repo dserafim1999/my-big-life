@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
-import CustomTimePicker from "./CustomTimePicker";
+import QueryTimePicker from "./QueryTimePicker";
 
 const deleteButtonStyle = {
   position: "absolute",
@@ -140,7 +140,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
             )}/>
           </div>
           <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight + 'px'}}>
-              <CustomTimePicker
+              <QueryTimePicker
                   open={startOpen}
                   value={query["start"]}
                   onChange={(newValue) => setQuery({...query, 'start': newValue})}
@@ -157,7 +157,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
                       {...query, "duration": e.target.value}
               )}
             />
-              <CustomTimePicker
+              <QueryTimePicker
                   open={endOpen}
                   value={query["end"]}
                   onChange={(newValue) => setQuery({...query, 'end': newValue})}

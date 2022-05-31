@@ -4,7 +4,7 @@ import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
 
 
-const CustomTimePicker = ({value, open, onChange, onClose, onClick}) => {
+const QueryTimePicker = ({value, open, onChange, onClose, onClick}) => {
     const [operator, setOperator] = useState("");
     
     const valueRepresentation = () => {
@@ -78,4 +78,4 @@ const CustomTimePicker = ({value, open, onChange, onClose, onClick}) => {
 
 
 
-export default CustomTimePicker;
+export default QueryTimePicker;

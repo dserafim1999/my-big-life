@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 
 import React, { useRef, useState } from "react";
 import { connect } from 'react-redux';
@@ -8,10 +8,10 @@ import { connect } from 'react-redux';
 import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
 import QueryRoute from './QueryRoute';
+import QueryDatePicker from "./QueryDatePicker";
 
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.90; // sets percentage of width card will occupy
@@ -23,6 +23,8 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineRef = useRef();
     
     const [id, setId] = useState(0);
+    const [dateOpen, setIsDateOpen] = useState(false);
+    const [date, setDate] = useState(null);
 
     const defaultRoute = {
         route: "",
@@ -146,7 +148,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                 {
                     "data": [
                         {
-                            "date": "--/--/----"
+                            "date": date
                         },
                         ...query.toArray()
                     ]
@@ -155,8 +157,21 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         );
     }
 
+    const onChangeDate = (newValue) => {
+        setDate(newValue);
+    }
+
+    const onCloseDate = (clear) => {
+        if (clear) {
+          setDate("--/--/----");
+        }
+  
+        setIsDateOpen(false);
+    }
+
     const onClearQuery = () => {
         setId(0);
+        setDate("--/--/----");
         dispatch(resetQuery());
     }
 
@@ -175,11 +190,20 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
             >
                 <div className="horizontalAxis"/>
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
+                        <div style={{zIndex: "1", backgroundColor: "white"}}>
+                        <QueryDatePicker
+                            open={dateOpen}
+                            value={date}
+                            onChange={(newValue) => onChangeDate(newValue)}
+                            onClick={() => setIsDateOpen(true)}
+                            onClose={(clear) => onCloseDate(clear)}
+                        />
+                        </div>
                         { displayTimeline() }
                         <div style={{zIndex: "1", backgroundColor: "white"}}>
                             <div>
                                 <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
-                                    <IconButton onClick={onSubmit}>
+                                    <IconButton>
                                         <SearchIcon></SearchIcon>
                                     </IconButton>
                                 </AsyncButton>
