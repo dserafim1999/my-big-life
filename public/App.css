@@ -494,6 +494,31 @@ a.button {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  border: solid 1px #ddd;
+  border: solid 1px lightgrey;
   font-style: #ffffff;
+}
+
+.queryInput {
+  border: none;
+  background-color: transparent;
+  resize: none;
+  outline: none; 
+  width: 35%;
+  text-align: center;
+}
+
+.horizontalAxis {
+  text-align: center;
+  z-index: 0;
+}
+
+.horizontalAxis:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-top: 1px solid lightgrey;
+  background: lightgrey;
+  width: 95%;
+  transform: translate(-50%, -50%);
 }

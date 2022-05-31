@@ -4,31 +4,6 @@ import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomTimePicker from "./CustomTimePicker";
 
-const inputStyle={
-  border: "none",
-  backgroundColor: "transparent",
-  resize: "none", 
-  outline: "none", 
-  width: "35%", 
-  textAlign: "center"
-}
-
-const locationInputStyle = {
-  position: 'relative',
-  width: '30%',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  color: 'white'
-}
-
-const footerElementsStyle = {
-  position: "relative",
-  top: "40%",
-  display: "flex",
-  justifyContent: "space-between"
-}
-
 const deleteButtonStyle = {
   position: "absolute",
   top: "-50%",
@@ -38,10 +13,10 @@ const deleteButtonStyle = {
 }
 
 const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
-    const height = 50;
     const minWidth = 125;
-    const minHeight = 50;
-    const y = (maxHeight - height) / 2 - 10;
+    const minHeight = 35;
+    const footerHeight = 30;
+    const height = minHeight;
 
     const [state, setState] = useState({
         width: width,
@@ -49,7 +24,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
         x: queryState.queryBlock.x,
         minX: queryState.queryBlock.minX,
         maxX: queryState.queryBlock.maxX,
-        y: y
+        y: (maxHeight - height) / 2 - 10
     });
 
     const [query, setQuery] = useState(queryState);
@@ -70,15 +45,20 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
       setIsSelected(!selected);
     }
 
-    const onResizeStop = (e, direction, ref, delta, position) => {
-        const maxHeightDelta = maxHeight - minHeight;
-        const maxWidthDelta = maxWidth - minWidth;
+    const onResize = (e, direction, ref, delta, position) => {
+        const heightChange = ref.style.height.replace('px', '');
+        const heightDelta = heightChange - state.height;
 
         setState({
-          width: ref.style.width,
-          height: ref.style.height,
-          ...position
+          ...state,
+          width: parseInt(ref.style.width.replace('px', '')),
+          height: heightChange <= maxHeight ? heightChange : maxHeight,
+          y: state.y - heightDelta
         });
+
+        const spatialRange = query["spatialRange"] === "" ? "0m" : query["spatialRange"];
+
+        setQuery({...query, "spatialRange": parseInt(spatialRange.slice(0, -1)) + 100*heightDelta + "m"});
     }
 
     const onDrag = (e, d) => { 
@@ -86,15 +66,15 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
       const stayQueryBlock = onDragStay(id);
       
       if (stayQueryBlock.maxX !== undefined && d.x >= stayQueryBlock.maxX - width) {
-        setState({ x: stayQueryBlock.maxX - width, y: y });
+        setState({ ...state, x: stayQueryBlock.maxX - width });
       } else if (stayQueryBlock.minX !== undefined && d.x <= stayQueryBlock.minX + width) {
           if (id === 0) {
-            setState({ x: d.x, y: y });
+            setState({ ...state, x: d.x });
           } else {
-            setState({ x: stayQueryBlock.minX + width, y: y });
+            setState({ ...state, x: stayQueryBlock.minX + width });
           }
       } else {
-        setState({ x: d.x, y: y });
+        setState({ ...state, x: d.x });
       }
       
       updatedQuery.queryBlock.x = state.x;
@@ -123,7 +103,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
       <Rnd
         id={id}
         className="stayQuery"
-        style={{backgroundColor: getBackgroundColor(), zIndex: "1"}}
+        style={{backgroundColor: getBackgroundColor(), zIndex: "2"}}
         size={{ width: state.width, height: state.height }}
         position={{ x: state.x, y: state.y }}
         bounds="parent"
@@ -131,8 +111,9 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
         minWidth={minWidth}
         dragAxis="x"
         onDrag={onDrag}
-        onResizeStop={onResizeStop}
+        onResize={onResize}
         onDoubleClick={onDoubleClick}
+        enableResizing={{ top:true, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
       >
         <div style={{width: '100%', height: '100%'}}>
           {
@@ -142,13 +123,23 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
               </div>
             )
           }
-          <input 
-            style={{...inputStyle, ...locationInputStyle}}
-            placeholder="location"
-            onChange={(e) => setQuery(
-              {...query, "location": e.target.value}
-          )}/>
-          <div style={footerElementsStyle}>
+          <div style={{display: 'flex', justifyContent: 'space-evenly', position: 'relative', top: '50%', transform: 'translateY(-50%)'}}>
+            <input 
+              className="queryInput"
+              style={{color: 'white'}}
+              placeholder="location"
+              onChange={(e) => setQuery(
+                {...query, "location": e.target.value}
+            )}/>
+            <input 
+              className="queryInput"
+              style={{color: 'white'}}
+              value={query["spatialRange"] === "" ? "0m" : query["spatialRange"]}
+              onChange={(e) => setQuery(
+                {...query, "spatialRange": e.target.value}
+            )}/>
+          </div>
+          <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight + 'px'}}>
               <CustomTimePicker
                   open={startOpen}
                   value={query["start"]}
@@ -160,7 +151,7 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
               id="duration"
               type="text"
               placeholder="duration"
-              style={inputStyle}
+              className="queryInput"
               value={query["duration"]}
                   onChange={(e) => setQuery(
                       {...query, "duration": e.target.value}

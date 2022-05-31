@@ -14,11 +14,11 @@ import AsyncButton from '../../components/Buttons/AsyncButton';
 
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
-    const timelineWidthPercentage = 7/8; // sets percentage of width card will occupy
+    const timelineWidthPercentage = 0.90; // sets percentage of width card will occupy
     const fullWidth = window.innerWidth * timelineWidthPercentage;
     const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
     const height = 100;
-    const stayWidth = 225;
+    const stayWidth = 200;
 
     const timelineRef = useRef();
     
@@ -52,10 +52,10 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         lastStayX = query.size > 0 ? query.toJS().pop().queryBlock.x : undefined;
 
         // only creates stay if inside timeline bounds and if position is after last stay
-        const inBounds = startX <= maxX &&
+        const inBounds = startX <= maxX  &&
             (lastStayX === undefined) ? 
                 startX >= 0 :
-                startX > lastStayX;
+                startX > lastStayX && lastStayX + stayWidth <= maxX;
 
         if (inBounds && e.target.className.includes("timeline")) {
             var stayId;
@@ -173,9 +173,10 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                 horizontalOffset={50} 
                 isDraggable={false}
             >
+                <div className="horizontalAxis"/>
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
                         { displayTimeline() }
-                        <div style={{borderLeft: '1px solid lightgrey'}}>
+                        <div style={{zIndex: "1", backgroundColor: "white"}}>
                             <div>
                                 <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
                                     <IconButton onClick={onSubmit}>

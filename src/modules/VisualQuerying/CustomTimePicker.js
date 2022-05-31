@@ -1,5 +1,4 @@
 import { createTheme, ThemeProvider } from "@mui/material";
-import { green, purple } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
@@ -7,7 +6,6 @@ import React, { useState } from "react";
 
 const CustomTimePicker = ({value, open, onChange, onClose, onClick}) => {
     const [operator, setOperator] = useState("");
-    const [clear, setClear] = useState(false);
     
     const valueRepresentation = () => {
         return value === "" ? "--:--" : value;
@@ -37,16 +35,14 @@ const CustomTimePicker = ({value, open, onChange, onClose, onClick}) => {
     }
 
     const Toolbar = (
-        <div>
-            <button className="button" onClick={onClear}>X</button>
-            <div style={{paddingTop: "50px"}}>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                    <button className="button" style={getButtonStyle("<")} onClick={(e) => onOperatorClick(e, "<")}>{"<"}</button>
-                    <button className="button" style={getButtonStyle("≤")} onClick={(e) => onOperatorClick(e, "≤")}>{"≤"}</button>
-                    <button className="button" style={getButtonStyle("" )} onClick={(e) => onOperatorClick(e, "" ) }>{"="}</button>
-                    <button className="button" style={getButtonStyle("≥")} onClick={(e) => onOperatorClick(e, "≥")}>{"≥"}</button>
-                    <button className="button" style={getButtonStyle(">")} onClick={(e) => onOperatorClick(e, ">")}>{">"}</button>
-                </div>
+        <div style={{padding: "15px"}}>
+            <button className="button" onClick={onClear}>Clear</button>
+            <div style={{padding: "15px 0px", display: "flex", justifyContent: "space-between"}}>
+                <button className="button" style={getButtonStyle("<")} onClick={(e) => onOperatorClick(e, "<")}>{"<"}</button>
+                <button className="button" style={getButtonStyle("≤")} onClick={(e) => onOperatorClick(e, "≤")}>{"≤"}</button>
+                <button className="button" style={getButtonStyle("" )} onClick={(e) => onOperatorClick(e, "" ) }>{"="}</button>
+                <button className="button" style={getButtonStyle("≥")} onClick={(e) => onOperatorClick(e, "≥")}>{"≥"}</button>
+                <button className="button" style={getButtonStyle(">")} onClick={(e) => onOperatorClick(e, ">")}>{">"}</button>
             </div>
         </div>
     );
