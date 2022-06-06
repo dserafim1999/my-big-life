@@ -16,7 +16,7 @@ import AsyncButton from '../../components/Buttons/AsyncButton';
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
     const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
-    const height = 110;
+    const height = 125;
     const stayWidth = 200;
 
     const timelineRef = useRef();
@@ -205,7 +205,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                             />
                         </div>
                         { displayTimeline() }
-                        <div style={{zIndex: "1", backgroundColor: "white"}}>
+                        <div style={{zIndex: "1", backgroundColor: "white", position: 'relative', top: '50%', transform: 'translateY(-40%)'}}>
                             <div>
                                 <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
                                     <IconButton>

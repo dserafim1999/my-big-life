@@ -14,7 +14,7 @@ const deleteButtonStyle = {
 
 const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
     const minWidth = 125;
-    const minHeight = 35;
+    const minHeight = 40;
     const footerHeight = 30;
     const height = minHeight;
 
@@ -147,22 +147,46 @@ const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRe
                   onClick={() => setIsStartOpen(true)}
                   onClose={(clear) => onCloseStart(clear)}
               />
-            <input
-              id="duration"
-              type="text"
-              placeholder="duration"
-              className="queryInput"
-              value={query["duration"]}
-                  onChange={(e) => setQuery(
-                      {...query, "duration": e.target.value}
-              )}
-            />
+              <input
+                id="duration"
+                type="text"
+                placeholder="duration"
+                className="queryInput"
+                value={query["duration"]}
+                    onChange={(e) => setQuery(
+                        {...query, "duration": e.target.value}
+                )}
+              />
               <QueryTimePicker
                   open={endOpen}
                   value={query["end"]}
                   onChange={(newValue) => setQuery({...query, 'end': newValue})}
                   onClick={() => setIsEndOpen(true)}
                   onClose={(clear) => onCloseEnd(clear)}
+              />
+          </div>
+          <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight*1.25 + 'px'}}>
+              <input
+                id="temporalStartRange"
+                type="text"
+                placeholder="range"
+                style={{textAlign: "left"}}
+                className="queryInput"
+                value={query["temporalStartRange"]}
+                    onChange={(e) => setQuery(
+                        {...query, "temporalStartRange": e.target.value}
+                )}
+              />
+              <input
+                id="temporalEndRange"
+                type="text"
+                placeholder="range"
+                style={{textAlign: "right"}}
+                className="queryInput"
+                value={query["temporalEndRange"]}
+                    onChange={(e) => setQuery(
+                        {...query, "temporalEndRange": e.target.value}
+                )}
               />
           </div>
         </div>

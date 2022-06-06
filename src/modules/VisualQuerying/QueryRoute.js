@@ -10,7 +10,7 @@ const inputStyle={
     width: "35%", 
     textAlign: "center",
     position: 'relative',
-    left: "50%",
+    left: "35%",
     transform: "translateY(-50%)",
     color: 'black'
   }
