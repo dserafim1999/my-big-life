@@ -9,7 +9,7 @@ const wrapper = {
     zIndex: '1000'
 }
 
-const Card = ({ width, height=null, verticalOffset, horizontalOffset, children, isDraggable = true }) => {
+const Card = ({ width, height=null, verticalOffset, horizontalOffset, children, isDraggable = true, style }) => {
     const innerWidth = width != null ? window.innerWidth - width : window.innerWidth;
     const innerHeight = height != null ? window.innerHeight - height : window.innerHeight;
 
@@ -38,7 +38,8 @@ const Card = ({ width, height=null, verticalOffset, horizontalOffset, children, 
     const dragHandlers = {onStart: onStart, onStop: onStop};
     const { controledPosition: initPosition } = state;
 
-    const cardStyle =  {...wrapper, width: width != null ? width+'px' : '', height: height != null ? height+'px' : ''}
+    var cardStyle =  {...wrapper, width: width != null ? width+'px' : '', height: height != null ? height+'px' : ''}
+    cardStyle = style ? {...cardStyle, ...style} : cardStyle;
 
     return (
         <Draggable position={initPosition} {...dragHandlers} onDrag={onControlledDrag}>

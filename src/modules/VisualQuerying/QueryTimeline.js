@@ -1,8 +1,8 @@
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton } from "@mui/material";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from 'react-redux';
 
 import Card from "../../containers/Card";
@@ -14,17 +14,24 @@ import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQue
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
-    const timelineWidthPercentage = 0.90; // sets percentage of width card will occupy
-    const fullWidth = window.innerWidth * timelineWidthPercentage;
+    const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
     const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
-    const height = 100;
+    const height = 110;
     const stayWidth = 200;
 
     const timelineRef = useRef();
     
     const [id, setId] = useState(0);
     const [dateOpen, setIsDateOpen] = useState(false);
-    const [date, setDate] = useState(null);
+    const [date, setDate] = useState("--/--/----");
+    const [fullWidth, setFullWidth] = useState(window.innerWidth * timelineWidthPercentage);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setFullWidth(window.innerWidth * timelineWidthPercentage);
+        }
+        window.addEventListener('resize', handleResize)
+    });
 
     const defaultRoute = {
         route: "",
@@ -143,7 +150,6 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     }
 
     const onSubmit = () => {
-        //TODO remove id, x and y from what is sent
         dispatch(executeQuery(
                 {
                     "data": [
@@ -180,24 +186,23 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     }
 
     return (
-        <div onDoubleClick={onDoubleClick} style={{width: "100%"}}>
+        <div onDoubleClick={onDoubleClick} style={{width: "100%", textAlign: "center"}}>
             <Card 
                 width={fullWidth} 
                 height={height} 
-                verticalOffset={2} 
-                horizontalOffset={50} 
+                style={{margin: '25px'}}
                 isDraggable={false}
             >
                 <div className="horizontalAxis"/>
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
                         <div style={{zIndex: "1", backgroundColor: "white"}}>
-                        <QueryDatePicker
-                            open={dateOpen}
-                            value={date}
-                            onChange={(newValue) => onChangeDate(newValue)}
-                            onClick={() => setIsDateOpen(true)}
-                            onClose={(clear) => onCloseDate(clear)}
-                        />
+                            <QueryDatePicker
+                                open={dateOpen}
+                                value={date}
+                                onChange={(newValue) => onChangeDate(newValue)}
+                                onClick={() => setIsDateOpen(true)}
+                                onClose={(clear) => onCloseDate(clear)}
+                            />
                         </div>
                         { displayTimeline() }
                         <div style={{zIndex: "1", backgroundColor: "white"}}>

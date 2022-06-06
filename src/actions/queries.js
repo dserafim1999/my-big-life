@@ -1,6 +1,6 @@
 import { clearAll, displayAllTrips } from "./tracks";
 import { setLoading } from './general';
-import { ADD_QUERY_STAY, ADD_QUERY_STAY_AND_ROUTE, REMOVE_QUERY_STAY, RESET_QUERY, UPDATE_QUERY_BLOCK } from ".";
+import { ADD_QUERY_STAY, ADD_QUERY_STAY_AND_ROUTE, QUERY_RESULTS, REMOVE_QUERY_STAY, RESET_QUERY, UPDATE_QUERY_BLOCK } from ".";
 
 export const executeQuery = (params) => {
     return (dispatch, getState) => {
@@ -15,10 +15,9 @@ export const executeQuery = (params) => {
             .then((response) => response.json())
             .catch((e) => console.error(e))
             .then((res) => {
-                console.log(params)
+                console.log(res)
                 dispatch(setLoading('query-button', false));
-                dispatch(clearAll());
-                dispatch(displayAllTrips(res.segments));
+                dispatch(queryResults(res.results, res.segments))
             }
         ); 
     }
@@ -49,5 +48,13 @@ export const resetQuery = () => {
     return (dispatch) => {
         dispatch(clearAll());
         dispatch({type: RESET_QUERY});
+    }
+};
+
+export const queryResults = (results, segments) => {
+    return (dispatch) => {
+        dispatch(clearAll());
+        dispatch(displayAllTrips(segments));
+        dispatch({results, type: QUERY_RESULTS});
     }
 };

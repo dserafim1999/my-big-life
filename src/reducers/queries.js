@@ -105,7 +105,13 @@ const removeQueryStay = (state, action) => {
 }
 
 const resetQuery = (state) => {
-  return state.setIn(["query"], List());
+  return state
+    .setIn(["query"], List())
+    .setIn(["results"], List());
+}
+
+const queryResults = (state, action) => {
+  return state.setIn(["results"], List(action.results));
 }
 
 const ACTION_REACTION = {
@@ -114,10 +120,12 @@ const ACTION_REACTION = {
     'queries/add_query_stay_and_route': addQueryStayAndRoute,
     'queries/remove_query_stay': removeQueryStay,
     'queries/reset_query': resetQuery,
+    'queries/query_results': queryResults,
 }
 
 const initialState = Map({
   query: List(),
+  results: List()
 });
 
 const queries = (state = initialState, action) => {

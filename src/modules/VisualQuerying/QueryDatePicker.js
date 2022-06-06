@@ -1,8 +1,7 @@
-import { createTheme, IconButton, ThemeProvider } from "@mui/material";
-import DateIcon from '@mui/icons-material/DateRange';import { Box } from "@mui/system";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
-import AsyncButton from "../../components/Buttons/AsyncButton";
 import moment from 'moment';
 
 
@@ -22,7 +21,6 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick}) => {
     }
 
     const valueFormat = () => {
-        console.log(value === "--/--/----" ? null : moment(value, "DD/MM/YYYY"))
         return value === "--/--/----" ? null : moment(value, "DD/MM/YYYY");
     }
 
