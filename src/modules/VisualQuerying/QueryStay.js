@@ -12,7 +12,7 @@ const deleteButtonStyle = {
   cursor: "pointer"
 }
 
-const QueryStay = ({id, maxWidth, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
+const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
     const minWidth = 125;
     const minHeight = 40;
     const footerHeight = 30;

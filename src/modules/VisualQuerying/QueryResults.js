@@ -8,7 +8,7 @@ const QueryResults = ({ dispatch, results }) => {
     return (
         results.size > 0 &&
         (
-            <Card width={450} height={500} style={{margin: '150px 25px'}}>
+            <Card width={450} height={450} style={{margin: '175px 25px'}}>
                 <div style={{ flexGrow: 1, overflowY: 'auto', height: '100%' }}>
                     {results.map((x) => {if (x !== undefined) return <QueryResult result={x.data}/>})}
                 </div>

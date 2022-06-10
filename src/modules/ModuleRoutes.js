@@ -75,6 +75,7 @@ export const ModuleRoutes = [
     {
         title: "Settings",
         icon: <SettingsIcon fontSize="large"/>,
+        route: "/settings",
         view: CONFIG_PANEL,
         component: <ConfigPane/>,
         id: nanoid()
