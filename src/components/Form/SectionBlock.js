@@ -7,10 +7,13 @@ const blockHeader = {
   fontSize: '1.4rem'
 }
 
-const SectionBlock = ({ name, children }) => {
+const SectionBlock = ({ name, children, button }) => {
   return (
     <div>
-      <h3 style={blockHeader}> {name} </h3>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <h3 style={blockHeader}> {name} </h3>
+        {button}
+      </div>
       <div style={blockStyle}>
         {children}
       </div>

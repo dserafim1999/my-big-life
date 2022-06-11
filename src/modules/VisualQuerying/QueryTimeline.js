@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 import Card from "../../containers/Card";
 import QueryStay from "./QueryStay";
 import QueryRoute from './QueryRoute';
-import QueryDatePicker from "./QueryDatePicker";
+import QueryDatePicker from "../../components/Form/QueryDatePicker";
+import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
@@ -19,12 +20,16 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const height = 125;
     const stayWidth = 200;
 
-    const timelineRef = useRef();
+    var timelineRef = useRef();
     
     const [id, setId] = useState(0);
     const [dateOpen, setIsDateOpen] = useState(false);
     const [date, setDate] = useState("--/--/----");
     const [fullWidth, setFullWidth] = useState(window.innerWidth * timelineWidthPercentage);
+
+    useEffect( () => {
+        onClearQuery();
+    }, []);
 
     useEffect(() => {
         const handleResize = () => {
@@ -32,25 +37,6 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         }
         window.addEventListener('resize', handleResize)
     });
-
-    const defaultRoute = {
-        route: "",
-        duration:"",
-        start: "",
-        end: "",
-        temporalStartRange: "",
-        temporalEndRange: ""
-    };
-
-    const defaultStay = {
-        location: "",
-        spatialRange: "",
-        start: "",
-        end: "",
-        duration: "",
-        temporalEndRange: "",
-        temporalStartRange: ""
-    };
 
     const onDoubleClick = (e) => {
         window.getSelection().empty();
@@ -68,7 +54,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
 
         if (inBounds && e.target.className.includes("timeline")) {
             var stayId;
-            var queryState = {...defaultStay, queryBlock: {x: startX}};
+            var queryState = {...DEFAULT_STAY, queryBlock: {x: startX}};
 
 
             if(query.size > 0) {
@@ -78,7 +64,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
 
                 dispatch(addQueryStayAndRoute(
                     queryState,
-                    {...defaultRoute, queryBlock:{id: routeId}},
+                    {...DEFAULT_ROUTE, queryBlock:{id: routeId}},
                 ));                
             } else {
                 stayId = id;
@@ -101,6 +87,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const displayTimeline = () => {
         const queryBlocks = [];
         const allQueryBlocks = query.toJS();
+        console.log(allQueryBlocks)
         
         for (var i = 0; i < allQueryBlocks.length; i++) {
             if (i % 2 === 0) {
@@ -202,6 +189,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                                 onChange={(newValue) => onChangeDate(newValue)}
                                 onClick={() => setIsDateOpen(true)}
                                 onClose={(clear) => onCloseDate(clear)}
+                                visual={true}
                             />
                         </div>
                         { displayTimeline() }

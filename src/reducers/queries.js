@@ -39,7 +39,9 @@ const updateQueryBlock = (state, action) => {
 
   query[index] = action.block;
 
-  query = updateNeighbourMinMaxX(query, index);
+  if (query[index].queryBlock.hasOwnProperty('x')) {
+    query = updateNeighbourMinMaxX(query, index);
+  }
 
   return state.setIn(['query'], List(query));
 }
@@ -48,8 +50,11 @@ const addQueryStay = (state, action) => {
   var query = state.toJS()["query"];
 
   query.push(action.stay);
-  query = updateMinMaxX(query, query.length - 1);
-  
+
+  if (query[query.length - 1].queryBlock.hasOwnProperty('x')) {
+    query = updateMinMaxX(query, query.length - 1);
+  }
+
   return state.setIn(['query'], List(query));
 }
 
@@ -59,8 +64,10 @@ const addQueryStayAndRoute = (state, action) => {
   query.push(action.route);
   query.push(action.stay);
 
-  query = updateMinMaxX(query, query.length - 1);
-  query = updateNeighbourMinMaxX(query, query.length - 1);
+  if (query[query.length - 1].queryBlock.hasOwnProperty('x')) {
+    query = updateMinMaxX(query, query.length - 1);
+    query = updateNeighbourMinMaxX(query, query.length - 1);
+  }
 
   return state.setIn(['query'], List(query));
 }

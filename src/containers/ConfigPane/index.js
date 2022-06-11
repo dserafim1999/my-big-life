@@ -128,6 +128,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
         <footer style={{ textAlign: 'right', paddingTop: '10px' }} className='control'> 
           <AsyncButton 
             title='Save Configuration Settings'
+            className='is-blue'
             onClick={(e, modifier) => {
               modifier('is-loading')
               onSubmit()

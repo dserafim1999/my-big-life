@@ -1,15 +1,7 @@
 import React from 'react';
-import { TextField as TextInput } from '@mui/material';
+import { InputAdornment, TextField as TextInput } from '@mui/material';
 
-const TextField = ({ title, placeholder, type, defaultValue, help, onChange, ...details }) => {
-  const getValue = (value) => {
-    switch (type) {
-      case 'number': return parseFloat(value);
-      case 'boolean': return value === 'true';
-      default: return value;
-    }
-  }
-
+const TextField = ({ title, placeholder, type, defaultValue, help, onChange, suffix=null, ...details }) => {
   return (
     <span key={title}>
       <TextInput {...details}
@@ -22,6 +14,11 @@ const TextField = ({ title, placeholder, type, defaultValue, help, onChange, ...
         helperText={help}
         fullWidth
         style={{paddingBottom: '20px'}}
+        {...details}
+        InputProps={suffix ? {
+            endAdornment: <InputAdornment position="end">{suffix}</InputAdornment>,
+          } : {}
+        }
       />
     </span>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
-import QueryTimePicker from "./QueryTimePicker";
+import QueryTimePicker from "../../components/Form/QueryTimePicker";
 
 const deleteButtonStyle = {
   position: "absolute",
@@ -146,6 +146,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   onChange={(newValue) => setQuery({...query, 'start': newValue})}
                   onClick={() => setIsStartOpen(true)}
                   onClose={(clear) => onCloseStart(clear)}
+                  visual={true}
               />
               <input
                 id="duration"
@@ -163,6 +164,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   onChange={(newValue) => setQuery({...query, 'end': newValue})}
                   onClick={() => setIsEndOpen(true)}
                   onClose={(clear) => onCloseEnd(clear)}
+                  visual={true}
               />
           </div>
           <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight*1.25 + 'px'}}>

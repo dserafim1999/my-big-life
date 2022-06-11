@@ -2,7 +2,7 @@ import React from "react";
 
 import { nanoid } from "nanoid";
 
-import SearchBar from "./SearchBar";
+import Search from "./Search";
 import LifeEditor from "./LifeEditor";
 import VisualQuerying from "./VisualQuerying";
 
@@ -14,7 +14,7 @@ import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrackProcessing from "./TrackProcessing";
 import ConfigPane from "../containers/ConfigPane";
-import { CONFIG_PANEL, LIFE_EDITOR, MAIN_VIEW, SEARCH_BAR, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
+import { CONFIG_PANEL, LIFE_EDITOR, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
 import { getActiveRoute } from "../utils";
 import MainView from "./MainView";
 
@@ -45,8 +45,9 @@ export const ModuleRoutes = [
     {
         title: "Search",
         icon: <SearchIcon fontSize="large"/>,
-        view: SEARCH_BAR,
-        component: <SearchBar/>,
+        route: "/search",
+        view: SEARCH,
+        component: <Search/>,
         id: nanoid()
     },
     {
