@@ -114,11 +114,11 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
 
     return (
       <Card width={400} verticalOffset={1} horizontalOffset={1}>
-        <h1 style={{margin: '10px 0px 20px'}}>Settings</h1>
+        <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem'}}>Settings</h1>
         <section style={{ flexGrow: 1, overflowY: 'auto', maxHeight: '460px'}}>
           <div style={{ maxWidth: '400px', margin: 'auto' }}>
-            <SectionBlock name='Server Address'>
-              <TextField title='Server Address' defaultValue={address} onChange={(e) => setState({...state, address: e.target.value})} />
+            <SectionBlock name='Server'>
+              <TextField title='Server' defaultValue={address} onChange={(e) => setState({...state, address: e.target.value})} />
             </SectionBlock>
 
             { serverSpecific }
