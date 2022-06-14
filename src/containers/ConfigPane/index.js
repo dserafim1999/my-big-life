@@ -40,6 +40,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
         <div>
           <SectionBlock name='General'>
             <OptionsField title='Default timezone' options={timezones} defaultValue={config.default_timezone} onChange={(e) => setState({...state, default_timezone: e.target.value})} />
+            <OptionsField title='Use LIFE Trip Annotations' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} />
           </SectionBlock>
 
           <SectionBlock name='Folders'>
@@ -67,10 +68,11 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
             <ToggleField title='Use'  onChange={(e) => setState({...state, smoothing: {...state.smoothing, use: e.target.value}})} checked={config.smoothing.use}/>
             <OptionsField title='Algorithm' onChange={(e) => setState({...state, smoothing: {...state.smoothing, algorithm: e.target.value}})} options={[{ label: 'Kalman with backwards pass', key: 'inverse' }, { label: 'Kalman with start interpolation', key: '' }]} defaultValue={config.smoothing.algorithm} help={
               <span>
-                <p>Algorithm to use to smooth tracks. There are two possibilities:</p>
-                <b> - Kalman with backwards pass</b>: applied the kalman filter two times. One from the start to the end, then from the end to the start. Then, each one are cut in half and spliced together. This method provides better results, but requires more time.
-                <br></br>
-                <b> - Kalman with start interpolation</b>: applied the kalman filter one times, but first extrapolates the begining of the track.
+                <span>Algorithm to use to smooth tracks. There are two possibilities:</span>
+                <br/>
+                <b> - Kalman with backwards pass</b>: applies the kalman filter two times. One from the start to the end, then from the end to the start. Then, each one are cut in half and spliced together. This method provides better results, but requires more time.
+                <br/>
+                <b> - Kalman with start interpolation</b>: applies the kalman filter once, but first extrapolates the begining of the track.
               </span>
             } />
             <TextField title='Noise' onChange={(e) => setState({...state, smoothing: {...state.smoothing, noise: e.target.value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />
