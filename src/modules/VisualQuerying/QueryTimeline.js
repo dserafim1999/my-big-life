@@ -87,7 +87,6 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const displayTimeline = () => {
         const queryBlocks = [];
         const allQueryBlocks = query.toJS();
-        console.log(allQueryBlocks)
         
         for (var i = 0; i < allQueryBlocks.length; i++) {
             if (i % 2 === 0) {
@@ -180,7 +179,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                 style={{margin: '25px'}}
                 isDraggable={false}
             >
-                <div className="horizontalAxis"/>
+                <hr className="horizontalAxis"/>
                 <div style={{width: '100%', height: '100%', display: 'flex'}}>
                         <div style={{zIndex: "1", backgroundColor: "white"}}>
                             <QueryDatePicker

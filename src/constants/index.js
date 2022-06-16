@@ -36,3 +36,5 @@ export const DEFAULT_STAY = {
   temporalEndRange: "",
   temporalStartRange: ""
 };
+
+export const MINUTES_IN_DAY = 24 * 60;
