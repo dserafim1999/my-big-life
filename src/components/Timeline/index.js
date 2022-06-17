@@ -1,20 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { useDimensions } from "../../utils";
+import { useDimensions, normalize } from "../../utils";
 import { MINUTES_IN_DAY } from "../../constants";
-import { normalize } from "../../utils";
 
-
-const Timeline = ({ data }) => {
+const Timeline = ({ data, showTimeLegend }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
     const { width, height } = useDimensions(ref);
     const minZoom = 1, maxZoom = 2.5;
     
-    var buffer = 20;
-    var timelineWidth = (width-2*buffer) * zoomLevel;
-    var startPos = 0+buffer;
-    var endPos = timelineWidth+buffer;
+    const buffer = 30;
+    const timelineWidth = (width-2*buffer) * zoomLevel;
+    const startPos = buffer;
+    const endPos = timelineWidth+buffer;
 
     useEffect(() => {
         const onScroll = (e) => {
@@ -69,9 +67,10 @@ const Timeline = ({ data }) => {
         }
     }
 
-    const drawAxisMarking = (pos, height, width, isEnd = false) => {
+    const drawAxisMarking = (pos, height, width, isStart=false, isEnd=false) => {
+        const isLimit = isStart || isEnd; 
         const markingStyle = {
-            borderLeft: width+"px solid "+ (isEnd ? "grey" : "lightgrey"),
+            borderLeft: width+"px solid "+ (isLimit ? "grey" : "lightgrey"),
             height: height+"px",
             position: "absolute",
             left: pos+"px",
@@ -80,7 +79,16 @@ const Timeline = ({ data }) => {
             padding: "0px"
         }
 
-        return <div style={markingStyle}/>
+        return (
+            <div style={markingStyle}>
+                {
+                    isLimit && showTimeLegend &&
+                    <span style={{fontSize: '10px',position: 'relative',top: '80%',right: '60%'}}> 
+                        {isStart? "00:00" : "23:59"}
+                    </span>
+                }
+            </div>
+        );
     }
 
     const getMaxFreq = (array) => {
@@ -138,8 +146,8 @@ const Timeline = ({ data }) => {
                 <hr className="horizontalAxis" style={{position: "absolute", left: buffer, width: timelineWidth}}/>
                 {
                     [...Array(25).keys()].map((i) => {
-                        if (i == 0) return drawAxisMarking(startPos, 50, 3, true);
-                        if (i == 24) return drawAxisMarking(endPos, 50, 3, true);
+                        if (i == 0) return drawAxisMarking(startPos, 50, 3, true, false);
+                        if (i == 24) return drawAxisMarking(endPos, 50, 3, false, true);
                         
                         return drawAxisMarking(i/24 * timelineWidth + buffer, i % 4 == 0? 10 : 5, i % 4 == 0? 2 : 1) 
                     })

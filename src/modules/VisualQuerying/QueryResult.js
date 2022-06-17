@@ -21,7 +21,7 @@ const QueryResult = ({ result }) => {
 
     return (
         <div style={resultStyle}>
-            <Timeline data={result} width={600}/>
+            <Timeline data={result} showTimeLegend={true}/>
         </div>
     )
 };
