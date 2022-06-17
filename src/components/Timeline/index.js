@@ -2,11 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
 import { useDimensions, normalize } from "../../utils";
 import { MINUTES_IN_DAY } from "../../constants";
+import useDraggableScroll from "use-draggable-scroll";
 
 const Timeline = ({ data, showTimeLegend }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
     const { width, height } = useDimensions(ref);
+    const { onMouseDown } = useDraggableScroll(ref);
     const minZoom = 1, maxZoom = 2.5;
     
     const buffer = 30;
@@ -37,7 +39,8 @@ const Timeline = ({ data, showTimeLegend }) => {
         width: "100%", 
         height: "100px", 
         position: "relative",
-        overflowX: "scroll",
+        overflow: "hidden",
+        cursor: "pointer"
     } 
 
     
@@ -157,7 +160,7 @@ const Timeline = ({ data, showTimeLegend }) => {
     }
 
     return (
-        <div ref={ref} style={timelineStyle}>
+        <div ref={ref} style={timelineStyle} onMouseDown={onMouseDown}>
             <div style={{width: width}}>
                     { renderAxis() }
                     { renderData() }
