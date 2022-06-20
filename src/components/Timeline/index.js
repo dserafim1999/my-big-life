@@ -7,10 +7,10 @@ import Stay from "./Stay";
 import Route from "./Route";
 import { drawAxisMarking } from './drawAxisMarking';
 
-const Timeline = ({ render, showTimeLegend, onClick }) => {
+const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
-    const { width, height } = useDimensions(ref);
+    const { width } = useDimensions(ref);
     const { onMouseDown } = useDraggableScroll(ref);
     const minZoom = 1, maxZoom = 2.5;
     
@@ -77,9 +77,10 @@ const Timeline = ({ render, showTimeLegend, onClick }) => {
 
                         const spanWidth = end - start;
                         const opacity = getOpacityValue(span.freq, maxFreq);
+                        console.log(span.location)
             
                         return block === "stay" ? 
-                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity}/>] : 
+                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : false}/>] : 
                             [<Route key={span.id} start={start} width={spanWidth} opacity={opacity}/>];
                     })
                 }

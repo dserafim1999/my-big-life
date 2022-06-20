@@ -1,4 +1,3 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import Timeline from "../../components/Timeline";
 import { groupBy } from "../../utils";
@@ -60,7 +59,12 @@ const QueryResult = ({ result }) => {
                     {seeMore && Object.entries(groupedByDate).map(([key, value], i) => {
                         return ( 
                             <div style={{backgroundColor: "#f4f4f4"}}>
-                                <Timeline key={key + i} render={getRenderObject(value)} showTimeLegend={true}/>
+                                <Timeline 
+                                    key={key + i} 
+                                    render={getRenderObject(value)} 
+                                    showTimeLegend={true} 
+                                    showStayLegend={true}
+                                />
                             </div>
                         )})
                     }
@@ -74,7 +78,11 @@ const QueryResult = ({ result }) => {
             {
                 result.multiple ? 
                     multipleTimeline() :
-                    <Timeline render={result.render} showTimeLegend={true}/>
+                    <Timeline 
+                        render={result.render} 
+                        showTimeLegend={true} 
+                        showStayLegend={true}
+                    />
             }
         </div>
     )
