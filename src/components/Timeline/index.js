@@ -3,8 +3,11 @@ import moment from "moment";
 import { useDimensions, normalize } from "../../utils";
 import { MINUTES_IN_DAY } from "../../constants";
 import useDraggableScroll from "use-draggable-scroll";
+import Stay from "./Stay";
+import Route from "./Route";
+import { drawAxisMarking } from './drawAxisMarking';
 
-const Timeline = ({ data, showTimeLegend }) => {
+const Timeline = ({ render, showTimeLegend }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
     const { width, height } = useDimensions(ref);
@@ -43,57 +46,6 @@ const Timeline = ({ data, showTimeLegend }) => {
         cursor: "pointer"
     } 
 
-    
-    const stayStyle = (start, spanWidth, opacity) => {
-        return {
-            position:"absolute",
-            left: start, 
-            backgroundColor: "#821d1d", 
-            width: spanWidth, 
-            height: "50px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            opacity: opacity,
-        }
-    }
-    
-    const routeStyle = (start, spanWidth, opacity) => {
-        return {
-            position:"absolute",
-            left: start, 
-            backgroundColor: "grey", 
-            width: spanWidth, 
-            height: "5px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            opacity: opacity,
-        }
-    }
-
-    const drawAxisMarking = (pos, height, width, isStart=false, isEnd=false) => {
-        const isLimit = isStart || isEnd; 
-        const markingStyle = {
-            borderLeft: width+"px solid "+ (isLimit ? "grey" : "lightgrey"),
-            height: height+"px",
-            position: "absolute",
-            left: pos+"px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            padding: "0px"
-        }
-
-        return (
-            <div style={markingStyle}>
-                {
-                    isLimit && showTimeLegend &&
-                    <span style={{fontSize: '10px',position: 'relative',top: '80%',right: '60%'}}> 
-                        {isStart? "00:00" : "23:59"}
-                    </span>
-                }
-            </div>
-        );
-    }
-
     const getMaxFreq = (array) => {
         return Math.max(...array.map(o => o.freq));
     } 
@@ -111,9 +63,9 @@ const Timeline = ({ data, showTimeLegend }) => {
         return normalize(minutes, 0, MINUTES_IN_DAY - 1, startPos, endPos);
     }
 
-    const draw = (type, style) => {
+    const draw = (type, block) => {
         if (type === undefined) return;
-        const maxFreq = getMaxFreq(data.stays);
+        const maxFreq = getMaxFreq(type);
         
         return (
             <div className={type} style={{position: "absolute", display: "flex", height: "100%"}}>
@@ -127,7 +79,9 @@ const Timeline = ({ data, showTimeLegend }) => {
                         const spanWidth = end - start;
                         const opacity = getOpacityValue(span.freq, maxFreq);
             
-                        return [<div style={style(start, spanWidth, opacity)}></div>];
+                        return block === "stay" ? 
+                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity}/>] : 
+                            [<Route key={span.id} start={start} width={spanWidth} opacity={opacity}/>];
                     })
                 }
             </div>
@@ -136,9 +90,9 @@ const Timeline = ({ data, showTimeLegend }) => {
 
     const renderData = () => {
         return (
-            <div className="dataContainer">
-                { draw(data.stays, stayStyle) }
-                { draw(data.routes, routeStyle) }
+            <div className="renderContainer">
+                { draw(render.stays, "stay") }
+                { draw(render.routes, "route") }
             </div>
         )
     }
@@ -149,10 +103,10 @@ const Timeline = ({ data, showTimeLegend }) => {
                 <hr className="horizontalAxis" style={{position: "absolute", left: buffer, width: timelineWidth}}/>
                 {
                     [...Array(25).keys()].map((i) => {
-                        if (i == 0) return drawAxisMarking(startPos, 50, 3, true, false);
-                        if (i == 24) return drawAxisMarking(endPos, 50, 3, false, true);
+                        if (i == 0) return drawAxisMarking(i, startPos, 50, 3, showTimeLegend, true, false);
+                        if (i == 24) return drawAxisMarking(i, endPos, 50, 3, showTimeLegend, false, true);
                         
-                        return drawAxisMarking(i/24 * timelineWidth + buffer, i % 4 == 0? 10 : 5, i % 4 == 0? 2 : 1) 
+                        return drawAxisMarking(i, i/24 * timelineWidth + buffer, i % 4 == 0? 10 : 5, i % 4 == 0? 2 : 1) 
                     })
                 }
             </>
