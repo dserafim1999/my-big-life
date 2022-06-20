@@ -7,7 +7,7 @@ import Stay from "./Stay";
 import Route from "./Route";
 import { drawAxisMarking } from './drawAxisMarking';
 
-const Timeline = ({ render, showTimeLegend }) => {
+const Timeline = ({ render, showTimeLegend, onClick }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
     const { width, height } = useDimensions(ref);
@@ -42,8 +42,7 @@ const Timeline = ({ render, showTimeLegend }) => {
         width: "100%", 
         height: "100px", 
         position: "relative",
-        overflow: "hidden",
-        cursor: "pointer"
+        overflow: "hidden"
     } 
 
     const getMaxFreq = (array) => {
@@ -114,7 +113,7 @@ const Timeline = ({ render, showTimeLegend }) => {
     }
 
     return (
-        <div ref={ref} style={timelineStyle} onMouseDown={onMouseDown}>
+        <div ref={ref} style={timelineStyle} onMouseDown={onMouseDown} onClick={onClick}>
             <div style={{width: width}}>
                     { renderAxis() }
                     { renderData() }

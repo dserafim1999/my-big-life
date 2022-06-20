@@ -9,7 +9,8 @@ export const drawAxisMarking = (index, pos, height, width, showTimeLegend, isSta
         left: pos+"px",
         top: "50%",
         transform: "translateY(-50%)",
-        padding: "0px"
+        padding: "0px",
+        zIndex: isLimit? "100" : ""
     }
 
     return (

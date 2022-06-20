@@ -24,6 +24,13 @@ export const normalize = (m, rmin, rmax, tmin, tmax) => {
     return (m - rmin) / (rmax - rmin) * (tmax - tmin) + tmin
 }
 
+export const groupBy = (xs, key) => {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+}
+
 export const useDimensions = (ref) => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 

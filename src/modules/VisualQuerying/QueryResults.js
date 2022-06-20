@@ -10,7 +10,9 @@ const QueryResults = ({ dispatch, results }) => {
         (
             <Card width={700} height={450} style={{margin: '175px 25px'}} isDraggable={true}>
                 <div style={{ flexGrow: 1, overflowY: 'auto', height: '100%' }}>
-                    {results.map((x) => {if (x !== undefined) return <QueryResult key={x.id} result={x}/>})}
+                    {
+                        results.map((x) => {if (x !== undefined) return <QueryResult key={x.id} result={x}/>})
+                    }
                 </div>
             </Card>
         )
