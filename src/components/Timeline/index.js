@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { useDimensions, normalize } from "../../utils";
+import { normalize } from "../../utils";
+import useDimensions from "../../utils/useDimensions";
 import { MINUTES_IN_DAY } from "../../constants";
 import useDraggableScroll from "use-draggable-scroll";
 import Stay from "./Stay";
