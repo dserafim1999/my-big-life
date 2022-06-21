@@ -10,6 +10,7 @@ export const isEquals = (a, b) => {
 
 export const max = (a, b) => a >= b ? a : b;
 export const min = (a, b) => a <= b ? a : b;
+export const clamp = (val, min, max) => val > max ? max : val < min ? min : val;
 
 export const normalize = (m, rmin, rmax, tmin, tmax) => {
     /*

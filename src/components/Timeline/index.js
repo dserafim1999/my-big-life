@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { normalize } from "../../utils";
+import { normalize, clamp } from "../../utils";
 import useDimensions from "../../utils/useDimensions";
 import { MINUTES_IN_DAY } from "../../constants";
 import useDraggableScroll from "use-draggable-scroll";
@@ -25,8 +25,12 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
             if (e.ctrlKey) {
                 e.preventDefault();
             }
-            console.log(e)
-            limitZoomLevel(zoomLevel - (e.deltaY/Math.abs(e.deltaY)) * zoomIncrement);
+
+            const direction = (e.deltaY/Math.abs(e.deltaY));
+            var relativePos = clamp(e.offsetX/width, 0, 1).toFixed(1);
+            
+            if (ref.current) ref.current.scrollLeft += width * relativePos;
+            limitZoomLevel(zoomLevel - (direction) * zoomIncrement);
         };
         
         window.removeEventListener('wheel', onScroll);

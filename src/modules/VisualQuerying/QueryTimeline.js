@@ -13,6 +13,7 @@ import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
+import useDimensions from '../../utils/useDimensions';
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
@@ -20,7 +21,8 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const height = 125;
     const stayWidth = 200;
 
-    var timelineRef = useRef();
+    var timelineRef = useRef(null);
+    const { width } = useDimensions(timelineRef);
     
     const [id, setId] = useState(0);
     const [dateOpen, setIsDateOpen] = useState(false);
@@ -42,7 +44,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         window.getSelection().empty();
         const startX = e.screenX - relativeOffset;
         var lastStayX;
-        const maxX = timelineRef.current.offsetWidth - stayWidth;
+        const maxX = width - stayWidth;
         
         lastStayX = query.size > 0 ? query.toJS().pop().queryBlock.x : undefined;
 
@@ -94,7 +96,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                     type: 'stay',
                     id: allQueryBlocks[i].queryBlock.id,
                     width: stayWidth,
-                    maxWidth: timelineRef.current.offsetWidth,
+                    maxWidth: width, 
                     maxHeight: height,
                     queryState: allQueryBlocks[i],
                     dispatch: dispatch,

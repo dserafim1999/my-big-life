@@ -82,11 +82,11 @@ const QueryResult = ({ result }) => {
         )
     }
 
-    const renderResultTimeline = (render, date,  showStayLegend = false, key = undefined, style = {}) => {
+    const renderResultTimeline = (render, date, showStayLegend = false, key = undefined, style = {}) => {
         return (
             <div key={key} style={{ display: "flex", ...style}}>
                 { renderDateDiv(date) }
-                <Timeline render={render} showTimeLegend={true} showStayLegend={showStayLegend}/>
+                <Timeline key={key} render={render} showTimeLegend={true} showStayLegend={showStayLegend}/>
             </div>
         );
     } 
