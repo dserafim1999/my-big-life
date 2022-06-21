@@ -1,6 +1,21 @@
 import { Tooltip } from "@mui/material";
 import React from "react";
 
+
+const legendStyle = {
+    color: "white",
+    fontSize: "12px",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%,-50%)",
+    textAlign: "center",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    width: "100%",
+    padding: "5px"
+}
+
 const Stay = ({ start, width, opacity, legend }) => {
     const stayStyle =  {
         position:"absolute",
@@ -12,21 +27,7 @@ const Stay = ({ start, width, opacity, legend }) => {
         transform: "translateY(-50%)",
         opacity: opacity,
     }
-
-    const legendStyle = {
-        color: "white",
-        fontSize: "12px",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%,-50%)",
-        textAlign: "center",
-        textOverflow: "ellipsis",
-        overflow: "hidden",
-        width: "100%",
-        padding: "5px"
-    }
-
+    
     const hasLegend = () => {
         return legend !== undefined && legend !== "";
     }

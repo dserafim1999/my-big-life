@@ -12,7 +12,7 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
     const ref = useRef(null);
     const { width } = useDimensions(ref);
     const { onMouseDown } = useDraggableScroll(ref);
-    const minZoom = 1, maxZoom = 2.5;
+    const minZoom = 1, maxZoom = 5, zoomIncrement = 0.2;
     
     const buffer = 30;
     const timelineWidth = (width-2*buffer) * zoomLevel;
@@ -24,7 +24,8 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
             if (e.ctrlKey) {
                 e.preventDefault();
             }
-            limitZoomLevel(zoomLevel - (e.deltaY/Math.abs(e.deltaY)) * 0.05);
+            console.log(e)
+            limitZoomLevel(zoomLevel - (e.deltaY/Math.abs(e.deltaY)) * zoomIncrement);
         };
         
         window.removeEventListener('wheel', onScroll);
@@ -33,9 +34,13 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
     });
 
     const limitZoomLevel = (zoom) => {
-        if (zoom >= minZoom && zoom <= maxZoom) {
-            setZoomLevel(zoom);
+        if (zoom < minZoom) {
+            zoom = minZoom;
+        } else if (zoom > maxZoom) {
+            zoom = maxZoom;
         }
+
+        setZoomLevel(zoom);
     }
 
     var timelineStyle = {
