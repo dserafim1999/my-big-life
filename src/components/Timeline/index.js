@@ -77,10 +77,9 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
 
                         const spanWidth = end - start;
                         const opacity = getOpacityValue(span.freq, maxFreq);
-                        console.log(span.location)
             
                         return block === "stay" ? 
-                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : false}/>] : 
+                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : ""}/>] : 
                             [<Route key={span.id} start={start} width={spanWidth} opacity={opacity}/>];
                     })
                 }

@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import React from "react";
 
 const Stay = ({ start, width, opacity, legend }) => {
@@ -22,15 +23,22 @@ const Stay = ({ start, width, opacity, legend }) => {
         textAlign: "center",
         textOverflow: "ellipsis",
         overflow: "hidden",
-        width: "100%"
+        width: "100%",
+        padding: "5px"
+    }
+
+    const hasLegend = () => {
+        return legend !== undefined && legend !== "";
     }
 
     return (
-        <div style={stayStyle}>
-            { legend &&
-                <span style={legendStyle}>{legend}</span>
-            }
-        </div>
+        <Tooltip title={legend} style={{display: hasLegend() ? "block" : "none"}}>
+            <div style={stayStyle}>
+                { legend &&
+                    <span style={legendStyle}>{legend}</span>
+                }
+            </div>
+        </Tooltip>
     );
 }
   
