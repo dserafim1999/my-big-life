@@ -34,6 +34,7 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
     }
 
     const onClear = () => {
+        setValueState("");
         onClose(true);
     }
 
@@ -63,7 +64,7 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
           },
       });
 
-    const timePickerRenderer = () => {
+    const TimePickerRenderer = () => {
         if (visual) {
             return (
                 <TimePicker
@@ -112,7 +113,7 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
 
     return (
         <ThemeProvider theme={theme}>
-            {timePickerRenderer()}
+            { TimePickerRenderer() }
         </ThemeProvider>
     );
 };

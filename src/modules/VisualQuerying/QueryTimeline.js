@@ -86,7 +86,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         return stayQueryBlock;
     }
 
-    const displayTimeline = () => {
+    const TimelineComponents = () => {
         const queryBlocks = [];
         const allQueryBlocks = query.toJS();
         
@@ -193,7 +193,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                                 visual={true}
                             />
                         </div>
-                        { displayTimeline() }
+                        { TimelineComponents() }
                         <div style={{zIndex: "1", backgroundColor: "white", position: 'relative', top: '50%', transform: 'translateY(-40%)'}}>
                             <div>
                                 <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>

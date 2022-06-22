@@ -30,6 +30,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
 
 
     const onClear = () => {
+        setValueState("");
         onClose(true);
     }
 
@@ -47,7 +48,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
           },
     });
 
-    const datePickerRenderer = () => {
+    const DatePickerRenderer = () => {
         if (visual) {
             return (
                 <DatePicker
@@ -97,7 +98,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
     return (
         
         <ThemeProvider theme={theme}>
-            { datePickerRenderer() }
+            { DatePickerRenderer() }
         </ThemeProvider>
     );
 };
