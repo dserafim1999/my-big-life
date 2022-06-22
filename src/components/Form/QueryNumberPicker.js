@@ -1,13 +1,19 @@
-import { createTheme, InputAdornment, Popover, TextField, ThemeProvider, Typography } from "@mui/material";
+import { createTheme, InputAdornment, Popover, TextField, ThemeProvider } from "@mui/material";
 import React, { useRef, useState } from "react";
 
 
-const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOperators, style}) => {
+const QueryNumberPicker = ({value, onChange, onClear, label, placeholder, suffix="", initialOperator = "", showOperators, style}) => {
     const [open, setIsOpen] = useState(false);
-    const [operator, setOperator] = useState("");
-    const [valueState, setValueState] = useState(0);
+    const [operator, setOperator] = useState(initialOperator);
     const ref = useRef(null);
-    
+    const min = 0;
+
+    const isEmptyValue = () => {
+        return  value === "" || value === operator;
+    } 
+
+    const [valueState, setValueState] = useState(isEmptyValue() ? min : value);
+
     const boxStyle = {
         alignItems: "center", 
         cursor: "text",
@@ -16,7 +22,7 @@ const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOpe
     }
 
     const valueRepresentation = () => {
-        return value === "" || value === operator ? placeholder : value;
+        return isEmptyValue() ? placeholder : value;
     }
 
     const theme = createTheme({
@@ -39,11 +45,16 @@ const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOpe
 
     const Toolbar = (
         <div style={{display: "flex", justifyContent: "space-between"}}>
-            <button className="button" style={getButtonStyle("<")} onClick={(e) => onOperatorClick(e, "<")}>{"<"}</button>
-            <button className="button" style={getButtonStyle("≤")} onClick={(e) => onOperatorClick(e, "≤")}>{"≤"}</button>
-            <button className="button" style={getButtonStyle("" )} onClick={(e) => onOperatorClick(e, "" ) }>{"="}</button>
-            <button className="button" style={getButtonStyle("≥")} onClick={(e) => onOperatorClick(e, "≥")}>{"≥"}</button>
-            <button className="button" style={getButtonStyle(">")} onClick={(e) => onOperatorClick(e, ">")}>{">"}</button>
+            { showOperators && (
+                <>
+                    <button className="button" style={getButtonStyle("<")} onClick={(e) => onOperatorClick(e, "<")}>{"<"}</button>
+                    <button className="button" style={getButtonStyle("≤")} onClick={(e) => onOperatorClick(e, "≤")}>{"≤"}</button>
+                    <button className="button" style={getButtonStyle("")} onClick={(e) => onOperatorClick(e, "")}>{"="}</button>
+                    <button className="button" style={getButtonStyle("≥")} onClick={(e) => onOperatorClick(e, "≥")}>{"≥"}</button>
+                    <button className="button" style={getButtonStyle(">")} onClick={(e) => onOperatorClick(e, ">")}>{">"}</button>
+                </>
+            )}
+            <button className="button" style={{width: "100%"}} onClick={() => onValueClear()}>Clear</button>
         </div>
     );
 
@@ -51,14 +62,25 @@ const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOpe
         setIsOpen(false);
     }
 
-    const onValueChange = (e) => {
-        setValueState(e.target.value);
-        e.preventDefault();
-        onChange(operator + e.target.value + suffix);
+    const onValueClear = () => {
+        setOperator(initialOperator);
+        setValueState(min);
+        onClear();
     }
 
-    const numberPickerRenderer = () => {
-        return (
+    const onValueChange = (e) => {
+        var newValue = e.target.value < min ? min : e.target.value;
+        e.preventDefault();
+
+        setValueState(newValue);
+        onChange(operator + newValue + suffix);
+    }
+
+    const getNumericValue = () => {
+        return value.replace(suffix, '').replace(operator, '');
+    } 
+
+    const NumberPickerRenderer = (
         <>
             <span 
                 ref={ref} 
@@ -85,7 +107,8 @@ const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOpe
             >
                 <TextField
                     label={label}
-                    variant="filled" 
+                    variant="filled"
+                    value={getNumericValue()} 
                     type="number"
                     onChange={onValueChange}
                     fullWidth
@@ -93,16 +116,14 @@ const QueryNumberPicker = ({value, onChange, label, placeholder, suffix, showOpe
                         endAdornment: <InputAdornment position="end">{suffix}</InputAdornment>,
                     }}
                 />
-                { showOperators && Toolbar }
+                { Toolbar }
             </Popover>
         </>
         );
-        
-    }
-
+    
     return (
         <ThemeProvider theme={theme}>
-            { numberPickerRenderer() }
+            { NumberPickerRenderer }
         </ThemeProvider>
     );
 };

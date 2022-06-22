@@ -7,6 +7,7 @@ import TimeIcon from "@mui/icons-material/AccessTime";
 
 const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false, title, help}) => {
     const [operator, setOperator] = useState("");
+    const [valueState, setValueState] = useState(value);
     
     const valueRepresentation = () => {
         return value === "" ? "--:--" : value;
@@ -18,13 +19,14 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
             value.substring(1); // removes operator
     }
 
-    const dateFormat = (newValue) => {
+    const dateFormat = (newValue, operator) => {
         return newValue === "" || newValue === null  ? "" : operator + newValue.format("HH:mm");
     }
 
     const onOperatorClick = (e, operator) => {
         e.preventDefault();
         setOperator(operator);
+        onChange(dateFormat(valueState, operator));
     }
 
     const getButtonStyle = (op) => {
@@ -33,6 +35,11 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
 
     const onClear = () => {
         onClose(true);
+    }
+
+    const onValueChange = (newValue) => {
+        setValueState(newValue);
+        onChange(dateFormat(newValue, operator));
     }
 
     const Toolbar = (
@@ -63,8 +70,8 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
                     value={valueFormat()}
                     open={open}
                     showToolbar={true}
-                    ToolbarComponent={(props) => Toolbar}
-                    onChange={(value) => onChange(dateFormat(value))}
+                    ToolbarComponent={() => Toolbar}
+                    onChange={(value) => onValueChange(value)}
                     onClose={() => onClose(false)}
                     renderInput={({inputRef}) => {
                     return (
@@ -81,8 +88,8 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
                     value={valueFormat()}
                     open={open}
                     showToolbar={true}
-                    ToolbarComponent={(props) => Toolbar}
-                    onChange={(value) => onChange(dateFormat(value))}
+                    ToolbarComponent={() => Toolbar}
+                    onChange={(value) => onValueChange(value)}
                     onClose={() => onClose(false)}
                     renderInput={ ({inputRef}) => 
                         <TextField 

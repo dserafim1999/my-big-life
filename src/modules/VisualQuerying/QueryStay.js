@@ -57,9 +57,18 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
           y: state.y - heightDelta
         });
 
-        const spatialRange = query["spatialRange"] === "" ? "0m" : query["spatialRange"];
+        var spatialRange = "0m", operator = "";
+        if (query["spatialRange"] !== "") {
+          const firstChar = query["spatialRange"][0];
+          if (isNaN(firstChar)) {
+            operator = firstChar;
+            spatialRange = query["spatialRange"].substring(1);
+          } else {
+            spatialRange = query["spatialRange"];
+          }
+        }
 
-        setQuery({...query, "spatialRange": parseInt(spatialRange.slice(0, -1)) + 100*heightDelta + "m"});
+        setQuery({...query, "spatialRange": operator + (parseInt(spatialRange.slice(0, -1)) + 100 * heightDelta) + "m"});
     }
 
     const onDrag = (e, d) => { 
@@ -138,6 +147,9 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   onChange={(value) => setQuery(
                       {...query, "spatialRange": value}
                   )}
+                  onClear={() => setQuery(
+                      {...query, "spatialRange": ""}
+                  )}
                   label="Spatial Range"
                   placeholder="0m"
                   suffix="m"
@@ -158,6 +170,9 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   onChange={(value) => setQuery(
                       {...query, "duration": value}
                   )}
+                  onClear={() => setQuery(
+                      {...query, "duration": ""}
+                  )}
                   label="Duration"
                   placeholder="duration"
                   suffix="min"
@@ -176,20 +191,28 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
               <QueryNumberPicker
                   value={query["temporalStartRange"]}
                   onChange={(value) => setQuery(
-                      {...query, "temporalStartRange": "±"+value}
+                      {...query, "temporalStartRange": value}
+                  )}
+                  onClear={() => setQuery(
+                    {...query, "temporalStartRange": ""}
                   )}
                   label="Temporal Start Range"
                   placeholder="start range"
                   suffix="min"
+                  initialOperator="±"
               />
               <QueryNumberPicker
                   value={query["temporalEndRange"]}
                   onChange={(value) => setQuery(
                       {...query, "temporalEndRange": value}
                   )}
+                  onClear={() => setQuery(
+                    {...query, "temporalEndRange": ""}
+                  )}
                   label="Temporal End Range"
                   placeholder="end range"
                   suffix="min"
+                  initialOperator="±"
               />
           </div>
         </div>
