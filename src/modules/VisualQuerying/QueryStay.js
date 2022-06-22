@@ -3,6 +3,7 @@ import { Rnd } from "react-rnd";
 import { updateQueryBlock } from "../../actions/queries";
 import CloseIcon from "@mui/icons-material/Close";
 import QueryTimePicker from "../../components/Form/QueryTimePicker";
+import QueryNumberPicker from "../../components/Form/QueryNumberPicker";
 
 const deleteButtonStyle = {
   position: "absolute",
@@ -41,7 +42,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
     }
 
     const onDoubleClick = (e) => {
-      e.preventDefault();
+      e.preventDefault();;
       setIsSelected(!selected);
     }
 
@@ -115,7 +116,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
         onDoubleClick={onDoubleClick}
         enableResizing={{ top:true, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
       >
-        <div style={{width: '100%', height: '100%'}}>
+        <div id={"stayBody"} style={{width: '100%', height: '100%'}}>
           {
             selected && (
               <div style={deleteButtonStyle}>
@@ -131,13 +132,17 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
               onChange={(e) => setQuery(
                 {...query, "location": e.target.value}
             )}/>
-            <input 
-              className="queryInput"
-              style={{color: 'white'}}
-              value={query["spatialRange"] === "" ? "0m" : query["spatialRange"]}
-              onChange={(e) => setQuery(
-                {...query, "spatialRange": e.target.value}
-            )}/>
+            <QueryNumberPicker
+                  style={{color: 'white'}}
+                  value={query["spatialRange"]}
+                  onChange={(value) => setQuery(
+                      {...query, "spatialRange": value}
+                  )}
+                  label="Spatial Range"
+                  placeholder="0m"
+                  suffix="m"
+                  showOperators={true}
+              />
           </div>
           <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight + 'px'}}>
               <QueryTimePicker
@@ -148,15 +153,15 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   onClose={(clear) => onCloseStart(clear)}
                   visual={true}
               />
-              <input
-                id="duration"
-                type="text"
-                placeholder="duration"
-                className="queryInput"
-                value={query["duration"]}
-                    onChange={(e) => setQuery(
-                        {...query, "duration": e.target.value}
-                )}
+              <QueryNumberPicker
+                  value={query["duration"]}
+                  onChange={(value) => setQuery(
+                      {...query, "duration": value}
+                  )}
+                  label="Duration"
+                  placeholder="duration"
+                  suffix="min"
+                  showOperators={true}
               />
               <QueryTimePicker
                   open={endOpen}
@@ -167,28 +172,24 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   visual={true}
               />
           </div>
-          <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight*1.25 + 'px'}}>
-              <input
-                id="temporalStartRange"
-                type="text"
-                placeholder="range"
-                style={{textAlign: "left"}}
-                className="queryInput"
-                value={query["temporalStartRange"]}
-                    onChange={(e) => setQuery(
-                        {...query, "temporalStartRange": e.target.value}
-                )}
+          <div style={{display: "flex", justifyContent: "space-between", position: "relative", top: state.height - footerHeight*1.1 + 'px'}}>
+              <QueryNumberPicker
+                  value={query["temporalStartRange"]}
+                  onChange={(value) => setQuery(
+                      {...query, "temporalStartRange": "±"+value}
+                  )}
+                  label="Temporal Start Range"
+                  placeholder="start range"
+                  suffix="min"
               />
-              <input
-                id="temporalEndRange"
-                type="text"
-                placeholder="range"
-                style={{textAlign: "right"}}
-                className="queryInput"
-                value={query["temporalEndRange"]}
-                    onChange={(e) => setQuery(
-                        {...query, "temporalEndRange": e.target.value}
-                )}
+              <QueryNumberPicker
+                  value={query["temporalEndRange"]}
+                  onChange={(value) => setQuery(
+                      {...query, "temporalEndRange": value}
+                  )}
+                  label="Temporal End Range"
+                  placeholder="end range"
+                  suffix="min"
               />
           </div>
         </div>
