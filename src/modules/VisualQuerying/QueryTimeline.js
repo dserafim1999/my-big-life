@@ -14,15 +14,17 @@ import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import useDimensions from '../../utils/useDimensions';
+import useDraggableScroll from 'use-draggable-scroll';
+import { clamp, normalize } from '../../utils';
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
     const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
-    const height = 125;
-    const stayWidth = 200;
+    const height = 125, stayWidth = 200;
 
     var timelineRef = useRef(null);
-    const { width } = useDimensions(timelineRef);
+    var { width } = useDimensions(timelineRef);
+    const { onMouseDown } = useDraggableScroll(timelineRef, { direction: 'horizontal' });
     
     const [id, setId] = useState(0);
     const [dateOpen, setIsDateOpen] = useState(false);
@@ -39,7 +41,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
         }
         window.addEventListener('resize', handleResize)
     });
-
+    
     const onDoubleClick = (e) => {
         window.getSelection().empty();
         const startX = e.screenX - relativeOffset;
@@ -96,7 +98,6 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                     type: 'stay',
                     id: allQueryBlocks[i].queryBlock.id,
                     width: stayWidth,
-                    maxWidth: width, 
                     maxHeight: height,
                     queryState: allQueryBlocks[i],
                     dispatch: dispatch,
@@ -123,16 +124,19 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
             }
         }
 
-
         return (
-            <div className='timeline' ref={timelineRef} style={{flexGrow: '1', height: '100%'}}>
-                            {queryBlocks.map((block) => {
-                                if (block.type === 'stay') {
-                                    return <QueryStay key={block.id} {...block} />
-                                } else if (block.type === 'route') {
-                                    return <QueryRoute key={block.id} {...block} />
-                                }
-                            })}
+            <div className='timeline' ref={timelineRef} onMouseDown={onMouseDown} style={{flexGrow: '1', height: '100%', width: '100%', position: 'relative', overflow: 'hidden'}}>
+                <div style={{ width: width }}>
+                    {
+                        queryBlocks.map((block) => {
+                            if (block.type === 'stay') {
+                                return <QueryStay key={block.id} {...block} />
+                            } else if (block.type === 'route') {
+                                return <QueryRoute key={block.id} {...block} />
+                            }
+                        })
+                    }
+                </div>
             </div>
         );
     }
