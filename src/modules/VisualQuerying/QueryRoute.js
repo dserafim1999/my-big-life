@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 import { updateQueryBlock } from "../../actions/queries";
+import QueryNumberPicker from "../../components/Form/QueryNumberPicker";
 
 const inputStyle={
     border: "none",
     backgroundColor: "transparent",
     resize: "none", 
     outline: "none", 
-    width: "35%", 
     textAlign: "center",
-    position: 'relative',
-    left: "35%",
-    transform: "translateY(-50%)",
-    color: 'black'
+    position: "relative",
+    color: "black"
   }
 
 const QueryRoute = ({id, start, end, queryState, dispatch}) => {
@@ -23,21 +21,27 @@ const QueryRoute = ({id, start, end, queryState, dispatch}) => {
       },[query]);
 
     const inputs = (
-        <div>
+        <div style={{display: "grid"}}>
             <input 
-                style={{...inputStyle, transform: 'translate(-50%, -50%)'}}
+                style={inputStyle}
                 placeholder="route"
                 onChange={(e) => setQuery(
                     {...query, "route": e.target.value}
                 )
             }/>
-            <input 
-                style={{...inputStyle, transform: 'translate(-150%, 50%)'}}
+            <QueryNumberPicker
+                value={query["duration"]}
+                onChange={(value) => setQuery(
+                    {...query, "duration": value}
+                )}
+                onClear={() => setQuery(
+                    {...query, "duration": ""}
+                )}
+                label="Duration"
                 placeholder="duration"
-                onChange={(e) => setQuery(
-                    {...query, "duration": e.target.value}
-                )
-            }/>
+                suffix="min"
+                showOperators={true}
+            />
         </div>
     );
 
