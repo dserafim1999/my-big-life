@@ -8,16 +8,18 @@ import DateIcon from '@mui/icons-material/DateRange';
 const boxStyle = {
     alignItems: "center", 
     display: "block", 
-    cursor: "text",
+    cursor: "pointer",
     position: "relative",
     top: "50%",
     transform: "translateY(-50%)",
-    marginRight: "15px"
+    marginRight: "15px",
+    width: '85px'
 }
 
 const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, visual=false}) => {
+
     const valueRepresentation = () => {
-        return value === null ? "--/--/----" : value;
+        return value === "--/--/----" || value === null ? <DateIcon style={{color: 'grey'}} /> : value;
     }
 
     const valueFormat = () => {
@@ -30,7 +32,6 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
 
 
     const onClear = () => {
-        setValueState("");
         onClose(true);
     }
 

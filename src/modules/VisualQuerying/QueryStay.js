@@ -15,7 +15,7 @@ const deleteButtonStyle = {
 
 const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
     const minWidth = 125;
-    const minHeight = 40;
+    const minHeight = 35;
     const footerHeight = 30;
     const height = minHeight;
 
@@ -75,6 +75,8 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
       const updatedQuery = query;
       const stayQueryBlock = onDragStay(id);
       
+      e.stopPropagation();
+      
       if (stayQueryBlock.maxX !== undefined && d.x >= stayQueryBlock.maxX - width) {
         setState({ ...state, x: stayQueryBlock.maxX - width });
       } else if (stayQueryBlock.minX !== undefined && d.x <= stayQueryBlock.minX + width) {
@@ -123,7 +125,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
         onDrag={onDrag}
         onResize={onResize}
         onDoubleClick={onDoubleClick}
-        enableResizing={{ top:true, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
+        enableResizing={{ top:true, right:true, bottom:false, left:true, topRight:true, bottomRight:false, bottomLeft:false, topLeft:true }}
       >
         <div id={"stayBody"} style={{width: '100%', height: '100%'}}>
           {
@@ -200,6 +202,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   placeholder="start range"
                   suffix="min"
                   initialOperator="±"
+                  style={{fontSize: '10px'}}
               />
               <QueryNumberPicker
                   value={query["temporalEndRange"]}
@@ -213,6 +216,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                   placeholder="end range"
                   suffix="min"
                   initialOperator="±"
+                  style={{fontSize: '10px'}}
               />
           </div>
         </div>
