@@ -125,7 +125,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
         onDrag={onDrag}
         onResize={onResize}
         onDoubleClick={onDoubleClick}
-        enableResizing={{ top:true, right:true, bottom:false, left:true, topRight:true, bottomRight:false, bottomLeft:false, topLeft:true }}
+        enableResizing={{ top:true, right:false, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
       >
         <div id={"stayBody"} style={{width: '100%', height: '100%'}}>
           {

@@ -13,17 +13,13 @@ import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import useDimensions from '../../utils/useDimensions';
 import useDraggableScroll from 'use-draggable-scroll';
-import { clamp, normalize } from '../../utils';
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
-    const relativeOffset = window.innerWidth * (1 - timelineWidthPercentage); // coords offset related to the percentage the Card's width will occupy on screen 
-    const height = 125, stayWidth = 200;
+    const height = 125, stayWidth = 200, maxWidth = 2000;
 
     var timelineRef = useRef(null);
-    var { width } = useDimensions(timelineRef);
     const { onMouseDown } = useDraggableScroll(timelineRef, { direction: 'horizontal' });
     
     const [id, setId] = useState(0);
@@ -44,21 +40,17 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     
     const onDoubleClick = (e) => {
         window.getSelection().empty();
-        const startX = e.screenX - relativeOffset;
         var lastStayX;
-        const maxX = width - stayWidth;
         
-        lastStayX = query.size > 0 ? query.toJS().pop().queryBlock.x : undefined;
+        lastStayX = query.size > 0 ? query.toJS().pop().queryBlock.x : 25;
 
         // only creates stay if inside timeline bounds and if position is after last stay
-        const inBounds = startX <= maxX  &&
-            (lastStayX === undefined) ? 
-                startX >= 0 :
-                startX > lastStayX && lastStayX + stayWidth <= maxX;
+        const x = query.size > 0 ? lastStayX + stayWidth + 100 : lastStayX;
+        const inBounds = x < maxWidth;
 
         if (inBounds && e.target.className.includes("timeline")) {
             var stayId;
-            var queryState = {...DEFAULT_STAY, queryBlock: {x: startX}};
+            var queryState = {...DEFAULT_STAY, queryBlock: {x: x}};
 
 
             if(query.size > 0) {
@@ -126,7 +118,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
 
         return (
             <div className='timeline' ref={timelineRef} onMouseDown={onMouseDown} style={{flexGrow: '1', height: '100%', width: '100%', position: 'relative', overflow: 'hidden'}}>
-                <div style={{ width: width }}>
+                <div style={{ width: maxWidth }}>
                     {
                         queryBlocks.map((block) => {
                             if (block.type === 'stay') {

@@ -9,6 +9,7 @@ const inputStyle={
     resize: "none", 
     outline: "none", 
     textAlign: "center",
+    fontSize: "12px",
     position: "relative",
     color: "black"
   }
@@ -41,6 +42,7 @@ const QueryRoute = ({id, start, end, queryState, dispatch}) => {
                 placeholder="duration"
                 suffix="min"
                 showOperators={true}
+                style={{ fontSize: "12px" }}
             />
         </div>
     );
@@ -49,11 +51,12 @@ const QueryRoute = ({id, start, end, queryState, dispatch}) => {
         <div id={id}>
             <Xarrow 
                 labels={inputs}
+                path="grid"
                 start={start}
                 end={end}
                 showHead={false}
                 showTail={false}
-                color={"grey"}
+                color="grey"
             />
         </div>
     );
