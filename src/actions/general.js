@@ -10,7 +10,7 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
-import { clearAll, displayAllTrips } from "./tracks";
+import { clearAll, displayTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -133,7 +133,7 @@ export const loadTrips = () => {
       .catch((e) => console.error(e))
       .then((trips) => {
         dispatch(clearAll());
-        dispatch(displayAllTrips(trips));
+        dispatch(displayTrips(trips));
       });
   }
 }

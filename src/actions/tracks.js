@@ -42,7 +42,7 @@ export const addMultipleTracks = (tracks, options) => {
   }
 }
 
-export const displayAllTrips = (trips) => ({
+export const displayTrips = (trips) => ({
   trips,
   type: DISPLAY_TRIPS
 })

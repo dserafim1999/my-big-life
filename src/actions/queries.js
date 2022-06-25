@@ -1,4 +1,4 @@
-import { clearAll, displayAllTrips } from "./tracks";
+import { clearAll, displayTrips } from "./tracks";
 import { setLoading } from './general';
 import { ADD_QUERY_STAY, ADD_QUERY_STAY_AND_ROUTE, QUERY_RESULTS, REMOVE_QUERY_STAY, RESET_QUERY, UPDATE_QUERY_BLOCK } from ".";
 
@@ -52,9 +52,10 @@ export const resetQuery = () => {
 };
 
 export const queryResults = (results, segments) => {
+    console.log(segments)
     return (dispatch) => {
         dispatch(clearAll());
-        dispatch(displayAllTrips(segments));
+        dispatch(displayTrips(segments));
         dispatch({results, type: QUERY_RESULTS});
     }
 };

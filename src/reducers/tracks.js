@@ -3,6 +3,7 @@ import segments from "./segments";
 import { List, Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 import colors from "./colors";
+import { groupBy } from "../utils";
 
 export const addTrack = (state, action) => {
   let { name, segments, locations, transModes } = action;
@@ -89,25 +90,42 @@ const displayCanonicalTrips = (state, action) => {
 
 const displayTrips = (state, action) => {
   const { trips } = action;
-  //const _segments = trips.filter((trip) => trip.points.length > 1).map((trip, i) => {
-  const _segments = trips.map((trip, i) => {
-    return new SegmentRecord({
-      trackId: 0,
-      id: trip.id,
-      color: colors(i),
-      points: pointsToRecord(trip.points)
-    });
-  });
 
-  const track = new TrackRecord({
-    id: 0,
-    segments: new List(_segments.map((trip) => trip.id))
-  });
+  const tripsByDay = groupBy(trips, "date");
+  const _tracks = [], _segments = [];
+  
+  var color = 0;
+  for (const [day, trips] of Object.entries(tripsByDay)) {
+    _tracks.push(new TrackRecord({
+        id: day,
+        segments: new List(trips.map((segment, i) => {
+          return segment.id
+        }))
+      })
+    );
+
+    for (var i = 0 ; i < trips.length ; i++) {
+      const trip = trips[i];
+      _segments.push(new SegmentRecord({
+        trackId: day,
+        id: trip.id,
+        color: colors(color),
+        points: pointsToRecord(trip.points)
+      }));
+    }
+
+    color++;
+  }
 
   return state
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
-    .updateIn(['tracks'], (tracks) => tracks.clear().set(track.id, track))
+    .updateIn(['tracks'], (tracks) => {
+      tracks = tracks.clear(); 
+      return _tracks.reduce((tracks, track) => {
+        return tracks.set(track.id, track);
+      }, tracks)
+    })
     .updateIn(['segments'], (segments) => {
       segments = segments.clear(); 
       return _segments.reduce((segments, segment) => {
