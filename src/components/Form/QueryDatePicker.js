@@ -1,9 +1,10 @@
-import { createTheme, InputAdornment, TextField, ThemeProvider } from "@mui/material";
+import { createTheme, IconButton, InputAdornment, TextField, ThemeProvider, Tooltip } from "@mui/material";
 import { Box } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
 import moment from 'moment';
 import DateIcon from '@mui/icons-material/DateRange';
+import SimpleButton from "../Buttons/SimpleButton";
 
 const boxStyle = {
     alignItems: "center", 
@@ -17,9 +18,16 @@ const boxStyle = {
 }
 
 const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, visual=false}) => {
+    const calendarIcon = (
+        <SimpleButton title='Select Date' tooltipPlacement="top" style={{border: 'none'}}>
+            <IconButton>
+                <DateIcon></DateIcon>
+            </IconButton>
+        </SimpleButton>
+    );
 
     const valueRepresentation = () => {
-        return value === "--/--/----" || value === null ? <DateIcon style={{color: 'grey'}} /> : value;
+        return value === "--/--/----" || value === null ? calendarIcon : value;
     }
 
     const valueFormat = () => {
@@ -86,7 +94,11 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
                             fullWidth
                             style={{paddingBottom: '20px'}}
                             InputProps={{
-                                endAdornment: <InputAdornment onClick={onClick} position="end"><DateIcon style={{cursor: 'pointer'}}/></InputAdornment>,
+                                endAdornment: (
+                                    <InputAdornment onClick={onClick} position="end">
+                                        <DateIcon style={{cursor: 'pointer'}}/>
+                                    </InputAdornment>
+                                )
                             }}
                             ref={inputRef}
                         />

@@ -81,7 +81,7 @@ export default class AsyncButton extends Component {
       )
     } else if (this.props.isDiv) {
       return (
-        <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top' } arrow>  
+        <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top' } >  
           <div style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
             { this.state.content || this.props.children }
           </div>
@@ -89,7 +89,7 @@ export default class AsyncButton extends Component {
       );
     } else {
       return (
-        <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top'} arrow>  
+        <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top'} >  
           <a style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
             { this.state.content || this.props.children }
           </a>

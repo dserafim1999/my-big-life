@@ -9,6 +9,7 @@ import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 import SearchRoute from './SearchRoute';
 import QueryDatePicker from '../../components/Form/QueryDatePicker';
 import { SectionBlock } from '../../components/Form';
+import SimpleButton from '../../components/Buttons/SimpleButton';
 
 const Search = ({ dispatch, query, isQueryLoading }) => {
   const [queryForm, setQueryForm] = useState([]);
@@ -148,22 +149,17 @@ const Search = ({ dispatch, query, isQueryLoading }) => {
         </div>
       </section>
       <footer style={{ textAlign: 'right', paddingTop: '10px' }} className='control'>
-        <AsyncButton 
-              title='Reset Search Query'
-              className='is-blue'
-              onClick={(e, modifier) => {
-                modifier('is-loading');
-                onClearQuery();
-                modifier();
-            }} > Reset </AsyncButton> 
-        <AsyncButton 
-            title='Add a Stay and Corresponding Route to Query'
-            className='is-light'
-            onClick={(e, modifier) => {
-              modifier('is-loading');
-              addStay();
-              modifier();
-          }} > Add Stay </AsyncButton> 
+        <SimpleButton 
+          title='Reset Search Query'
+          onClick={onClearQuery}
+          className='is-light'
+        > Reset </SimpleButton> 
+        <SimpleButton 
+          title='Add a Stay and Corresponding Route to Query'
+          className='is-light'
+          onClick={addStay}
+          style={{margin: "0 0.25rem"}}
+        > Add Stay </SimpleButton> 
         <AsyncButton 
           title='Search'
           className='is-blue'

@@ -12,6 +12,7 @@ import CalendarIcon from '@mui/icons-material/CalendarToday';
 
 import { toggleSegmentVisibility } from '../../actions/segments';
 import { Tooltip } from '@mui/material';
+import IconButton from '../../components/Buttons/IconButton';
 
 const metricsStyle = {
   fontSize: '0.8rem',
@@ -92,11 +93,9 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SegmentStartEnd onClick={centerOnPoint(points.get(0))} index={0} time={start} />
 
-            <a className={'icon-button button'} onClick={toggleTrack}>    
-              <Tooltip title={'Toggle Segment Visibility'}  placement="top" arrow>  
+            <IconButton title={'Toggle Segment Visibility'} onClick={toggleTrack}>    
                 <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-              </Tooltip>
-            </a>
+            </IconButton>
 
             <SegmentStartEnd onClick={centerOnPoint(points.get(-1))} index={-1} time={end} />
           </div>

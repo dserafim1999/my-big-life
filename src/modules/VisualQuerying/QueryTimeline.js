@@ -14,6 +14,7 @@ import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import useDraggableScroll from 'use-draggable-scroll';
+import SimpleButton from '../../components/Buttons/SimpleButton';
 
 const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
@@ -192,18 +193,18 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                         { TimelineComponents() }
                         <div style={{zIndex: "1", backgroundColor: "white", position: 'relative', top: '50%', transform: 'translateY(-40%)'}}>
                             <div>
-                                <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement={"left"} className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
+                                <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement="left" className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
                                     <IconButton>
                                         <SearchIcon></SearchIcon>
                                     </IconButton>
                                 </AsyncButton>
                             </div>
                             <div>
-                                <AsyncButton title='Reset Query' onClick={onClearQuery} tooltipPlacement={"left"} style={{border: 'none'}}>
+                                <SimpleButton title='Reset Query' onClick={onClearQuery} tooltipPlacement="left" style={{border: 'none'}}>
                                     <IconButton onClick={onClearQuery}>
                                         <DeleteIcon></DeleteIcon>
                                     </IconButton>
-                                </AsyncButton>
+                                </SimpleButton>
                             </div>
                         </div>
                 </div>

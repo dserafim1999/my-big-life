@@ -5,6 +5,7 @@ import { groupBy } from "../../utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
+import { IconButton } from "@mui/material";
 
 const dateDivStyle = {
     position: "relative", 
@@ -48,13 +49,15 @@ const QueryResult = ({ result }) => {
     }
 
     const getSeeMoreButton = () => {
-        const style = {
-            color: "grey"
-        }
-
-        return seeMore ? 
-            <KeyboardArrowUpIcon style={style}/> :
-            <KeyboardArrowDownIcon style={style}/>; 
+        return (
+            <IconButton>
+                {
+                    seeMore ? 
+                        <KeyboardArrowUpIcon style={{color: "grey"}}/> :
+                        <KeyboardArrowDownIcon style={{color: "grey"}}/>
+                }
+            </IconButton>
+        ); 
     }
 
     const getRenderObject = (spans) => {

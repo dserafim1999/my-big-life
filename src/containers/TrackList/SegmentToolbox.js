@@ -24,14 +24,12 @@ import PointIcon from '@mui/icons-material/LocationOn';
 import TimeFilterIcon from '@mui/icons-material/EventNote';
 
 import { Col } from 'react-bootstrap';
-import { Tooltip } from '@mui/material';
+import IconButton from '../../components/Buttons/IconButton';
 
 const INFO_TIME = 5;
-const btnHighlight = 'icon-button is-success';
-const btn = 'icon-button';
 
 let SegmentButton = ({children, description, onClick, highlighted, disabled}) => {
-  const className = ['button', 'icon-button'];
+  const className = [];
   if (highlighted) {
     className.push('is-success', 'is-outlined');
   }
@@ -40,11 +38,9 @@ let SegmentButton = ({children, description, onClick, highlighted, disabled}) =>
   }
   
   return (
-      <a className={className.join(' ')} onClick={disabled ? null : onClick}>    
-          <Tooltip title={description}  placement="top" arrow>  
-              { children }
-          </Tooltip>
-      </a>
+    <IconButton title={description} className={className.join(' ')} onClick={disabled ? null : onClick}>    
+      { children }
+    </IconButton>
   );
 }
 

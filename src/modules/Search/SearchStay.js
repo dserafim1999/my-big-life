@@ -3,6 +3,7 @@ import { TextField, SectionBlock } from '../../components/Form';
 import QueryTimePicker from "../../components/Form/QueryTimePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { updateQueryBlock } from "../../actions/queries";
+import IconButton from "../../components/Buttons/IconButton";
 
 const SearchStay = ({id, startVal, endVal, queryState, onRemove, dispatch}) => {
     const [start, setStart] = useState(startVal);
@@ -52,9 +53,9 @@ const SearchStay = ({id, startVal, endVal, queryState, onRemove, dispatch}) => {
     }
 
     const deleteButton = (
-        <a className='button icon-button' onClick={() => onRemove(id)}>    
+        <IconButton title={"Delete Stay"} placement="top" onClick={() => onRemove(id)}>    
             <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-        </a>
+        </IconButton>
     );
 
     return (
