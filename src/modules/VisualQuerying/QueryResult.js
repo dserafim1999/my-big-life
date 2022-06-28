@@ -25,8 +25,7 @@ const QueryResult = ({ result }) => {
     const resultStyle = {
         minHeight: '100px',
         display: "flex",
-        border: result.multiple ? '2px outset lightgrey' : '2px solid white',
-        borderBottom: result.multiple ? '2px outset lightgrey' : '1px solid lightgrey',
+        border: result.multiple ? '2px outset lightgrey' : '1px solid lightgrey',
         cursor: result.multiple ? "pointer" : "drag"
     }
 
@@ -96,8 +95,8 @@ const QueryResult = ({ result }) => {
     
         return ( 
             <div style={{width: "100%"}}>
-                { renderResultTimeline(result.render, getSeeMoreButton(), false) }
-                <div style={{overflow: 'auto', maxHeight: '300px'}}>
+                { renderResultTimeline(result.render, getSeeMoreButton(), false, undefined, {overflowY: "scroll"}) }
+                <div style={{overflowY: 'auto', maxHeight: '300px'}}>
                     {
                         seeMore && 
                             Object.entries(groupedByDate).map(([key, value], i) => {
@@ -118,14 +117,9 @@ const QueryResult = ({ result }) => {
         const date = getDate(result.result);
 
         return (
-            <>
-                { renderDateDiv(date) }
-                <Timeline 
-                    render={result.render} 
-                    showTimeLegend={true} 
-                    showStayLegend={true}
-                />
-            </>
+            <div style={{width: '100%'}}>
+                { renderResultTimeline(result.render, date, false, undefined, {overflowY: "scroll"}) }
+            </div>
         );
     }
 
