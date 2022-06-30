@@ -60,27 +60,33 @@ const SearchStay = ({id, startVal, endVal, queryState, onRemove, dispatch}) => {
 
     return (
         <SectionBlock name={'Stay ('+id+')'} button={deleteButton}>
-            <TextField title='Location' onChange={(e) => onChange({location: e.target.value})}/>
-            <TextField title='Spatial Range' onChange={(e) => onChange({spatialRange: addSuffix(e.target.value, 'm')})} type='number' min='0' suffix={"m"}/>
-            <TextField title='Duration' onChange={(e) => onChange({duration: addSuffix(e.target.value, 'min')})} suffix={"min"}/>
-            <QueryTimePicker
-                title='Start'
-                open={startOpen}
-                value={start}
-                onChange={(newValue) => onChangeStart(newValue)}
-                onClick={() => setIsStartOpen(true)}
-                onClose={(clear) => onCloseStart(clear)}
-            />
-            <TextField title='Temporal Start Range' onChange={(e) => onChange({temporalStartRange: addSuffix(e.target.value, 'min')})} type='number' min='0' suffix={"min"}/>
-            <QueryTimePicker
-                title='End'
-                open={endOpen}
-                value={end}
-                onChange={(newValue) => onChangeEnd(newValue)}
-                onClick={() => setIsEndOpen(true)}
-                onClose={(clear) => onCloseEnd(clear)}
-            />
-            <TextField title='Temporal End Range' onChange={(e) => onChange({temporalEndRange: addSuffix(e.target.value, 'min')})} type='number' min='0' suffix={"min"}/>
+            <TextField title='Location' onChange={(value) => onChange({location: value})}/>
+            <TextField title='Spatial Range' hasOperators={true} onChange={(value) => onChange({spatialRange: addSuffix(value, 'm')})} type='number' min={0} suffix={"m"}/>
+            <TextField title='Duration' hasOperators={true} onChange={(value) => onChange({duration: addSuffix(value, 'min')})} type='number' min={0} suffix={"min"}/>
+            <div style={{display: "flex"}}>
+                <QueryTimePicker
+                    title='Start'
+                    open={startOpen}
+                    value={start}
+                    onChange={(newValue) => onChangeStart(newValue)}
+                    onClick={() => setIsStartOpen(true)}
+                    onClose={(clear) => onCloseStart(clear)}
+                    style={{marginRight: "10px"}}
+                />
+                <TextField title='Temporal Range' onChange={(value) => onChange({temporalStartRange: addSuffix(value, 'min')})} type='number' min={0} suffix={"min"}/>
+            </div>
+            <div style={{display: "flex"}}>
+                <QueryTimePicker
+                    title='End'
+                    open={endOpen}
+                    value={end}
+                    onChange={(newValue) => onChangeEnd(newValue)}
+                    onClick={() => setIsEndOpen(true)}
+                    onClose={(clear) => onCloseEnd(clear)}
+                    style={{marginRight: "10px"}}
+                />
+                <TextField title='Temporal Range' onChange={(value) => onChange({temporalEndRange: addSuffix(value, 'min')})} type='number' min={0} suffix={"min"}/>
+            </div>
         </SectionBlock>
     );
 };

@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import TimeIcon from "@mui/icons-material/AccessTime";
 
 
-const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false, title, help}) => {
+const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false, title, help, style}) => {
     const [operator, setOperator] = useState("");
     const [valueState, setValueState] = useState(value);
     
@@ -99,7 +99,7 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
                             variant='filled'
                             helperText={help}
                             fullWidth
-                            style={{paddingBottom: '20px'}}
+                            style={{paddingBottom: '20px', ...style}}
                             InputProps={{
                                 endAdornment: <InputAdornment onClick={onClick} position="end"><TimeIcon style={{cursor: 'pointer'}}/></InputAdornment>,
                             }}

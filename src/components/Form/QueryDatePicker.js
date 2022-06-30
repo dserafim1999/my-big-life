@@ -27,7 +27,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
     );
 
     const valueRepresentation = () => {
-        return value === "--/--/----" || value === null ? calendarIcon : value;
+        return value === "--/--/----" || value === null ? (visual ? calendarIcon : "--/--/----") : value;
     }
 
     const valueFormat = () => {

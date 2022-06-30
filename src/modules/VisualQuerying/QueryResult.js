@@ -121,7 +121,7 @@ const QueryResult = ({ result }) => {
 
         return (
             <div style={{width: '100%'}}>
-                { renderResultTimeline(result.render, date, false, undefined, {overflowY: "scroll"}) }
+                { renderResultTimeline(result.render, date, true, undefined, {overflowY: "scroll"}) }
             </div>
         );
     }
