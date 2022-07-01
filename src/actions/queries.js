@@ -15,9 +15,28 @@ export const executeQuery = (params) => {
             .then((response) => response.json())
             .catch((e) => console.error(e))
             .then((res) => {
-                console.log(res)
                 dispatch(setLoading('query-button', false));
-                dispatch(queryResults(res.results, res.segments))
+                dispatch(queryResults(res.results, res.segments, true, res.total))
+            }
+        ); 
+    }
+}
+
+export const loadMoreQueryResults = (params) => {
+    return (dispatch, getState) => {
+        dispatch(setLoading('load-more-button', true));
+        const options = {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(params)
+        }
+        const addr = getState().get('general').get('server');
+        return fetch(addr + '/queries/loadMoreResults', options)
+            .then((response) => response.json())
+            .catch((e) => console.error(e))
+            .then((res) => {
+                dispatch(setLoading('load-more-button', false));
+                dispatch(queryResults(res.results, res.segments, false, res.total))
             }
         ); 
     }
@@ -51,11 +70,10 @@ export const resetQuery = () => {
     }
 };
 
-export const queryResults = (results, segments) => {
-    console.log(segments)
+export const queryResults = (results, segments, clean, total) => {
     return (dispatch) => {
         dispatch(clearAll());
-        dispatch(displayTrips(segments));
-        dispatch({results, type: QUERY_RESULTS});
+        //TODO Append dispatch(displayTrips(segments));
+        dispatch({results, clean, total, type: QUERY_RESULTS});
     }
 };

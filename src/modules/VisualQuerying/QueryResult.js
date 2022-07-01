@@ -22,11 +22,13 @@ const dateStyle = {
 
 const QueryResult = ({ result }) => {
     const [seeMore, setSeeMore] = useState(false);
+    const height = 75;
+    const multipleColor = "#738492", singleColor = "#821d1d";
 
     const resultStyle = {
-        minHeight: '100px',
+        minHeight: height+"px",
         display: "flex",
-        border: result.multiple ? '2px outset lightgrey' : '1px solid lightgrey',
+        border: result.multiple ? '2px outset lightgrey' : '',
         cursor: result.multiple ? "pointer" : "drag"
     }
 
@@ -51,10 +53,11 @@ const QueryResult = ({ result }) => {
     const getSeeMoreButton = () => {
         return (
             <IconButton>
+                <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length }</span>
                 {
                     seeMore ? 
-                        <KeyboardArrowUpIcon style={{color: "grey"}}/> :
-                        <KeyboardArrowDownIcon style={{color: "grey"}}/>
+                    <KeyboardArrowUpIcon style={{color: "grey"}}/> :
+                    <KeyboardArrowDownIcon style={{color: "grey"}}/>
                 }
             </IconButton>
         ); 
@@ -84,11 +87,11 @@ const QueryResult = ({ result }) => {
         )
     }
 
-    const renderResultTimeline = (render, date, showStayLegend = false, key = undefined, style = {}) => {
+    const renderResultTimeline = (render, date, color, showStayLegend = false, key = undefined, style = {}) => {
         return (
             <div key={key} style={{ display: "flex", ...style}}>
                 { renderDateDiv(date) }
-                <Timeline key={key} render={render} showTimeLegend={true} showStayLegend={showStayLegend}/>
+                <Timeline key={key} render={render} height={height} showTimeLegend={true} showStayLegend={showStayLegend} color={color}/>
             </div>
         );
     } 
@@ -98,13 +101,13 @@ const QueryResult = ({ result }) => {
     
         return ( 
             <div style={{width: "100%"}}>
-                { renderResultTimeline(result.render, getSeeMoreButton(), false, undefined, {overflowY: "scroll"}) }
+                { renderResultTimeline(result.render, getSeeMoreButton(), multipleColor, false, undefined, {overflowY: "scroll"}) }
                 <div style={{overflowY: 'auto', maxHeight: '300px'}}>
                     {
                         seeMore && 
                             Object.entries(groupedByDate).map(([key, value], i) => {
                                 const date = getDate(value);
-                                return renderResultTimeline(getRenderObject(value), date, true, key + i, {backgroundColor: "#f4f4f4"});
+                                return renderResultTimeline(getRenderObject(value), date, multipleColor, true, key + i, {backgroundColor: "#f4f4f4"});
                             }) 
                     }
                 </div>
@@ -121,7 +124,7 @@ const QueryResult = ({ result }) => {
 
         return (
             <div style={{width: '100%'}}>
-                { renderResultTimeline(result.render, date, true, undefined, {overflowY: "scroll"}) }
+                { renderResultTimeline(result.render, date, singleColor, true, undefined, {overflowY: "scroll"}) }
             </div>
         );
     }

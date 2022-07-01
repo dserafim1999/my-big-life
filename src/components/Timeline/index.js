@@ -8,7 +8,7 @@ import Stay from "./Stay";
 import Route from "./Route";
 import { drawAxisMarking } from './drawAxisMarking';
 
-const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick }) => {
+const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, color, onClick }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
     const { width } = useDimensions(ref);
@@ -50,7 +50,7 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
 
     var timelineStyle = {
         width: "100%", 
-        height: "100px", 
+        height: height + "px", 
         position: "relative",
         overflow: "hidden"
     } 
@@ -60,7 +60,7 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
     } 
 
     const getOpacityValue = (value, maxValue) => {
-        return value/maxValue;
+        return (value/maxValue) * 0.9;
     }
     
     const getMinutes = (date) => {
@@ -79,7 +79,7 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
         return (
             <div className={type} style={{position: "absolute", display: "flex", height: "100%"}}>
                 {
-                    type.flatMap((span) => {
+                    type.flatMap((span, i) => {
                         const start = getTimelineCoords(span.start);
                         const end = getTimelineCoords(span.end);
 
@@ -87,10 +87,10 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
 
                         const spanWidth = end - start;
                         const opacity = getOpacityValue(span.freq, maxFreq);
-            
+
                         return block === "stay" ? 
-                            [<Stay key={span.id} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : ""}/>] : 
-                            [<Route key={span.id} start={start} width={spanWidth} opacity={opacity}/>];
+                            [<Stay key={i} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : ""} color={color}/>] : 
+                            [<Route key={i} start={start} width={spanWidth} opacity={opacity}/>];
                     })
                 }
             </div>
@@ -112,8 +112,8 @@ const Timeline = ({ render, showTimeLegend=false, showStayLegend=false, onClick 
                 <hr className="horizontalAxis" style={{position: "absolute", left: buffer, width: timelineWidth}}/>
                 {
                     [...Array(25).keys()].map((i) => {
-                        if (i == 0) return drawAxisMarking(i, startPos, 50, 3, showTimeLegend, true, false);
-                        if (i == 24) return drawAxisMarking(i, endPos, 50, 3, showTimeLegend, false, true);
+                        if (i == 0) return drawAxisMarking(i, startPos, 40, 3, showTimeLegend, true, false);
+                        if (i == 24) return drawAxisMarking(i, endPos, 40, 3, showTimeLegend, false, true);
                         
                         return drawAxisMarking(i, i/24 * timelineWidth + buffer, i % 4 == 0? 10 : 5, i % 4 == 0? 2 : 1) 
                     })

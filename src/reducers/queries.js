@@ -114,11 +114,21 @@ const removeQueryStay = (state, action) => {
 const resetQuery = (state) => {
   return state
     .setIn(["query"], List())
-    .setIn(["results"], List());
+    .setIn(["results"], List())
+    .setIn(["canLoadMore"], true);
 }
 
 const queryResults = (state, action) => {
-  return state.setIn(["results"], List(action.results));
+  var results;
+  if (action.clean) {
+    results = action.results;
+  } else {
+    results = state.toJS()["results"].concat(action.results);
+  }
+
+  return state
+    .setIn(["results"], List(results))
+    .setIn(["canLoadMore"], results.length < action.total);
 }
 
 const ACTION_REACTION = {
@@ -132,7 +142,8 @@ const ACTION_REACTION = {
 
 const initialState = Map({
   query: List(),
-  results: List()
+  results: List(),
+  canLoadMore: true
 });
 
 const queries = (state = initialState, action) => {

@@ -16,13 +16,13 @@ const legendStyle = {
     padding: "5px"
 }
 
-const Stay = ({ start, width, opacity, legend }) => {
+const Stay = ({ start, width, opacity, legend, color }) => {
     const stayStyle =  {
         position:"absolute",
         left: start, 
-        backgroundColor: "#821d1d", 
+        backgroundColor: color, 
         width: width, 
-        height: "50px",
+        height: "40px",
         top: "50%",
         transform: "translateY(-50%)",
         opacity: opacity,
