@@ -124,7 +124,8 @@ const Search = ({ dispatch, query, isQueryLoading }) => {
                     "date": date
                 },
                 ...query.toArray()
-            ]
+            ],
+            "loadAll": true
         }
       )
     );

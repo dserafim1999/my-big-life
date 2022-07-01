@@ -142,7 +142,8 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                             "date": date
                         },
                         ...query.toArray()
-                    ]
+                    ],
+                    "loadAll": false
                 }
             )
         );

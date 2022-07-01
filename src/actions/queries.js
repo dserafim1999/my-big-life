@@ -73,7 +73,7 @@ export const resetQuery = () => {
 export const queryResults = (results, segments, clean, total) => {
     return (dispatch) => {
         dispatch(clearAll());
-        //TODO Append dispatch(displayTrips(segments));
+        dispatch(displayTrips(segments));
         dispatch({results, clean, total, type: QUERY_RESULTS});
     }
 };

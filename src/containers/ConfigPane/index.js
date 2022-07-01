@@ -64,6 +64,10 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
             } />
           </SectionBlock>
 
+          <SectionBlock name='Querying'>
+            <TextField title='Load More Results Amount' onChange={(value) => setState({...state, load_more_amount: value})} defaultValue={config.load_more_amount} type='number' min='0'/>
+          </SectionBlock>
+
           <SectionBlock name='Smoothing'>
             <ToggleField title='Use'  onChange={(e) => setState({...state, smoothing: {...state.smoothing, use: e.target.value}})} checked={config.smoothing.use}/>
             <OptionsField title='Algorithm' onChange={(e) => setState({...state, smoothing: {...state.smoothing, algorithm: e.target.value}})} options={[{ label: 'Kalman with backwards pass', key: 'inverse' }, { label: 'Kalman with start interpolation', key: '' }]} defaultValue={config.smoothing.algorithm} help={
