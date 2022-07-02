@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { DONE_STAGE, PREVIEW_STAGE } from '../../constants';
+import { Tooltip } from '@mui/material';
 
 const POINTS_PER_KB = 7.2;
 
@@ -41,21 +42,23 @@ const crossStyle = {
 const Day = ({ date, gpxs, isSelected, onDismiss }) => {
   const mDate = moment(date);
   return (
-    <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
-      <a className='button is-red is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
-        <CloseIcon sx={{ fontSize: '0.7rem' }}/>
-      </a>
-      <div>
-        <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: isSelected? 'white' : 'grey' }}>{ mDate.fromNow() }</span></span>
+    <Tooltip title='Click to change the day to process'>
+      <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
+        <a className='button is-red is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
+          <CloseIcon sx={{ fontSize: '0.7rem' }}/>
+        </a>
+        <div>
+          <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: isSelected? 'white' : 'grey' }}>{ mDate.fromNow() }</span></span>
+        </div>
+        <div>
+          {
+            gpxs.map((gpx, key) => {
+              return <GPXOfDay key={key} date={gpx.get('start')} size={gpx.get('size')} />
+            }).toJS()
+          }
+        </div>
       </div>
-      <div>
-        {
-          gpxs.map((gpx, key) => {
-            return <GPXOfDay key={key} date={gpx.get('start')} size={gpx.get('size')} />
-          }).toJS()
-        }
-      </div>
-    </div>
+    </Tooltip>
   );
 }
 
@@ -110,20 +113,24 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
   );
 
   return (
-    <div style={{...style, paddingBottom: '1rem'}} title='Click to change the day to process'>
+    <div style={{...style, paddingBottom: '1rem'}}>
       <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ done ? null : back }{ done ? '' : 'Days Left' }{ refresh }</div>
+      <div style={{overflowY: 'auto', maxHeight: '460px', minWidth: 'max-content'}}>
+      {
+        remaining.count() > 0 ? remainingDays : EMPTY_FOLDER
+      }
+      { 
+        lifesExistent.length > 0 && 
+          <div style={{marginTop: '2rem', textAlign: 'center'}}>LIFE Files</div> 
+      }
       {
         lifesExistent.map((file) => {
           return (
-            <div style={{ marginTop: '0.5rem', padding: '0.2rem', borderRadius: '3px', border: '1px #bbb dashed', opacity: 0.7 }}>
+            <div style={{ padding: '0.2rem', borderRadius: '3px', border: '1px #bbb dashed', opacity: 0.7 }}>
               <i>{ file }</i>
             </div>
           )
         })
-      }
-      <div style={{overflowY: 'auto', maxHeight: '460px', minWidth: 'max-content'}}>
-      {
-        remaining.count() > 0 ? remainingDays : EMPTY_FOLDER
       }
       </div>
     </div>

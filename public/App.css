@@ -61,6 +61,16 @@
   color: #fff;
 }
 
+.button.is-selected:hover, .button.is-info.is-hovered {
+  color: var(--main);
+  border-color: var(--main);
+}
+
+.button.is-selected {
+  color: var(--main);
+  border-color: var(--main);
+}
+
 .button.is-red:hover, .button.is-info.is-hovered {
   background-color: #821d1d;
   border-color: transparent;
