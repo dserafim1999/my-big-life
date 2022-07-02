@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import Card from '../../containers/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import { addQueryStay, addQueryStayAndRoute, executeQuery, removeQueryStay, resetQuery, updateQueryBlock } from '../../actions/queries';
+import { addQueryStay, addQueryStayAndRoute, executeQuery, removeQueryStay, resetQuery } from '../../actions/queries';
 import SearchStay from './SearchStay';
 import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
 import SearchRoute from './SearchRoute';
@@ -11,7 +11,7 @@ import QueryDatePicker from '../../components/Form/QueryDatePicker';
 import { SectionBlock } from '../../components/Form';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
-const Search = ({ dispatch, query, isQueryLoading }) => {
+const Search = ({ dispatch, query }) => {
   const [queryForm, setQueryForm] = useState([]);
   const [id, setId] = useState(0);
   const [date, setDate] = useState("--/--/----");

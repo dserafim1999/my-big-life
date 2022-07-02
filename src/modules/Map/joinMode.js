@@ -2,7 +2,7 @@ import React from 'react';
 import { createPointIcon } from './utils';
 import { FeatureGroup, Polyline, Marker } from 'leaflet';
 
-export default (lseg, current, previous, onJoin) => {
+export default (lseg, current, onJoin) => {
   const id = current.get('id');
   const possibilities = current.get('joinPossible');
 

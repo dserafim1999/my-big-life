@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
+import { TRACK_PROCESSING } from "../../constants";
 import { getActiveRoute } from "../../utils"
 import { getView } from "../ModuleRoutes"
 import { createPointIcon, createMarker, createLocationIcon } from './utils';

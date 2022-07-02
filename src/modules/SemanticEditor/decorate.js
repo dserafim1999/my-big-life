@@ -1,4 +1,4 @@
-import { EditorState, SelectionState, Modifier, Entity } from 'draft-js';
+import { EditorState, SelectionState, Modifier } from 'draft-js';
 import buildLifeAst from './buildLifeAst';
 
 const decriptiveStyle = (contentState, styleType, marks, value, content, lineKeys, more = {}) => {

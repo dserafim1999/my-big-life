@@ -124,9 +124,9 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
           <div style={{marginTop: '2rem', textAlign: 'center'}}>LIFE Files</div> 
       }
       {
-        lifesExistent.map((file) => {
+        lifesExistent.map((file, i) => {
           return (
-            <div style={{ padding: '0.2rem', borderRadius: '3px', border: '1px #bbb dashed', opacity: 0.7 }}>
+            <div key={i} style={{ padding: '0.2rem', borderRadius: '3px', border: '1px #bbb dashed', opacity: 0.7 }}>
               <i>{ file }</i>
             </div>
           )
