@@ -15,6 +15,13 @@ export const createPointIcon = (color, inside, moreClass = '', iconAnchor = [12,
     iconAnchor
   });
 
+export const createLocationIcon = (color, inside, moreClass = '', iconAnchor = [12, 12]) =>
+  new DivIcon({
+    className: (color ? ' border-color-' + color.substr(1) : '') + ' ' + moreClass,
+    html: inside || '',
+    iconAnchor
+  });
+
 export const setupMarker = (marker, index, previous, next, type = 'NORMAL') => {
   marker.index = index;
   marker.previous = previous;

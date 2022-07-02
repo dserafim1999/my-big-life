@@ -30,7 +30,7 @@ export const getView = (route) => {
     return module ? module.view : MAIN_VIEW;
 }
 
-export const getInitialView = () => {
+export const getActiveView = () => {
     return getView(getActiveRoute());
 }
 
