@@ -80,8 +80,13 @@ export const queryResults = (results, clean, total) => {
         }
         
         for (var i = 0 ; i < results.length ; i++) {
-            for(var j = 0 ; j < results[i].result.length ; j++) {
-                tracks.push(results[i].result[j].points);
+            const result = results[i].result;
+            for(var j = 0 ; j < result.length ; j++) {
+                const res = result[j];
+
+                if (res.type === "interval") {
+                    tracks.push(results[i].result[j].points);
+                }
             }
         }        
         

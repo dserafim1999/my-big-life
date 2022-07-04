@@ -5,23 +5,25 @@ import { groupBy } from "../../utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
+import { dehighlightSegment, highlightSegment } from "../../actions/map";
+
 import { IconButton } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const dateDivStyle = {
     position: "relative", 
-    width: "100px"
+    width: "100px",
+    textAlign: "center",
 }
 
 const dateStyle = {
-    position: "absolute",
-    top: "50%",
+    position: "relative",
     fontSize: "12px",
-    left: "50%",
-    transform: "translate(-50%,-50%)"
 }
 
-const QueryResult = ({ result }) => {
+const QueryResult = ({ result, dispatch }) => {
     const [seeMore, setSeeMore] = useState(false);
+    const [highlighted, setHighlighted] = useState("");
     const height = 75;
     const multipleColor = "#738492", singleColor = "#821d1d";
 
@@ -29,7 +31,6 @@ const QueryResult = ({ result }) => {
         minHeight: height+"px",
         display: "flex",
         border: result.multiple ? '2px outset lightgrey' : '',
-        cursor: result.multiple ? "pointer" : "drag"
     }
 
     useEffect(() => {
@@ -50,9 +51,26 @@ const QueryResult = ({ result }) => {
         }
     }
 
+    const highlightResultSegment = () => {
+        if (result.querySize === 1) return;
+
+        var segIds = [];
+
+        result.result.forEach((res) => {
+            if (res.type === "interval") {
+                segIds.push(res.points.id);
+            }
+        });
+        
+        const isHighlighted = highlighted === (segIds + "");
+        
+        dispatch(isHighlighted ? dehighlightSegment(segIds) : highlightSegment(segIds));
+        setHighlighted(isHighlighted ? "" : segIds + "");
+    }
+
     const getSeeMoreButton = () => {
         return (
-            <IconButton>
+            <IconButton onClick={onClick} style={{top: "50%", transform: "translateY(-50%)"}}>
                 <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length / result.querySize }</span>
                 {
                     seeMore ? 
@@ -79,10 +97,20 @@ const QueryResult = ({ result }) => {
         return {'stays': stays, 'routes': routes};
     }
 
-    const renderDateDiv = (date) => {
+    const renderDateDiv = (date, showMoreButton = false) => {
         return (
-            <div onClick={onClick} style={dateDivStyle}>
-                <span style={dateStyle}>{date}</span>
+            <div style={{...dateDivStyle, padding: showMoreButton ? "" : "10px"}}>
+                { showMoreButton ?
+                    getSeeMoreButton() : 
+                    (<span style={dateStyle}>{date}</span>)
+                }
+                {
+                    !showMoreButton && (
+                        <IconButton onClick={() => highlightResultSegment()}>
+                            <VisibilityIcon></VisibilityIcon>
+                        </IconButton>
+                    )
+                }
             </div>
         )
     }
@@ -90,7 +118,7 @@ const QueryResult = ({ result }) => {
     const renderResultTimeline = (render, date, color, showStayLegend = false, key = undefined, style = {}) => {
         return (
             <div key={key} style={{ display: "flex", ...style}}>
-                { renderDateDiv(date) }
+                { renderDateDiv(date, date === undefined) }
                 <Timeline key={key} render={render} height={height} showTimeLegend={true} showStayLegend={showStayLegend} color={color}/>
             </div>
         );
@@ -101,7 +129,7 @@ const QueryResult = ({ result }) => {
     
         return ( 
             <div style={{width: "100%"}}>
-                { renderResultTimeline(result.render, getSeeMoreButton(), multipleColor, false, undefined, {overflowY: "scroll"}) }
+                { renderResultTimeline(result.render, undefined, multipleColor, false, undefined, {overflowY: "scroll"}) }
                 <div style={{overflowY: 'auto', maxHeight: '300px'}}>
                     {
                         seeMore && 
@@ -141,3 +169,4 @@ const QueryResult = ({ result }) => {
 };
   
 export default QueryResult;
+

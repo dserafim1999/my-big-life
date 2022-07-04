@@ -19,7 +19,7 @@ const QueryResults = ({ dispatch, results, isLoadingMore, canLoadMore }) => {
             <Card width={700} height={450} style={{margin: '175px 25px'}} isDraggable={true}>
                 <div style={{ flexGrow: 1, overflowY: 'scroll', height: '100%' }}>
                     {
-                        results.map((x) => {if (x !== undefined) return <QueryResult key={x.id} result={x}/>})
+                        results.map((x) => {if (x !== undefined) return <QueryResult key={x.id} result={x} dispatch={dispatch}/>})
                     }
                     { canLoadMore &&
                         (<div style={{width: "100%", height: "75px", textAlign:"center"}}>

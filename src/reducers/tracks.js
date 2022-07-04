@@ -4,6 +4,7 @@ import { List, Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 import colors from "./colors";
 import { groupBy } from "../utils";
+import moment from "moment";
 
 export const addTrack = (state, action) => {
   let { name, segments, locations, transModes } = action;
@@ -101,7 +102,7 @@ const displayTrips = (state, action) => {
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     _tracks.push(new TrackRecord({
-        id: day,
+        id: moment(day).format("DD/MM/YYYY"),
         segments: new List(trips.map((segment, i) => {
           return segment.id
         }))
