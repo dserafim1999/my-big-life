@@ -53,7 +53,7 @@ const QueryResult = ({ result }) => {
     const getSeeMoreButton = () => {
         return (
             <IconButton>
-                <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length }</span>
+                <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length / result.querySize }</span>
                 {
                     seeMore ? 
                     <KeyboardArrowUpIcon style={{color: "grey"}}/> :
