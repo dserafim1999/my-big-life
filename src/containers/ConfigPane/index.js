@@ -15,6 +15,8 @@ const ConfigPane = ({ dispatch, address, config, isLoading }) => {
     const [state, setState] = useState({...config, address: address});
 
     const onSubmit = (e) => {
+      // e.preventDefault()
+  
       if (state.address != address) {
         dispatch(updateServer(state.address));    
       } 

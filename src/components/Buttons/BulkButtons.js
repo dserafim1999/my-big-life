@@ -1,9 +1,16 @@
 import React from 'react';
 import AsyncButton from './AsyncButton';
 
-const BulkButtons = ({ onBulkClick, onRawBulkClick }) => {
+const BulkButtons = ({ onBulkClick, onRawBulkClick, onLifeRead }) => {
   const warningBorderStyle = {
     border: '1px solid rgba(17, 17, 17, 0.1)',
+    marginLeft: '0.25rem',
+    marginRight: '0.25rem',
+  }
+
+  const lifeBtnStyle = {
+    ...warningBorderStyle,
+    lineHeight: 'inherit',
     marginLeft: '0.25rem',
     marginRight: '0.25rem',
   }
@@ -17,6 +24,15 @@ const BulkButtons = ({ onBulkClick, onRawBulkClick }) => {
         <AsyncButton title='Bulk process all tracks in input folder (without preprocessing)' className={'is-blue'} onClick={onRawBulkClick} style={warningBorderStyle}>
           Raw bulk process
         </AsyncButton>
+
+        {/* <AsyncButton
+          isFile={true} className='is-light' title='Load LIFE file'
+          style={lifeBtnStyle} onRead={onLifeRead}>
+          <span style={{ fontSize: '0.7rem', cursor: 'pointer' }}>
+            <div>Load</div>
+            <div>LIFE</div>
+          </span>
+        </AsyncButton> */}
       </span>
     </div>
   );

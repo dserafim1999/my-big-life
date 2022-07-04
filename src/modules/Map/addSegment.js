@@ -5,7 +5,7 @@ import { getPolylineStyle, getSpecialMarkers } from './mapConfig'
 
 import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
 
-export default (points, color, display, filter, currentSegment) => {
+export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
   let pts;
 
   if (points.get(0).get('time')) {

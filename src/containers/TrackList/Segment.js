@@ -11,6 +11,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
 
 import { toggleSegmentVisibility } from '../../actions/segments';
+import { Tooltip } from '@mui/material';
 import IconButton from '../../components/Buttons/IconButton';
 
 const metricsStyle = {
@@ -109,7 +110,7 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
   )
 }
 
-const mapStateToProps = ({ segment }) => {
+const mapStateToProps = (state, { segment }) => {
   return {
     segment,
     segmentId: segment.get('id'),

@@ -22,6 +22,7 @@ export default function updatePoints (segment, current, previous, color, filter)
 
     let polylinePoints = segment.polyline.getLatLngs();
     let markers = segment.points;
+    let specialMarkers = segment.specialMarkers;
 
     if (current.count() < previous.count()) {
       // remove points
