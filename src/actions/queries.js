@@ -16,7 +16,7 @@ export const executeQuery = (params) => {
             .catch((e) => console.error(e))
             .then((res) => {
                 dispatch(setLoading('query-button', false));
-                dispatch(queryResults(res.results, res.segments, true, res.total))
+                dispatch(queryResults(res.results, true, res.total))
             }
         ); 
     }
@@ -36,7 +36,7 @@ export const loadMoreQueryResults = (params) => {
             .catch((e) => console.error(e))
             .then((res) => {
                 dispatch(setLoading('load-more-button', false));
-                dispatch(queryResults(res.results, res.segments, false, res.total))
+                dispatch(queryResults(res.results, false, res.total))
             }
         ); 
     }
@@ -70,10 +70,23 @@ export const resetQuery = () => {
     }
 };
 
-export const queryResults = (results, segments, clean, total) => {
-    return (dispatch) => {
+export const queryResults = (results, clean, total) => {
+    return (dispatch, getState) => {
+        var tracks = [];
+        var canLoadMore = results.length < total;
+        
+        if (!clean) {
+            results = getState().get("queries").toJS()["results"].concat(results);
+        }
+        
+        for (var i = 0 ; i < results.length ; i++) {
+            for(var j = 0 ; j < results[i].result.length ; j++) {
+                tracks.push(results[i].result[j].points);
+            }
+        }        
+        
         dispatch(clearAll());
-        dispatch(displayTrips(segments));
-        dispatch({results, clean, total, type: QUERY_RESULTS});
+        dispatch(displayTrips(tracks));
+        dispatch({results, clean, canLoadMore, type: QUERY_RESULTS});
     }
 };

@@ -91,9 +91,13 @@ const displayCanonicalTrips = (state, action) => {
 const displayTrips = (state, action) => {
   const { trips } = action;
 
+  if (!trips) {
+    return state;
+  }
+
   const tripsByDay = groupBy(trips, "date");
   const _tracks = [], _segments = [];
-  
+
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     _tracks.push(new TrackRecord({
