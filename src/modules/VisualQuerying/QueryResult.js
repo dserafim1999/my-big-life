@@ -21,7 +21,7 @@ const dateStyle = {
     fontSize: "12px",
 }
 
-const QueryResult = ({ result, dispatch }) => {
+const QueryResult = ({ result, querySize, dispatch }) => {
     const [seeMore, setSeeMore] = useState(false);
     const [highlighted, setHighlighted] = useState("");
     const height = 75;
@@ -52,12 +52,10 @@ const QueryResult = ({ result, dispatch }) => {
     }
 
     const highlightResultSegment = () => {
-        if (result.querySize === 1) return;
-
         var segIds = [];
 
         result.result.forEach((res) => {
-            if (res.type === "interval") {
+            if (res.type === "interval" || querySize === 1) {
                 segIds.push(res.points.id);
             }
         });
@@ -71,7 +69,7 @@ const QueryResult = ({ result, dispatch }) => {
     const getSeeMoreButton = () => {
         return (
             <IconButton onClick={onClick} style={{top: "50%", transform: "translateY(-50%)"}}>
-                <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length / result.querySize }</span>
+                <span style={{color: multipleColor, fontSize: "14px"}}>{ "+" + result.result.length / querySize }</span>
                 {
                     seeMore ? 
                     <KeyboardArrowUpIcon style={{color: "grey"}}/> :
