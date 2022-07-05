@@ -73,11 +73,12 @@ export const resetQuery = () => {
 export const queryResults = (results, clean, total) => {
     return (dispatch, getState) => {
         var tracks = [];
-        var canLoadMore = results.length < total;
         
         if (!clean) {
             results = getState().get("queries").toJS()["results"].concat(results);
         }
+        
+        var canLoadMore = results.length < total;
         
         for (var i = 0 ; i < results.length ; i++) {
             const result = results[i].result;

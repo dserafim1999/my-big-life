@@ -13,6 +13,8 @@ const QueryResults = ({ dispatch, results, isLoadingMore, canLoadMore }) => {
         dispatch(loadMoreQueryResults());
     }
 
+    console.log(canLoadMore, results)
+
     return (
         results.size > 0 &&
         (
