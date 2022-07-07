@@ -36,13 +36,6 @@ export const getActiveView = () => {
 
 export const ModuleRoutes = [
     {
-        title: "Main",
-        view: MAIN_VIEW,
-        icon: <HomeIcon fontSize="large"/>,
-        component: <MainView/>,
-        id: nanoid()
-    },
-    {
         title: "Search",
         icon: <SearchIcon fontSize="large"/>,
         route: "/search",
@@ -59,10 +52,10 @@ export const ModuleRoutes = [
         id: nanoid()
     },
     {
-        title: "LIFE Editor",
-        icon: <AssignmentIcon fontSize="large"/>,
-        view: LIFE_EDITOR,
-        component: <LifeEditor/>,
+        title: "Home",
+        view: MAIN_VIEW,
+        icon: <HomeIcon fontSize="large"/>,
+        component: <MainView/>,
         id: nanoid()
     },
     {

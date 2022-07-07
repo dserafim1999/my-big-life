@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
 import MainContainer from './MainContainer';
-import SideBar from '../components/SideBar';
+import MenuBar from '../components/MenuBar';
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -70,7 +70,7 @@ let App = ({ showConfig, view, dispatch }) => {
                 }
               })
             }
-            <SideBar dispatch={dispatch}/>
+            <MenuBar dispatch={dispatch}/>
             <MainContainer
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}
