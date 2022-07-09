@@ -51,6 +51,7 @@ export const SET_LOADING = 'general/set_loading';
 export const UPDATE_CONFIG = 'general/update_config';
 export const UPDATE_SERVER = 'general/update_server';
 export const UPDATE_VIEW = 'general/update_view';
+export const TOGGLE_UI = 'general/toggle_ui';
 
 export const UPDATE_BOUNDS = 'map/bounds';
 export const CENTER_MAP = 'map/center';

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import { getRoute, ModuleRoutes } from "../../modules/ModuleRoutes";
 import { connect } from "react-redux";
-import { updateView } from "../../actions/general";
+import { toggleUI as toggleUIAction, updateView } from "../../actions/general";
 import { MAIN_VIEW } from "../../constants";
 import { Tooltip } from "@mui/material";
 
@@ -23,7 +23,7 @@ const wrapperStyle = {
     display: 'flex'
 }
 
-const MenuBar = ({dispatch, activeView}) => {
+const MenuBar = ({dispatch, activeView, isVisible}) => {
     const [panelOpen, setIsPanelOpen] = useState(true);
 
     const isActiveView = (view) => {
@@ -34,6 +34,11 @@ const MenuBar = ({dispatch, activeView}) => {
         const route = getRoute(view);
         
         return isActiveView(view) ? '/' : route;
+    }
+
+    const toggleUI = (value) => {
+        dispatch(toggleUIAction(value));
+        setIsPanelOpen(value);
     }
 
     const renderOpenMenu = () => {
@@ -59,7 +64,7 @@ const MenuBar = ({dispatch, activeView}) => {
                 <Tooltip title={"Hide UI"}> 
                     <IconButton 
                         size="small" 
-                        onClick={() => setIsPanelOpen(false)}
+                        onClick={() => toggleUI(false)}
                         className="inactiveIcon"
                     >  
                         <HideUIIcon fontSize="large"/>
@@ -74,7 +79,7 @@ const MenuBar = ({dispatch, activeView}) => {
             <Tooltip title={"Show UI"}>
                 <IconButton 
                     size="small" 
-                    onClick={() => setIsPanelOpen(true)}
+                    onClick={() => toggleUI(true)}
                     className="inactiveIcon"
                 >  
                         <ShowUIIcon/>
@@ -95,7 +100,8 @@ const MenuBar = ({dispatch, activeView}) => {
 
 const mapStateToProps = (state) => {
     return {
-        activeView: state.get('general').get('activeView')
+        activeView: state.get('general').get('activeView'),
+        isVisible: state.get('general').get('isUIVisible')
     };
   }
   

@@ -6,15 +6,15 @@ import Timeline from "../../components/Timeline";
 import Card from "../../containers/Card";
 
 
-const MainView = ({ dispatch }) => {
+const MainView = ({ dispatch, isVisible }) => {
+    if (!isVisible) return null;
+
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
     const height = 75;
 
     var timelineRef = useRef(null);
-    const { onMouseDown } = useDraggableScroll(timelineRef, { direction: 'horizontal' });
-    
-    const [id, setId] = useState(0);
     const [fullWidth, setFullWidth] = useState(window.innerWidth * timelineWidthPercentage);
+    const { onMouseDown } = useDraggableScroll(timelineRef, { direction: 'horizontal' });
 
 
     useEffect(() => {
@@ -40,7 +40,9 @@ const MainView = ({ dispatch }) => {
 };
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        isVisible: state.get('general').get('isUIVisible')
+    };
 }
   
 export default connect(mapStateToProps)(MainView);

@@ -5,7 +5,8 @@ import {
   SET_LOADING,
   UPDATE_CONFIG,
   UPDATE_SERVER,
-  UPDATE_VIEW
+  UPDATE_VIEW,
+  TOGGLE_UI
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -119,6 +120,11 @@ export const updateServer = (server) => ({
 export const updateView = (view) => ({
   view,
   type: UPDATE_VIEW
+})
+
+export const toggleUI = (isVisible) => ({
+  isVisible,
+  type: TOGGLE_UI
 })
 
 export const loadTrips = () => {

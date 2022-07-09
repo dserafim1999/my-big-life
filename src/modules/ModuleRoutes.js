@@ -3,18 +3,16 @@ import React from "react";
 import { nanoid } from "nanoid";
 
 import Search from "./Search";
-import LifeEditor from "./LifeEditor";
 import VisualQuerying from "./VisualQuerying";
 
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
-import AssignmentIcon from '@mui/icons-material/AssignmentInd';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrackProcessing from "./TrackProcessing";
 import ConfigPane from "../containers/ConfigPane";
-import { CONFIG_PANEL, LIFE_EDITOR, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
+import { CONFIG_PANEL, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
 import { getActiveRoute } from "../utils";
 import MainView from "./MainView";
 

@@ -108,7 +108,10 @@ class TrackProcessing extends Component {
     }
     
     render () {
-        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed, daysLeft} = this.props;
+        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed, daysLeft, isVisible} = this.props;
+
+        if (!isVisible) return null;
+
 
         const progress = (
             <ProgressBar state={step}>
@@ -171,7 +174,8 @@ const mapStateToProps = (state) => {
     daysLeft: state.get('process').get('remainingTracks').count() > 0 ? state.get('process').get('remainingTracks').count() : 0,
     segmentsCount: state.get('tracks').get('segments').count(),
     isLoadingNext: state.get('general').get('loading').has('continue-button'),
-    isLoadingPrevious: state.get('general').get('loading').has('previous-button')
+    isLoadingPrevious: state.get('general').get('loading').has('previous-button'),
+    isVisible: state.get('general').get('isUIVisible')
   }
 }
 
