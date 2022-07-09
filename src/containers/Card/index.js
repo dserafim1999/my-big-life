@@ -9,7 +9,7 @@ const wrapper = {
     zIndex: '1000'
 }
 
-const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDraggable = true, style }) => {
+const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDraggable = true, containerStyle, innerStyle }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
     const innerHeight = height != undefined ? window.innerHeight - height : window.innerHeight;
 
@@ -43,12 +43,12 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDra
         width: width != undefined ? width + 'px' : '', 
         height: height != undefined ? height+'px' : ''
     }
-    cardStyle = style ? {...cardStyle, ...style} : cardStyle;
+    cardStyle = {...containerStyle, ...cardStyle};
 
     return (
         <Draggable position={initPosition} {...dragHandlers} onDrag={onControlledDrag}>
             <div style={cardStyle}>
-                <div style={{width: '100%', height: '100%', padding: '10px'}} className="cardContent">
+                <div style={{width: '100%', height: '100%', padding: '10px', ...innerStyle}} className="cardContent">
                     { children }
                 </div>
             </div>

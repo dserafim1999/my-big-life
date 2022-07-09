@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import IconButton from "@mui/material/IconButton";
 import { getRoute, ModuleRoutes } from "../../modules/ModuleRoutes";
 import { connect } from "react-redux";
-import { loadTrips, updateView } from "../../actions/general";
+import { updateView } from "../../actions/general";
 import { MAIN_VIEW } from "../../constants";
-import { getActiveRoute } from "../../utils";
 import { Tooltip } from "@mui/material";
 
+import HideUIIcon from "@mui/icons-material/VisibilityOff";
+import ShowUIIcon from "@mui/icons-material/Menu";
 
 const wrapperStyle = {
     position: 'absolute',
@@ -18,10 +19,13 @@ const wrapperStyle = {
     zIndex: '500',
     left: '50%',
     bottom: '10px',
-    transform: 'translate(-50%, 0%)'
+    transform: 'translate(-50%, 0%)',
+    display: 'flex'
 }
 
 const MenuBar = ({dispatch, activeView}) => {
+    const [panelOpen, setIsPanelOpen] = useState(true);
+
     const isActiveView = (view) => {
         return activeView === view;
     }
@@ -31,27 +35,59 @@ const MenuBar = ({dispatch, activeView}) => {
         
         return isActiveView(view) ? '/' : route;
     }
-         
-    if (getActiveRoute() === '/') {
-        dispatch(loadTrips());
+
+    const renderOpenMenu = () => {
+        return (
+            <>
+                <div style={{borderRight: "1px solid lightgrey"}}>    
+                    {
+                        ModuleRoutes.map(menu => (
+                            <Tooltip key={menu.id} title={menu.title}> 
+                                <IconButton 
+                                    size="small" 
+                                    aria-label={menu.title}
+                                    onClick={() => dispatch(isActiveView(menu.view) ? updateView(MAIN_VIEW) : updateView(menu.view))}
+                                    className={isActiveView(menu.view) ? 'activeIcon' : 'inactiveIcon'}
+                                >  
+                                    <Link to={routeTo(menu.view)}>{menu.icon}</Link>
+                                </IconButton>
+                            </Tooltip>
+                        ))
+                    
+                    }
+                </div>
+                <Tooltip title={"Hide UI"}> 
+                    <IconButton 
+                        size="small" 
+                        onClick={() => setIsPanelOpen(false)}
+                        className="inactiveIcon"
+                    >  
+                        <HideUIIcon fontSize="large"/>
+                    </IconButton>
+                </Tooltip>
+            </>
+        );
     }
 
+    const renderShowUIButton = () => {
+        return (
+            <Tooltip title={"Show UI"}>
+                <IconButton 
+                    size="small" 
+                    onClick={() => setIsPanelOpen(true)}
+                    className="inactiveIcon"
+                >  
+                        <ShowUIIcon/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+         
     return (
         <div style={wrapperStyle}>
-            {
-                ModuleRoutes.map(menu => (
-                    <Tooltip key={menu.id} title={menu.title}> 
-                        <IconButton 
-                            size="small" 
-                            aria-label={menu.title}
-                            onClick={() => dispatch(isActiveView(menu.view) ? updateView(MAIN_VIEW) : updateView(menu.view))}
-                            className={isActiveView(menu.view) ? 'activeIcon' : 'inactiveIcon'}
-                        >  
-                            <Link to={routeTo(menu.view)}>{menu.icon}</Link>
-                        </IconButton>
-                    </Tooltip>
-                ))
-            
+            { panelOpen ?
+                renderOpenMenu() :
+                renderShowUIButton()
             }
         </div>
     );

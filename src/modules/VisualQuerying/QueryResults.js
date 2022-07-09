@@ -39,7 +39,7 @@ const QueryResults = ({ dispatch, results, isLoadingMore, canLoadMore }) => {
     if (results.size <= 0) return null;
 
     return (
-            <Card width={panelOpen ? 700 : 5} height={450} style={{margin: '175px 25px'}} isDraggable={true}>
+            <Card width={panelOpen ? 700 : 5} height={450} containerStyle={{margin: '175px 25px'}} isDraggable={true}>
                 { togglePanelButton() }
                 { panelOpen && 
                     (

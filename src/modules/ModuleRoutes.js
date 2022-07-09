@@ -36,6 +36,13 @@ export const getActiveView = () => {
 
 export const ModuleRoutes = [
     {
+        title: "Home",
+        view: MAIN_VIEW,
+        icon: <HomeIcon fontSize="large"/>,
+        component: <MainView/>,
+        id: nanoid()
+    },
+    {
         title: "Search",
         icon: <SearchIcon fontSize="large"/>,
         route: "/search",
@@ -49,13 +56,6 @@ export const ModuleRoutes = [
         route: "/track-processing",
         view: TRACK_PROCESSING,
         component: <TrackProcessing/>,
-        id: nanoid()
-    },
-    {
-        title: "Home",
-        view: MAIN_VIEW,
-        icon: <HomeIcon fontSize="large"/>,
-        component: <MainView/>,
         id: nanoid()
     },
     {
