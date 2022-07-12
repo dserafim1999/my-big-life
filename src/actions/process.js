@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch';
 import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
-import { fitSegments, fitTracks, setLoading } from './general';
+import { fitSegments, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
-import { resetHistory, clearAll, displayCanonicalTrips, displayCanonicalLocations } from './tracks';
+import { resetHistory, clearAll } from './tracks';
 
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
@@ -296,42 +296,6 @@ export const getLocationSuggestion = (point) => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((location) => location.other.map((x) => x.label));
-  }
-}
-
-export const loadCanonicalTrips = () => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/process/canonicalTrips', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((trips) => {
-        dispatch(displayCanonicalTrips(trips));
-        // TODO go to last route
-        dispatch(fitTracks(0));
-      });
-  }
-}
-
-export const loadCanonicalLocations = () => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/process/canonicalLocations', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((trips) => {
-        dispatch(displayCanonicalLocations(trips));
-        // TODO go to last route
-        dispatch(fitTracks(0));
-      });
   }
 }
 

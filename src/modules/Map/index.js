@@ -28,6 +28,7 @@ import updatePoints from './updatePoints';
 import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
 import pointActionMode from './pointActionMode';
 import { createMarker, createPointIcon } from './utils';
+import addLocation from './addLocation';
 
 const DEFAULT_PROPS = {
   detailLevel: 16,
@@ -63,6 +64,7 @@ export default class LeafletMap extends Component {
      *    this should be reconstructed each time there is an update to the points or the visualization mode.
      */
     this.segments = {};
+    this.locations = {};
     this.pointHighlights = [];
   }
 
@@ -122,6 +124,7 @@ export default class LeafletMap extends Component {
       highlighted,
       highlightedPoints,
       segments,
+      locations,
       dispatch,
       canUndo,
       canRedo,
@@ -142,6 +145,7 @@ export default class LeafletMap extends Component {
     this.shouldUpdateHighlighted(highlighted, prev.highlighted, segments);
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
+    this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
     this.shouldUpdateSegmentsArePoints(this.props, prev);
   }
@@ -205,7 +209,7 @@ export default class LeafletMap extends Component {
       const lseg = this.segments[id];
 
       if (lseg) {
-        this.shouldUpdatePoints(lseg, points, filter, previous, color, current);
+        this.shouldUpdateSegmentPoints(lseg, points, filter, previous, color, current);
         this.shouldUpdateColor(lseg, color, previous.get('color'));
         this.shouldUpdateDisplay(lseg, display, previous.get('display'));
         this.shouldUpdateMode(lseg, current, previous);
@@ -213,6 +217,27 @@ export default class LeafletMap extends Component {
       } else {
         this.addSegment(id, points, color, display, filter, current, dispatch, previous, current);
       }
+    }
+  }
+
+  shouldUpdateLocation (current, previous) {
+    if (current !== previous) {
+      const id = current.get('label');
+      const lseg = this.locations[id];
+
+      if (!lseg) {
+        this.addLocationPoint(current);
+      }
+    }
+  }
+
+  shouldUpdateLocations (locations, previous) {
+    if (locations !== previous) {
+      locations.forEach((loc) => {
+        this.shouldUpdateLocation(loc, previous.get(loc.get('label')));
+      });
+
+      this.shouldRemoveLocations(locations, previous);
     }
   }
 
@@ -288,6 +313,15 @@ export default class LeafletMap extends Component {
           }
         }
       });
+
+      Object.keys(this.locations).forEach((s) => {
+        if (this.locations[s]) {
+          const { details, layergroup } = this.locations[s];
+          if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
+            layergroup.addLayer(details);
+          }
+        }
+      });
     } else {
       // remove layers
       Object.keys(this.segments).forEach((s) => {
@@ -299,6 +333,15 @@ export default class LeafletMap extends Component {
 
           if (layergroup.hasLayer(transportation) === true) {
             layergroup.removeLayer(transportation);
+          }
+        }
+      });
+
+      Object.keys(this.locations).forEach((s) => {
+        if (this.locations[s]) {
+          const { details, layergroup } = this.locations[s];
+          if (layergroup.hasLayer(details) === true && !segmentsArePoints) {
+            layergroup.removeLayer(details);
           }
         }
       });
@@ -348,7 +391,7 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdatePoints (segment, points, filter, prev, color, current) {
+  shouldUpdateSegmentPoints (segment, points, filter, prev, color, current) {
     const buildTimeFilter = (filter, points) => {
       const tfLower = (filter.get(0) || points.get(0).get('time')).valueOf();
       const tfUpper = (filter.get(-1) || points.get(-1).get('time')).valueOf();
@@ -400,12 +443,34 @@ export default class LeafletMap extends Component {
     }
   }
 
+  addLocationPoint(point) {
+    const obj = addLocation(point, '#000000');
+    this.locations[point.label] = obj;
+    obj.layergroup.addTo(this.map);
+
+    const currentZoom = this.map.getZoom();
+    const { detailLevel } = this.props;
+    if (currentZoom >= detailLevel) {
+      obj.details.addTo(obj.layergroup);
+    }
+  }
+
   shouldRemoveSegments (segments, prev) {
     if (segments !== prev) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
         this.map.removeLayer(this.segments[s].layergroup);
         this.segments[s] = null;
+      })
+    }
+  }
+
+  shouldRemoveLocations (points, prev) {
+    if (points !== prev) {
+      // delete point if needed
+      Set(prev.keySeq()).subtract(points.keySeq()).forEach((s) => {
+        this.map.removeLayer(this.locations[s].layergroup);
+        this.locations[s] = null;
       })
     }
   }

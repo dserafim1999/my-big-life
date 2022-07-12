@@ -135,6 +135,24 @@ a.button {
   justify-content: center;
 }
 
+.location-point {
+  background-color: white;
+  border-color: var(--main); 
+  color: var(--main); 
+  border-radius: 50%;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 8px !important;
+  padding: 2px;
+  border-width: 2px;
+  border-style: solid;
+  font-style: normal !important;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 .p-fa {
   font-style: normal;
   font-size: 11px;
@@ -153,6 +171,7 @@ a.button {
 .border-color-e6ab02 { border-color: #e6ab02; color: #e6ab02 }
 .border-color-a6761d { border-color: #a6761d; color: #a6761d }
 .border-color-666666 { border-color: #666666; color: #666666 }
+.border-color-000000 { border-color: #000000; color: #000000 }
 
 /**/
 .previousBtn, .nextBtn {

@@ -1,13 +1,12 @@
 import React from "react";
 
-import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
+import { TRACK_PROCESSING } from "../../constants";
 import { getActiveRoute } from "../../utils"
 import { getView } from "../ModuleRoutes"
-import { createPointIcon, createMarker, createLocationIcon } from './utils';
+import { createPointIcon, createMarker, createLocationMarker } from './utils';
 
 import StopIcon from '@mui/icons-material/Stop';
 import PlayIcon from '@mui/icons-material/PlayArrow';
-import LocationIcon from '@mui/icons-material/LocationOn';
 
 import { renderToString } from 'react-dom/server';
 
@@ -44,7 +43,7 @@ export const getSpecialMarkers = (pts, color) => {
         default:
             if (pts.length === 1) { // if only 1 point exists then it is a Location (derived from a Stay)
                 return {
-                    end: createMarker(pts[0], createLocationIcon(color, renderToString(<LocationIcon className='center' sx={{ fontSize: 24 }}/>)))
+                    end: createLocationMarker(pts[0], color)
                 }
             } else { // no start/end markers
                 return {}

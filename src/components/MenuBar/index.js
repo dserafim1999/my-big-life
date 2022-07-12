@@ -44,7 +44,7 @@ const MenuBar = ({dispatch, activeView, isVisible}) => {
     const renderOpenMenu = () => {
         return (
             <>
-                <div style={{borderRight: "1px solid lightgrey"}}>    
+                <div style={{borderRight: "2px solid lightgrey"}}>    
                     {
                         ModuleRoutes.map(menu => (
                             <Tooltip key={menu.id} title={menu.title}> 

@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { DivIcon, Marker, FeatureGroup } from 'leaflet';
+import { renderToString } from 'react-dom/server';
+
+import LocationIcon from '@mui/icons-material/LocationOn';
 
 export const renderToDiv = (component) => {
   const div = document.createElement('div');
@@ -15,9 +18,9 @@ export const createPointIcon = (color, inside, moreClass = '', iconAnchor = [12,
     iconAnchor
   });
 
-export const createLocationIcon = (color, inside, moreClass = '', iconAnchor = [12, 12]) =>
+export const createLocationIcon = (color, inside, moreClass = '', iconAnchor = [9, 9]) =>
   new DivIcon({
-    className: (color ? ' border-color-' + color.substr(1) : '') + ' ' + moreClass,
+    className: 'location-point',
     html: inside || '',
     iconAnchor
   });
@@ -33,6 +36,13 @@ export const setupMarker = (marker, index, previous, next, type = 'NORMAL') => {
 
 export const createMarker = (point, icon, draggable = false) => 
   new Marker(point, { icon, draggable });
+
+export const createLocationMarker = (point, color) => {
+  const marker = createMarker(point, createLocationIcon(color, renderToString(<LocationIcon className='center' sx={{ fontSize: 16 }}/>)));
+  marker.bindTooltip(point.label, {direction: 'top'});
+
+  return marker;
+}
 
 export const createPointsFeatureGroup = (pts, color, pointsEventMap = {}) => {
   const icon = createPointIcon(color);

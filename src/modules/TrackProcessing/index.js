@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { toggleRemainingTracks, addAlert } from '../../actions/general';
-import { clearAll, hideCanonical, resetHistory } from '../../actions/tracks';
+import { clearAll, resetHistory } from '../../actions/tracks';
 
 import BulkButtons from '../../components/Buttons/BulkButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
@@ -122,11 +122,7 @@ class TrackProcessing extends Component {
         );
     
         let buttons;
-        if (canonical) {
-            buttons = (
-              <a className='button is-primary' onClick={() => dispatch(hideCanonical())} style={{ margin: 'auto' }}>Done</a>
-            );
-        } else if (remainingCount > 0) {
+        if (remainingCount > 0) {
             if (showList) {
                 buttons = <BulkButtons onBulkClick={this.onBulkClick} onRawBulkClick={this.onRawBulkClick} onLifeRead={this.onLifeRead} />
             } else {

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import useDraggableScroll from "use-draggable-scroll";
-import { loadTrips } from "../../actions/general";
+import { loadTripsAndLocations } from "../../actions/general";
 import Timeline from "../../components/Timeline";
 import Card from "../../containers/Card";
 
@@ -24,7 +24,7 @@ const MainView = ({ dispatch, isVisible }) => {
         window.addEventListener('resize', handleResize)
     });
 
-    dispatch(loadTrips());
+    dispatch(loadTripsAndLocations());
 
     return (
         <Card 

@@ -52,15 +52,19 @@ export const getTrackBySegmentId = (id, state) =>
     track.segments.find((s) => s.id === id) ? track : null
   ).find((x) => !!x);
 
+export const createPointObj = (time, lat, lon) => {
+  return Map({
+    time: moment(time),
+    lat: lat,
+    lon: lon
+  });
+}
+
 export const createSegmentObj = (trackId, points, location, transModes, nSegs, customId) => {
     let sId = customId === undefined ?  generateSegmentId() : customId;
     
     const pointsImmutable = List(points.map((point) => {
-        return Map({
-          time: moment(point.time),
-          lat: point.lat,
-          lon: point.lon
-        })
+        return createPointObj(point.time, point.lat, point.lon);
     }));
 
     let state = Map({

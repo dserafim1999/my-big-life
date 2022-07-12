@@ -11,7 +11,7 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
-import { clearAll, displayTrips } from "./tracks";
+import { clearAll, displayLocations, displayTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -127,19 +127,20 @@ export const toggleUI = (isVisible) => ({
   type: TOGGLE_UI
 })
 
-export const loadTrips = () => {
+export const loadTripsAndLocations = () => {
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
       mode: 'cors'
     }
     const addr = getState().get('general').get('server');
-    return fetch(addr + '/trips', options)
+    return fetch(addr + '/tripsLocations', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
-      .then((trips) => {
+      .then((res) => {
         dispatch(clearAll());
-        dispatch(displayTrips(trips));
+        dispatch(displayTrips(res.trips));
+        dispatch(displayLocations(res.locations));
       });
   }
 }

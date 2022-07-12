@@ -5,18 +5,15 @@ import {
   UPDATE_TRACK_NAME,
   UPDATE_LIFE,
   REMOVE_TRACK,
-  DISPLAY_CANONICAL_TRIPS,
-  DISPLAY_CANONICAL_LOCATIONS,
-  HIDE_CANONICAL,
   RESET_HISTORY,
-  DISPLAY_TRIPS
+  DISPLAY_TRIPS,
+  DISPLAY_LOCATIONS,
+  CLEAR_ALL_TRACKS
 } from ".";
 
 import { Set } from 'immutable';
 import { fitSegments } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
-
-import { toggleSegmentVisibility } from "./segments";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
@@ -47,18 +44,9 @@ export const displayTrips = (trips) => ({
   type: DISPLAY_TRIPS
 })
 
-export const displayCanonicalTrips = (trips) => ({
-  trips,
-  type: DISPLAY_CANONICAL_TRIPS
-})
-
-export const displayCanonicalLocations = (trips) => ({
-  trips,
-  type: DISPLAY_CANONICAL_LOCATIONS
-})
-
-export const hideCanonical = () => ({
-  type: HIDE_CANONICAL
+export const displayLocations = (locations) => ({
+  locations,
+  type: DISPLAY_LOCATIONS
 })
 
 export const toggleTrackRenaming = (trackId) => {
@@ -122,26 +110,14 @@ export const downloadAll = () => {
   }
 }
 
-export const showHideAll = () => {
-  return (dispatch, getState) => {
-    getState().get('tracks').get('segments').keySeq().forEach((seg) => {
-      dispatch(toggleSegmentVisibility(seg));
-    });
-  }
-}
-
 export const removeTrack = (trackId) => ({
   trackId,
   type: REMOVE_TRACK
 })
 
-export const clearAll = () => {
-  return (dispatch, getState) => {
-    getState().get('tracks').get('tracks').keySeq().forEach((t) => {
-      dispatch(removeTrack(t))
-    });
-  }
-}
+export const clearAll = () => ({
+  type: CLEAR_ALL_TRACKS
+})
 
 export const updateLIFE = (text, warning) => ({
   text,

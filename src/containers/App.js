@@ -10,7 +10,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { toggleRemainingTracks } from '../actions/general';
-import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
+import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, view, dispatch }) => {
