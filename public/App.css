@@ -1,5 +1,6 @@
 :root {
   --main: #284760;
+  --secondary: #a42525;
 }
 
 .leaflet-container {
@@ -77,7 +78,7 @@
   color: #fff;
 }
 .button.is-red {
-  background-color: #a42525;
+  background-color: var(--secondary);
   border-color: transparent;
   color: #fff;
 }
@@ -138,7 +139,7 @@ a.button {
 .location-point {
   background-color: white;
   border-color: var(--main); 
-  color: var(--main); 
+  color: var(--secondary); 
   border-radius: 50%;
   width: 18px !important;
   height: 18px !important;
