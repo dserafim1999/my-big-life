@@ -16,7 +16,7 @@ export const executeQuery = (params) => {
             .catch((e) => console.error(e))
             .then((res) => {
                 dispatch(setLoading('query-button', false));
-                dispatch(queryResults(res.results, res.segments, true, res.total))
+                dispatch(queryResults(res.results, true, res.total, res.querySize))
             }
         ); 
     }
@@ -36,7 +36,7 @@ export const loadMoreQueryResults = (params) => {
             .catch((e) => console.error(e))
             .then((res) => {
                 dispatch(setLoading('load-more-button', false));
-                dispatch(queryResults(res.results, res.segments, false, res.total))
+                dispatch(queryResults(res.results, false, res.total, res.querySize))
             }
         ); 
     }
@@ -70,10 +70,29 @@ export const resetQuery = () => {
     }
 };
 
-export const queryResults = (results, segments, clean, total) => {
-    return (dispatch) => {
+export const queryResults = (results, clean, total, querySize) => {
+    return (dispatch, getState) => {
+        var tracks = [];
+        
+        if (!clean) {
+            results = getState().get("queries").toJS()["results"].concat(results);
+        }
+        
+        var canLoadMore = results.length < total;
+        
+        for (var i = 0 ; i < results.length ; i++) {
+            const result = results[i].result;
+            for(var j = 0 ; j < result.length ; j++) {
+                const res = result[j];
+
+                if (res.type === "interval" || querySize === 1) {
+                    tracks.push(res.points);
+                } 
+            }
+        }        
+        
         dispatch(clearAll());
-        dispatch(displayTrips(segments));
-        dispatch({results, clean, total, type: QUERY_RESULTS});
+        dispatch(displayTrips(tracks));
+        dispatch({results, clean, canLoadMore, type: QUERY_RESULTS});
     }
 };

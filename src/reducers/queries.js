@@ -119,16 +119,9 @@ const resetQuery = (state) => {
 }
 
 const queryResults = (state, action) => {
-  var results;
-  if (action.clean) {
-    results = action.results;
-  } else {
-    results = state.toJS()["results"].concat(action.results);
-  }
-
   return state
-    .setIn(["results"], List(results))
-    .setIn(["canLoadMore"], results.length < action.total);
+    .setIn(["results"], List(action.results))
+    .setIn(["canLoadMore"], action.canLoadMore);
 }
 
 const ACTION_REACTION = {

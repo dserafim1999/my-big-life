@@ -6,7 +6,9 @@ import Card from '../Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
 
-const ConfigPane = ({ dispatch, address, config, isLoading }) => {
+const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
+    if (!isVisible) return null;
+    
     useEffect( () => {
       dispatch(getConfig(dispatch));
       console.log(address)
@@ -150,7 +152,8 @@ const mapStateToProps = (state) => {
   return {
     address: state.get('general').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,
-    isLoading: state.get('general').get('loading').has('config')
+    isLoading: state.get('general').get('loading').has('config'),
+    isVisible: state.get('general').get('isUIVisible')
   };
 }
 

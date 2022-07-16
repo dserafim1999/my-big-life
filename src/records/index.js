@@ -63,7 +63,8 @@ export const getTrackBySegmentId = (id, state) =>
 const POINT_DEFAULTS = {
   lat: 0,
   lon: 0,
-  time: null
+  time: null,
+  label: null
 }
 
 export class PointRecord extends Record(POINT_DEFAULTS) {

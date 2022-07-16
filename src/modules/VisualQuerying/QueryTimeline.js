@@ -176,7 +176,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
             <Card 
                 width={fullWidth} 
                 height={height} 
-                style={{margin: '25px'}}
+                containerStyle={{margin: '25px'}}
                 isDraggable={false}
             >
                 <hr className="horizontalAxis"/>

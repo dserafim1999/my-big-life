@@ -1,9 +1,10 @@
-import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj } from "../records";
+import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord } from "../records";
 import segments from "./segments";
 import { List, Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 import colors from "./colors";
 import { groupBy } from "../utils";
+import moment from "moment";
 
 export const addTrack = (state, action) => {
   let { name, segments, locations, transModes } = action;
@@ -56,48 +57,20 @@ const removeTracksFor = (state, action) => {
     return addTrack(state, act);
 }
 
-const displayCanonicalTrips = (state, action) => {
-  const { trips } = action;
-  const canonicalSegments = trips.filter((trip) => trip.points.length > 1).map((trip, i) => {
-    return new SegmentRecord({
-      trackId: 0,
-      id: trip.id,
-      color: colors(i),
-      points: pointsToRecord(trip.points)
-    });
-  });
-  const canonicalTrack = new TrackRecord({
-    id: 0,
-    segments: new List(canonicalSegments.map((trip) => trip.id))
-  });
-
-  if (!state.get('alternate')) {
-    state = state.set('alternate', state);
-  }
-
-  return state
-    .set('canonical', 'trips')
-    .updateIn(['history', 'past'], (past) => past.clear())
-    .updateIn(['history', 'future'], (future) => future.clear())
-    .updateIn(['tracks'], (tracks) => tracks.clear().set(canonicalTrack.id, canonicalTrack))
-    .updateIn(['segments'], (segments) => {
-      segments = segments.clear();
-      return canonicalSegments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
-    });
-}
-
 const displayTrips = (state, action) => {
   const { trips } = action;
 
+  if (!trips) {
+    return state;
+  }
+
   const tripsByDay = groupBy(trips, "date");
   const _tracks = [], _segments = [];
-  
+
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     _tracks.push(new TrackRecord({
-        id: day,
+        id: moment(day).format("DD/MM/YYYY"),
         segments: new List(trips.map((segment, i) => {
           return segment.id
         }))
@@ -134,41 +107,26 @@ const displayTrips = (state, action) => {
     });
 }
 
-const displayCanonicalLocations = (state, action) => {
-  const { trips } = action;
-  const canonicalSegments = trips.map((trip, i) => {
-    return new SegmentRecord({
-      trackId: 0,
-      id: i,
-      label: trip.label,
-      color: colors(i),
-      points: pointsToRecord(trip.points)
-    });
-  })
-  const canonicalTrack = new TrackRecord({
-    id: 0,
-    segments: new List(canonicalSegments.map((trip) => trip.id))
-  });
+const displayLocations = (state, action) => {
+  const { locations } = action;
+  const _points = [];
 
-  if (!state.get('alternate')) {
-    state = state.set('alternate', state);
+  for (const [i, location] of Object.entries(locations)) {
+    _points.push(new PointRecord({
+        lat: location.lat,
+        lon: location.lon,
+        label: location.label
+      })
+    );
   }
-
+  
   return state
-    .set('canonical', 'locations')
-    .updateIn(['history', 'past'], (past) => past.clear())
-    .updateIn(['history', 'future'], (future) => future.clear())
-    .updateIn(['tracks'], (tracks) => tracks.clear().set(canonicalTrack.id, canonicalTrack))
-    .updateIn(['segments'], (segments) => {
-      segments = segments.clear();
-      return canonicalSegments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
+    .updateIn(['locations'], (locations) => {
+      locations = locations.clear(); 
+      return _points.reduce((locations, location) => {
+        return locations.set(location.label, location);
+      }, locations)
     });
-}
-
-const hideCanonical = (state, action) => {
-  return state.get('alternate');
 }
 
 const undo = (state, action) => {
@@ -218,6 +176,10 @@ const removeTrack = (state, action) => {
   return cState.deleteIn(['tracks', trackId]);
 }
 
+const clearAll = (state, action) => {
+  return initialState;
+}
+
 const ACTION_REACTION = {
     'tracks/add': addTrack,
     'tracks/remove': removeTrack,
@@ -226,13 +188,12 @@ const ACTION_REACTION = {
     'tracks/toggle_renaming': toggleTrackRenaming,
     'tracks/update_LIFE': updateLIFE,
     'tracks/display_trips': displayTrips,
+    'tracks/display_locations': displayLocations,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
+    'tracks/clear_all': clearAll,
     'tracks/undo': undo,
     'tracks/redo': redo,
-    'tracks/canonical_trip': displayCanonicalTrips,
-    'tracks/canonical_locations': displayCanonicalLocations,
-    'tracks/hide_canonical': hideCanonical,
 }
 
 
@@ -241,6 +202,7 @@ const UNDO_LIMIT = 50
 
 const initialState = fromJS({
   tracks: {},
+  locations: {},
   segments: {},
   history: {
     past: [],

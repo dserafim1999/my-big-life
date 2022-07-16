@@ -1,12 +1,9 @@
 import React from 'react';
 import { Polyline, FeatureGroup } from 'leaflet';
-import { createPointsFeatureGroup, createPointIcon, createMarker } from './utils';
-
-import StopIcon from '@mui/icons-material/Stop';
-import PlayIcon from '@mui/icons-material/PlayArrow';
+import { createPointsFeatureGroup } from './utils';
+import { getPolylineStyle, getSpecialMarkers } from './mapConfig'
 
 import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
-import { renderToString } from 'react-dom/server';
 
 export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
   let pts;
@@ -22,20 +19,13 @@ export default (id, points, color, display, filter, segment, dispatch, previousP
   } else {
     pts = points.map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
   }
-  
-  const pline = new Polyline(pts, {
-    color,
-    weight: 8,
-    opacity: display ? 1 : 0
-  });
+
+  const pline = new Polyline(pts, getPolylineStyle(color, display));
 
   const pointsEventMap = {};
   const pointsLayer = createPointsFeatureGroup(pts, color, pointsEventMap);
   
-  const specialMarkers = {
-    start: createMarker(pts[0], createPointIcon(color, renderToString(<PlayIcon className='center' sx={{ fontSize: 16 }}/>))),
-    end: createMarker(pts[pts.length - 1], createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)))
-  }
+  const specialMarkers = getSpecialMarkers(pts, color);
   const layergroup = new FeatureGroup([pline, ...Object.keys(specialMarkers).map((k) => specialMarkers[k])]);
 
   // add segment

@@ -31,7 +31,7 @@ const INFO_TIME = 5;
 let SegmentButton = ({children, description, onClick, highlighted, disabled}) => {
   const className = [];
   if (highlighted) {
-    className.push('is-success', 'is-outlined');
+    className.push('is-selected', 'is-outlined');
   }
   if (disabled) {
     className.push('is-disabled');

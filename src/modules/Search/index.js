@@ -11,7 +11,9 @@ import QueryDatePicker from '../../components/Form/QueryDatePicker';
 import { SectionBlock } from '../../components/Form';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
-const Search = ({ dispatch, query, isQueryLoading }) => {
+const Search = ({ dispatch, query, isVisible }) => {
+  if (!isVisible) return null;
+
   const [queryForm, setQueryForm] = useState([]);
   const [id, setId] = useState(0);
   const [date, setDate] = useState("--/--/----");
@@ -177,7 +179,7 @@ const Search = ({ dispatch, query, isQueryLoading }) => {
 const mapStateToProps = (state) => {
   return {
     query: state.get('queries').get('query'),
-    isQueryLoading: state.get('general').get('loading').get('query-button')
+    isVisible: state.get('general').get('isUIVisible')
   };
 }
 

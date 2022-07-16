@@ -5,12 +5,13 @@ import {
   SET_LOADING,
   UPDATE_CONFIG,
   UPDATE_SERVER,
-  UPDATE_VIEW
+  UPDATE_VIEW,
+  TOGGLE_UI
 } from "."
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
-import { clearAll, displayTrips } from "./tracks";
+import { clearAll, displayLocations, displayTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -121,19 +122,25 @@ export const updateView = (view) => ({
   type: UPDATE_VIEW
 })
 
-export const loadTrips = () => {
+export const toggleUI = (isVisible) => ({
+  isVisible,
+  type: TOGGLE_UI
+})
+
+export const loadTripsAndLocations = () => {
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
       mode: 'cors'
     }
     const addr = getState().get('general').get('server');
-    return fetch(addr + '/trips', options)
+    return fetch(addr + '/tripsLocations', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
-      .then((trips) => {
+      .then((res) => {
         dispatch(clearAll());
-        dispatch(displayTrips(trips));
+        dispatch(displayTrips(res.trips));
+        dispatch(displayLocations(res.locations));
       });
   }
 }

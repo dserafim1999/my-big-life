@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
 import MainContainer from './MainContainer';
-import SideBar from '../components/SideBar';
+import MenuBar from '../components/MenuBar';
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { toggleRemainingTracks } from '../actions/general';
-import { undo, redo, nextStep, previousStep, skipDay, loadTrips } from '../actions/process';
+import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 
 let App = ({ showConfig, view, dispatch }) => {
@@ -70,7 +70,7 @@ let App = ({ showConfig, view, dispatch }) => {
                 }
               })
             }
-            <SideBar dispatch={dispatch}/>
+            <MenuBar dispatch={dispatch}/>
             <MainContainer
               onKeyUp={keyHandler}
               onKeyDown={downKeyHandler}
