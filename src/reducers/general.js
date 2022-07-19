@@ -54,6 +54,7 @@ const updateServer = (state, action) => {
 }
 
 const updateView = (state, action) => {
+  
   return state.set('activeView', action.view);
 }
 
