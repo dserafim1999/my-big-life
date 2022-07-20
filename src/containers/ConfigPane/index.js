@@ -46,22 +46,22 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
           </SectionBlock>
 
           <SectionBlock name='Folders'>
-            <TextField title='Input folder' onChange={(e) => setState({...state, input_path: e.target.value})} defaultValue={config.input_path} help='Path to the folder containing tracks to be processed' />
-            <TextField title='Destination folder' onChange={(e) => setState({...state, output_path: e.target.value})} defaultValue={config.output_path} help='Path to folder where the processed tracks wil be saved' />
-            <TextField title='Backup folder' onChange={(e) => setState({...state, backup_path: e.target.value})} defaultValue={config.backup_path} help='Path to the folder where the original tracks will be saved' />
-            <TextField title='LIFE folder' onChange={(e) => setState({...state, life_path: e.target.value})} defaultValue={config.life_path} help='Path to the folder where each LIFE annotation will be saved. One file per day.' />
-            <TextField title='LIFE file' onChange={(e) => setState({...state, life_all: e.target.value})} defaultValue={config.life_all} help='Path to the global file where LIFE annotations are stored. One file contains multiple days. Created if it does not exists.' />
+            <TextField title='Input folder' onChange={(value) => setState({...state, input_path: value})} defaultValue={config.input_path} help='Path to the folder containing tracks to be processed' />
+            <TextField title='Destination folder' onChange={(value) => setState({...state, output_path: value})} defaultValue={config.output_path} help='Path to folder where the processed tracks wil be saved' />
+            <TextField title='Backup folder' onChange={(value) => setState({...state, backup_path: value})} defaultValue={config.backup_path} help='Path to the folder where the original tracks will be saved' />
+            <TextField title='LIFE folder' onChange={(value) => setState({...state, life_path: value})} defaultValue={config.life_path} help='Path to the folder where each LIFE annotation will be saved. One file per day.' />
+            <TextField title='LIFE file' onChange={(value) => setState({...state, life_all: value})} defaultValue={config.life_all} help='Path to the global file where LIFE annotations are stored. One file contains multiple days. Created if it does not exists.' />
           </SectionBlock>
 
           <SectionBlock name='Database'>
-            <TextField title='Database host' onChange={(e) => setState({...state, db: {...state.db, host: e.target.value}})} defaultValue={config.db.host}/>
-            <TextField title='Database name' onChange={(e) => setState({...state, db: {...state.db, name: e.target.value}})} defaultValue={config.db.name}/>
-            <TextField title='Database username' onChange={(e) => setState({...state, db: {...state.db, user: e.target.value}})} defaultValue={config.db.user}/>
-            <TextField title='Database password' onChange={(e) => setState({...state, db: {...state.db, pass: e.target.value}})} defaultValue={config.db.pass}/>
+            <TextField title='Database host' onChange={(value) => setState({...state, db: {...state.db, host: value}})} defaultValue={config.db.host}/>
+            <TextField title='Database name' onChange={(value) => setState({...state, db: {...state.db, name: value}})} defaultValue={config.db.name}/>
+            <TextField title='Database username' onChange={(value) => setState({...state, db: {...state.db, user: value}})} defaultValue={config.db.user}/>
+            <TextField title='Database password' onChange={(value) => setState({...state, db: {...state.db, pass: value}})} defaultValue={config.db.pass}/>
           </SectionBlock>
 
           <SectionBlock name='To trip'>
-            <TextField title='Trip name format' onChange={(e) => setState({...state, trip_name_format: e.target.value})} defaultValue={config.trip_name_format} help={
+            <TextField title='Trip name format' onChange={(value) => setState({...state, trip_name_format: value})} defaultValue={config.trip_name_format} help={
               <span>Format of a trip. It is possible to use <a href='https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior'>date formating</a>.</span>
             } />
           </SectionBlock>
@@ -81,27 +81,27 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
                 <b> - Kalman with start interpolation</b>: applies the kalman filter once, but first extrapolates the begining of the track.
               </span>
             } />
-            <TextField title='Noise' onChange={(e) => setState({...state, smoothing: {...state.smoothing, noise: e.target.value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />
+            <TextField title='Noise' onChange={(value) => setState({...state, smoothing: {...state.smoothing, noise: value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />
           </SectionBlock>
 
           <SectionBlock name='Spatiotemporal segmetation'>
             <ToggleField title='Use' onChange={(e) => setState({...state, segmentation: {...state.segmentation, use: e.target.value}})} checked={config.segmentation.use} />
-            <TextField title='Epsilon' onChange={(e) => setState({...state, segmentation: {...state.segmentation, epsilon: e.target.value}})} defaultValue={config.segmentation.epsilon} type='number' min='0' step='0.01' help='Distance epsilon after which points can be clustered into the same stop. Points are clustered based on their spatiotemporal distance. The higher it is the less clusters will exist.'/>
-            <TextField title='Min. time' onChange={(e) => setState({...state, segmentation: {...state.segmentation, min_time: e.target.value}})} defaultValue={config.segmentation.min_time} type='number' min='0' step='1' help='Minimum time at one place to consider it a stop' />
+            <TextField title='Epsilon' onChange={(value) => setState({...state, segmentation: {...state.segmentation, epsilon: value}})} defaultValue={config.segmentation.epsilon} type='number' min='0' step='0.01' help='Distance epsilon after which points can be clustered into the same stop. Points are clustered based on their spatiotemporal distance. The higher it is the less clusters will exist.'/>
+            <TextField title='Min. time' onChange={(value) => setState({...state, segmentation: {...state.segmentation, min_time: value}})} defaultValue={config.segmentation.min_time} type='number' min='0' step='1' help='Minimum time at one place to consider it a stop' />
           </SectionBlock>
 
           <SectionBlock name='Simplification'>
             <ToggleField title='Use' onChange={(e) => setState({...state, simplification: {...state.simplification, use: e.target.value}})} checked={config.simplification.use} />
-            <TextField title='Max. distance error' onChange={(e) => setState({...state, simplification: {...state.simplification, max_dist_error: e.target.value}})} defaultValue={config.simplification.max_dist_error} type='number' min='0' step='0.5' help='Maximum distance error, in meters. Higher values give higher compression rates but also more deviations from the original track' />
-            <TextField title='Max. speed error'  onChange={(e) => setState({...state, simplification: {...state.simplification, max_speed_error: e.target.value}})} defaultValue={config.simplification.max_speed_error} type='number' min='0' step='0.5' help='Maximum speed error, in km/h. Higher values give higher compression rates but also more deviations from the original track' />
-            <TextField title='Epsilon'  onChange={(e) => setState({...state, simplification: {...state.simplification, eps: e.target.value}})} defaultValue={config.simplification.eps} type='number' min='0' step='0.1' help='Maximum distance, in degrees, to compress a track solely based on its topology' />
+            <TextField title='Max. distance error' onChange={(value) => setState({...state, simplification: {...state.simplification, max_dist_error: value}})} defaultValue={config.simplification.max_dist_error} type='number' min='0' step='0.5' help='Maximum distance error, in meters. Higher values give higher compression rates but also more deviations from the original track' />
+            <TextField title='Max. speed error'  onChange={(value) => setState({...state, simplification: {...state.simplification, max_speed_error: value}})} defaultValue={config.simplification.max_speed_error} type='number' min='0' step='0.5' help='Maximum speed error, in km/h. Higher values give higher compression rates but also more deviations from the original track' />
+            <TextField title='Epsilon'  onChange={(value) => setState({...state, simplification: {...state.simplification, eps: value}})} defaultValue={config.simplification.eps} type='number' min='0' step='0.1' help='Maximum distance, in degrees, to compress a track solely based on its topology' />
           </SectionBlock>
 
           <SectionBlock name='Location inferring'>
-            <TextField title='Max. distance to place' onChange={(e) => setState({...state, location: {...state.location, max_distance: e.target.value}})} defaultValue={config.location.max_distance} type='number' min='0' step='0.01' help='Radius to other locations, in meters, for them to be considered the same.' />
-            <TextField title='Limit' onChange={(e) => setState({...state, location: {...state.location, limit: e.target.value}})} defaultValue={config.location.limit} type='number' min='0' step='0.01' help='Maximum suggestions to present for the location' />
-            <TextField title='Min samples' onChange={(e) => setState({...state, location: {...state.location, min_samples: e.target.value}})} defaultValue={config.location.min_samples} type='number' min='0' step='1' />
-            <TextField title='Google Places key' onChange={(e) => setState({...state, location: {...state.location, google_key: e.target.value}})} defaultValue={config.location.google_key} help={
+            <TextField title='Max. distance to place' onChange={(value) => setState({...state, location: {...state.location, max_distance: value}})} defaultValue={config.location.max_distance} type='number' min='0' step='0.01' help='Radius to other locations, in meters, for them to be considered the same.' />
+            <TextField title='Limit' onChange={(value) => setState({...state, location: {...state.location, limit: value}})} defaultValue={config.location.limit} type='number' min='0' step='0.01' help='Maximum suggestions to present for the location' />
+            <TextField title='Min samples' onChange={(value) => setState({...state, location: {...state.location, min_samples: value}})} defaultValue={config.location.min_samples} type='number' min='0' step='1' />
+            <TextField title='Google Places key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key} help={
               <span>
                 <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for unknown places.
               </span>
@@ -109,12 +109,12 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
           </SectionBlock>
 
           <SectionBlock name='Transportation inferring'>
-            <TextField title='Min. time' onChange={(e) => setState({...state, transportation: {...state.transportation, min_time: e.target.value}})} defaultValue={config.transportation.min_time} type='number' min='0' step='0.01' help='Minimum time between changes of transportation mode, in seconds.' />
-            <TextField title='Classifier path' onChange={(e) => setState({...state, transportation: {...state.transportation, classifier_path: e.target.value}})} defaultValue={config.transportation.classifier_path} help='Path to the file with the classifier to use when evaluating transportation modes' />
+            <TextField title='Min. time' onChange={(value) => setState({...state, transportation: {...state.transportation, min_time: value}})} defaultValue={config.transportation.min_time} type='number' min='0' step='0.01' help='Minimum time between changes of transportation mode, in seconds.' />
+            <TextField title='Classifier path' onChange={(value) => setState({...state, transportation: {...state.transportation, classifier_path: value}})} defaultValue={config.transportation.classifier_path} help='Path to the file with the classifier to use when evaluating transportation modes' />
           </SectionBlock>
 
           <SectionBlock name='Trip learning'>
-            <TextField title='Epsilon' onChange={(e) => setState({...state, trip_learning: {...state.trip_learning, epsilon: e.target.value}})} defaultValue={config.trip_learning.epsilon} type='number' min='0' step='0.01' />
+            <TextField title='Epsilon' onChange={(value) => setState({...state, trip_learning: {...state.trip_learning, epsilon: value}})} defaultValue={config.trip_learning.epsilon} type='number' min='0' step='0.01' />
           </SectionBlock>
         </div>
       );
@@ -126,7 +126,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
         <section style={{ flexGrow: 1, overflowY: 'auto', maxHeight: '460px'}}>
           <div style={{ maxWidth: '400px', margin: 'auto' }}>
             <SectionBlock name='Server'>
-              <TextField title='Server' defaultValue={address} onChange={(e) => setState({...state, address: e.target.value})} />
+              <TextField title='Server' defaultValue={address} onChange={(value) => setState({...state, address: value})} />
             </SectionBlock>
 
             { serverSpecific }
