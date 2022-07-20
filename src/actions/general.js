@@ -11,7 +11,7 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
-import { clearAll, displayLocations, displayTrips } from "./tracks";
+import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -117,10 +117,12 @@ export const updateServer = (server) => ({
     type: UPDATE_SERVER
 })
 
-export const updateView = (view) => ({
-  view,
-  type: UPDATE_VIEW
-})
+export const updateView = (view) => {
+  return (dispatch, getState) => {
+    dispatch(clearAll());
+    dispatch({view, type: UPDATE_VIEW});
+  }
+}
 
 export const toggleUI = (isVisible) => ({
   isVisible,
@@ -138,9 +140,25 @@ export const loadTripsAndLocations = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        dispatch(clearAll());
-        dispatch(displayTrips(res.trips));
+        // dispatch(clearAll());
+        dispatch(displayCanonicalTrips(res.trips))
         dispatch(displayLocations(res.locations));
+      });
+  }
+}
+
+export const loadAllTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/allTrips', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(displayTrips(res.trips))
       });
   }
 }

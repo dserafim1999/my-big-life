@@ -107,6 +107,17 @@ const displayTrips = (state, action) => {
     });
 }
 
+const displayCanonicalTrips = (state, action) => {
+  const { trips } = action;
+  const _points = [];
+
+  trips.forEach((segment) => {
+    segment.points.forEach((point) => _points.push([point.lat, point.lon, 1.0]))
+  });
+
+  return state.setIn(["canonicalTrips"], List(_points));
+}
+
 const displayLocations = (state, action) => {
   const { locations } = action;
   const _points = [];
@@ -176,6 +187,14 @@ const removeTrack = (state, action) => {
   return cState.deleteIn(['tracks', trackId]);
 }
 
+const clearLocations = (state, action) => {
+  return state.setIn(["locations"], fromJS({}));
+}
+
+const clearTrips = (state, action) => {
+  return state.setIn(["tracks"], fromJS({}));
+}
+
 const clearAll = (state, action) => {
   return initialState;
 }
@@ -188,10 +207,13 @@ const ACTION_REACTION = {
     'tracks/toggle_renaming': toggleTrackRenaming,
     'tracks/update_LIFE': updateLIFE,
     'tracks/display_trips': displayTrips,
+    'tracks/display_canonical_trips': displayCanonicalTrips,
     'tracks/display_locations': displayLocations,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
     'tracks/clear_all': clearAll,
+    'tracks/clear_trips': clearTrips,
+    'tracks/clear_locations': clearLocations,
     'tracks/undo': undo,
     'tracks/redo': redo,
 }
@@ -204,6 +226,7 @@ const initialState = fromJS({
   tracks: {},
   locations: {},
   segments: {},
+  canonicalTrips: [],
   history: {
     past: [],
     future: []

@@ -8,7 +8,10 @@ import {
   RESET_HISTORY,
   DISPLAY_TRIPS,
   DISPLAY_LOCATIONS,
-  CLEAR_ALL_TRACKS
+  CLEAR_ALL,
+  LOAD_TRACKS_IN_BOUNDS,
+  DISPLAY_CANONICAL_TRIPS,
+  CLEAR_TRIPS
 } from ".";
 
 import { Set } from 'immutable';
@@ -42,6 +45,11 @@ export const addMultipleTracks = (tracks, options) => {
 export const displayTrips = (trips) => ({
   trips,
   type: DISPLAY_TRIPS
+})
+
+export const displayCanonicalTrips = (trips) => ({
+  trips,
+  type: DISPLAY_CANONICAL_TRIPS
 })
 
 export const displayLocations = (locations) => ({
@@ -116,7 +124,15 @@ export const removeTrack = (trackId) => ({
 })
 
 export const clearAll = () => ({
-  type: CLEAR_ALL_TRACKS
+  type: CLEAR_ALL
+})
+
+export const clearTrips = () => ({
+  type: CLEAR_TRIPS
+})
+
+export const clearLocations = () => ({
+  type: CLEAR_LOCATIONS
 })
 
 export const updateLIFE = (text, warning) => ({
@@ -124,3 +140,21 @@ export const updateLIFE = (text, warning) => ({
   warning,
   type: UPDATE_LIFE
 })
+
+export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax, options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(clearTrips());
+        dispatch(displayTrips(res.trips));
+      });
+}
+
+}
