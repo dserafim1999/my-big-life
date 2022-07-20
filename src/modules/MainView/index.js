@@ -26,7 +26,7 @@ const MainView = ({ dispatch, isVisible }) => {
     });
 
     dispatch(loadTripsAndLocations());
-    dispatch(loadAllTrips());
+    //dispatch(loadAllTrips());
 
     return (
         <Card 

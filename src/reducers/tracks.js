@@ -192,7 +192,9 @@ const clearLocations = (state, action) => {
 }
 
 const clearTrips = (state, action) => {
-  return state.setIn(["tracks"], fromJS({}));
+  return state
+    .setIn(["tracks"], fromJS({}))
+    .setIn(["segments"], fromJS({}));
 }
 
 const clearAll = (state, action) => {

@@ -31,11 +31,11 @@ import pointActionMode from './pointActionMode';
 import { createMarker, createPointIcon } from './utils';
 import addLocation from './addLocation';
 import { clearTrips, loadTripsInBounds } from '../../actions/tracks';
-import { MAIN_VIEW } from '../../constants';
+import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 
 const DEFAULT_PROPS = {
   detailLevel: 14,
-  decorationLevel: 10,
+  decorationLevel: 12,
   mapCreation: {
     zoomControl: false,
     zoomDelta: 0.4,
@@ -70,6 +70,7 @@ export default class LeafletMap extends Component {
     this.locations = {};
     this.pointHighlights = [];
     this.heatmapLayer = null;
+    this.loadTrips = false;
   }
 
   getBoundsObj () {
@@ -230,7 +231,7 @@ export default class LeafletMap extends Component {
       const filter = current.get('timeFilter');
       const lseg = this.segments[id];
 
-      if (lseg) {
+      if (lseg && this.props.activeView === TRACK_PROCESSING) {
         this.shouldUpdateSegmentPoints(lseg, points, filter, previous, color, current);
         this.shouldUpdateColor(lseg, color, previous.get('color'));
         this.shouldUpdateDisplay(lseg, display, previous.get('display'));
@@ -319,13 +320,24 @@ export default class LeafletMap extends Component {
   }
 
   onZoomEnd (e) {
-    const { detailLevel, decorationLevel, segmentsArePoints, activeView } = this.props;
+    const { detailLevel, decorationLevel, segmentsArePoints, activeView, dispatch } = this.props;
     const currentZoom = this.map.getZoom();
+    const bounds = this.map.getBounds();
+    const southWestBounds = bounds.getSouthWest();
+    const northEastBounds = bounds.getNorthEast();
 
     if (activeView === MAIN_VIEW) {
+      if (currentZoom >= decorationLevel && this.loadTrips) {
+        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng));
+        this.loadTrips = false;
+      } else if (currentZoom < decorationLevel) {
+        dispatch(clearTrips());
+        this.loadTrips = true;
+      }
+
       if (this.heatmapLayer) {
         if (currentZoom >= detailLevel) {
-          this.map.removeLayer(this.heatmapLayer);        
+          this.map.removeLayer(this.heatmapLayer);
         } else {
           this.heatmapLayer.addTo(this.map);
         }
