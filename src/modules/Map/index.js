@@ -146,22 +146,25 @@ export default class LeafletMap extends Component {
       this.map.buttons.setEnabled(1, canRedo);
     }
 
-    if (activeView === MAIN_VIEW) {
-      this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);
-    } else {
-      if (this.heatmapLayer) {
-        this.map.removeLayer(this.heatmapLayer);        
-      }
+    switch (activeView) {
+      case MAIN_VIEW:
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);
+      default:
+        if (this.heatmapLayer) {
+          this.map.removeLayer(this.heatmapLayer);        
+        }
+
     }
-    
+      
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
     this.shouldUpdateBounds(bounds, prev.bounds);
     this.shouldUpdateHighlighted(highlighted, prev.highlighted, segments);
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
-    this.shouldUpdateSegments(segments, prev.segments, dispatch);
-    this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
+
+    this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch);
+    this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdateSegmentsArePoints(this.props, prev);
   }
 
@@ -212,34 +215,48 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateSegments (segments, previous, dispatch) {
+  shouldUpdateSegments (segments, previous, activeView, dispatch) {
     if (segments !== previous) {
       segments.forEach((segment) => {
-        this.shouldUpdateSegment(segment, previous.get(segment.get('id')), dispatch)
+        const id = segment.get('id');
+        const lseg = this.segments[id];
+
+        if (lseg && activeView === TRACK_PROCESSING) {
+          this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
+        } else {
+          this.shouldAddSegment(segment, previous.get(id), dispatch);
+        }
       });
       
       this.shouldRemoveSegments(segments, previous);
     }
   }
 
-  shouldUpdateSegment (current, previous, dispatch) {
+  shouldAddSegment(current, previous, dispatch) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
       const display = current.get('display');
       const id = current.get('id');
       const filter = current.get('timeFilter');
-      const lseg = this.segments[id];
+  
+      this.addSegment(id, points, color, display, filter, current, dispatch, previous, current);
+    }
+  }
 
-      if (lseg && this.props.activeView === TRACK_PROCESSING) {
-        this.shouldUpdateSegmentPoints(lseg, points, filter, previous, color, current);
-        this.shouldUpdateColor(lseg, color, previous.get('color'));
-        this.shouldUpdateDisplay(lseg, display, previous.get('display'));
-        this.shouldUpdateMode(lseg, current, previous);
-        this.shouldUpdateTransportationModes(lseg, current, previous);
-      } else {
-        this.addSegment(id, points, color, display, filter, current, dispatch, previous, current);
-      }
+  shouldUpdateSegment (current, previous, lseg, dispatch) {
+    if (current !== previous) {
+      const points = current.get('points');
+      const color = current.get('color');
+      const display = current.get('display');
+      const id = current.get('id');
+      const filter = current.get('timeFilter');
+      
+      this.shouldUpdateSegmentPoints(lseg, points, filter, previous, color, current);
+      this.shouldUpdateColor(lseg, color, previous.get('color'));
+      this.shouldUpdateDisplay(lseg, display, previous.get('display'));
+      this.shouldUpdateMode(lseg, current, previous);
+      this.shouldUpdateTransportationModes(lseg, current, previous);
     }
   }
 
