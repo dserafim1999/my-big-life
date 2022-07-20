@@ -1,9 +1,9 @@
 import React from 'react';
 import { Polyline, FeatureGroup } from 'leaflet';
-import { createPointsFeatureGroup } from './utils';
-import { getPolylineStyle, getSpecialMarkers } from './mapConfig'
+import { createPointsFeatureGroup } from '../utils';
+import { getPolylineStyle, getSpecialMarkers } from '../mapConfig'
 
-import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
+import buildTransportationModeRepresentation from '../point/buildTransportationModeRepresentation';
 
 export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
   let pts;

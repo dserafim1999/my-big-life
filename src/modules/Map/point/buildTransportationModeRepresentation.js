@@ -9,7 +9,7 @@ import TrainIcon from '@mui/icons-material/DirectionsRailway';
 import PlaneIcon from '@mui/icons-material/Flight';
 import BoatIcon from '@mui/icons-material/DirectionsBoat';
 import QuestionIcon from '@mui/icons-material/QuestionMark';
-import { createPointIcon, createMarker } from './utils';
+import { createPointIcon, createMarker } from '../utils';
 
 const LABEL_TO_ICON = {
   'stop': (color) => createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)),

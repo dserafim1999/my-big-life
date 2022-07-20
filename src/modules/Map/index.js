@@ -17,19 +17,19 @@ import {
   redo
 } from '../../actions/process';
 
-import setupTileLayers from './setupTileLayers';
-import setupControls from './setupControls';
+import setupTileLayers from './components/setupTileLayers';
+import setupControls from './components/setupControls';
 
-import editMode from './editMode';
-import joinMode from './joinMode';
-import splitMode from './splitMode';
-import detailMode from './detailMode';
-import addSegment from './addSegment';
-import updatePoints from './updatePoints';
-import buildTransportationModeRepresentation from './buildTransportationModeRepresentation';
-import pointActionMode from './pointActionMode';
+import editMode from './editing/editMode';
+import joinMode from './editing/joinMode';
+import splitMode from './editing/splitMode';
+import updatePoints from './point/updatePoints';
+import pointActionMode from './editing/pointActionMode';
+import buildTransportationModeRepresentation from './point/buildTransportationModeRepresentation';
+import detailMode from './point/detailMode';
+import addSegment from './components/addSegment';
 import { createMarker, createPointIcon } from './utils';
-import addLocation from './addLocation';
+import addLocation from './components/addLocation';
 import { clearTrips, loadTripsInBounds } from '../../actions/tracks';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 

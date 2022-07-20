@@ -1,5 +1,5 @@
 import { DivIcon, Polyline, FeatureGroup } from 'leaflet';
-import { createMarker, setupMarker } from './utils';
+import { createMarker, setupMarker } from '../utils';
 
 import editPointProperties from './editPointProperties';
 
