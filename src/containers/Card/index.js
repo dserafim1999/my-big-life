@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 import Draggable from 'react-draggable';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { IconButton } from "@mui/material";
 
 const wrapper = {
     position: 'fixed',
@@ -9,7 +11,21 @@ const wrapper = {
     zIndex: '1000'
 }
 
-const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDraggable = true, containerStyle, innerStyle }) => {
+const panelOpenStyle = {
+    position: "absolute",
+    cursor: "pointer",
+    backgroundColor: "lightgrey",
+    color: "grey",
+    width: "40px",
+    height: "40px",
+    borderRadius: "20px",
+    left: "-5px",
+    top: "-5px",
+    border: "3px solid white",
+    zIndex: '1001'
+}
+
+const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
     const innerHeight = height != undefined ? window.innerHeight - height : window.innerHeight;
 
@@ -19,7 +35,9 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDra
         }
     }
 
-    const [ state, setState ] = useState(initState)
+    const [panelOpen, setIsPanelOpen] = useState(true);
+
+    const [ state, setState ] = useState(initState);
 
     const onStart = () => {
         if (!isDraggable) {
@@ -34,9 +52,10 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDra
         setState({controledPosition: {x, y}});
     };
     
-    
     const dragHandlers = {onStart: onStart, onStop: onStop};
     const { controledPosition: initPosition } = state;
+
+    width = panelOpen ? width : 0;
 
     var cardStyle =  {
         ...wrapper, 
@@ -45,11 +64,24 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, children, isDra
     }
     cardStyle = {...containerStyle, ...cardStyle};
 
+    const togglePanelButton = () => {
+        return canToggleVisibility &&
+            (
+                <div style={{...panelOpenStyle, backgroundColor: panelOpen ? 'lightgrey' : "#284760"}}>
+                    <IconButton onClick={() => setIsPanelOpen(!panelOpen)} style={{top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
+                        <VisibilityIcon style={{color: 'white'}}/>
+                    </IconButton>
+                </div>
+            );
+    }
+
     return (
         <Draggable position={initPosition} {...dragHandlers} onDrag={onControlledDrag}>
             <div style={cardStyle}>
                 <div style={{width: '100%', height: '100%', padding: '10px', ...innerStyle}} className="cardContent">
-                    { children }
+                    { togglePanelButton() }
+                    { panelOpen && title && <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem', textAlign: 'center'}}>{title}</h1> }
+                    { panelOpen && children }
                 </div>
             </div>
         </Draggable>

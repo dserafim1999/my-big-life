@@ -34,6 +34,7 @@ const MainView = ({ dispatch, isVisible }) => {
             height={height} 
             verticalOffset={2} horizontalOffset={50} 
             isDraggable={false}
+            canToggleVisibility={false}
             innerStyle={{display: "flex", alignItems: "center"}}
         >
             <Timeline render={{stays: [], routes: []}} height={height/2}></Timeline>

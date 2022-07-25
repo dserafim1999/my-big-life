@@ -69,8 +69,8 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
                     onClose={() => onClose(false)}
                     renderInput={({inputRef}) => {
                         return (
-                            <Box onClick={onClick} sx={boxStyle}>
-                                <span ref={inputRef}>{valueRepresentation()}</span>
+                            <Box sx={boxStyle}>
+                                <span onClick={onClick} ref={inputRef}>{valueRepresentation()}</span>
                             </Box>
                         );
                     }}
