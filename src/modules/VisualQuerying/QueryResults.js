@@ -16,7 +16,7 @@ const QueryResults = ({ dispatch, results, isLoadingMore, canLoadMore }) => {
     }
 
     return (
-            <Card width={700} height={450} containerStyle={{margin: '175px 25px'}} isDraggable={true}>
+            <Card width={700} height={450} containerStyle={{margin: '175px 25px'}} isDraggable={false}>
                 { 
                     <div style={{ flexGrow: 1, overflowY: 'scroll', height: '100%' }}>
                         {

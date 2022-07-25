@@ -8,7 +8,7 @@ const wrapper = {
     position: 'fixed',
     backgroundColor: 'white',
     borderRadius: '15px',
-    zIndex: '1000'
+    zIndex: '1000',
 }
 
 const panelOpenStyle = {
@@ -77,7 +77,7 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
 
     return (
         <Draggable position={initPosition} {...dragHandlers} onDrag={onControlledDrag}>
-            <div style={cardStyle}>
+            <div style={{...cardStyle, cursor: isDraggable ? 'move' : ''}}>
                 <div style={{width: '100%', height: '100%', padding: '10px', ...innerStyle}} className="cardContent">
                     { togglePanelButton() }
                     { panelOpen && title && <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem', textAlign: 'center'}}>{title}</h1> }
