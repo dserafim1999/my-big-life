@@ -20,8 +20,8 @@ const newSegmentParentStyle = {
   paddingLeft: '6px'
 }
 
-const TrackSegments = ({ dispatch, segments, track }) => {
-  const newSegment = () => dispatch(addNewSegment(track.get('id')));
+const TrackSegments = ({ dispatch, segments, track, lastTime }) => {
+  const newSegment = () => dispatch(addNewSegment(track.get('id'), lastTime));
   return (
     <ul style={{listStyleType: 'none', margin: 0, padding: 0, overflowY: 'auto', maxHeight: '460px'}}>
       {
@@ -78,9 +78,12 @@ const mapStateToProps = (state, { trackId }) => {
       }
     });
 
+  const lastTime = segments.last().getEndTime();
+
   return {
     track,
-    segments
+    segments,
+    lastTime
   }
 }
 

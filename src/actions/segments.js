@@ -65,11 +65,11 @@ export const addSegmentPoint = (segmentId, index, lat, lon) => ({
       type: ADD_SEGMENT_POINT
 })
 
-export const addNewSegment = (trackId) => {
+export const addNewSegment = (trackId, lastTime) => {
   return (dispatch, getState) => {
     dispatch(addAlert('Click on the map to insert one point', 'success', 3, 'point-prompt'));
     dispatch(addPointPrompt((point) => {
-      point.time = moment();
+      point.time = lastTime;
 
       dispatch({
         trackId,

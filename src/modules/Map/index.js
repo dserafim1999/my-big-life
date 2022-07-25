@@ -183,7 +183,14 @@ export default class LeafletMap extends Component {
   shouldUpdateHeatMap (current, previous) {
     if (current !== previous) {
       this.heatmapLayer = L.heatLayer(current.toJS(), {
-        radius: 15, 
+        radius: 15,
+        gradient: {
+          '0': 'Black',
+          '0.4': 'rgb(40, 71, 96)',
+          '0.6': 'Red',
+          '0.8': 'Yellow',
+          '1': 'White'
+        }
       }).addTo(this.map);
     }
   }
@@ -345,9 +352,9 @@ export default class LeafletMap extends Component {
 
     if (activeView === MAIN_VIEW) {
       if (currentZoom >= decorationLevel && this.loadTrips) {
-        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng));
+        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, true));
         this.loadTrips = false;
-      } else if (currentZoom < decorationLevel) {
+      } else if (currentZoom < decorationLevel && !this.loadTrips) {
         dispatch(clearTrips());
         this.loadTrips = true;
       }

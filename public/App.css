@@ -63,13 +63,15 @@
 }
 
 .button.is-selected:hover, .button.is-info.is-hovered {
-  color: var(--main);
-  border-color: var(--main);
+  background-color: var(--main);
+  border-color: white;
+  color: white;
 }
 
 .button.is-selected {
-  color: var(--main);
-  border-color: var(--main);
+  background-color: var(--main);
+  border-color: white;
+  color: white;
 }
 
 .button.is-red:hover, .button.is-info.is-hovered {
