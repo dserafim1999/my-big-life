@@ -141,14 +141,14 @@ export const updateLIFE = (text, warning) => ({
   type: UPDATE_LIFE
 })
 
-export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax) => {
+export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
       mode: 'cors'
     }
     const addr = getState().get('general').get('server');
-    return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax, options)
+    return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
