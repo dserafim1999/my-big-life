@@ -4,17 +4,32 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
 import MainContainer from './MainContainer';
+import Dropzone from '../components/Dropzone';
 import MenuBar from '../components/MenuBar';
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
-import { toggleRemainingTracks } from '../actions/general';
-import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process';
+import { addAlert, toggleRemainingTracks, uploadFile } from '../actions/general';
+import { undo, redo, nextStep, previousStep, skipDay, reloadQueue } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
+import loadFiles from "../utils/loadFiles";
+import { TRACK_PROCESSING } from "../constants";
 
 let App = ({ showConfig, view, dispatch }) => {
-  let metaDown = false
+  let metaDown = false;
+
+  const onDrop = (e) => {
+    let dt = e.dataTransfer;
+    let files = dt.files;
+
+    loadFiles(files, (file) => {
+      dispatch(uploadFile(file));
+      dispatch(toggleRemainingTracks(true));
+      dispatch(reloadQueue());
+    }, () => dispatch(addAlert('Unsupported file type.', 'error', 5, 'config-err')));
+  }
+
   const downKeyHandler = (event) => {
     const { keyCode } = event;
     const key = String.fromCharCode(event.keyCode);
@@ -70,13 +85,15 @@ let App = ({ showConfig, view, dispatch }) => {
                 }
               })
             }
-            <MenuBar dispatch={dispatch}/>
-            <MainContainer
-              onKeyUp={keyHandler}
-              onKeyDown={downKeyHandler}
-              showConfig={showConfig}
-              view={view}
-            />
+            <Dropzone onDrop={onDrop} canDropFiles={view === TRACK_PROCESSING}>
+              <MenuBar dispatch={dispatch}/>
+              <MainContainer
+                onKeyUp={keyHandler}
+                onKeyDown={downKeyHandler}
+                showConfig={showConfig}
+                view={view}
+              />
+            </Dropzone>
           </Router>
     </LocalizationProvider>
   );

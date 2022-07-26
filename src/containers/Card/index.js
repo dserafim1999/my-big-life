@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import Draggable from 'react-draggable';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { IconButton } from "@mui/material";
 
 const wrapper = {
@@ -69,7 +70,10 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
             (
                 <div style={{...panelOpenStyle, backgroundColor: panelOpen ? 'lightgrey' : "#284760"}}>
                     <IconButton onClick={() => setIsPanelOpen(!panelOpen)} style={{top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
-                        <VisibilityIcon style={{color: 'white'}}/>
+                        { panelOpen ? 
+                            <VisibilityOffIcon style={{color: 'white'}}/> : 
+                            <VisibilityIcon style={{color: 'white'}}/>
+                        }
                     </IconButton>
                 </div>
             );

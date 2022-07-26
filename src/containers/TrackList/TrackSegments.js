@@ -23,7 +23,7 @@ const newSegmentParentStyle = {
 const TrackSegments = ({ dispatch, segments, track, lastTime }) => {
   const newSegment = () => dispatch(addNewSegment(track.get('id'), lastTime));
   return (
-    <ul style={{listStyleType: 'none', margin: 0, padding: 0, overflowY: 'auto', maxHeight: '460px'}}>
+    <ul style={{listStyleType: 'none', margin: 0, padding: 0}}>
       {
         segments.map((segment, i) => {
           let dt = null;

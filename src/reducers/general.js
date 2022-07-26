@@ -30,7 +30,8 @@ const addAlert = (state, action) => {
 }
 
 const toggleRemainingTracks = (state, action) => {
-  return state.set('showRemainingTracks', !state.get('showRemainingTracks'));
+
+  return state.set('showRemainingTracks', action.value? action.value : !state.get('showRemainingTracks'));
 }
 
 const setLoading = (state, action) => {

@@ -21,7 +21,7 @@ const style = {
 let TrackList = ({ dispatch, tracks, className, step, remainingCount }) => {
     if (tracks.count() !== 0) {
         return (
-            <ul style={{padding: 0}}>
+            <ul style={{padding: 0, overflowY: 'auto', maxHeight: '500px'}}>
                 {
                   tracks.map((track, i) => {
                     const remaining = '+' + remainingCount + ' days';

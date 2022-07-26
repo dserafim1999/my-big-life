@@ -60,8 +60,9 @@ export const fitTracks = (...trackIds) => {
   }
 }
 
-export const toggleRemainingTracks = () => {
+export const toggleRemainingTracks = (value = undefined) => {
   return {
+    value,
     type: TOGGLE_REMAINING_TRACKS
   }
 }
@@ -109,6 +110,18 @@ export const saveConfig = (config) => {
         dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
         // TODO go to last route
     });
+  }
+}
+
+export const uploadFile = (file) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(file)
+    }
+    return fetch(getState().get('general').get('server') + '/uploadFile', options)
+      .then((response) => response.json());
   }
 }
 
