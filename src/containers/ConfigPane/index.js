@@ -84,7 +84,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
             <TextField title='Noise' onChange={(value) => setState({...state, smoothing: {...state.smoothing, noise: value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />
           </SectionBlock>
 
-          <SectionBlock name='Spatiotemporal segmetation'>
+          <SectionBlock name='Spatiotemporal Segmentation'>
             <ToggleField title='Use' onChange={(e) => setState({...state, segmentation: {...state.segmentation, use: e.target.value}})} checked={config.segmentation.use} />
             <TextField title='Epsilon' onChange={(value) => setState({...state, segmentation: {...state.segmentation, epsilon: value}})} defaultValue={config.segmentation.epsilon} type='number' min='0' step='0.01' help='Distance epsilon after which points can be clustered into the same stop. Points are clustered based on their spatiotemporal distance. The higher it is the less clusters will exist.'/>
             <TextField title='Min. time' onChange={(value) => setState({...state, segmentation: {...state.segmentation, min_time: value}})} defaultValue={config.segmentation.min_time} type='number' min='0' step='1' help='Minimum time at one place to consider it a stop' />
