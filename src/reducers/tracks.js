@@ -94,14 +94,14 @@ const displayTrips = (state, action) => {
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => {
+      // tracks = tracks.clear();
       return _tracks.reduce((tracks, track) => {
-        // tracks = tracks.clear();
         return tracks.set(track.id, track);
       }, tracks)
     })
     .updateIn(['segments'], (segments) => {
+      // segments = segments.clear();
       return _segments.reduce((segments, segment) => {
-        // segments = segments.clear();
         return segments.set(segment.id, segment);
       }, segments);
     });
@@ -109,13 +109,32 @@ const displayTrips = (state, action) => {
 
 const displayCanonicalTrips = (state, action) => {
   const { trips } = action;
-  const _points = [];
 
-  trips.forEach((segment) => {
-    segment.points.forEach((point) => _points.push([point.lat, point.lon, 1.0]))
-  });
+  if (!trips) {
+    return state;
+  }
 
-  return state.setIn(["canonicalTrips"], List(_points));
+  const _segments = [];
+
+  var color = 0;
+  for (var i = 0 ; i < trips.length ; i++) {
+    const trip = trips[i];
+    _segments.push(new SegmentRecord({
+      trackId: i,
+      id: trip.id,
+      color: colors(color),
+      points: pointsToRecord(trip.points)
+    }));
+    //color++;
+  }
+
+  return state
+    .updateIn(['canonicalTrips'], (segments) => {
+      segments = segments.clear();
+      return _segments.reduce((segments, segment) => {
+        return segments.set(segment.id, segment);
+      }, segments);
+    });
 }
 
 const displayLocations = (state, action) => {
@@ -228,7 +247,7 @@ const initialState = fromJS({
   tracks: {},
   locations: {},
   segments: {},
-  canonicalTrips: [],
+  canonicalTrips: {},
   history: {
     past: [],
     future: []

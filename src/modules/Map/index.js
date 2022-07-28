@@ -108,7 +108,6 @@ export default class LeafletMap extends Component {
       redo: () => dispatch(redo()),
     })
 
-
     this.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
     this.map.on('dragend', this.onMoveEnd.bind(this));
@@ -150,11 +149,13 @@ export default class LeafletMap extends Component {
     switch (activeView) {
       case MAIN_VIEW:
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);
+        this.shouldUpdateSegments(canonicalTrips, prev.canonicalTrips, activeView, dispatch); //alternate based on zoomLevel
+        break;
       default:
         if (this.heatmapLayer) {
           this.map.removeLayer(this.heatmapLayer);        
         }
-
+        this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch);
     }
       
     this.shouldUpdateZoom(zoom, prev.zoom);
@@ -164,7 +165,6 @@ export default class LeafletMap extends Component {
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
 
-    this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch);
     this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdateSegmentsArePoints(this.props, prev);
   }
@@ -183,7 +183,10 @@ export default class LeafletMap extends Component {
 
   shouldUpdateHeatMap (current, previous) {
     if (current !== previous) {
-      this.heatmapLayer = L.heatLayer(current.toJS(), {
+      const _points = [];
+      Object.values(current.toJS()).forEach((segment) => segment.points.forEach((point) => _points.push([point.lat, point.lon, 1.0])));
+
+      this.heatmapLayer = L.heatLayer(_points, {
         radius: 15,
         // gradient: {
         //   '0': 'Black',
@@ -339,7 +342,7 @@ export default class LeafletMap extends Component {
     const currentZoom = this.map.getZoom();
 
     for (const [key, value] of Object.entries(this.segments)) {
-      if (currentZoom >= detailLevel) {
+      if (currentZoom >= decorationLevel) {
         value.layergroup.addTo(this.map);       
       } else {
         this.map.removeLayer(value.layergroup);
@@ -362,27 +365,27 @@ export default class LeafletMap extends Component {
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
     if (activeView === MAIN_VIEW) {
-       if (currentZoom >= detailLevel) {
-         dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
-       } 
+      if (currentZoom >= detailLevel) {
+        dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
+      } 
        
-       this.toggleSegmentsAndLocations();
+      this.toggleSegmentsAndLocations();
      } 
   }
 
   onZoomEnd (e) {
-    const { detailLevel, decorationLevel, segmentsArePoints, activeView, dispatch } = this.props;
+    const { detailLevel, decorationLevel, segmentsArePoints, activeView, dispatch, segments } = this.props;
     const currentZoom = this.map.getZoom();
     const bounds = this.map.getBounds();
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
 
     if (activeView === MAIN_VIEW) {
-      if (currentZoom >= decorationLevel && this.loadTrips) {
+      if (currentZoom >= detailLevel && this.loadTrips) {
         dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         this.loadTrips = false;
       } else if (currentZoom < decorationLevel && !this.loadTrips) {
-        dispatch(clearTrips());
+        if (segments.size > 0) dispatch(clearTrips());
         this.loadTrips = true;
       }
 
