@@ -3,8 +3,6 @@ import { Polyline, FeatureGroup } from 'leaflet';
 import { createPointsFeatureGroup } from '../utils';
 import { getPolylineStyle, getSpecialMarkers } from '../mapConfig'
 
-import buildTransportationModeRepresentation from '../point/buildTransportationModeRepresentation';
-
 export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
   let pts;
 
@@ -34,8 +32,7 @@ export default (id, points, color, display, filter, segment, dispatch, previousP
     specialMarkers,
     polyline: pline,
     points: pointsLayer,
-    details: new FeatureGroup(),
-    transportation: buildTransportationModeRepresentation(obj, currentSegment)
+    details: new FeatureGroup()
   };
 
   return obj;

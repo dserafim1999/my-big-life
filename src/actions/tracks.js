@@ -155,6 +155,21 @@ export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => 
         dispatch(clearTrips());
         dispatch(displayTrips(res.trips));
       });
+  }
 }
 
+export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/moreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(displayTrips(res.trips));
+      });
+  }
 }

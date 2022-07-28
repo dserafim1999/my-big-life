@@ -94,14 +94,14 @@ const displayTrips = (state, action) => {
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => {
-      tracks = tracks.clear(); 
       return _tracks.reduce((tracks, track) => {
+        // tracks = tracks.clear();
         return tracks.set(track.id, track);
       }, tracks)
     })
     .updateIn(['segments'], (segments) => {
-      segments = segments.clear(); 
       return _segments.reduce((segments, segment) => {
+        // segments = segments.clear();
         return segments.set(segment.id, segment);
       }, segments);
     });

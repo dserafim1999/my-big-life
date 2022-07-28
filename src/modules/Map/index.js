@@ -30,7 +30,7 @@ import detailMode from './point/detailMode';
 import addSegment from './components/addSegment';
 import { createMarker, createPointIcon } from './utils';
 import addLocation from './components/addLocation';
-import { clearTrips, loadTripsInBounds } from '../../actions/tracks';
+import { clearTrips, loadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 
 const DEFAULT_PROPS = {
@@ -111,6 +111,7 @@ export default class LeafletMap extends Component {
 
     this.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
+    this.map.on('dragend', this.onMoveEnd.bind(this));
   }
 
   componentWillUnmount () {
@@ -184,13 +185,13 @@ export default class LeafletMap extends Component {
     if (current !== previous) {
       this.heatmapLayer = L.heatLayer(current.toJS(), {
         radius: 15,
-        gradient: {
-          '0': 'Black',
-          '0.4': 'rgb(40, 71, 96)',
-          '0.6': 'Red',
-          '0.8': 'Yellow',
-          '1': 'White'
-        }
+        // gradient: {
+        //   '0': 'Black',
+        //   '0.4': 'rgb(40, 71, 96)',
+        //   '0.6': 'Red',
+        //   '0.8': 'Yellow',
+        //   '1': 'White'
+        // }
       }).addTo(this.map);
     }
   }
@@ -263,7 +264,6 @@ export default class LeafletMap extends Component {
       this.shouldUpdateColor(lseg, color, previous.get('color'));
       this.shouldUpdateDisplay(lseg, display, previous.get('display'));
       this.shouldUpdateMode(lseg, current, previous);
-      this.shouldUpdateTransportationModes(lseg, current, previous);
     }
   }
 
@@ -285,14 +285,6 @@ export default class LeafletMap extends Component {
       });
 
       this.shouldRemoveLocations(locations, previous);
-    }
-  }
-
-  shouldUpdateTransportationModes (lseg, current, previous) {
-    if (current.get('transportationModes') !== previous.get('transportationModes')) {
-      lseg.layergroup.removeLayer(lseg.transportation);
-      lseg.transportation = buildTransportationModeRepresentation(lseg, current);
-      this.onZoomEnd();
     }
   }
 
@@ -325,7 +317,6 @@ export default class LeafletMap extends Component {
         lseg.layergroup.setStyle({
           opacity
         });
-        lseg.transportation.getLayers().forEach((m) => m.setOpacity(opacity));
 
         Object.keys(lseg.specialMarkers).forEach((key) => {
           lseg.specialMarkers[key].setOpacity(opacity);
@@ -343,6 +334,42 @@ export default class LeafletMap extends Component {
     }
   }
 
+  toggleSegmentsAndLocations () {
+    const { decorationLevel, detailLevel } = this.props;
+    const currentZoom = this.map.getZoom();
+
+    for (const [key, value] of Object.entries(this.segments)) {
+      if (currentZoom >= detailLevel) {
+        value.layergroup.addTo(this.map);       
+      } else {
+        this.map.removeLayer(value.layergroup);
+      }
+    }
+
+    for (const [key, value] of Object.entries(this.locations)) {
+      if (currentZoom >= decorationLevel) {
+        value.layergroup.addTo(this.map);
+      } else {
+        this.map.removeLayer(value.layergroup);
+      }
+    }
+  }
+
+  onMoveEnd (e) {
+    const { detailLevel, activeView, dispatch } = this.props;
+    const currentZoom = this.map.getZoom();
+    const bounds = this.map.getBounds();
+    const southWestBounds = bounds.getSouthWest();
+    const northEastBounds = bounds.getNorthEast();
+    if (activeView === MAIN_VIEW) {
+       if (currentZoom >= detailLevel) {
+         dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
+       } 
+       
+       this.toggleSegmentsAndLocations();
+     } 
+  }
+
   onZoomEnd (e) {
     const { detailLevel, decorationLevel, segmentsArePoints, activeView, dispatch } = this.props;
     const currentZoom = this.map.getZoom();
@@ -352,7 +379,7 @@ export default class LeafletMap extends Component {
 
     if (activeView === MAIN_VIEW) {
       if (currentZoom >= decorationLevel && this.loadTrips) {
-        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, true));
+        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         this.loadTrips = false;
       } else if (currentZoom < decorationLevel && !this.loadTrips) {
         dispatch(clearTrips());
@@ -367,36 +394,16 @@ export default class LeafletMap extends Component {
         }
       }
       
-      for (const [key, value] of Object.entries(this.segments)) {
-        if (value === null) continue;
-        if (currentZoom >= detailLevel) {
-          value.layergroup.addTo(this.map);       
-        } else {
-          this.map.removeLayer(value.layergroup);
-        }
-      }
-  
-      for (const [key, value] of Object.entries(this.locations)) {
-        if (value === null) continue;
-        if (currentZoom >= decorationLevel) {
-          value.layergroup.addTo(this.map);
-        } else {
-          this.map.removeLayer(value.layergroup);
-        }
-      }
+      this.toggleSegmentsAndLocations();
     } else {
 
       if (currentZoom >= detailLevel || currentZoom >= decorationLevel || segmentsArePoints) {
         // add layers
         Object.keys(this.segments).forEach((s) => {
           if (this.segments[s]) {
-            const { details, transportation, layergroup } = this.segments[s];
+            const { details, layergroup } = this.segments[s];
             if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
               layergroup.addLayer(details);
-            }
-  
-            if (layergroup.hasLayer(transportation) === false && decorationLevel) {
-              layergroup.addLayer(transportation);
             }
           }
         });
@@ -410,20 +417,6 @@ export default class LeafletMap extends Component {
           }
         });
       } else {
-        // remove layers
-        Object.keys(this.segments).forEach((s) => {
-          if (this.segments[s]) {
-            const { details, transportation, layergroup } = this.segments[s];
-            if (layergroup.hasLayer(details) === true && !segmentsArePoints) {
-              layergroup.removeLayer(details);
-            }
-  
-            if (layergroup.hasLayer(transportation) === true) {
-              layergroup.removeLayer(transportation);
-            }
-          }
-        });
-  
         Object.keys(this.locations).forEach((s) => {
           if (this.locations[s]) {
             const { details, layergroup } = this.locations[s];
@@ -517,17 +510,16 @@ export default class LeafletMap extends Component {
   }
 
   addSegment (id, points, color, display, filter, segment, dispatch, previous, current) {
+    const { detailLevel, activeView } = this.props;
+    const currentZoom = this.map.getZoom();
+
     const obj = addSegment(id, points, color, display, filter, segment, dispatch, null, current, previous);
     this.segments[id] = obj;
-    if (this.props.activeView !== MAIN_VIEW) obj.layergroup.addTo(this.map);
+    
+    if (activeView !== MAIN_VIEW) obj.layergroup.addTo(this.map);
 
-    const currentZoom = this.map.getZoom();
-    const { detailLevel, decorationLevel } = this.props;
     if (currentZoom >= detailLevel) {
       obj.details.addTo(obj.layergroup);
-    }
-    if (currentZoom >= decorationLevel) {
-      obj.transportation.addTo(obj.layergroup);
     }
   }
 
@@ -548,7 +540,7 @@ export default class LeafletMap extends Component {
       // delete segment if needed
       Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
         this.map.removeLayer(this.segments[s].layergroup);
-        this.segments[s] = null;
+        delete this.segments[s];
       })
     }
   }
@@ -558,7 +550,7 @@ export default class LeafletMap extends Component {
       // delete point if needed
       Set(prev.keySeq()).subtract(points.keySeq()).forEach((s) => {
         this.map.removeLayer(this.locations[s].layergroup);
-        this.locations[s] = null;
+        delete this.locations[s];
       })
     }
   }
