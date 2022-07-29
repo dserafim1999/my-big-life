@@ -76,6 +76,16 @@ const updateState = (dispatch, json, getState, reverse = false) => {
     return;
   }
 
+  if (json.currentDay === null) {
+    if(json.queue.length > 0) {
+      dispatch(changeDayToProcess(json.queue.pop()[0]));
+    } else {
+      console.log("hey")
+      dispatch(clearAll());
+    }
+  } 
+  
+  console.log(json.currentDay)
   dispatch(setServerState(json.step, json.queue, json.currentDay, json.life, json.lifeQueue));
   if (json.step < 0 || json.track == undefined) {
     dispatch(clearAll());
@@ -219,6 +229,7 @@ export const changeDayToProcess = (newDay) => {
 
 export const reloadQueue = () => {
   return (dispatch, getState) => {
+    dispatch(setLoading('refresh-button', true));
     const options = {
       method: 'GET',
       mode: 'cors'
@@ -226,8 +237,9 @@ export const reloadQueue = () => {
     return fetch(getState().get('general').get('server') + '/process/reloadQueue', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
-      .then((json) => updateState(dispatch, json, getState));
-  }
+      .then((json) => updateState(dispatch, json, getState))
+      .then(() => dispatch(setLoading('refresh-button', false)));
+   }
 }
 
 export const dismissDay = (day) => {

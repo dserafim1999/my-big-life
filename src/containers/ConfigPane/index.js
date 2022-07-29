@@ -5,6 +5,9 @@ import { saveConfig, getConfig, updateServer } from '../../actions/general';
 import Card from '../Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
+import { bulkProcess } from '../../actions/process';
+
+import DownloadingIcon from '@mui/icons-material/Downloading';
 
 const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
     if (!isVisible) return null;
@@ -15,6 +18,13 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
    }, []);
 
     const [state, setState] = useState({...config, address: address});
+
+    const onBulkClick = (e, modifier) => {
+      modifier('is-loading')
+      //TODO check if raw or not based on config value
+      dispatch(bulkProcess())
+          .then(() => modifier());
+    }
 
     const onSubmit = (e) => {
       // e.preventDefault()
@@ -133,6 +143,14 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
           </div>
         </section>
         <footer style={{ textAlign: 'right', paddingTop: '10px' }} className='control'> 
+          <AsyncButton 
+            title='Bulk Process All Tracks in Input Folder' 
+            className={'is-blue'}
+            style={{float: "left"}} 
+            onClick={onBulkClick}>
+              <DownloadingIcon/>
+              Bulk Process Tracks
+          </AsyncButton>
           <AsyncButton 
             title='Save Configuration Settings'
             className='is-blue'

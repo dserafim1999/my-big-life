@@ -2,14 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { changeDayToProcess, reloadQueue, dismissDay } from '../../actions/process';
+import { changeDayToProcess, dismissDay } from '../../actions/process';
 import { toggleRemainingTracks } from '../../actions/general';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
-import RefreshIcon from '@mui/icons-material/Refresh';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { DONE_STAGE, PREVIEW_STAGE } from '../../constants';
 import { Tooltip } from '@mui/material';
 
@@ -63,19 +61,6 @@ const Day = ({ date, gpxs, isSelected, onDismiss }) => {
 }
 
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent, done }) => {
-  const refresh = (
-    <AsyncButton
-      className={'icon-button button'}
-      style={{ float: done ? 'none' : 'right'}}
-      onClick={(e, modifier) => {
-        modifier('is-loading')
-        dispatch(reloadQueue())
-          .then(() => modifier())
-      }}
-      title='Scan input folder for more tracks'>
-        <RefreshIcon/>
-    </AsyncButton>
-  );
 
   const remainingDays = remaining.map(([day, gpxs], i) => {
     const dismiss = (e) => {
@@ -102,19 +87,9 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
     );
   });
 
-  const back = (
-    <AsyncButton
-      className={'icon-button button'}
-      style={{ float: 'left'}}
-      onClick={() => dispatch(toggleRemainingTracks())}
-      title='Go back to edit day'>
-        <ChevronLeftIcon/>
-    </AsyncButton>
-  );
-
   return (
     <div style={{...style, paddingBottom: '1rem'}}>
-      <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ done ? null : back }{ done ? '' : 'Days Left' }{ refresh }</div>
+      <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>{ done ? '' : 'Days Left' }</div>
       <div style={{overflowY: 'auto', maxHeight: '460px', minWidth: 'max-content'}}>
       {
         remaining.count() > 0 ? remainingDays : EMPTY_FOLDER

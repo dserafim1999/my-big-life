@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { toggleRemainingTracks, addAlert } from '../../actions/general';
 import { clearAll, resetHistory } from '../../actions/tracks';
 
-import BulkButtons from '../../components/Buttons/BulkButtons';
+import ChangeDayButtons from '../../components/Buttons/ChangeDayButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
 import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
@@ -14,10 +14,8 @@ import {
     skipDay,
     nextStep,
     previousStep,
-    bulkProcess,
-    rawBulkProcess,
-    loadLIFE,
-    requestServerState
+    requestServerState,
+    reloadQueue
   } from '../../actions/process';
 import { updateBounds } from '../../actions/map';
 import { BoundsRecord } from '../../records';
@@ -81,34 +79,14 @@ class TrackProcessing extends Component {
         this.dispatch(toggleRemainingTracks());
     }
 
-    onBulkClick = (e, modifier) => {
-        modifier('is-loading')
-        this.dispatch(bulkProcess())
-            .then(() => modifier());
-    }
-
-    onRawBulkClick = (e, modifier) => {
-        modifier('is-loading')
-        this.dispatch(rawBulkProcess())
-            .then(() => modifier());
-    }
-
-    onLifeRead = (text, modifier) => {
+    onRefreshInputFolder = (e, modifier) => {
         modifier('is-loading');
-        this.dispatch(loadLIFE(text))
-            .then(() => {
-                modifier('is-success', (c) => c !== 'is-warning');
-                setTimeout(() => modifier(), 2000);
-            })
-            .catch((err) => {
-                console.error(err);
-                modifier('is-danger', (c) => c !== 'is-warning');
-                setTimeout(() => modifier(), 2000);
-            })
+        this.dispatch(reloadQueue())
+            .then(() => modifier());
     }
     
     render () {
-        const { dispatch, showList, canonical, step, isLoadingNext, isLoadingPrevious, remainingCount, canProceed, daysLeft, isVisible} = this.props;
+        const { dispatch, showList, step, isLoadingNext, isLoadingPrevious, isLoadingQueue, remainingCount, canProceed, daysLeft, isVisible} = this.props;
 
         if (!isVisible) return null;
 
@@ -120,34 +98,40 @@ class TrackProcessing extends Component {
               <span>Annotate</span>
             </ProgressBar>
         );
-    
+        
         let buttons;
-        if (remainingCount > 0) {
-            if (showList) {
-                buttons = <BulkButtons onBulkClick={this.onBulkClick} onRawBulkClick={this.onRawBulkClick} onLifeRead={this.onLifeRead} />
-            } else {
-                buttons = (
-                    <NavigationButtons
-                        isFinal={step === 2}
-                        isLoadingNext={isLoadingNext}
-                        isLoadingPrevious={isLoadingPrevious} 
-                        onPrevious={this.onPrevious}
-                        onSkip={this.onSkip} onNext={this.onNext} 
-                        onChangeDay={this.onChangeDay}
-                        canSkip={step === 0 && remainingCount > 1 && canProceed} 
-                        canProceed={canProceed} canPrevious={step !== 0}
-                        daysLeft={daysLeft}
-                    />
-                );
+        if (remainingCount > 0 && !showList) {
+            buttons = (
+                <NavigationButtons
+                    isFinal={step === 2}
+                    isLoadingNext={isLoadingNext}
+                    isLoadingPrevious={isLoadingPrevious} 
+                    onPrevious={this.onPrevious}
+                    onSkip={this.onSkip} onNext={this.onNext} 
+                    onChangeDay={this.onChangeDay}
+                    canSkip={step === 0 && remainingCount > 1 && canProceed} 
+                    canProceed={canProceed} canPrevious={step !== 0}
+                    daysLeft={daysLeft}
+                />
+            ); 
+        } else {
+            if (step === DONE_STAGE) {
+                dispatch(updateBounds(this.bounds));
             }
-        } else if (step === DONE_STAGE) {
-            dispatch(updateBounds(this.bounds));
+            buttons = (
+                    <ChangeDayButtons
+                        onBack={this.onChangeDay}
+                        onRefresh={this.onRefreshInputFolder}
+                        isEmpty={remainingCount === 0}
+                        isLoadingQueue={isLoadingQueue}
+                    />
+            );
         }
         
         return (
             <Card width={375} verticalOffset={1} horizontalOffset={1}>
                 { progress }
-                <div style={{marginTop: '15px'}}/>
+                <div style={{marginTop: '10px'}}/>
                 <PaneContent showList={showList} stage={step}/>
     
                 <div style={{ marginTop: '0.5rem' }}>
@@ -171,6 +155,7 @@ const mapStateToProps = (state) => {
     segmentsCount: state.get('tracks').get('segments').count(),
     isLoadingNext: state.get('general').get('loading').has('continue-button'),
     isLoadingPrevious: state.get('general').get('loading').has('previous-button'),
+    isLoadingQueue: state.get('general').get('loading').has('refresh-button'),
     isVisible: state.get('general').get('isUIVisible')
   }
 }
