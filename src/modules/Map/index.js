@@ -167,7 +167,7 @@ export default class LeafletMap extends Component {
         }
         this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch);
     }
-      
+
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
     this.shouldUpdateBounds(bounds, prev.bounds);
@@ -176,6 +176,7 @@ export default class LeafletMap extends Component {
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
 
     this.shouldUpdateSegmentsArePoints(this.props, prev);
+      
   }
 
   shouldUpdateSegmentsArePoints (current, previous) {
@@ -252,15 +253,18 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldAddSegment(current, previous, dispatch) {
+  shouldUpdateSegment (current, previous, lseg, dispatch) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
       const display = current.get('display');
       const id = current.get('id');
       const filter = current.get('timeFilter');
-  
-      this.addSegment(id, points, color, display, filter, current, dispatch, previous, current, false);
+
+      this.shouldUpdateSegmentPoints(lseg, points, filter, previous, color, current);
+      this.shouldUpdateColor(lseg, color, previous.get('color'));
+      this.shouldUpdateDisplay(lseg, display, previous.get('display'));
+      this.shouldUpdateMode(lseg, current, previous);
     }
   }
 
