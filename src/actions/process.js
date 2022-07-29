@@ -80,12 +80,10 @@ const updateState = (dispatch, json, getState, reverse = false) => {
     if(json.queue.length > 0) {
       dispatch(changeDayToProcess(json.queue.pop()[0]));
     } else {
-      console.log("hey")
       dispatch(clearAll());
     }
   } 
   
-  console.log(json.currentDay)
   dispatch(setServerState(json.step, json.queue, json.currentDay, json.life, json.lifeQueue));
   if (json.step < 0 || json.track == undefined) {
     dispatch(clearAll());
@@ -328,7 +326,6 @@ export const requestTransportationSuggestions = (points) => {
 }
 
 export const setLIFE = (text) => {
-  console.log(text)
   return {
     text,
     type: SET_LIFE

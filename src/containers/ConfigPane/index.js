@@ -5,7 +5,7 @@ import { saveConfig, getConfig, updateServer } from '../../actions/general';
 import Card from '../Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
-import { bulkProcess } from '../../actions/process';
+import { bulkProcess, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
 
@@ -21,14 +21,11 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
 
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
-      //TODO check if raw or not based on config value
-      dispatch(bulkProcess())
+      dispatch(state.bulk_uses_processing ? bulkProcess() : rawBulkProcess())
           .then(() => modifier());
     }
 
     const onSubmit = (e) => {
-      // e.preventDefault()
-  
       if (state.address != address) {
         dispatch(updateServer(state.address));    
       } 
@@ -52,6 +49,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
         <div>
           <SectionBlock name='General'>
             <OptionsField title='Default timezone' options={timezones} defaultValue={config.default_timezone} onChange={(e) => setState({...state, default_timezone: e.target.value})} />
+            <OptionsField title='Use Processing On Bulk Track Upload' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
             <OptionsField title='Use LIFE Trip Annotations' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} />
           </SectionBlock>
 
@@ -144,12 +142,12 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
         </section>
         <footer style={{ textAlign: 'right', paddingTop: '10px' }} className='control'> 
           <AsyncButton 
-            title='Bulk Process All Tracks in Input Folder' 
+            title='Bulk Upload All Tracks In Input Folder' 
             className={'is-blue'}
             style={{float: "left"}} 
             onClick={onBulkClick}>
               <DownloadingIcon/>
-              Bulk Process Tracks
+              Bulk Track Upload
           </AsyncButton>
           <AsyncButton 
             title='Save Configuration Settings'
