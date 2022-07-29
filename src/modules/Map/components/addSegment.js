@@ -3,7 +3,7 @@ import { Polyline, FeatureGroup } from 'leaflet';
 import { createPointsFeatureGroup } from '../utils';
 import { getPolylineStyle, getSpecialMarkers } from '../mapConfig'
 
-export default (id, points, color, display, filter, segment, dispatch, previousPoints, currentSegment) => {
+export default (id, points, color, display, filter) => {
   let pts;
 
   if (points.get(0).get('time')) {

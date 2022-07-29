@@ -25,7 +25,6 @@ import joinMode from './editing/joinMode';
 import splitMode from './editing/splitMode';
 import updatePoints from './point/updatePoints';
 import pointActionMode from './editing/pointActionMode';
-import buildTransportationModeRepresentation from './point/buildTransportationModeRepresentation';
 import detailMode from './point/detailMode';
 import addSegment from './components/addSegment';
 import { createMarker, createPointIcon } from './utils';
@@ -137,8 +136,7 @@ export default class LeafletMap extends Component {
       canUndo,
       canRedo,
       pointPrompt,
-      detailLevel,
-      decorationLevel
+      detailLevel
     } = this.props;
 
     if (canUndo !== prev.canUndo) {
@@ -154,7 +152,7 @@ export default class LeafletMap extends Component {
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);
         
         if (this.map.getZoom() >= detailLevel) {
-          this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch); //alternate based on zoomLevel
+          this.shouldUpdateSegments(segments, prev.segments, dispatch); 
         }
         
         this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips, dispatch);
@@ -165,7 +163,7 @@ export default class LeafletMap extends Component {
         if (this.heatmapLayer) {
           this.map.removeLayer(this.heatmapLayer);        
         }
-        this.shouldUpdateSegments(segments, prev.segments, activeView, dispatch);
+        this.shouldUpdateSegments(segments, prev.segments, dispatch);
     }
 
     this.shouldUpdateZoom(zoom, prev.zoom);
@@ -236,16 +234,21 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateSegments (segments, previous, activeView, dispatch) {
+  shouldUpdateSegments (segments, previous, dispatch) {
     if (segments !== previous) {
       segments.forEach((segment) => {
         const id = segment.get('id');
         const lseg = this.segments[id];
 
-        if (lseg && activeView === TRACK_PROCESSING) {
-          this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
-        } else {
-          this.shouldAddSegment(segment, previous.get(id), dispatch);
+        switch(this.props.activeView) {
+          case TRACK_PROCESSING:
+            if (lseg) {
+              this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
+            }
+          default:
+            if (!lseg) {
+              this.shouldAddSegment(segment, previous.get(id), dispatch);
+            }
         }
       });
       
@@ -282,7 +285,7 @@ export default class LeafletMap extends Component {
             const id = segment.get('id');
             const filter = segment.get('timeFilter');
         
-            this.addSegment(id, points, color, display, filter, segment, dispatch, previous.get(id), segment, true);
+            this.addSegment(id, points, color, display, filter, true);
           }
         }
       });
@@ -299,7 +302,7 @@ export default class LeafletMap extends Component {
       const id = current.get('id');
       const filter = current.get('timeFilter');
   
-      this.addSegment(id, points, color, display, filter, current, dispatch, previous, current, false);
+      this.addSegment(id, points, color, display, filter, false);
     }
   }
 
@@ -405,73 +408,90 @@ export default class LeafletMap extends Component {
     const bounds = this.map.getBounds();
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
-    if (activeView === MAIN_VIEW) {
-      if (currentZoom >= detailLevel) {
-        dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
-      } 
-       
-      this.toggleSegmentsAndLocations();
-     } 
+    
+    switch (activeView) {
+      case MAIN_VIEW:
+        if (currentZoom >= detailLevel) {
+          dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
+        } 
+         
+        this.toggleSegmentsAndLocations();
+        break;
+    }
   }
 
-  onZoomEnd (e) {
-    const { detailLevel, decorationLevel, segmentsArePoints, activeView, dispatch, segments } = this.props;
+  onZoomMainView () {
+    const { detailLevel, decorationLevel, dispatch, segments } = this.props;
     const currentZoom = this.map.getZoom();
     const bounds = this.map.getBounds();
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
 
-    if (activeView === MAIN_VIEW) {
-      if (currentZoom >= detailLevel && this.loadTrips) {
-        dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
-        this.toggleSegmentsAndLocations();
-        this.loadTrips = false;
-      } else if (currentZoom < decorationLevel && !this.loadTrips) {
-        if (segments.size > 0) dispatch(clearTrips());
-        this.loadTrips = true;
-      }
-
-      if (this.heatmapLayer) {
-        if (currentZoom >= detailLevel) {
-          this.map.removeLayer(this.heatmapLayer);
-        } else {
-          this.heatmapLayer.addTo(this.map);
-        }
-      }
-      
+    if (currentZoom >= detailLevel && this.loadTrips) {
+      dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
       this.toggleSegmentsAndLocations();
-    } else {
+      this.loadTrips = false;
+    } else if (currentZoom < decorationLevel && !this.loadTrips) {
+      if (segments.size > 0) dispatch(clearTrips());
+      this.loadTrips = true;
+    }
 
-      if (currentZoom >= detailLevel || currentZoom >= decorationLevel || segmentsArePoints) {
-        // add layers
-        Object.keys(this.segments).forEach((s) => {
-          if (this.segments[s]) {
-            const { details, layergroup } = this.segments[s];
-            if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
-              layergroup.addLayer(details);
-            }
-          }
-        });
-  
-        Object.keys(this.locations).forEach((s) => {
-          if (this.locations[s]) {
-            const { details, layergroup } = this.locations[s];
-            if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
-              layergroup.addLayer(details);
-            }
-          }
-        });
+    if (this.heatmapLayer) {
+      if (currentZoom >= detailLevel) {
+        this.map.removeLayer(this.heatmapLayer);
       } else {
-        Object.keys(this.locations).forEach((s) => {
-          if (this.locations[s]) {
-            const { details, layergroup } = this.locations[s];
-            if (layergroup.hasLayer(details) === true && !segmentsArePoints) {
-              layergroup.removeLayer(details);
-            }
-          }
-        });
+        this.heatmapLayer.addTo(this.map);
       }
     }
+    
+    this.toggleSegmentsAndLocations();
+  }
+
+  onZoomTrackProcessing () {
+    const { detailLevel, decorationLevel, segmentsArePoints } = this.props;
+    const currentZoom = this.map.getZoom();
+
+    if (currentZoom >= detailLevel || currentZoom >= decorationLevel || segmentsArePoints) {
+      // add layers
+      Object.keys(this.segments).forEach((s) => {
+        if (this.segments[s]) {
+          const { details, layergroup } = this.segments[s];
+          if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
+            layergroup.addLayer(details);
+          }
+        }
+      });
+
+      Object.keys(this.locations).forEach((s) => {
+        if (this.locations[s]) {
+          const { details, layergroup } = this.locations[s];
+          if ((layergroup.hasLayer(details) === false && currentZoom >= detailLevel) || segmentsArePoints) {
+            layergroup.addLayer(details);
+          }
+        }
+      });
+    } else {
+      Object.keys(this.locations).forEach((s) => {
+        if (this.locations[s]) {
+          const { details, layergroup } = this.locations[s];
+          if (layergroup.hasLayer(details) === true && !segmentsArePoints) {
+            layergroup.removeLayer(details);
+          }
+        }
+      });
+    }
+  }
+
+  onZoomEnd (e) {
+    switch(this.props.activeView) {
+      case MAIN_VIEW:
+        this.onZoomMainView()
+        break;
+      case TRACK_PROCESSING:
+        this.onZoomTrackProcessing();
+        break;
+    }
+
   }
 
   shouldUpdateMode (lseg, current, previous) {
@@ -554,11 +574,11 @@ export default class LeafletMap extends Component {
     }
   }
 
-  addSegment (id, points, color, display, filter, segment, dispatch, previous, current, canonical) {
+  addSegment (id, points, color, display, filter, canonical) {
     const { detailLevel, activeView } = this.props;
     const currentZoom = this.map.getZoom();
 
-    const obj = addSegment(id, points, color, display, filter, segment, dispatch, null, current, previous);
+    const obj = addSegment(id, points, color, display, filter);
     
     if (canonical) this.canonical[id] = obj;
     else this.segments[id] = obj;
