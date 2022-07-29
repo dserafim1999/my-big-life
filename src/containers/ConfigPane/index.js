@@ -19,11 +19,14 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
       console.log(address)
    }, []);
 
-    const [state, setState] = useState({...config, address: address});
+   const [state, setState] = useState({...config, address: address});
+   console.log(state)
 
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
-      dispatch(state.bulk_uses_processing ? bulkProcess() : rawBulkProcess())
+      const use_processing = 'bulk_uses_processing' in state ?  state.bulk_uses_processing : config.bulk_uses_processing;
+      
+      dispatch(use_processing ? bulkProcess() : rawBulkProcess())
           .then(() => modifier());
     }
 
