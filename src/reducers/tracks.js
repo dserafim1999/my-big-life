@@ -122,7 +122,7 @@ const displayCanonicalTrips = (state, action) => {
     _segments.push(new SegmentRecord({
       trackId: i,
       id: trip.id,
-      color: colors(color),
+      color: 'rgb(233,62,58)',
       points: pointsToRecord(trip.points)
     }));
     //color++;
