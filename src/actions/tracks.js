@@ -9,7 +9,6 @@ import {
   DISPLAY_TRIPS,
   DISPLAY_LOCATIONS,
   CLEAR_ALL,
-  LOAD_TRACKS_IN_BOUNDS,
   DISPLAY_CANONICAL_TRIPS,
   CLEAR_TRIPS
 } from ".";
@@ -17,6 +16,7 @@ import {
 import { Set } from 'immutable';
 import { fitSegments } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
+import { toggleSegmentVisibility } from "./segments";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
@@ -62,14 +62,24 @@ export const toggleTrackRenaming = (trackId) => {
       trackId,
       type: TOGGLE_TRACK_RENAMING
     }
-  }
+}
 
 export const updateTrackName = (trackId, newName) => {
-    return {
-      trackId,
-      name: newName,
-      type: UPDATE_TRACK_NAME
-    }
+  return {
+    trackId,
+    name: newName,
+    type: UPDATE_TRACK_NAME
+  }
+}
+
+export const toggleTrackSegmentsVisibility = (trackId) => {
+  return (dispatch, getState) => {
+    const segments = getState().get('tracks').get('tracks').get(trackId).get('segments').toJS();
+
+    segments.map((id) => {
+      dispatch(toggleSegmentVisibility(id));
+    });
+  }
 }
 
 export const resetHistory = () => ({

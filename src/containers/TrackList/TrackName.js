@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import moment from 'moment';
 
-import CheckIcon from '@mui/icons-material/Check';
 import DownloadIcon from '@mui/icons-material/Download';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import IconButton from '../../components/Buttons/IconButton';
 
@@ -10,83 +10,37 @@ const dateFormatter = (name) => {
   return moment(name.slice(0, -4)).format('ddd, MMM Do YYYY');
 }
 
-export default class TrackName extends Component {
-  constructor (props) {
-    super(props);
-    this.state = this.initialState();
-  }
-
-  initialState () {
-    return {
-      renaming: false,
-      name: this.props.track.get('name') ? 
-        dateFormatter(this.props.track.get('name'))
-        : 'Untitled.gpx'
-    }
-  }
-
-  componentDidUpdate (prevProps) {
-    if (prevProps.track !== this.props.track) {
-      this.setState(this.initialState());
-    }
-  }
-
-  updateName (e) {
-    this.state.name = e.target.value;
-    this.setState(this.state);
-  }
-
-  toggleEditing () {
-    if (!this.props.editable) {
-      if (this.props.onClick) {
-        this.props.onClick();
-      }
-
-      return;
-    }
-
-
-    if (this.state.renaming) {
-      this.props.onRename(this.state.name);
-    }
-    
-    this.state.renaming = !this.state.renaming;
-    this.setState(this.state);
-  }
-
-  render () {
-    const { renaming, name } = this.state;
-    const { onDownload } = this.props;
-    const toggleEditing = this.toggleEditing.bind(this);
-    let downloadButton = null;
-
-    if (renaming) {
-      return (
-        <div className='control is-grouped has-addons'>
-          <input className='input' type='text' value={name} onChange={this.updateName.bind(this)} />
-          <a className='button is-info' onClick={toggleEditing}>
-            <CheckIcon/>
-          </a>
-        </div>
-      );
-    } else {
-        downloadButton = (
-          <IconButton
-            className={'float-right'}
-            onClick={onDownload}
-            title='Download Track'>
-              <DownloadIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-          </IconButton>
-        );
-    }
+const TrackName = ({ track, onDownload, onToggleSegmentsVisibility}) => {
   
-    return (
+  var name = track.get('name') ? dateFormatter(track.get('name')) : 'Untitled.gpx';
+  
+  const downloadButton = (
+    <IconButton
+      className={'float-right'}
+      onClick={onDownload}
+      title='Download Track'>
+        <DownloadIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+    </IconButton>
+  );
+
+  const toggleSegmentsVisibilityButton = (
+    <IconButton
+      className={'float-right'}
+      onClick={onToggleSegmentsVisibility}
+      title='Hide All Track Segments'>
+        <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+    </IconButton>
+  );
+    
+  return (
       <div>
         { downloadButton }
-        <a onClick={toggleEditing} style={{ color: '#666', display: 'flex', alignItems: 'flex-start' }}>
-            <span style={{}}>{name}</span>
+        { toggleSegmentsVisibilityButton }
+        <a style={{ color: '#666', display: 'flex', alignItems: 'flex-start' }}>
+            <span>{name}</span>
         </a>
       </div>
-    );
-  }
+  );
 }
+
+export default TrackName;
