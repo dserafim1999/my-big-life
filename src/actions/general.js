@@ -11,6 +11,7 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
+import { reloadQueue } from "./process";
 import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
 
 
@@ -61,9 +62,9 @@ export const fitTracks = (...trackIds) => {
 }
 
 export const toggleRemainingTracks = (value = undefined) => {
-  return {
-    value,
-    type: TOGGLE_REMAINING_TRACKS
+  return (dispatch, getState) => {
+    dispatch(reloadQueue());
+    dispatch({value, type: TOGGLE_REMAINING_TRACKS});
   }
 }
 
@@ -105,11 +106,11 @@ export const saveConfig = (config) => {
       .catch((err) => {
         dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
         throw err;
-    })
-    .then((config) => {
-        dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
-        // TODO go to last route
-    });
+      })
+      .then((config) => {
+          dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
+          // TODO go to last route
+      });
   }
 }
 

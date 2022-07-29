@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
-import { fitSegments, setLoading } from './general';
+import { addAlert, fitSegments, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
 import { resetHistory, clearAll } from './tracks';
@@ -271,27 +271,46 @@ export const skipDay = () => {
 
 export const bulkProcess = () => {
   return (dispatch, getState) => {
+    dispatch(setLoading('bulk-button', true));
     const options = {
       method: 'GET',
       mode: 'cors'
     }
     return fetch(getState().get('general').get('server') + '/process/bulk', options)
       .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((json) => updateState(dispatch, json, getState));
+      .catch((err) => {
+        dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'bulk-err'));
+        dispatch(setLoading('bulk-button', false));
+        throw err;
+      })
+      .then((json) => {
+        dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
+        dispatch(setLoading('bulk-button', false));
+        updateState(dispatch, json, getState)
+      });
   }
 }
 
 export const rawBulkProcess = () => {
   return (dispatch, getState) => {
+    dispatch(setLoading('bulk-button', false));
+
     const options = {
       method: 'GET',
       mode: 'cors'
     }
     return fetch(getState().get('general').get('server') + '/process/rawBulk', options)
       .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((json) => updateState(dispatch, json, getState));
+      .catch((err) => {
+        dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'config-err'));
+        dispatch(setLoading('bulk-button', false));
+        throw err;
+      })
+      .then((json) => {
+        dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
+        dispatch(setLoading('bulk-button', false));
+        updateState(dispatch, json, getState)
+      });
   }
 }
 

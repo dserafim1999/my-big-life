@@ -11,7 +11,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { addAlert, toggleRemainingTracks, uploadFile } from '../actions/general';
-import { undo, redo, nextStep, previousStep, skipDay, reloadQueue } from '../actions/process';
+import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process';
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 import loadFiles from "../utils/loadFiles";
 import { TRACK_PROCESSING } from "../constants";
@@ -26,7 +26,6 @@ let App = ({ showConfig, view, dispatch }) => {
     loadFiles(files, (file) => {
       dispatch(uploadFile(file));
       dispatch(toggleRemainingTracks(true));
-      dispatch(reloadQueue());
     }, () => dispatch(addAlert('Unsupported file type.', 'error', 5, 'config-err')));
   }
 

@@ -9,9 +9,11 @@ import { bulkProcess, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
 
-const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
+const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoadingBulk }) => {
     if (!isVisible) return null;
     
+    const bulkClassName = 'is-blue' + (isLoadingBulk ? ' is-loading' : '');
+
     useEffect( () => {
       dispatch(getConfig(dispatch));
       console.log(address)
@@ -143,7 +145,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible }) => {
         <footer style={{ textAlign: 'right', paddingTop: '10px' }} className='control'> 
           <AsyncButton 
             title='Bulk Upload All Tracks In Input Folder' 
-            className={'is-blue'}
+            className={bulkClassName}
             style={{float: "left"}} 
             onClick={onBulkClick}>
               <DownloadingIcon/>
@@ -168,7 +170,8 @@ const mapStateToProps = (state) => {
     address: state.get('general').get('server'),
     config: serverConfig ? serverConfig.toJS() : null,
     isLoading: state.get('general').get('loading').has('config'),
-    isVisible: state.get('general').get('isUIVisible')
+    isVisible: state.get('general').get('isUIVisible'),
+    isLoadingBulk: state.get('general').get('loading').has('bulk-button')
   };
 }
 
