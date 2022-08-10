@@ -8,12 +8,15 @@ import {
   RESET_HISTORY,
   DISPLAY_TRIPS,
   DISPLAY_LOCATIONS,
-  CLEAR_ALL_TRACKS
+  CLEAR_ALL,
+  DISPLAY_CANONICAL_TRIPS,
+  CLEAR_TRIPS
 } from ".";
 
 import { Set } from 'immutable';
 import { fitSegments } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
+import { toggleSegmentVisibility } from "./segments";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
@@ -44,6 +47,11 @@ export const displayTrips = (trips) => ({
   type: DISPLAY_TRIPS
 })
 
+export const displayCanonicalTrips = (trips) => ({
+  trips,
+  type: DISPLAY_CANONICAL_TRIPS
+})
+
 export const displayLocations = (locations) => ({
   locations,
   type: DISPLAY_LOCATIONS
@@ -54,14 +62,24 @@ export const toggleTrackRenaming = (trackId) => {
       trackId,
       type: TOGGLE_TRACK_RENAMING
     }
-  }
+}
 
 export const updateTrackName = (trackId, newName) => {
-    return {
-      trackId,
-      name: newName,
-      type: UPDATE_TRACK_NAME
-    }
+  return {
+    trackId,
+    name: newName,
+    type: UPDATE_TRACK_NAME
+  }
+}
+
+export const toggleTrackSegmentsVisibility = (trackId) => {
+  return (dispatch, getState) => {
+    const segments = getState().get('tracks').get('tracks').get(trackId).get('segments').toJS();
+
+    segments.map((id) => {
+      dispatch(toggleSegmentVisibility(id));
+    });
+  }
 }
 
 export const resetHistory = () => ({
@@ -116,7 +134,15 @@ export const removeTrack = (trackId) => ({
 })
 
 export const clearAll = () => ({
-  type: CLEAR_ALL_TRACKS
+  type: CLEAR_ALL
+})
+
+export const clearTrips = () => ({
+  type: CLEAR_TRIPS
+})
+
+export const clearLocations = () => ({
+  type: CLEAR_LOCATIONS
 })
 
 export const updateLIFE = (text, warning) => ({
@@ -124,3 +150,36 @@ export const updateLIFE = (text, warning) => ({
   warning,
   type: UPDATE_LIFE
 })
+
+export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(clearTrips());
+        dispatch(displayTrips(res.trips));
+      });
+  }
+}
+
+export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/moreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(displayTrips(res.trips));
+      });
+  }
+}

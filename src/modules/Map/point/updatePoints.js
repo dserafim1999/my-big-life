@@ -1,4 +1,4 @@
-import { createPointsFeatureGroup, createPointIcon } from './utils';
+import { createPointsFeatureGroup, createPointIcon } from '../utils';
 import { LatLng, Marker } from 'leaflet';
 
 export default function updatePoints (segment, current, previous, color, filter) {

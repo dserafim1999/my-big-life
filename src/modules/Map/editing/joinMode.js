@@ -1,5 +1,5 @@
 import React from 'react';
-import { createPointIcon } from './utils';
+import { createPointIcon } from '../utils';
 import { FeatureGroup, Polyline, Marker } from 'leaflet';
 
 export default (lseg, current, previous, onJoin) => {

@@ -10,12 +10,12 @@ const advanceToAnnotate = (state, action) => {
 }
 
 const setServerState = (state, action) => {
-  return state.set('step', action.step)
-    .set('remainingTracks', fromJS(action.tracksRemaining))
-    .set('daySelected', action.daySelected)
-    .set('initLIFE', action.life)
-    .set('LIFEQueue', action.lifeQueue)
-    .set('LIFE', '');
+    return state.set('step', action.step)
+        .set('remainingTracks', fromJS(action.tracksRemaining))
+        .set('daySelected', action.daySelected)
+        .set('initLIFE', action.life)
+        .set('LIFEQueue', action.lifeQueue)
+        .set('LIFE', '');
 }
 
 const setLife = (state, action) => {

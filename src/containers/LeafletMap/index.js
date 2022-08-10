@@ -7,6 +7,7 @@ const mapStateToProps = (state) => {
 
   return {
     map: state.get('map').get('provider'),
+    activeView: state.get('general').get('activeView'),
     bounds: state.get('map').get('bounds'),
     center: state.get('map').get('center'),
     pointPrompt: state.get('map').get('pointPrompt'),
@@ -14,6 +15,7 @@ const mapStateToProps = (state) => {
     highlightedPoints: state.get('map').get('highlightedPoints'),
     segments: state.get('tracks').get('segments'),
     locations: state.get('tracks').get('locations'),
+    canonicalTrips: state.get('tracks').get('canonicalTrips'),
     canUndo: history.get('past').count() !== 0,
     canRedo: history.get('future').count() !== 0,
     segmentsArePoints: !!state.get('tracks').get('canonical')

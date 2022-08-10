@@ -11,7 +11,8 @@ import {
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
-import { clearAll, displayLocations, displayTrips } from "./tracks";
+import { reloadQueue } from "./process";
+import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
 
 
 export const fitSegments = (...segmentIds) => {
@@ -60,9 +61,10 @@ export const fitTracks = (...trackIds) => {
   }
 }
 
-export const toggleRemainingTracks = () => {
-  return {
-    type: TOGGLE_REMAINING_TRACKS
+export const toggleRemainingTracks = (value = undefined) => {
+  return (dispatch, getState) => {
+    dispatch(reloadQueue());
+    dispatch({value, type: TOGGLE_REMAINING_TRACKS});
   }
 }
 
@@ -104,11 +106,23 @@ export const saveConfig = (config) => {
       .catch((err) => {
         dispatch(addAlert('Error while saving configurations to the server', 'error', 5, 'config-err'));
         throw err;
-    })
-    .then((config) => {
-        dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
-        // TODO go to last route
-    });
+      })
+      .then((config) => {
+          dispatch(addAlert('Configurations saved to the server', 'success', 5, 'config-done'));
+          // TODO go to last route
+      });
+  }
+}
+
+export const uploadFile = (file) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(file)
+    }
+    return fetch(getState().get('general').get('server') + '/uploadFile', options)
+      .then((response) => response.json());
   }
 }
 
@@ -117,10 +131,12 @@ export const updateServer = (server) => ({
     type: UPDATE_SERVER
 })
 
-export const updateView = (view) => ({
-  view,
-  type: UPDATE_VIEW
-})
+export const updateView = (view) => {
+  return (dispatch, getState) => {
+    dispatch(clearAll());
+    dispatch({view, type: UPDATE_VIEW});
+  }
+}
 
 export const toggleUI = (isVisible) => ({
   isVisible,
@@ -138,9 +154,25 @@ export const loadTripsAndLocations = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        dispatch(clearAll());
-        dispatch(displayTrips(res.trips));
+        // dispatch(clearAll());
+        dispatch(displayCanonicalTrips(res.trips))
         dispatch(displayLocations(res.locations));
+      });
+  }
+}
+
+export const loadAllTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/allTrips', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(displayTrips(res.trips))
       });
   }
 }

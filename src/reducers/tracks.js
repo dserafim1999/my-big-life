@@ -94,13 +94,43 @@ const displayTrips = (state, action) => {
     .updateIn(['history', 'past'], (past) => past.clear())
     .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => {
-      tracks = tracks.clear(); 
+      // tracks = tracks.clear();
       return _tracks.reduce((tracks, track) => {
         return tracks.set(track.id, track);
       }, tracks)
     })
     .updateIn(['segments'], (segments) => {
-      segments = segments.clear(); 
+      // segments = segments.clear();
+      return _segments.reduce((segments, segment) => {
+        return segments.set(segment.id, segment);
+      }, segments);
+    });
+}
+
+const displayCanonicalTrips = (state, action) => {
+  const { trips } = action;
+
+  if (!trips) {
+    return state;
+  }
+
+  const _segments = [];
+
+  var color = 0;
+  for (var i = 0 ; i < trips.length ; i++) {
+    const trip = trips[i];
+    _segments.push(new SegmentRecord({
+      trackId: i,
+      id: trip.id,
+      color: 'rgb(233,62,58)',
+      points: pointsToRecord(trip.points)
+    }));
+    //color++;
+  }
+
+  return state
+    .updateIn(['canonicalTrips'], (segments) => {
+      segments = segments.clear();
       return _segments.reduce((segments, segment) => {
         return segments.set(segment.id, segment);
       }, segments);
@@ -176,6 +206,16 @@ const removeTrack = (state, action) => {
   return cState.deleteIn(['tracks', trackId]);
 }
 
+const clearLocations = (state, action) => {
+  return state.setIn(["locations"], fromJS({}));
+}
+
+const clearTrips = (state, action) => {
+  return state
+    .setIn(["tracks"], fromJS({}))
+    .setIn(["segments"], fromJS({}));
+}
+
 const clearAll = (state, action) => {
   return initialState;
 }
@@ -188,10 +228,13 @@ const ACTION_REACTION = {
     'tracks/toggle_renaming': toggleTrackRenaming,
     'tracks/update_LIFE': updateLIFE,
     'tracks/display_trips': displayTrips,
+    'tracks/display_canonical_trips': displayCanonicalTrips,
     'tracks/display_locations': displayLocations,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
     'tracks/clear_all': clearAll,
+    'tracks/clear_trips': clearTrips,
+    'tracks/clear_locations': clearLocations,
     'tracks/undo': undo,
     'tracks/redo': redo,
 }
@@ -204,6 +247,7 @@ const initialState = fromJS({
   tracks: {},
   locations: {},
   segments: {},
+  canonicalTrips: {},
   history: {
     past: [],
     future: []

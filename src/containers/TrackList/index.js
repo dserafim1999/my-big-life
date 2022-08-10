@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import Track from './Track';
 
 import {
-  downloadTrack,
-  updateTrackName
+  downloadTrack, toggleTrackSegmentsVisibility
 } from '../../actions/tracks';
 
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;
@@ -26,10 +25,11 @@ let TrackList = ({ dispatch, tracks, className, step, remainingCount }) => {
                   tracks.map((track, i) => {
                     const remaining = '+' + remainingCount + ' days';
                     const trackId = track.get('id');
-                    const updateName = (newName) => dispatch(updateTrackName(trackId, newName));
+
                     const onDownload = () => dispatch(downloadTrack(trackId));
+                    const onToggleSegmentsVisibility = () => dispatch(toggleTrackSegmentsVisibility(trackId));
                     
-                    return <Track trackId={trackId} key={i} onRename={updateName} onDownload={onDownload} remaining={remaining} />;
+                    return <Track trackId={trackId} key={i} onDownload={onDownload} onToggleSegmentsVisibility={onToggleSegmentsVisibility} remaining={remaining} />;
                   })
                 }
             </ul>

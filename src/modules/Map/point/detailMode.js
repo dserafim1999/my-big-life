@@ -1,4 +1,4 @@
-import { createPopup, openPopup } from './createPopup';
+import { createPopup, openPopup } from '../popup/createPopup';
 
 export default (lseg, current, previous) => {
   lseg.points.on('click', (target) => {

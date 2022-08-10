@@ -134,8 +134,7 @@ const Search = ({ dispatch, query, isVisible }) => {
   }
 
   return (
-    <Card width={400} verticalOffset={1} horizontalOffset={1}>
-      <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem'}}>Search</h1>
+    <Card width={400} title={"Search"} verticalOffset={1} horizontalOffset={1}>
       <section style={{ flexGrow: 1, overflowY: 'auto', maxHeight: '460px'}}>
         <div style={{ maxWidth: '400px', margin: 'auto' }}>
           <SectionBlock name='Date'>

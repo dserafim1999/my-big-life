@@ -31,13 +31,13 @@ const TextField = ({ title, placeholder, type, defaultValue, help, onChange, has
   const onValueChange = (e) => {
     var newValue;
     if (type === 'number') {
-      newValue = e.target.value < min ? min : e.target.value;
+      newValue = parseFloat(e.target.value) < min ? min : parseFloat(e.target.value);
     } else {
       newValue = e.target.value;
     }
     
     setValue(newValue);
-    onChange(operator + newValue);
+    onChange(operator === '' ? newValue : operator + newValue);
   }
 
   const onOperatorChange = (e) => {

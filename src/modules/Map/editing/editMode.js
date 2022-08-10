@@ -1,5 +1,5 @@
 import { DivIcon, Polyline, FeatureGroup } from 'leaflet';
-import { createMarker, setupMarker } from './utils';
+import { createMarker, setupMarker } from '../utils';
 
 import editPointProperties from './editPointProperties';
 
@@ -89,11 +89,14 @@ const updateMove = (lseg, index, lat, lng, target, glayers) => {
 }
 
 const setupExistingMarker = (marker, i, editModeHandler, removePoint, visualHelper, editPP) => {
+  if(!marker) return;
+
   marker.options.draggable = true;
   marker.on('click', editPP);
   marker.on('dragend', editModeHandler);
   marker.on('contextmenu', removePoint);
   marker.on('drag dragstart dragend', visualHelper);
+  
   return marker;
 }
 

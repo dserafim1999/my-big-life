@@ -1,12 +1,12 @@
 import React from 'react';
-import { createPopup, openPopup } from './createPopup';
+import { createPopup, openPopup } from '../popup/createPopup';
 
 import {
   selectPoint,
   updatePoint,
   deselectPoint,
   straightSelected
-} from '../../actions/segments';
+} from '../../../actions/segments';
 
 export default (lseg, current, dispatch) => {
   return (e) => {
