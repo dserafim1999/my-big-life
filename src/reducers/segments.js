@@ -558,6 +558,12 @@ const addNewSegment = (state, action) => {
     .updateIn(['tracks', trackId, 'segments'], (segs) => segs.add(seg.get('id')));
 }
 
+const toggleSegmentInfo = (state, action) => {
+  return state
+    .set('showInfo', action.value !== undefined? action.value : !state.get('showInfo'))
+    .set('activeSegment', action.segmentId);
+}
+
 const setTransportationModes = (state, action) => {
   const { modes } = action;
 
@@ -588,6 +594,7 @@ const setTransportationModes = (state, action) => {
 }
 
 const ACTION_REACTION = {
+    'segments/toggle_info': toggleSegmentInfo,
     'segments/toggle_visibility': toggleSegmentVisibility,
     'segments/toggle_edit': toggleSegmentEditing,
     'segments/toggle_split': toggleSegmentSplitting,

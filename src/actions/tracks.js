@@ -10,13 +10,15 @@ import {
   DISPLAY_LOCATIONS,
   CLEAR_ALL,
   DISPLAY_CANONICAL_TRIPS,
-  CLEAR_TRIPS
+  CLEAR_TRIPS,
+  TOGGLE_TRACK_INFO,
+  CLEAR_LOCATIONS
 } from ".";
 
 import { Set } from 'immutable';
 import { fitSegments } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
-import { toggleSegmentVisibility } from "./segments";
+import { toggleSegmentInfo, toggleSegmentVisibility } from "./segments";
 
 export const addTrack = (segments, name, locations = [], transModes = []) => {  
     return {
@@ -137,9 +139,12 @@ export const clearAll = () => ({
   type: CLEAR_ALL
 })
 
-export const clearTrips = () => ({
-  type: CLEAR_TRIPS
-})
+export const clearTrips = () => {
+  return (dispatch, getState) => {
+    dispatch(toggleSegmentInfo(false));
+    dispatch({type: CLEAR_TRIPS});
+  }
+}
 
 export const clearLocations = () => ({
   type: CLEAR_LOCATIONS

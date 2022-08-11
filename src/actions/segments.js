@@ -26,13 +26,12 @@ import {
   UPDATE_POINT,
   ADD_NEW_SEGMENT,
   SET_TRANSPORTATION_MODES,
+  TOGGLE_SEGMENT_INFO,
 } from ".";
 
 import { addAlert, removeAlert } from './general';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
 import { completeTrip, requestTransportationSuggestions } from './process';
-
-import moment from "moment";
 
 export const centerPointOnMap = (segmentId, index) => {
   return (dispatch, getState) => {
@@ -261,6 +260,12 @@ export const getTransportationModesFor = (segmentId, startIndex, endIndex, callb
       });
   }
 }
+
+export const toggleSegmentInfo = (value = undefined, segmentId = undefined) => ({
+  value,
+  segmentId, 
+  type: TOGGLE_SEGMENT_INFO
+})
 
 export const setTransportationModes = (modes) => ({
   modes,

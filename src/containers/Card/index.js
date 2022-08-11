@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Draggable from 'react-draggable';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 
 const wrapper = {
@@ -12,7 +13,7 @@ const wrapper = {
     zIndex: '1000',
 }
 
-const panelOpenStyle = {
+const cardOpenStyle = {
     position: "absolute",
     cursor: "pointer",
     backgroundColor: "lightgrey",
@@ -20,13 +21,12 @@ const panelOpenStyle = {
     width: "40px",
     height: "40px",
     borderRadius: "20px",
-    left: "-5px",
     top: "-5px",
     border: "3px solid white",
     zIndex: '1001'
 }
 
-const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true }) => {
+const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true, onClose = undefined }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
     const innerHeight = height != undefined ? window.innerHeight - height : window.innerHeight;
 
@@ -36,7 +36,7 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
         }
     }
 
-    const [panelOpen, setIsPanelOpen] = useState(true);
+    const [cardOpen, setIsCardOpen] = useState(true);
 
     const [ state, setState ] = useState(initState);
 
@@ -56,7 +56,7 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
     const dragHandlers = {onStart: onStart, onStop: onStop};
     const { controledPosition: initPosition } = state;
 
-    width = panelOpen ? width : 0;
+    width = cardOpen ? width : 0;
 
     var cardStyle =  {
         ...wrapper, 
@@ -65,14 +65,27 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
     }
     cardStyle = {...containerStyle, ...cardStyle};
 
-    const togglePanelButton = () => {
+    const toggleCardButton = () => {
         return canToggleVisibility &&
             (
-                <div style={{...panelOpenStyle, backgroundColor: panelOpen ? 'lightgrey' : "#284760"}}>
-                    <IconButton onClick={() => setIsPanelOpen(!panelOpen)} style={{top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
-                        { panelOpen ? 
+                <div style={{...cardOpenStyle, backgroundColor: cardOpen ? 'lightgrey' : "#284760", left: '-5px'}}>
+                    <IconButton onClick={() => setIsCardOpen(!cardOpen)} style={{top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
+                        { cardOpen ? 
                             <VisibilityOffIcon style={{color: 'white'}}/> : 
                             <VisibilityIcon style={{color: 'white'}}/>
+                        }
+                    </IconButton>
+                </div>
+            );
+    }
+
+    const closeCardButton = () => {
+        return canToggleVisibility &&
+            (
+                <div style={{...cardOpenStyle, backgroundColor: "#a42525", right: '-5px'}}>
+                    <IconButton onClick={onClose} style={{top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
+                        { 
+                            <CloseIcon style={{color: 'white'}}/>
                         }
                     </IconButton>
                 </div>
@@ -83,9 +96,14 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
         <Draggable position={initPosition} {...dragHandlers} onDrag={onControlledDrag}>
             <div style={{...cardStyle, cursor: isDraggable ? 'move' : ''}}>
                 <div style={{width: '100%', height: '100%', padding: '10px', ...innerStyle}} className="cardContent">
-                    { togglePanelButton() }
-                    { panelOpen && title && <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem', textAlign: 'center'}}>{title}</h1> }
-                    { panelOpen && children }
+                    { toggleCardButton() }
+                    { cardOpen && (
+                        <>
+                            { onClose && closeCardButton() }
+                            { title && <h1 style={{margin: '10px 0px 20px', fontSize: '1.6rem', textAlign: 'center'}}>{title}</h1> }
+                            { children }
+                        </>
+                    )}
                 </div>
             </div>
         </Draggable>

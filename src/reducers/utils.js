@@ -4,6 +4,7 @@ import colors from "./colors";
 import haversine from '../haversine';
 import moment from 'moment';
 import { Map, List, fromJS } from 'immutable';
+import { getRoute } from "../modules/ModuleRoutes";
 
 export const updateBoundsWithPoint = (point, bounds) => {
   return [
@@ -148,4 +149,10 @@ export const calculateMetrics = (state) => {
     averageVelocity,
     points: pointMetrics
   }));
+}
+
+export const routeTo = (activeView, view) => {
+  const route = getRoute(view);
+  
+  return activeView === view ? '/' : route;
 }

@@ -1,24 +1,40 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import useDraggableScroll from "use-draggable-scroll";
-import { loadAllTrips, loadTripsAndLocations } from "../../actions/general";
-import { loadTripsInBounds } from "../../actions/tracks";
-import Timeline from "../../components/Timeline";
+import { loadTripsAndLocations } from "../../actions/general";
+import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
+import Segment from "../../containers/TrackList/Segment";
 
+const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment }) => {
+    useEffect( () => {
+        dispatch(loadTripsAndLocations());
+    }, []);
 
-const MainView = ({ dispatch, isVisible }) => {
     if (!isVisible) return null;
 
-    dispatch(loadTripsAndLocations());
-    //dispatch(loadAllTrips());
+    const onClose = () =>  {
+        dispatch(toggleSegmentInfo(false));
+    }
 
-    return null;
-};
+    return <>
+        { showSegmentInfo && (
+                <Card width={400} height={500} verticalOffset={90} horizontalOffset={99} onClose={onClose}>
+                    {/* <SemanticEditor className='is-flexgrow' width='100%' /> */}
+                    { activeSegment &&  <Segment segment={activeSegment} canEdit={false}/>}
+                </Card>
+            )   
+        }
+    </> 
+}
 
 const mapStateToProps = (state) => {
+    const activeSegmentId = state.get('tracks').get('activeSegment');
+    let segment = state.get('tracks').get('segments').get(activeSegmentId);
+
     return {
-        isVisible: state.get('general').get('isUIVisible')
+        isVisible: state.get('general').get('isUIVisible'),
+        showSegmentInfo: state.get('tracks').get('showInfo'),
+        activeSegment: segment
     };
 }
   

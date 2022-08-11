@@ -9,9 +9,9 @@ import SegmentToolbox from './SegmentToolbox';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
+import FitIcon from '@mui/icons-material/ZoomOutMap';
 
-import { toggleSegmentVisibility } from '../../actions/segments';
-import { Tooltip } from '@mui/material';
+import { fitSegment, toggleSegmentVisibility } from '../../actions/segments';
 import IconButton from '../../components/Buttons/IconButton';
 
 const metricsStyle = {
@@ -56,8 +56,9 @@ const SegmentStartEnd = ({ onClick, index, time}) => {
   }
 }
 
-const Segment = ({ segment, dispatch, segmentId, points, start, end, display, color, metrics, distance, averageVelocity }) => {
+const Segment = ({ segment, dispatch, segmentId, points, start, end, display, color, metrics, distance, averageVelocity, canEdit = true }) => {
   const toggleTrack = () => dispatch(toggleSegmentVisibility(segmentId));
+  const fitToSegment = () => dispatch(fitSegment(segmentId));
   
   const style = {
     borderLeft: '10px solid ' + color,
@@ -78,7 +79,7 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
   }
 
   return (
-    <li className='slide-from-top-fade-in' style={{border: '1px solid #F0F0F0'}}>
+    <li className='slide-from-top-fade-in' style={{border: '1px solid #F0F0F0', listStyleType: 'none'}}>
       <div style={style}>
         <div>
           <div style={middleStatsUp} >
@@ -92,10 +93,18 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SegmentStartEnd onClick={centerOnPoint(points.get(0))} index={0} time={start} />
+            
+            <div>
+              <IconButton title={'Toggle Segment Visibility'} onClick={toggleTrack}>    
+                  <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+              </IconButton>
 
-            <IconButton title={'Toggle Segment Visibility'} onClick={toggleTrack}>    
-                <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-            </IconButton>
+              { !canEdit && (
+                <IconButton title={'Fit Segment'} onClick={fitToSegment}>    
+                    <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                </IconButton>
+              )}
+            </div>
 
             <SegmentStartEnd onClick={centerOnPoint(points.get(-1))} index={-1} time={end} />
           </div>
@@ -104,7 +113,7 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
           </div>
         </div>
 
-        <SegmentToolbox segment={segment} />
+        { canEdit && <SegmentToolbox segment={segment} /> }
       </div>
     </li>
   )

@@ -6,14 +6,13 @@ import {
   UPDATE_CONFIG,
   UPDATE_SERVER,
   UPDATE_VIEW,
-  TOGGLE_UI
+  TOGGLE_UI,
 } from "."
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
 import { reloadQueue } from "./process";
 import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
-
 
 export const fitSegments = (...segmentIds) => {
   return (dispatch, getState) => {
@@ -131,7 +130,9 @@ export const updateServer = (server) => ({
     type: UPDATE_SERVER
 })
 
-export const updateView = (view) => {
+export const updateView = (view, route, navigate) => {
+  navigate(route);
+  
   return (dispatch, getState) => {
     dispatch(clearAll());
     dispatch({view, type: UPDATE_VIEW});
@@ -154,8 +155,7 @@ export const loadTripsAndLocations = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        // dispatch(clearAll());
-        dispatch(displayCanonicalTrips(res.trips))
+        dispatch(displayCanonicalTrips(res.trips));
         dispatch(displayLocations(res.locations));
       });
   }

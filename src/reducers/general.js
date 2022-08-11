@@ -30,8 +30,7 @@ const addAlert = (state, action) => {
 }
 
 const toggleRemainingTracks = (state, action) => {
-
-  return state.set('showRemainingTracks', action.value? action.value : !state.get('showRemainingTracks'));
+  return state.set('showRemainingTracks', action.value !== undefined ? action.value : !state.get('showRemainingTracks'));
 }
 
 const setLoading = (state, action) => {
@@ -55,7 +54,6 @@ const updateServer = (state, action) => {
 }
 
 const updateView = (state, action) => {
-  
   return state.set('activeView', action.view);
 }
 

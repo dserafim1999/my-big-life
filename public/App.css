@@ -20,16 +20,16 @@
   float: right;
 }
 
-.activeIcon a {
-    color: var(--main);
+.activeIcon {
+  color: var(--main) !important;
 }
 
-.activeIcon a:hover, .inactiveIcon a:hover {
+.activeIcon:hover, .inactiveIcon:hover {
   color: #20384c !important;
 }
 
-.inactiveIcon a {
-  color: grey;
+.inactiveIcon {
+  color: grey !important;
 }
 
 .clickable {
@@ -95,6 +95,20 @@
 
 a.button {
   text-decoration: none;
+}
+
+.custom-leaflet-tooltip {
+  position: absolute;
+  padding: 0px;
+  border: 1px solid #fff;
+  color: #fff;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
 .slider {
