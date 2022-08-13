@@ -12,6 +12,7 @@ import {
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
 import { reloadQueue } from "./process";
+import { updateActiveLIFE } from "./segments";
 import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
 
 export const fitSegments = (...segmentIds) => {
@@ -173,6 +174,23 @@ export const loadAllTrips = () => {
       .catch((e) => console.error(e))
       .then((res) => {
         dispatch(displayTrips(res.trips))
+      });
+  }
+}
+
+export const getLifeFromDay = (date) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({date: date})
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/lifeFromDay', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(updateActiveLIFE(res));
       });
   }
 }

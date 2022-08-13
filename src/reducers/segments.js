@@ -564,6 +564,11 @@ const toggleSegmentInfo = (state, action) => {
     .set('activeSegment', action.segmentId);
 }
 
+const updateActiveLIFE = (state, action) => {
+  return state
+    .set('activeLIFE', action.life);
+}
+
 const setTransportationModes = (state, action) => {
   const { modes } = action;
 
@@ -617,6 +622,7 @@ const ACTION_REACTION = {
     'segments/set_transportation_modes': setTransportationModes,
     'segments/update_transportation_mode': updateTransportationMode,
     'segments/update_transportation_time': updateTransportationTime,
+    'segments/update_active_LIFE': updateActiveLIFE,
     'segments/select_point_in_map': selectPointInMap,
     'segments/deselect_point_in_map': deselectPointInMap,
     'segments/select_point': selectPoint,

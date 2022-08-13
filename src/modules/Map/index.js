@@ -575,7 +575,7 @@ export default class LeafletMap extends Component {
     const currentZoom = this.map.getZoom();
 
     const obj = addSegment(id, points, color, display, filter);
-    const date = moment(points.get(0).get('time')).format("DD/MM/YYYY");
+    const date = moment(points.get(0).get('time'));
     
     if (canonical) {
       this.canonical[id] = obj;
@@ -587,11 +587,11 @@ export default class LeafletMap extends Component {
       , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } else {
       this.segments[id] = obj;
-      obj.layergroup.on('click', () => this.onSegmentClick(id, activeView));
+      obj.layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
 
       obj.layergroup.bindTooltip(
         "<div style='width: 50px'>" +
-        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date +" </span>" +
+        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
         "</div>"
       , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } 
@@ -605,12 +605,12 @@ export default class LeafletMap extends Component {
     }
   }
 
-  onSegmentClick(segmentId, activeView) {
+  onSegmentClick(segmentId, date, activeView) {
     const { dispatch } = this.props;
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleSegmentInfo(true, segmentId));
+        dispatch(toggleSegmentInfo(true, segmentId, date));
         break;
     }
   }

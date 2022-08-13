@@ -4,8 +4,10 @@ import { loadTripsAndLocations } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
 import Segment from "../../containers/TrackList/Segment";
+import decorators from '../../modules/SemanticEditor/decorators';
+import SemanticEditor from '../../modules/SemanticEditor';
 
-const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment }) => {
+const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
     }, []);
@@ -19,7 +21,14 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment }) => {
     return <>
         { showSegmentInfo && (
                 <Card width={400} height={500} verticalOffset={90} horizontalOffset={99} onClose={onClose}>
-                    {/* <SemanticEditor className='is-flexgrow' width='100%' /> */}
+                    { activeLIFE && (
+                        <SemanticEditor
+                            state={ activeLIFE }
+                            segments={ Map(activeSegment) }
+                            dispatch={ dispatch }
+                            strategies={ decorators }
+                        />
+                    )}
                     { activeSegment &&  <Segment segment={activeSegment} canEdit={false}/>}
                 </Card>
             )   
@@ -34,7 +43,8 @@ const mapStateToProps = (state) => {
     return {
         isVisible: state.get('general').get('isUIVisible'),
         showSegmentInfo: state.get('tracks').get('showInfo'),
-        activeSegment: segment
+        activeSegment: segment,
+        activeLIFE: state.get('tracks').get('activeLIFE') 
     };
 }
   

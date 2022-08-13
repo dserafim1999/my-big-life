@@ -27,9 +27,10 @@ import {
   ADD_NEW_SEGMENT,
   SET_TRANSPORTATION_MODES,
   TOGGLE_SEGMENT_INFO,
+  UPDATE_ACTIVE_LIFE,
 } from ".";
 
-import { addAlert, removeAlert } from './general';
+import { addAlert, getLifeFromDay, removeAlert } from './general';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
 import { completeTrip, requestTransportationSuggestions } from './process';
 
@@ -261,10 +262,20 @@ export const getTransportationModesFor = (segmentId, startIndex, endIndex, callb
   }
 }
 
-export const toggleSegmentInfo = (value = undefined, segmentId = undefined) => ({
-  value,
-  segmentId, 
-  type: TOGGLE_SEGMENT_INFO
+export const toggleSegmentInfo = (value = undefined, segmentId = undefined, date = undefined) => {
+  return (dispatch, getState) => {
+    if (date) dispatch(getLifeFromDay(date));
+    dispatch({
+      value,
+      segmentId, 
+      type: TOGGLE_SEGMENT_INFO
+    });
+  }
+}
+
+export const updateActiveLIFE = (life) => ({
+  life,
+  type: UPDATE_ACTIVE_LIFE
 })
 
 export const setTransportationModes = (modes) => ({

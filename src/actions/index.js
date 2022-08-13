@@ -38,6 +38,7 @@ export const UPDATE_TIME_FILTER_SEGMENT = 'segments/time_filter';
 export const UPDATE_LOCATION_NAME = 'segments/update_location_name';
 export const UPDATE_TRANSPORTATION_MODE = 'segments/update_transportation_mode';
 export const SET_TRANSPORTATION_MODES = 'segments/set_transportation_modes';
+export const UPDATE_ACTIVE_LIFE = 'segments/update_active_LIFE';
 export const SELECT_POINT_IN_MAP = 'segments/select_point_in_map';
 export const DESELECT_POINT_IN_MAP = 'segments/deselect_point_in_map';
 export const SELECT_POINT = 'segments/select_point';
