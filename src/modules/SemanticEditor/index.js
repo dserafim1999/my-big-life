@@ -54,7 +54,6 @@ class SemanticEditor extends Component {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
     } else if (prev.segments !== this.props.segments) {
-      console.log(this.props.state.getPlainText())
       const editorState = this.decorate(EditorState.createWithContent(state, decorator));
       this.setState({editorState, suggestions: this.state.suggestions});
     }
@@ -262,6 +261,7 @@ class SemanticEditor extends Component {
             handleKeyCommand={this.handleKeyCommand.bind(this)}
             keyBindingFn={this.myKeyBindingFn.bind(this)}
             ref={this.editorRef}
+            readOnly={this.props.readOnly}
             spellcheck={false}
           />
         </div>

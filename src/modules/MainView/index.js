@@ -32,10 +32,11 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     return <>
         { showSegmentInfo && (
                 <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose}>
-                    { activeSegment && <Segment segment={activeSegment} canEdit={false} style={{border: 'none', paddingBottom: '25px'}}/>}
+                    { activeSegment && <Segment segment={activeSegment} canEdit={false}/>}
                     { activeLIFE && activeSegment && (
                         <SemanticEditor
-                            style={{border: '1px solid grey'}}
+                            readOnly={true}
+                            style={{paddingTop: '25px'}}
                             state={ state }
                             segments={ segment }
                             dispatch={ dispatch }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Set } from 'immutable';
 
 const SOLARIZED = {
   YELLOW: '#b58900',
@@ -57,30 +56,6 @@ const STYLES = {
   }
 }
 
-const extractReferences = (references) => {
-  let points = []
-  let segments = []
-  references = references || {}
-  if (references.point) {
-    points = [references.point]
-    segments = [references.segmentId]
-  } else {
-    const { from, to } = references
-    if (from) {
-      points.push(from.point)
-      segments.push(from.segmentId)
-    }
-    if (to) {
-      points.push(to.point)
-      segments.push(to.segmentId)
-    }
-  }
-
-  return {
-    points,
-    segments: Set(segments).toJS()
-  }
-}
 
 const Reference = (props) => {
   const contentState = props.contentState;
