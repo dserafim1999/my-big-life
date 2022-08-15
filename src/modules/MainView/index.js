@@ -1,11 +1,15 @@
+import { fromJS } from "immutable";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { loadTripsAndLocations } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
 import Segment from "../../containers/TrackList/Segment";
-import decorators from '../../modules/SemanticEditor/decorators';
+
+import { ContentState } from 'draft-js';
 import SemanticEditor from '../../modules/SemanticEditor';
+import decorators from '../SemanticEditor/viewDecorators';
+import { setLIFE } from "../../actions/process";
 
 const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE }) => {
     useEffect( () => {
@@ -18,18 +22,29 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
         dispatch(toggleSegmentInfo(false));
     }
 
+    let segment;
+    if (activeSegment) {
+        segment = fromJS({segment: activeSegment});
+    }
+
+    const state = activeLIFE ? ContentState.createFromText(activeLIFE) : null;
+
     return <>
         { showSegmentInfo && (
-                <Card width={400} height={500} verticalOffset={90} horizontalOffset={99} onClose={onClose}>
-                    { activeLIFE && (
+                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose}>
+                    { activeSegment && <Segment segment={activeSegment} canEdit={false} style={{border: 'none', paddingBottom: '25px'}}/>}
+                    { activeLIFE && activeSegment && (
                         <SemanticEditor
-                            state={ activeLIFE }
-                            segments={ Map(activeSegment) }
+                            style={{border: '1px solid grey'}}
+                            state={ state }
+                            segments={ segment }
                             dispatch={ dispatch }
                             strategies={ decorators }
+                            onChange={(stateEditor, ast, text) => {
+                                console.log(text)
+                            }}
                         />
                     )}
-                    { activeSegment &&  <Segment segment={activeSegment} canEdit={false}/>}
                 </Card>
             )   
         }

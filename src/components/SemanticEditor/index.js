@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ContentState } from 'draft-js';
 import SemanticEditor from '../../modules/SemanticEditor';
 
-import decorators from '../../modules/SemanticEditor/decorators';
+import decorators from '../../modules/SemanticEditor/editDecorators';
 import suggestionsGetters from '../../modules/SemanticEditor/suggestionsGetters';
 import { setTransportationModes } from '../../actions/segments';
 import { setLIFE } from '../../actions/process';

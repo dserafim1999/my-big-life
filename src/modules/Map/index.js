@@ -346,6 +346,8 @@ export default class LeafletMap extends Component {
       return;
     }
 
+    console.log(highlighted)
+
     const setOpacity = (ids, opacity) => {
       ids.forEach((id) => {
         const lseg = this.segments[id];

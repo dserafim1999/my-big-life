@@ -47,11 +47,15 @@ class SemanticEditor extends Component {
   }
 
   componentDidUpdate (prev, prevState) {
+    const { state, strategies } = this.props;
+    const decorator = new CompositeDecorator(strategies);
+
     if (prev.initial !== this.props.initial) {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
     } else if (prev.segments !== this.props.segments) {
-      const editorState = this.decorate(this.state.editorState);
+      console.log(this.props.state.getPlainText())
+      const editorState = this.decorate(EditorState.createWithContent(state, decorator));
       this.setState({editorState, suggestions: this.state.suggestions});
     }
   }
