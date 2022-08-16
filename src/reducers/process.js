@@ -20,8 +20,8 @@ const setServerState = (state, action) => {
 
 const setLife = (state, action) => {
     return state.set('LIFE', action.text);
-  }
- 
+}
+
 const ACTION_REACTION = {
     'process/advance_adjust': advanceToAdjust,
     'process/advance_annotate': advanceToAnnotate,

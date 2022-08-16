@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
+import { COPY_DAY_TO_INPUT, REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
 import { addAlert, fitSegments, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
@@ -348,5 +348,21 @@ export const setLIFE = (text) => {
   return {
     text,
     type: SET_LIFE
+  }
+}
+
+export const copyDayToInput = (date) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        date: date
+      })
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/process/copyDayToInput', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e));
   }
 }

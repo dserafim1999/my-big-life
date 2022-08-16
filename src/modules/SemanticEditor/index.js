@@ -242,7 +242,7 @@ class SemanticEditor extends Component {
     };
 
     return (
-      <div style={editorStyle} onClick={() => this.editorRef.current.focus()}>
+      <div style={{...editorStyle, ...this.props.style}} onClick={() => this.editorRef.current.focus()}>
         <div style={flexStyle}>
           <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
             {

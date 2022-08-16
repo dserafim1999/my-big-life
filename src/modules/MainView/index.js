@@ -1,25 +1,38 @@
 import { fromJS } from "immutable";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { loadTripsAndLocations } from "../../actions/general";
+import { loadTripsAndLocations, updateView } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
+import { useNavigate } from "react-router-dom";
 import Segment from "../../containers/TrackList/Segment";
 
 import { ContentState } from 'draft-js';
 import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../SemanticEditor/viewDecorators';
-import { setLIFE } from "../../actions/process";
+import AsyncButton from "../../components/Buttons/AsyncButton";
+import { routeTo } from "../../reducers/utils";
+import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
+import moment from "moment";
+import { copyDayToInput } from "../../actions/process";
 
 const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
     }, []);
 
+    let navigate = useNavigate();
+
     if (!isVisible) return null;
 
     const onClose = () =>  {
         dispatch(toggleSegmentInfo(false));
+    }
+
+    const onEdit = () => {
+        const date = moment(activeSegment.getStartTime());
+        dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
+        dispatch(copyDayToInput(date.format("YYYY-MM-DD")));
     }
 
     let segment;
@@ -36,7 +49,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                     { activeLIFE && activeSegment && (
                         <SemanticEditor
                             readOnly={true}
-                            style={{paddingTop: '25px'}}
+                            style={{padding: '20px 0 10px 0'}}
                             state={ state }
                             segments={ segment }
                             dispatch={ dispatch }
@@ -46,6 +59,17 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                             }}
                         />
                     )}
+                    <AsyncButton 
+                        style={{display: "flow-root"}}
+                        title='Edit Day'
+                        className='is-blue'
+                        onClick={(e, modifier) => {
+                            modifier('is-loading');
+                            onEdit();
+                            modifier();
+                        }} >
+                            Edit Day
+                    </AsyncButton>
                 </Card>
             )   
         }
