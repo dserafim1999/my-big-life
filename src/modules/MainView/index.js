@@ -31,8 +31,8 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 
     const onEdit = () => {
         const date = moment(activeSegment.getStartTime());
-        dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
         dispatch(copyDayToInput(date.format("YYYY-MM-DD")));
+        dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
     }
 
     let segment;

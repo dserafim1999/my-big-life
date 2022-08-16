@@ -249,10 +249,32 @@ export const dismissDay = (day) => {
         day
       })
     }
-    return fetch(getState().get('general').get('server') + '/process/removeDay', options)
+    return fetch(getState().get('general').get('server') + '/process/dismissDay', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((json) => updateState(dispatch, json, getState));
+  }
+}
+
+export const removeDay = (files) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        files
+      })
+    }
+
+    const go = confirm("Are you sure you want to delete the selected day from the input folder?");
+
+    if (go) {
+      return fetch(getState().get('general').get('server') + '/process/removeDay', options)
+        .then((response) => response.json())
+        .catch((e) => console.error(e))
+        .then((json) => updateState(dispatch, json, getState));
+    }
+
   }
 }
 
