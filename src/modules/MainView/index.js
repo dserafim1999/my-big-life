@@ -1,7 +1,7 @@
 import { fromJS } from "immutable";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { loadTripsAndLocations, updateView } from "../../actions/general";
+import { deleteDay, loadTripsAndLocations, updateView } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,9 @@ import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import moment from "moment";
 import { copyDayToInput } from "../../actions/process";
 
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
@@ -28,11 +31,20 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     const onClose = () =>  {
         dispatch(toggleSegmentInfo(false));
     }
-
-    const onEdit = () => {
+    
+    const onDelete = (e, modifier) => {
+        modifier('is-loading');
         const date = moment(activeSegment.getStartTime());
-        dispatch(copyDayToInput(date.format("YYYY-MM-DD")));
+        dispatch(deleteDay(date.format("YYYY-MM-DD")));
+        modifier(); 
+    }
+    
+    const onEdit = (e, modifier) => {
+        modifier('is-loading');
+        const date = moment(activeSegment.getStartTime());
+        dispatch(copyDayToInput(date.format("YYYY-MM-DD"))); //TODO consider custom formatting
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
+        modifier();
     }
 
     let segment;
@@ -59,17 +71,22 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                             }}
                         />
                     )}
-                    <AsyncButton 
-                        style={{display: "flow-root"}}
-                        title='Edit Day'
-                        className='is-blue'
-                        onClick={(e, modifier) => {
-                            modifier('is-loading');
-                            onEdit();
-                            modifier();
-                        }} >
-                            Edit Day
-                    </AsyncButton>
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <AsyncButton 
+                            title='Delete Day'
+                            className='is-red'
+                            onClick={onDelete} >
+                                <DeleteIcon/>
+                                Delete
+                        </AsyncButton>
+                        <AsyncButton 
+                            title='Edit Day'
+                            className='is-blue'
+                            onClick={onEdit} >
+                                Edit
+                                <EditIcon style={{marginLeft: '10px'}}/>
+                        </AsyncButton>
+                    </div>
                 </Card>
             )   
         }

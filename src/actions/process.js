@@ -266,7 +266,7 @@ export const removeDay = (files) => {
       })
     }
 
-    const go = confirm("Are you sure you want to delete the selected day from the input folder?");
+    const go = confirm("Are you sure you want to remove the selected day from the input folder?");
 
     if (go) {
       return fetch(getState().get('general').get('server') + '/process/removeDay', options)

@@ -1,3 +1,4 @@
+import moment from "moment";
 import { 
   ADD_ALERT,
   REMOVE_ALERT,
@@ -12,8 +13,8 @@ import {
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
 import { reloadQueue } from "./process";
-import { updateActiveLIFE } from "./segments";
-import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
+import { toggleSegmentInfo, updateActiveLIFE } from "./segments";
+import { clearAll, displayLocations, displayCanonicalTrips, displayTrips, removeTrack } from "./tracks";
 
 export const fitSegments = (...segmentIds) => {
   return (dispatch, getState) => {
@@ -192,5 +193,31 @@ export const getLifeFromDay = (date) => {
       .then((res) => {
         dispatch(updateActiveLIFE(res));
       });
+  }
+}
+
+export const deleteDay = (date) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        date
+      })
+    }
+
+    const go = confirm("Are you sure you want to delete the selected day from the database?");
+
+    if (go) {
+      return fetch(getState().get('general').get('server') + '/deleteDay', options)
+        .then((response) => response.json())
+        .catch((e) => console.error(e))
+        .then((res) => {
+          dispatch(toggleSegmentInfo(false));
+          dispatch(removeTrack(moment(date).format('YYYY-MM-DD')));
+          dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
+          //TODO update canonical trips
+        })
+    }
   }
 }

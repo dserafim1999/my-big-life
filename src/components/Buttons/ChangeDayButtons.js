@@ -4,13 +4,6 @@ import AsyncButton from './AsyncButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-const buttonStyle = {
-  paddingLeft: '0.5rem',
-  paddingRight: '0.5rem',
-  marginLeft: '0.25rem',
-  marginRight: '0.25rem',
-}
-
 const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue, dispatch }) => {
   const refreshClassName = 'is-blue' + (isLoadingQueue ? ' is-loading' : '');
 
@@ -18,7 +11,6 @@ const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue, dispatch
     (
       <AsyncButton 
         title='Go Back To Edit Day' 
-        style={buttonStyle} 
         className={'is-blue'} 
         onClick={onBack}>
           <ChevronLeftIcon/>
@@ -29,21 +21,20 @@ const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue, dispatch
   const refresh = (
     <AsyncButton 
       title='Refresh Input Folder' 
-      style={buttonStyle} 
       className={refreshClassName} 
       onClick={onRefresh}>
         Refresh
-        <RefreshIcon/>
+        <RefreshIcon style={{marginLeft: '10px'}}/>
     </AsyncButton>
   );
 
   
 
   return (
-    <>
+    <div style={{display: 'flex', justifyContent: isEmpty ? 'center' : 'space-between'}}>
       { back }
       { refresh }
-    </>
+    </div>
   );
 }
 

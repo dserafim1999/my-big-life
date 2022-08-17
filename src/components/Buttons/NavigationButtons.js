@@ -4,7 +4,7 @@ import AsyncButton from './AsyncButton';
 import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';
 import SkipIcon from '@mui/icons-material/SkipNext';
-import SaveIcon from '@mui/icons-material/Check';
+import SaveIcon from '@mui/icons-material/Save';
 
 const buttonStyle = {
   paddingLeft: '0.5rem',
@@ -50,16 +50,16 @@ const NavigationButtons = ({ isLoadingPrevious, isLoadingNext, canPrevious, onPr
   const save = canProceed ? (
     <AsyncButton title='Save day to server' style={buttonStyle} disabled={isLoadingNext} className={nextClassName} onClick={onNext}>
         Save
-        <SaveIcon/>
+        <SaveIcon style={{marginLeft: '10px'}}/>
     </AsyncButton>
   ): null;
  
   return (
-    <>
+    <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
       { canPrevious ? previous : skip }
       { changeDay }      
       { isFinal ? save : next }
-    </>
+    </div>
   );
 }
 
