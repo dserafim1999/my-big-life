@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 import IconButton from "@mui/material/IconButton";
-import { getRoute, ModuleRoutes } from "../../modules/ModuleRoutes";
+import { ModuleRoutes } from "../../modules/ModuleRoutes";
 import { connect } from "react-redux";
 import { toggleUI as toggleUIAction, updateView } from "../../actions/general";
 import { MAIN_VIEW } from "../../constants";
 import { Tooltip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import HideUIIcon from "@mui/icons-material/VisibilityOff";
 import ShowUIIcon from "@mui/icons-material/Menu";
+import { routeTo } from "../../reducers/utils";
 
 const wrapperStyle = {
     position: 'absolute',
@@ -25,15 +26,10 @@ const wrapperStyle = {
 
 const MenuBar = ({dispatch, activeView, isVisible}) => {
     const [panelOpen, setIsPanelOpen] = useState(true);
+    let navigate = useNavigate();
 
     const isActiveView = (view) => {
         return activeView === view;
-    }
-
-    const routeTo = (view) => {
-        const route = getRoute(view);
-        
-        return isActiveView(view) ? '/' : route;
     }
 
     const toggleUI = (value) => {
@@ -51,10 +47,10 @@ const MenuBar = ({dispatch, activeView, isVisible}) => {
                                 <IconButton 
                                     size="small" 
                                     aria-label={menu.title}
-                                    onClick={() => dispatch(isActiveView(menu.view) ? updateView(MAIN_VIEW) : updateView(menu.view))}
+                                    onClick={() => dispatch(isActiveView(menu.view) ? updateView(MAIN_VIEW, routeTo(activeView, MAIN_VIEW), navigate) : updateView(menu.view, routeTo(activeView, menu.view), navigate))}
                                     className={isActiveView(menu.view) ? 'activeIcon' : 'inactiveIcon'}
                                 >  
-                                    <Link to={routeTo(menu.view)}>{menu.icon}</Link>
+                                    {menu.icon}
                                 </IconButton>
                             </Tooltip>
                         ))

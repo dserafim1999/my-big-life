@@ -1,3 +1,4 @@
+import moment from "moment";
 import { 
   ADD_ALERT,
   REMOVE_ALERT,
@@ -6,14 +7,14 @@ import {
   UPDATE_CONFIG,
   UPDATE_SERVER,
   UPDATE_VIEW,
-  TOGGLE_UI
+  TOGGLE_UI,
 } from "."
 
 import { BoundsRecord } from '../records';
 import { updateBounds } from "./map";
 import { reloadQueue } from "./process";
-import { clearAll, displayLocations, displayCanonicalTrips, displayTrips } from "./tracks";
-
+import { toggleSegmentInfo, updateActiveLIFE } from "./segments";
+import { clearAll, displayLocations, displayCanonicalTrips, displayTrips, removeTrack } from "./tracks";
 
 export const fitSegments = (...segmentIds) => {
   return (dispatch, getState) => {
@@ -131,7 +132,9 @@ export const updateServer = (server) => ({
     type: UPDATE_SERVER
 })
 
-export const updateView = (view) => {
+export const updateView = (view, route, navigate) => {
+  navigate(route);
+  
   return (dispatch, getState) => {
     dispatch(clearAll());
     dispatch({view, type: UPDATE_VIEW});
@@ -154,8 +157,7 @@ export const loadTripsAndLocations = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        // dispatch(clearAll());
-        dispatch(displayCanonicalTrips(res.trips))
+        dispatch(displayCanonicalTrips(res.trips));
         dispatch(displayLocations(res.locations));
       });
   }
@@ -174,5 +176,48 @@ export const loadAllTrips = () => {
       .then((res) => {
         dispatch(displayTrips(res.trips))
       });
+  }
+}
+
+export const getLifeFromDay = (date) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({date: date})
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/lifeFromDay', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(updateActiveLIFE(res));
+      });
+  }
+}
+
+export const deleteDay = (date) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        date
+      })
+    }
+
+    const go = confirm("Are you sure you want to delete the selected day from the database?");
+
+    if (go) {
+      return fetch(getState().get('general').get('server') + '/deleteDay', options)
+        .then((response) => response.json())
+        .catch((e) => console.error(e))
+        .then((res) => {
+          dispatch(toggleSegmentInfo(false));
+          dispatch(removeTrack(moment(date).format('YYYY-MM-DD')));
+          dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
+          //TODO update canonical trips
+        })
+    }
   }
 }

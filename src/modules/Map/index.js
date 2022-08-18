@@ -9,7 +9,8 @@ import {
   changeSegmentPoint,
   addSegmentPoint,
   removeSegmentPoint,
-  joinSegment
+  joinSegment,
+  toggleSegmentInfo
 } from '../../actions/segments';
 
 import {
@@ -31,10 +32,11 @@ import { createMarker, createPointIcon } from './utils';
 import addLocation from './components/addLocation';
 import { clearTrips, loadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
+import moment from 'moment';
 
 const DEFAULT_PROPS = {
-  detailLevel: 14,
-  decorationLevel: 12,
+  detailLevel: 15,
+  decorationLevel: 13,
   mapCreation: {
     zoomControl: false,
     zoomDelta: 0.4,
@@ -100,13 +102,13 @@ export default class LeafletMap extends Component {
 
     setupTileLayers(this.map);
 
-    const { dispatch } = this.props
+    const { dispatch } = this.props;
     setupControls(this.map, {
       canUndo: this.props.canUndo,
       canRedo: this.props.canRedo,
       undo: () => dispatch(undo()),
       redo: () => dispatch(redo()),
-    })
+    });
 
     this.fitWorld();
     this.map.on('zoomend', this.onZoomEnd.bind(this));
@@ -149,12 +151,7 @@ export default class LeafletMap extends Component {
 
     switch (activeView) {
       case MAIN_VIEW:
-        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);
-        
-        if (this.map.getZoom() >= detailLevel) {
-          this.shouldUpdateSegments(segments, prev.segments, dispatch); 
-        }
-        
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
         this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips, dispatch);
         this.shouldUpdateLocations(locations, prev.locations);
 
@@ -163,9 +160,9 @@ export default class LeafletMap extends Component {
         if (this.heatmapLayer) {
           this.map.removeLayer(this.heatmapLayer);        
         }
-        this.shouldUpdateSegments(segments, prev.segments, dispatch);
     }
-
+      
+    this.shouldUpdateSegments(segments, prev.segments, dispatch);
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
     this.shouldUpdateBounds(bounds, prev.bounds);
@@ -240,11 +237,10 @@ export default class LeafletMap extends Component {
         const id = segment.get('id');
         const lseg = this.segments[id];
 
+        if (lseg) {
+          this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
+        }
         switch(this.props.activeView) {
-          case TRACK_PROCESSING:
-            if (lseg) {
-              this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
-            }
           default:
             if (!lseg) {
               this.shouldAddSegment(segment, previous.get(id), dispatch);
@@ -349,6 +345,8 @@ export default class LeafletMap extends Component {
     if (highlighted === previous) {
       return;
     }
+
+    console.log(highlighted)
 
     const setOpacity = (ids, opacity) => {
       ids.forEach((id) => {
@@ -579,14 +577,43 @@ export default class LeafletMap extends Component {
     const currentZoom = this.map.getZoom();
 
     const obj = addSegment(id, points, color, display, filter);
+    const date = moment(points.get(0).get('time'));
     
-    if (canonical) this.canonical[id] = obj;
-    else this.segments[id] = obj;
+    if (canonical) {
+      this.canonical[id] = obj;
+
+      obj.layergroup.bindTooltip(
+        "<div style='width: 50px'>" +
+        "   <span style='border: 3px solid white; background-color: #E93E3A; width: 100%; padding: 5px 10px'> Zoom In For More Detail </span>" +
+        "</div>"
+      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+    } else {
+      this.segments[id] = obj;
+      obj.layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
+
+      obj.layergroup.bindTooltip(
+        "<div style='width: 50px'>" +
+        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
+        "</div>"
+      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+    } 
     
-    if (activeView !== MAIN_VIEW) obj.layergroup.addTo(this.map);
+    if (activeView !== MAIN_VIEW) {
+      obj.layergroup.addTo(this.map);
+    }
 
     if (currentZoom >= detailLevel) {
       obj.details.addTo(obj.layergroup);
+    }
+  }
+
+  onSegmentClick(segmentId, date, activeView) {
+    const { dispatch } = this.props;
+
+    switch (activeView) {
+      case MAIN_VIEW:
+        dispatch(toggleSegmentInfo(true, segmentId, date));
+        break;
     }
   }
 
@@ -606,8 +633,10 @@ export default class LeafletMap extends Component {
     if (segments !== prev) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
-        this.map.removeLayer(this.segments[s].layergroup);
-        delete this.segments[s];
+        if (this.segments[s]) {
+          this.map.removeLayer(this.segments[s].layergroup);
+          delete this.segments[s];
+        }
       })
     }
   }

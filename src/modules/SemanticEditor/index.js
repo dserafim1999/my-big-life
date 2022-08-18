@@ -47,11 +47,14 @@ class SemanticEditor extends Component {
   }
 
   componentDidUpdate (prev, prevState) {
+    const { state, strategies } = this.props;
+    const decorator = new CompositeDecorator(strategies);
+
     if (prev.initial !== this.props.initial) {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
     } else if (prev.segments !== this.props.segments) {
-      const editorState = this.decorate(this.state.editorState);
+      const editorState = this.decorate(EditorState.createWithContent(state, decorator));
       this.setState({editorState, suggestions: this.state.suggestions});
     }
   }
@@ -239,7 +242,7 @@ class SemanticEditor extends Component {
     };
 
     return (
-      <div style={editorStyle} onClick={() => this.editorRef.current.focus()}>
+      <div style={{...editorStyle, ...this.props.style}} onClick={() => this.editorRef.current.focus()}>
         <div style={flexStyle}>
           <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
             {
@@ -258,6 +261,7 @@ class SemanticEditor extends Component {
             handleKeyCommand={this.handleKeyCommand.bind(this)}
             keyBindingFn={this.myKeyBindingFn.bind(this)}
             ref={this.editorRef}
+            readOnly={this.props.readOnly}
             spellcheck={false}
           />
         </div>

@@ -11,6 +11,8 @@ import QueryDatePicker from '../../components/Form/QueryDatePicker';
 import { SectionBlock } from '../../components/Form';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
+import SearchIcon from '@mui/icons-material/Search';
+
 const Search = ({ dispatch, query, isVisible }) => {
   if (!isVisible) return null;
 
@@ -169,7 +171,10 @@ const Search = ({ dispatch, query, isVisible }) => {
             modifier('is-loading');
             onSubmit();
             modifier();
-        }} > Search </AsyncButton>
+          }} > 
+          Search 
+          <SearchIcon style={{marginLeft: '10px'}}/>
+        </AsyncButton>
       </footer>
     </Card>
   );

@@ -27,7 +27,7 @@ const TrackName = ({ track, onDownload, onToggleSegmentsVisibility}) => {
     <IconButton
       className={'float-right'}
       onClick={onToggleSegmentsVisibility}
-      title='Hide All Track Segments'>
+      title='Toggle All Track Segments Visibility'>
         <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
     </IconButton>
   );

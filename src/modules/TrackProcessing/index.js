@@ -135,9 +135,7 @@ class TrackProcessing extends Component {
                 <PaneContent showList={showList} stage={step}/>
     
                 <div style={{ marginTop: '0.5rem' }}>
-                    <div className='columns is-centered' style={{ marginBottom: 0, textAlign: 'center' }}>
                         { buttons }
-                    </div>
                 </div>
             </Card>
         );

@@ -70,7 +70,7 @@ const displayTrips = (state, action) => {
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     _tracks.push(new TrackRecord({
-        id: moment(day).format("DD/MM/YYYY"),
+        id: moment(day).format("YYYY-MM-DD"),
         segments: new List(trips.map((segment, i) => {
           return segment.id
         }))

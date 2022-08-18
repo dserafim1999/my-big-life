@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { changeDayToProcess, dismissDay } from '../../actions/process';
+import { changeDayToProcess, dismissDay, removeDay } from '../../actions/process';
 import { toggleRemainingTracks } from '../../actions/general';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { DONE_STAGE, PREVIEW_STAGE } from '../../constants';
 import { Tooltip } from '@mui/material';
@@ -31,41 +32,58 @@ const EMPTY_FOLDER = (
   </div>
 );
 
-const crossStyle = {
+const buttonStyle = {
   float: 'right',
   textDecoration: 'none',
-  fontSize: '0.5rem',
+  fontSize: '0.65rem',
+  marginLeft: '5px'
 }
 
-const Day = ({ date, gpxs, isSelected, onDismiss }) => {
+const DayButton = ({className, title, icon, onClick}) => {
+  return (
+    <Tooltip title={title} placement='bottom'>
+      <a className={className} style={buttonStyle} onClick={onClick}>
+            {icon}
+      </a>
+    </Tooltip>
+  )
+}
+
+const Day = ({ date, gpxs, isSelected, onDismiss, onDelete }) => {
   const mDate = moment(date);
   return (
-    <Tooltip title='Click to change the day to process'>
-      <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
-        <a className='button is-red is-white' style={crossStyle} title='Dismiss day. Does not delete tracks.' onClick={onDismiss}>
-          <CloseIcon sx={{ fontSize: '0.7rem' }}/>
-        </a>
+    <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
+      <DayButton className='button is-red is-white' title='Dismiss day. Does not delete track.' onClick={onDismiss} icon={<CloseIcon sx={{ fontSize: '0.85rem' }}/>}/>
+      <DayButton className='button is-blue is-white' title='Delete track from input.' onClick={(e) => onDelete(e, gpxs)} icon={<DeleteIcon sx={{ fontSize: '0.85rem' }}/>}/>
+      <Tooltip title='Click to change the day to process' placement='bottom'>
         <div>
-          <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: isSelected? 'white' : 'grey' }}>{ mDate.fromNow() }</span></span>
+          <div>
+            <span>{ mDate.format('ll') }<span style={{ fontSize: '0.8rem', marginLeft: '5px', color: isSelected? 'white' : 'grey' }}>{ mDate.fromNow() }</span></span>
+          </div>
+          <div>
+            {
+              gpxs.map((gpx, key) => {
+                return <GPXOfDay key={key} date={gpx.get('start')} size={gpx.get('size')} />
+              }).toJS()
+            }
+          </div>
         </div>
-        <div>
-          {
-            gpxs.map((gpx, key) => {
-              return <GPXOfDay key={key} date={gpx.get('start')} size={gpx.get('size')} />
-            }).toJS()
-          }
-        </div>
-      </div>
-    </Tooltip>
+      </Tooltip>
+    </div>
   );
 }
 
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent, done }) => {
 
   const remainingDays = remaining.map(([day, gpxs], i) => {
-    const dismiss = (e) => {
+    const onDismiss = (e) => {
       e.preventDefault();
       dispatch(dismissDay(day));
+    }
+
+    const onDelete = (e, files) => {
+      e.preventDefault();
+      dispatch(removeDay(files.toJS()));
     }
 
     return (
@@ -82,7 +100,10 @@ let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExisten
       }}>
         <Day
           gpxs={gpxs} date={day}
-          isSelected={selected === day} onDismiss={dismiss}/>
+          isSelected={selected === day} 
+          onDismiss={onDismiss}
+          onDelete={onDelete}
+        />
       </AsyncButton>
     );
   });

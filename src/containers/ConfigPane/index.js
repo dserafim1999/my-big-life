@@ -8,6 +8,7 @@ import { TextField, ToggleField, OptionsField, SectionBlock } from '../../compon
 import { bulkProcess, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
+import SaveIcon from '@mui/icons-material/Save';
 
 const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoadingBulk }) => {
     if (!isVisible) return null;
@@ -151,7 +152,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
             className={bulkClassName}
             style={{float: "left"}} 
             onClick={onBulkClick}>
-              <DownloadingIcon/>
+              <DownloadingIcon style={{marginRight: '10px'}}/>
               Bulk Track Upload
           </AsyncButton>
           <AsyncButton 
@@ -160,8 +161,10 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
             onClick={(e, modifier) => {
               modifier('is-loading')
               onSubmit()
-              modifier()
-          }} > Save </AsyncButton>
+              modifier()}} >
+                 Save 
+              <SaveIcon style={{marginLeft: '10px'}}/>
+          </AsyncButton>
         </footer>
       </Card>
     );
