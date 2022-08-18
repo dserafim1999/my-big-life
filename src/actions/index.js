@@ -36,8 +36,6 @@ export const ADD_POSSIBILITIES = 'segments/add_possibilities';
 export const FIT_SEGMENT = 'segments/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segments/time_filter';
 export const UPDATE_LOCATION_NAME = 'segments/update_location_name';
-export const UPDATE_TRANSPORTATION_MODE = 'segments/update_transportation_mode';
-export const SET_TRANSPORTATION_MODES = 'segments/set_transportation_modes';
 export const UPDATE_ACTIVE_LIFE = 'segments/update_active_LIFE';
 export const SELECT_POINT_IN_MAP = 'segments/select_point_in_map';
 export const DESELECT_POINT_IN_MAP = 'segments/deselect_point_in_map';
@@ -46,7 +44,6 @@ export const DESELECT_POINT = 'segments/deselect_point';
 export const UPDATE_POINT = 'segments/update_point';
 export const STRAIGHT_SELECTED = 'segments/straight_selected';
 export const INTERPOLATED_TIME_SELECTED = 'segments/interpolated_time_selected';
-export const UPDATE_TRANSPORTATION_TIME = 'segments/update_transformation_time';
 
 export const ADD_ALERT = 'general/add_alert';
 export const REMOVE_ALERT = 'general/remove_alert';

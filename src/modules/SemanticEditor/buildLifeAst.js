@@ -122,15 +122,6 @@ export default (text, segments) => {
         const fromPoint = findPointInSegments(fromTime, segments, false, false);
         const toPoint = findPointInSegments(toTime, segments, !!fromPoint, false);
         block.references = { to: toPoint, from: fromPoint };
-
-        if (block.type === 'Trip' && block.tmodes) {
-          block.tmodes.forEach((tmode) => {
-            const tmFromPoint = findPointInSegments(timeToMoment(currentDay, tmode.timespan.start.value), segments);
-            const tmToPoint = findPointInSegments(timeToMoment(currentDay, tmode.timespan.finish.value), segments, true);
-            tmode.references = { to: tmToPoint, from: tmFromPoint };
-            tmode.timespan.timezone = timezoneChange;
-          });
-        }
       }
     }
     return fragments;

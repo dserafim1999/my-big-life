@@ -1,5 +1,5 @@
 import { Map, List, Set } from 'immutable';
-import { getActiveView, ModuleRoutes } from '../modules/ModuleRoutes';
+import { getActiveView } from '../modules/ModuleRoutes';
 
 const removeAlert  = (state, action) => {
   return state.update('alerts', (alerts) => {
@@ -76,7 +76,6 @@ const initialState = Map({
   alerts: List(),
   loading: Set(),
   activeView: getActiveView(),
-  transportationModes: List(),
   isUIVisible: true,
   server: 'http://localhost:5000'
 });

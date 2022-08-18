@@ -61,7 +61,7 @@ export const createPointObj = (time, lat, lon) => {
   });
 }
 
-export const createSegmentObj = (trackId, points, location, transModes, nSegs, customId) => {
+export const createSegmentObj = (trackId, points, location, nSegs, customId) => {
     let sId = customId === undefined ?  generateSegmentId() : customId;
     
     const pointsImmutable = List(points.map((point) => {
@@ -84,8 +84,7 @@ export const createSegmentObj = (trackId, points, location, transModes, nSegs, c
         bounds: List([]),
         metrics: Map({}),
     
-        locations: fromJS(location),
-        transportationModes: fromJS(transModes)
+        locations: fromJS(location)
     });
 
     state = calculateMetrics(state);
@@ -94,9 +93,9 @@ export const createSegmentObj = (trackId, points, location, transModes, nSegs, c
     return state;
 }
 
-export const createTrackObj = (name, segments, locations = [], transModes = [], n = 0) => {
+export const createTrackObj = (name, segments, locations = [], n = 0) => {
     let id = generateTrackId();
-    let segs = segments.filter((s) => s.length !== 0).map((segment, i) => createSegmentObj(id, segment, locations[i] || [], transModes[i], n + i));
+    let segs = segments.filter((s) => s.length !== 0).map((segment, i) => createSegmentObj(id, segment, locations[i] || [], n + i));
     return {
       track: Map({
           id,

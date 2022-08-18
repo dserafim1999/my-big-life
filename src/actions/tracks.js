@@ -20,12 +20,11 @@ import { fitSegments } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
 import { toggleSegmentInfo, toggleSegmentVisibility } from "./segments";
 
-export const addTrack = (segments, name, locations = [], transModes = []) => {  
+export const addTrack = (segments, name, locations = []) => {  
     return {
         segments,
         name,
         locations,
-        transModes,
         type: ADD_TRACK,
     }
 }

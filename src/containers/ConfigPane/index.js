@@ -122,11 +122,6 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
             } />
           </SectionBlock>
 
-          <SectionBlock name='Transportation inferring'>
-            <TextField title='Min. time' onChange={(value) => setState({...state, transportation: {...state.transportation, min_time: value}})} defaultValue={config.transportation.min_time} type='number' min='0' step='0.01' help='Minimum time between changes of transportation mode, in seconds.' />
-            <TextField title='Classifier path' onChange={(value) => setState({...state, transportation: {...state.transportation, classifier_path: value}})} defaultValue={config.transportation.classifier_path} help='Path to the file with the classifier to use when evaluating transportation modes' />
-          </SectionBlock>
-
           <SectionBlock name='Trip learning'>
             <TextField title='Epsilon' onChange={(value) => setState({...state, trip_learning: {...state.trip_learning, epsilon: value}})} defaultValue={config.trip_learning.epsilon} type='number' min='0' step='0.01' />
           </SectionBlock>

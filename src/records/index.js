@@ -2,7 +2,7 @@ import moment from 'moment';
 import { generateTrackId, generateSegmentId } from '../reducers/idState';
 import colors from '../reducers/colors';
 import haversine from '../haversine';
-import { Map,Record, List, Set, fromJS } from 'immutable';
+import { Record, List, Set, fromJS } from 'immutable';
 import { min, max } from '../utils';
 
 export class BoundsRecord extends Record({
@@ -112,8 +112,6 @@ const SEGMENT_DEFAULT_PROPS = {
   timeFilter: new List([]),
 
   location: new List([]),
-  transportationModes: new List([])
-
 }
 
 const computeMetrics = (points) => {
@@ -182,15 +180,14 @@ export class SegmentRecord extends Record(SEGMENT_DEFAULT_PROPS) {
   }
 }
 
-export const createSegmentObj = (trackId, points, location, transModes, nSegs, customId) => {
+export const createSegmentObj = (trackId, points, location, nSegs, customId) => {
   let sId = customId === undefined ? generateSegmentId() : customId;
   return new SegmentRecord({
     trackId,
     id: sId,
     color: colors(customId === undefined ? max(nSegs, sId) : customId),
     points: pointsToRecord(points),
-    location: fromJS(location),
-    transportationModes: fromJS(transModes)
+    location: fromJS(location)
   });
 }
 
@@ -207,9 +204,9 @@ export class TrackRecord extends Record({
   }
 }
 
-export const createTrackObj = (name, segments, locations = [], transModes = [], n = 0) => {
+export const createTrackObj = (name, segments, locations = [], n = 0) => {
   let track = new TrackRecord({ name });
-  let segs = segments.filter((s) => s.length !== 0).map((segment, i) => createSegmentObj(track.id, segment, locations[i], transModes[i], n + i));
+  let segs = segments.filter((s) => s.length !== 0).map((segment, i) => createSegmentObj(track.id, segment, locations[i], n + i));
   track = track.set('segments', new Set(segs.map((s) => s.get('id'))));
 
   return {
