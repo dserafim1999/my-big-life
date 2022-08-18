@@ -216,6 +216,7 @@ export const deleteDay = (date) => {
           dispatch(toggleSegmentInfo(false));
           dispatch(removeTrack(moment(date).format('YYYY-MM-DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
+          dispatch(loadTripsAndLocations());
           //TODO update canonical trips
         })
     }

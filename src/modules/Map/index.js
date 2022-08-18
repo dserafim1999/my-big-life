@@ -286,7 +286,7 @@ export default class LeafletMap extends Component {
         }
       });
       
-      this.shouldRemoveSegments(segments, previous);
+      this.shouldRemoveCanonicalTrips(segments, previous);
     }
   }
 
