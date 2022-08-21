@@ -21,7 +21,6 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
    }, []);
 
    const [state, setState] = useState({...config, address: address});
-   console.log(state)
 
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
@@ -120,10 +119,6 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
                 <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for unknown places.
               </span>
             } />
-          </SectionBlock>
-
-          <SectionBlock name='Trip learning'>
-            <TextField title='Epsilon' onChange={(value) => setState({...state, trip_learning: {...state.trip_learning, epsilon: value}})} defaultValue={config.trip_learning.epsilon} type='number' min='0' step='0.01' />
           </SectionBlock>
         </div>
       );
