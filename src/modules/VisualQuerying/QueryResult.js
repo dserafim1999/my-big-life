@@ -7,7 +7,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import { dehighlightSegment, highlightSegment } from "../../actions/map";
 
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const dateDivStyle = {
@@ -104,9 +104,11 @@ const QueryResult = ({ result, querySize, dispatch }) => {
                 }
                 {
                     !showMoreButton && (
-                        <IconButton onClick={() => highlightResultSegment()}>
-                            <VisibilityIcon></VisibilityIcon>
-                        </IconButton>
+                        <Tooltip title='Highlight Segment'>
+                            <IconButton onClick={() => highlightResultSegment()}>
+                                <VisibilityIcon></VisibilityIcon>
+                            </IconButton>
+                        </Tooltip>
                     )
                 }
             </div>

@@ -17,7 +17,6 @@ function loadFiles (files, cb, error) {
         })
       }
     } else {
-      console.log(extension)
       error();
     }
   });
