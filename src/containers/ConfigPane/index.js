@@ -54,8 +54,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
         <div>
           <SectionBlock name='General'>
             <OptionsField title='Default timezone' options={timezones} defaultValue={config.default_timezone} onChange={(e) => setState({...state, default_timezone: e.target.value})} />
-            <OptionsField title='Use Processing On Bulk Track Upload' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
-            <OptionsField title='Use LIFE Trip Annotations' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} />
+            <OptionsField title='Use processing on bulk track upload' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
           </SectionBlock>
 
           <SectionBlock name='Folders'>
@@ -73,14 +72,18 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
             <TextField title='Database password' onChange={(value) => setState({...state, db: {...state.db, pass: value}})} defaultValue={config.db.pass}/>
           </SectionBlock>
 
-          <SectionBlock name='To trip'>
+          <SectionBlock name='Trip'>
             <TextField title='Trip name format' onChange={(value) => setState({...state, trip_name_format: value})} defaultValue={config.trip_name_format} help={
               <span>Format of a trip. It is possible to use <a href='https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior'>date formating</a>.</span>
+            } />
+            <OptionsField title='Create individual GPX file for segment in day' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.multiple_gpxs_for_day} onChange={(e) => setState({...state, multiple_gpxs_for_day: e.target.value})} />
+            <OptionsField title='Use LIFE trip annotations' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} help={
+              <span><b>Example:</b> 0000-2359: location a -{'>'} location b</span>
             } />
           </SectionBlock>
 
           <SectionBlock name='Querying'>
-            <TextField title='Load More Results Amount' onChange={(value) => setState({...state, load_more_amount: value})} defaultValue={config.load_more_amount} type='number' min='0'/>
+            <TextField title='Load more results amount' onChange={(value) => setState({...state, load_more_amount: value})} defaultValue={config.load_more_amount} type='number' min='0'/>
           </SectionBlock>
 
           <SectionBlock name='Smoothing'>
