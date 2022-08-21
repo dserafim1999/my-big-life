@@ -16,7 +16,7 @@ import {
 } from ".";
 
 import { Set } from 'immutable';
-import { fitSegments } from './general';
+import { fitSegments, setAppLoading } from './general';
 import saveData from "../modules/TrackProcessing/saveData";
 import { toggleSegmentInfo, toggleSegmentVisibility } from "./segments";
 
@@ -161,6 +161,9 @@ export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => 
       method: 'GET',
       mode: 'cors'
     }
+
+    dispatch(setAppLoading(true));
+
     const addr = getState().get('general').get('server');
     return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
       .then((response) => response.json())
@@ -168,6 +171,7 @@ export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => 
       .then((res) => {
         dispatch(clearTrips());
         dispatch(displayTrips(res.trips));
+        dispatch(setAppLoading(false));
       });
   }
 }
@@ -178,12 +182,16 @@ export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical)
       method: 'GET',
       mode: 'cors'
     }
+
+    dispatch(setAppLoading(true));
+
     const addr = getState().get('general').get('server');
     return fetch(addr + '/moreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
         dispatch(displayTrips(res.trips));
+        dispatch(setAppLoading(false));
       });
   }
 }

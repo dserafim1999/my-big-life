@@ -15,8 +15,9 @@ import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process'
 import { ModuleRoutes } from "../modules/ModuleRoutes";
 import loadFiles from "../utils/loadFiles";
 import { TRACK_PROCESSING } from "../constants";
+import LoadingOverlay from "./Overlay/LoadingOverlay";
 
-let App = ({ showConfig, view, dispatch }) => {
+let App = ({ showConfig, view, canDropFiles, isAppLoading, dispatch }) => {
   let metaDown = false;
 
   const onDrop = (e) => {
@@ -84,7 +85,8 @@ let App = ({ showConfig, view, dispatch }) => {
                 }
               })
             }
-            <Dropzone onDrop={onDrop} canDropFiles={view === TRACK_PROCESSING}>
+            <Dropzone onDrop={onDrop} canDropFiles={canDropFiles}>
+              { isAppLoading && <LoadingOverlay/>}
               <MenuBar dispatch={dispatch}/>
               <MainContainer
                 onKeyUp={keyHandler}
@@ -99,7 +101,9 @@ let App = ({ showConfig, view, dispatch }) => {
 };
 
 const mapStateToProps = (state) => ({
-  view: state.get('general').get('activeView')
+  view: state.get('general').get('activeView'),
+  canDropFiles: state.get('general').get('activeView') === TRACK_PROCESSING,
+  isAppLoading: state.get('general').get('isAppLoading')
 });
 
 export default connect(mapStateToProps)(App);
