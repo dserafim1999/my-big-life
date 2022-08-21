@@ -22,6 +22,8 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
 
    const [state, setState] = useState({...config, address: address});
 
+
+   console.log(state)
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
       const use_processing = 'bulk_uses_processing' in state ?  state.bulk_uses_processing : config.bulk_uses_processing;
@@ -54,7 +56,7 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
         <div>
           <SectionBlock name='General'>
             <OptionsField title='Default timezone' options={timezones} defaultValue={config.default_timezone} onChange={(e) => setState({...state, default_timezone: e.target.value})} />
-            <OptionsField title='Use processing on bulk track upload' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
+            <ToggleField title='Use processing on bulk track upload' checked={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
           </SectionBlock>
 
           <SectionBlock name='Folders'>
@@ -76,8 +78,8 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
             <TextField title='Trip name format' onChange={(value) => setState({...state, trip_name_format: value})} defaultValue={config.trip_name_format} help={
               <span>Format of a trip. It is possible to use <a href='https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior'>date formating</a>.</span>
             } />
-            <OptionsField title='Create individual GPX file for segment in day' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.multiple_gpxs_for_day} onChange={(e) => setState({...state, multiple_gpxs_for_day: e.target.value})} />
-            <OptionsField title='Use LIFE trip annotations' options={[{label: "Yes", key: true}, {label: "No", key: false}]} defaultValue={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} help={
+            <ToggleField title='Create individual GPX file for segment in day' checked={config.multiple_gpxs_for_day} onChange={(e) => setState({...state, multiple_gpxs_for_day: e.target.value})} />
+            <ToggleField title='Use LIFE trip annotations' checked={config.trip_annotations} onChange={(e) => setState({...state, trip_annotations: e.target.value})} help={
               <span><b>Example:</b> 0000-2359: location a -{'>'} location b</span>
             } />
           </SectionBlock>
@@ -87,41 +89,65 @@ const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoading
           </SectionBlock>
 
           <SectionBlock name='Smoothing'>
-            <ToggleField title='Use'  onChange={(e) => setState({...state, smoothing: {...state.smoothing, use: e.target.value}})} checked={config.smoothing.use}/>
-            <OptionsField title='Algorithm' onChange={(e) => setState({...state, smoothing: {...state.smoothing, algorithm: e.target.value}})} options={[{ label: 'Kalman with backwards pass', key: 'inverse' }, { label: 'Kalman with start interpolation', key: '' }]} defaultValue={config.smoothing.algorithm} help={
-              <span>
-                <span>Algorithm to use to smooth tracks. There are two possibilities:</span>
-                <br/>
-                <b> - Kalman with backwards pass</b>: applies the kalman filter two times. One from the start to the end, then from the end to the start. Then, each one are cut in half and spliced together. This method provides better results, but requires more time.
-                <br/>
-                <b> - Kalman with start interpolation</b>: applies the kalman filter once, but first extrapolates the begining of the track.
-              </span>
-            } />
-            <TextField title='Noise' onChange={(value) => setState({...state, smoothing: {...state.smoothing, noise: value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />
+            <ToggleField title='Use' onChange={(e) => setState({...state, smoothing: {...state.smoothing, use: e.target.value}})} checked={config.smoothing.use}/>
+            { (state.smoothing ? state.smoothing.use : config.smoothing.use) && 
+              (<>
+                <OptionsField title='Algorithm' onChange={(e) => setState({...state, smoothing: {...state.smoothing, algorithm: e.target.value}})} options={[{ label: 'Kalman with backwards pass', key: 'inverse' }, { label: 'Kalman with start interpolation', key: '' }]} defaultValue={config.smoothing.algorithm} help={
+                  <span>
+                    <span>Algorithm to use to smooth tracks. There are two possibilities:</span>
+                    <br/>
+                    <b> - Kalman with backwards pass</b>: applies the kalman filter two times. One from the start to the end, then from the end to the start. Then, each one are cut in half and spliced together. This method provides better results, but requires more time.
+                    <br/>
+                    <b> - Kalman with start interpolation</b>: applies the kalman filter once, but first extrapolates the begining of the track.
+                  </span>
+                } />
+                <TextField title='Noise' onChange={(value) => setState({...state, smoothing: {...state.smoothing, noise: value}})} defaultValue={config.smoothing.noise} type='number' min='1' step='1' help='Noise of the points in the track. Higher values yield smoother tracks. If the value is 1 then it is not smoothed.' />  
+              </>)
+            }
           </SectionBlock>
 
           <SectionBlock name='Spatiotemporal Segmentation'>
             <ToggleField title='Use' onChange={(e) => setState({...state, segmentation: {...state.segmentation, use: e.target.value}})} checked={config.segmentation.use} />
-            <TextField title='Epsilon' onChange={(value) => setState({...state, segmentation: {...state.segmentation, epsilon: value}})} defaultValue={config.segmentation.epsilon} type='number' min='0' step='0.01' help='Distance epsilon after which points can be clustered into the same stop. Points are clustered based on their spatiotemporal distance. The higher it is the less clusters will exist.'/>
-            <TextField title='Min. time' onChange={(value) => setState({...state, segmentation: {...state.segmentation, min_time: value}})} defaultValue={config.segmentation.min_time} type='number' min='0' step='1' help='Minimum time at one place to consider it a stop' />
+            { (state.segmentation ? state.segmentation.use : config.segmentation.use) &&
+              (<>
+                <TextField title='Epsilon' onChange={(value) => setState({...state, segmentation: {...state.segmentation, epsilon: value}})} defaultValue={config.segmentation.epsilon} type='number' min='0' step='0.01' help='Distance epsilon after which points can be clustered into the same stop. Points are clustered based on their spatiotemporal distance. The higher it is the less clusters will exist.'/>
+                <TextField title='Min. time' onChange={(value) => setState({...state, segmentation: {...state.segmentation, min_time: value}})} defaultValue={config.segmentation.min_time} type='number' min='0' step='1' help='Minimum time at one place to consider it a stop' />
+              </>)
+            }
           </SectionBlock>
 
           <SectionBlock name='Simplification'>
             <ToggleField title='Use' onChange={(e) => setState({...state, simplification: {...state.simplification, use: e.target.value}})} checked={config.simplification.use} />
-            <TextField title='Max. distance error' onChange={(value) => setState({...state, simplification: {...state.simplification, max_dist_error: value}})} defaultValue={config.simplification.max_dist_error} type='number' min='0' step='0.5' help='Maximum distance error, in meters. Higher values give higher compression rates but also more deviations from the original track' />
-            <TextField title='Max. speed error'  onChange={(value) => setState({...state, simplification: {...state.simplification, max_speed_error: value}})} defaultValue={config.simplification.max_speed_error} type='number' min='0' step='0.5' help='Maximum speed error, in km/h. Higher values give higher compression rates but also more deviations from the original track' />
-            <TextField title='Epsilon'  onChange={(value) => setState({...state, simplification: {...state.simplification, eps: value}})} defaultValue={config.simplification.eps} type='number' min='0' step='0.1' help='Maximum distance, in degrees, to compress a track solely based on its topology' />
+            { (state.simplification ? state.simplification.use : config.simplification.use) && 
+              (<>
+                <TextField title='Max. distance error' onChange={(value) => setState({...state, simplification: {...state.simplification, max_dist_error: value}})} defaultValue={config.simplification.max_dist_error} type='number' min='0' step='0.5' help='Maximum distance error, in meters. Higher values give higher compression rates but also more deviations from the original track' />
+                <TextField title='Max. speed error'  onChange={(value) => setState({...state, simplification: {...state.simplification, max_speed_error: value}})} defaultValue={config.simplification.max_speed_error} type='number' min='0' step='0.5' help='Maximum speed error, in km/h. Higher values give higher compression rates but also more deviations from the original track' />
+                <TextField title='Epsilon'  onChange={(value) => setState({...state, simplification: {...state.simplification, eps: value}})} defaultValue={config.simplification.eps} type='number' min='0' step='0.1' help='Maximum distance, in degrees, to compress a track solely based on its topology' />
+              </>)
+            }
           </SectionBlock>
 
-          <SectionBlock name='Location inferring'>
-            <TextField title='Max. distance to place' onChange={(value) => setState({...state, location: {...state.location, max_distance: value}})} defaultValue={config.location.max_distance} type='number' min='0' step='0.01' help='Radius to other locations, in meters, for them to be considered the same.' />
-            <TextField title='Limit' onChange={(value) => setState({...state, location: {...state.location, limit: value}})} defaultValue={config.location.limit} type='number' min='0' step='0.01' help='Maximum suggestions to present for the location' />
-            <TextField title='Min samples' onChange={(value) => setState({...state, location: {...state.location, min_samples: value}})} defaultValue={config.location.min_samples} type='number' min='0' step='1' />
-            <TextField title='Google Places key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key} help={
-              <span>
-                <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for unknown places.
-              </span>
-            } />
+          <SectionBlock name='Location sugestions'>
+            <ToggleField title='Use' onChange={(e) => setState({...state, location: {...state.location, use: e.target.value}})} checked={config.location.use} />
+            { (state.location ? state.location.use : config.location.use) && 
+              (<>
+                <TextField title='Max. distance to place' onChange={(value) => setState({...state, location: {...state.location, max_distance: value}})} defaultValue={config.location.max_distance} type='number' min='0' step='0.01' help='Radius to other locations, in meters, for them to be considered the same.' />
+                <TextField title='Limit' onChange={(value) => setState({...state, location: {...state.location, limit: value}})} defaultValue={config.location.limit} type='number' min='0' step='0.01' help='Maximum suggestions to present for a location' />
+                <ToggleField title='Use Google Location API' onChange={(e) => setState({...state, location: {...state.location, use_google: e.target.value}})} checked={config.location.use_google} help={
+                  <span>
+                    <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for place suggestions in LIFE file.
+                  </span>
+                } />
+                <TextField title='Google Places key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key}/>
+                <ToggleField title='Use Foursquare Location API' onChange={(e) => setState({...state, location: {...state.location, use_foursquare: e.target.value}})} checked={config.location.use_foursquare} help={
+                  <span>
+                    <a href='https://developer.foursquare.com/docs/places-api-overview/'>Foursquare Places API key</a> to query for place suggestions in LIFE file.
+                  </span>
+                } />
+                <TextField title='Foursquare Places Client ID' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_id: value}})} defaultValue={config.location.foursquare_client_id}/>
+                <TextField title='Foursquare Places Client Secret' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_secret: value}})} defaultValue={config.location.foursquare_client_secret}/>
+              </>)
+            }
           </SectionBlock>
         </div>
       );
