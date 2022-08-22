@@ -66,9 +66,6 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                             segments={ segment }
                             dispatch={ dispatch }
                             strategies={ decorators }
-                            onChange={(stateEditor, ast, text) => {
-                                console.log(text)
-                            }}
                         />
                     )}
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>

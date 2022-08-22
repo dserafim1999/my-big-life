@@ -7,8 +7,8 @@ import { groupBy } from "../utils";
 import moment from "moment";
 
 export const addTrack = (state, action) => {
-  let { name, segments, locations, transModes } = action;
-  let track = createTrackObj(name, segments, locations, transModes, state.get('segments').count());
+  let { name, segments, locations } = action;
+  let track = createTrackObj(name, segments, locations, state.get('segments').count());
 
   const _track = track.track;
   const _segments = track.segments;
@@ -50,9 +50,8 @@ const removeTracksFor = (state, action) => {
 
     const { segments, name } = action;
     const points = segments.map((s) => s.points);
-    const transportationModes = segments.map((s) => s.transportationModes);
     const locations = segments.map((s) => [s.locationFrom, s.locationTo]);
-    const act = addTrackAction(points, name, locations, transportationModes);
+    const act = addTrackAction(points, name, locations);
 
     return addTrack(state, act);
 }
@@ -125,7 +124,6 @@ const displayCanonicalTrips = (state, action) => {
       color: 'rgb(233,62,58)',
       points: pointsToRecord(trip.points)
     }));
-    //color++;
   }
 
   return state

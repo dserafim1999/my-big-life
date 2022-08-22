@@ -7,8 +7,8 @@ import VisualQuerying from "./VisualQuerying";
 
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
-import EditLocationIcon from '@mui/icons-material/EditLocation';
-import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import TrackProcessingIcon from '@mui/icons-material/EditLocationAlt';
+import VisualQueriesIcon from '@mui/icons-material/NotListedLocation';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrackProcessing from "./TrackProcessing";
 import ConfigPane from "../containers/ConfigPane";
@@ -50,7 +50,7 @@ export const ModuleRoutes = [
     },
     {
         title: "Track Processing",
-        icon: <EditLocationIcon fontSize="large"/>,
+        icon: <TrackProcessingIcon fontSize="large"/>,
         route: "/track-processing",
         view: TRACK_PROCESSING,
         component: <TrackProcessing/>,
@@ -58,7 +58,7 @@ export const ModuleRoutes = [
     },
     {
         title: "Visual Queries",
-        icon: <ContactSupportIcon fontSize="large"/>,
+        icon: <VisualQueriesIcon fontSize="large"/>,
         route: "/visual-queries",
         view: VISUAL_QUERIES,
         component: <VisualQuerying/>,

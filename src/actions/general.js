@@ -8,6 +8,7 @@ import {
   UPDATE_SERVER,
   UPDATE_VIEW,
   TOGGLE_UI,
+  SET_APP_LOADING,
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -73,6 +74,11 @@ export const setLoading = (ref, is) => ({
   is,
   ref,
   type: SET_LOADING
+})
+
+export const setAppLoading = (isLoading) => ({
+  isLoading,
+  type: SET_APP_LOADING
 })
 
 export const updateConfig = (config) => ({
@@ -152,14 +158,18 @@ export const loadTripsAndLocations = () => {
       method: 'GET',
       mode: 'cors'
     }
+
+    dispatch(setAppLoading(true));
+    
     const addr = getState().get('general').get('server');
     return fetch(addr + '/tripsLocations', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(displayCanonicalTrips(res.trips));
-        dispatch(displayLocations(res.locations));
-      });
+    .then((response) => response.json())
+    .catch((e) => console.error(e))
+    .then((res) => {
+      dispatch(displayCanonicalTrips(res.trips));
+      dispatch(displayLocations(res.locations));
+      dispatch(setAppLoading(false));
+    });
   }
 }
 
@@ -169,12 +179,16 @@ export const loadAllTrips = () => {
       method: 'GET',
       mode: 'cors'
     }
+
+    dispatch(setAppLoading(true));
+
     const addr = getState().get('general').get('server');
     return fetch(addr + '/allTrips', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
         dispatch(displayTrips(res.trips))
+        dispatch(setAppLoading(false));
       });
   }
 }
@@ -216,7 +230,7 @@ export const deleteDay = (date) => {
           dispatch(toggleSegmentInfo(false));
           dispatch(removeTrack(moment(date).format('YYYY-MM-DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
-          //TODO update canonical trips
+          dispatch(loadTripsAndLocations());
         })
     }
   }

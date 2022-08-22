@@ -1,5 +1,5 @@
 import { Map, List, Set } from 'immutable';
-import { getActiveView, ModuleRoutes } from '../modules/ModuleRoutes';
+import { getActiveView } from '../modules/ModuleRoutes';
 
 const removeAlert  = (state, action) => {
   return state.update('alerts', (alerts) => {
@@ -44,6 +44,10 @@ const setLoading = (state, action) => {
   });
 }
 
+const setAppLoading = (state, action) => {
+  return state.set('isAppLoading', action.isLoading);
+}
+
 const updateConfig  = (state, action) => {
   return state.set('config', new Map(action.config));
 }
@@ -65,6 +69,7 @@ const ACTION_REACTION = {
   'general/remove_alert': removeAlert,
   'general/add_alert': addAlert,
   'general/set_loading': setLoading,
+  'general/set_app_loading': setAppLoading,
   'general/update_config': updateConfig,
   'general/update_server': updateServer,
   'general/update_view': updateView,
@@ -76,8 +81,8 @@ const initialState = Map({
   alerts: List(),
   loading: Set(),
   activeView: getActiveView(),
-  transportationModes: List(),
   isUIVisible: true,
+  isAppLoading: false,
   server: 'http://localhost:5000'
 });
 

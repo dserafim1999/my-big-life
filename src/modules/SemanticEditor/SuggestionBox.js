@@ -1,3 +1,4 @@
+import { BorderBottom } from '@mui/icons-material';
 import React from 'react';
 
 const SuggestionBox = ({ left, top, selected, onSelect, suggestions, show }) => {
@@ -23,8 +24,9 @@ const SuggestionBox = ({ left, top, selected, onSelect, suggestions, show }) => 
       {
         suggestions.map((s, i) => {
           return <li key={i} onMouseDown={(e) => e.preventDefault()} onMouseUp={() => onSelect(s)} style={{
-            paddingLeft: '8px',
-            backgroundColor: (i === selected) ? '#EAEAEA' : 'transparent'
+            paddingLeft: '5px',
+            backgroundColor: (i === selected) ? '#EAEAEA' : 'transparent',
+            borderBottom: (i < suggestions.length - 1) ? '1px solid lightgrey' : 'none'
           }}>{s}</li>
         })
       }

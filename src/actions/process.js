@@ -350,22 +350,6 @@ export const getLocationSuggestion = (point) => {
   }
 }
 
-export const requestTransportationSuggestions = (points) => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        points
-      })
-    }
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/process/transportation', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e));
-  }
-}
-
 export const setLIFE = (text) => {
   return {
     text,

@@ -15,24 +15,21 @@ import {
   UPDATE_TIME_FILTER_SEGMENT,
   ADD_POSSIBILITIES,
   UPDATE_LOCATION_NAME,
-  UPDATE_TRANSPORTATION_MODE,
   SELECT_POINT_IN_MAP,
   DESELECT_POINT_IN_MAP,
-  UPDATE_TRANSPORTATION_TIME,
   SELECT_POINT,
   DESELECT_POINT,
   STRAIGHT_SELECTED,
   INTERPOLATED_TIME_SELECTED,
   UPDATE_POINT,
   ADD_NEW_SEGMENT,
-  SET_TRANSPORTATION_MODES,
   TOGGLE_SEGMENT_INFO,
   UPDATE_ACTIVE_LIFE,
 } from ".";
 
 import { addAlert, getLifeFromDay, removeAlert } from './general';
 import { updateBounds, centerMap, addPointPrompt, removePointPrompt } from './map';
-import { completeTrip, requestTransportationSuggestions } from './process';
+import { completeTrip } from './process';
 
 export const centerPointOnMap = (segmentId, index) => {
   return (dispatch, getState) => {
@@ -179,21 +176,6 @@ export const updateLocationName = (segmentId, name, start) => ({
   type: UPDATE_LOCATION_NAME
 })
 
-export const updateTransportationMode = (segmentId, name, index) => ({
-  name,
-  index,
-  segmentId,
-  type: UPDATE_TRANSPORTATION_MODE
-})
-
-export const updateTransportationTime = (segmentId, time, start, tmodeIndex) => ({
-  time,
-  start,
-  tmodeIndex,
-  segmentId,
-  type: UPDATE_TRANSPORTATION_TIME
-})
-
 export const selectPointInMap = (segmentId, highlightedPoint, onClick) => ({
   onClick,
   segmentId,
@@ -242,25 +224,6 @@ export const updatePoint = (segmentId, index, lat, lon, time) => ({
   time,
   type: UPDATE_POINT
 })
-  
-export const getTransportationModesFor = (segmentId, startIndex, endIndex, callback) => {
-  return (dispatch, getState) => {
-    const segment = getState().get('tracks').get('segments').get(segmentId);
-    const tmodes = segment.get('transportationModes');
-    for (let tmode of tmodes.values()) {
-      const classf = tmode.get('classification')
-      if (tmode.get('from') <= startIndex && classf) {
-        return callback(classf.entrySeq().sort((a, b) => (a[1] < b[1])).map((x) => x[0]).toJS());
-      }
-    }
-    
-    const points = segment.get('points').slice(startIndex, endIndex);
-    dispatch(requestTransportationSuggestions(points.toJS()))
-      .then((suggestions) => {
-        callback(Object.keys(suggestions).sort((a, b) => suggestions[b] - suggestions[a]));
-      });
-  }
-}
 
 export const toggleSegmentInfo = (value = undefined, segmentId = undefined, date = undefined) => {
   return (dispatch, getState) => {
@@ -276,9 +239,4 @@ export const toggleSegmentInfo = (value = undefined, segmentId = undefined, date
 export const updateActiveLIFE = (life) => ({
   life,
   type: UPDATE_ACTIVE_LIFE
-})
-
-export const setTransportationModes = (modes) => ({
-  modes,
-  type: SET_TRANSPORTATION_MODES
 })

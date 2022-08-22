@@ -49,23 +49,9 @@ const StyleMappings = {
     content = StyleMappings['Timespan'](contentState, trip.timespan, content, lineKeys, refs);
     content = StyleMappings['LocationFrom'](contentState, trip.locationFrom, content, lineKeys, { ...more, references: trip.references.from });
     content = StyleMappings['Location'](contentState, trip.locationTo, content, lineKeys, { ...more, references: trip.references.to });
-    trip.tmodes.forEach((tmode) => {
-      content = StyleMappings[tmode.type](contentState, tmode, content, lineKeys, refs);
-    })
     trip.details.forEach((detail) => {
       content = StyleMappings[detail.type](contentState, detail, content, lineKeys, refs);
     });
-    return content;
-  },
-  'TMode': (contentState, tmode, content, lineKeys, more) => {
-    more = { ...more, references: tmode.references };
-    content = StyleMappings['Timespan'](contentState, tmode.timespan, content, lineKeys, more);
-    tmode.details.forEach((detail) => {
-      content = StyleMappings[detail.type](contentState, detail, content, lineKeys, more);
-    });
-    if (tmode.comment) {
-      content = StyleMappings['Comment'](contentState, tmode.comment, content, lineKeys, more);
-    }
     return content;
   },
   'Timespan': (contentState, time, content, lineKeys, more) => {

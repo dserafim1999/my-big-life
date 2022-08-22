@@ -2,9 +2,8 @@ import {
   createSegmentObj,
 } from '../records';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
-import { Set, List, Map, fromJS } from 'immutable';
+import { List, Map } from 'immutable';
 import { PointRecord } from '../records';
-import moment from 'moment';
 
 const segmentStartTime = (segment) => {
   return segment.get('points').get(0).get('time');
@@ -166,7 +165,7 @@ const splitSegment = (state, action) => {
     
     state = updateSegment(state, id);
 
-    const segData = createSegmentObj(segment.get('trackId'), newSegment.toJS(), [], [], state.get('segments').count());
+    const segData = createSegmentObj(segment.get('trackId'), newSegment.toJS(), [], state.get('segments').count());
     state = state.setIn(['segments', segData.get('id')], segData);
 
     let newSegmentId;
@@ -223,7 +222,7 @@ const joinSegment = (state, action) => {
           return points.slice(0, splitPoint + 1)
         })
         const trackId = state.get('segments').get(action.segmentId).get('trackId');
-        const lastSeg = createSegmentObj(trackId, otherSegmentPoints.toJS(), [], [], state.get('segments').count(), details.segment);
+        const lastSeg = createSegmentObj(trackId, otherSegmentPoints.toJS(), [], state.get('segments').count(), details.segment);
         state = state.setIn(['segments', details.segment], lastSeg);
         state = updateSegment(state, details.segment);
         state = updateSegment(state, action.segmentId);
@@ -255,7 +254,7 @@ const joinSegment = (state, action) => {
           return points.slice(betwLen + splitPoint)
         })
         const trackId = state.get('segments').get(action.segmentId).get('trackId');
-        const lastSeg = createSegmentObj(trackId, otherSegmentPoints.toJS(), [], [], state.get('segments').count(), details.segment);
+        const lastSeg = createSegmentObj(trackId, otherSegmentPoints.toJS(), [], state.get('segments').count(), details.segment);
         state = state.setIn(['segments', details.segment], lastSeg);
         state = updateSegment(state, details.segment);
         state = updateSegment(state, action.segmentId);
@@ -414,48 +413,6 @@ const updateLocationName = (state, action) => {
   return state.setIn(['segments', segmentId, 'locations', locationIndex, 'label'], name);
 }
 
-const updateTransportationMode = (state, action) => {
-  const { segmentId, name, index } = action;
-  return state.updateIn(['segments', segmentId, 'transportationModes', index], (tmode) => {
-    if (tmode) {
-      return tmode.set('label', name);
-    } else {
-      return tmode;
-    }
-  });
-}
-
-const updateTransportationTime = (state, action) => {
-  const { segmentId, time, start, tmodeIndex } = action;
-  return state.updateIn(['segments', segmentId, 'transportationModes', tmodeIndex], (tmode) => {
-    const seg = state.get('segments').get(segmentId);
-    const hours = parseInt(time.substr(0, 2), 10);
-    const mins = parseInt(time.substr(2), 10);
-
-    const t = moment(segmentStartTime(seg).clone().hours(hours).minutes(mins)).valueOf();
-    const timeIndex = seg.get('points').findIndex((point) => point.get('time').valueOf() >= t);
-
-    if (timeIndex > -1) {
-      if (start) {
-        if (segmentStartTime(seg).format('HHmm') === time) {
-          return tmode;
-        } else {
-          return tmode.set('from', timeIndex);
-        }
-      } else {
-        if (segmentEndTime(seg).format('HHmm') === time) {
-          return tmode;
-        } else {
-          return tmode.set('to', timeIndex);
-        }
-      }
-    } else {
-      console.error(new Error('Invalid time for segment'));
-      return tmode;
-    }
-  });
-}
-
 const selectPointInMap = (state, action) => {
   const { onClick, segmentId, highlightedPoint } = action;
   return state.setIn(['segments', segmentId, 'pointAction'], Map({ highlightedPoint, onClick }));
@@ -569,35 +526,6 @@ const updateActiveLIFE = (state, action) => {
     .set('activeLIFE', action.life);
 }
 
-const setTransportationModes = (state, action) => {
-  const { modes } = action;
-
-  let touched = Set([]);
-  modes.map((mode) => {
-    const { label } = mode;
-
-    if (mode.from === null && mode.to === null) {
-      return;
-    }
-
-    const { segmentId } = mode.from;
-
-    const to = segmentId === mode.to.segmentId ? mode.to.index : -1;
-    const from = mode.from.index;
-
-    state = state.updateIn(['segments', segmentId, 'transportationModes'], (transp) => {
-      if (!touched.has(segmentId)) {
-        transp = transp.clear();
-        touched = touched.add(segmentId);
-      }
-
-      return transp.push(Map({ from, to, label }));
-    });
-  });
-
-  return state;
-}
-
 const ACTION_REACTION = {
     'segments/toggle_info': toggleSegmentInfo,
     'segments/toggle_visibility': toggleSegmentVisibility,
@@ -619,9 +547,6 @@ const ACTION_REACTION = {
     'segments/time_filter': updateTimeFilterSegment,
 
     'segments/update_location_name': updateLocationName,
-    'segments/set_transportation_modes': setTransportationModes,
-    'segments/update_transportation_mode': updateTransportationMode,
-    'segments/update_transportation_time': updateTransportationTime,
     'segments/update_active_LIFE': updateActiveLIFE,
     'segments/select_point_in_map': selectPointInMap,
     'segments/deselect_point_in_map': deselectPointInMap,

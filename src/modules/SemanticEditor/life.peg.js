@@ -94,8 +94,8 @@ Time "time"
   = [0-9]+ { return d('Time', { value: text() }) }
 
 Trip
-  = timespan:Timespan _ locationFrom:LocationFrom _ locationTo:Location details:Details* comment:_ tmodes:TModes {
-  return { type: 'Trip', timespan, locationFrom, locationTo, details, comment, tmodes }
+  = timespan:Timespan _ locationFrom:LocationFrom _ locationTo:Location details:Details* comment:_ {
+  return { type: 'Trip', timespan, locationFrom, locationTo, details, comment }
   }
 
 Location "location"
@@ -113,15 +113,6 @@ LocationFrom
   return d('LocationFrom', { value: h + r.value }, { length: 1 + r.marks.length })
   }
 
-
-
-TMode
-  = __ timespan:Timespan details:Details* ws comment:Comment? {
-  return d('TMode', { timespan, details, comment })
-  }
-
-TModes
-  = m:(nl TMode)* { return m.map((e) => e[1]) }
 
 Tag
   = '[' label:[^\]\n]* closed:']'? {

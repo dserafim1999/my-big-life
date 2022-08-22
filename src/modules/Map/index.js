@@ -286,7 +286,7 @@ export default class LeafletMap extends Component {
         }
       });
       
-      this.shouldRemoveSegments(segments, previous);
+      this.shouldRemoveCanonicalTrips(segments, previous);
     }
   }
 
@@ -345,8 +345,6 @@ export default class LeafletMap extends Component {
     if (highlighted === previous) {
       return;
     }
-
-    console.log(highlighted)
 
     const setOpacity = (ids, opacity) => {
       ids.forEach((id) => {
