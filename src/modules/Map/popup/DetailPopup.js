@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import haversine from '../../../haversine';
-import { renderToString } from 'react-dom/server';
 
 import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';
-import CheckIcon from '@mui/icons-material/Check';
 
 import AsyncButton from '../../../components/Buttons/AsyncButton';
 
@@ -189,8 +187,12 @@ class EditPoint extends Component {
   onSave (e, modifier) {
     const { lat, lon, time } = this.state;
     this.props.onSave(lat, lon, time);
-    modifier('is-success', undefined, renderToString(<CheckIcon className='center' sx={{ fontSize: 16 }}/>));
+    modifier('is-loading');
     setTimeout(() => modifier(), 1000);
+  }
+
+  onDelete (e, modifier) {
+    this.props.onDelete();
   }
 
   render () {
@@ -269,8 +271,11 @@ class EditPoint extends Component {
           editable
           ? (
             <div className='has-text-right'>
-              <a className='button is-link is-small' onClick={this.onReset.bind(this)}>Reset</a>
-              <AsyncButton title='Save changes' className={'button is-primary is-small' + (!this.hasChanged() ? ' is-disabled' : '')} onClick={this.onSave.bind(this)}>
+              <a className='button is-light is-small' style={{float: 'left'}} onClick={this.onReset.bind(this)}>Reset</a>
+              <AsyncButton title='Delete Point' className={'button is-red is-small' + (!this.hasChanged() ? ' is-disabled' : '')} onClick={this.onDelete.bind(this)}>
+                Delete
+              </AsyncButton>
+              <AsyncButton title='Save changes' className={'button is-blue is-small' + (!this.hasChanged() ? ' is-disabled' : '')} onClick={this.onSave.bind(this)}>
                 Save
               </AsyncButton>
             </div>
@@ -283,7 +288,7 @@ class EditPoint extends Component {
   }
 }
 
-const DetailPopup = ({ current, next, previous, i, onMove, editable, onSave }) => {
+const DetailPopup = ({ current, next, previous, i, onMove, editable, onSave, onDelete }) => {
   const styleLeft = Object.assign({}, flexAlignStyle, { opacity: previous ? 1 : 0.5 });
   const styleRight = Object.assign({}, flexAlignStyle, { opacity: next ? 1 : 0.5 });
 
@@ -297,7 +302,8 @@ const DetailPopup = ({ current, next, previous, i, onMove, editable, onSave }) =
           previousPoint={previous}
           index={i + 1}
           editable={editable}
-          onSave={onSave} />
+          onSave={onSave} 
+          onDelete={onDelete} />
       </div>
       <RightIcon sx={{ fontSize: 40 }} className='clickable' style={styleRight} onClick={() => (next ? onMove(i + 1) : null)}/>
     </div>

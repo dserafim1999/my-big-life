@@ -5,7 +5,8 @@ import {
   selectPoint,
   updatePoint,
   deselectPoint,
-  straightSelected
+  straightSelected,
+  removeSegmentPoint
 } from '../../../actions/segments';
 
 export default (lseg, current, dispatch) => {
@@ -16,8 +17,9 @@ export default (lseg, current, dispatch) => {
 
     const cPopup = (index, next) => {
         return createPopup(current.get('points'), index, true, next, {
-          onSave: (lat, lon, time) => dispatch(updatePoint(current.get('id'), index, lat, lon, time))
-        });
+          onSave: (lat, lon, time) => dispatch(updatePoint(current.get('id'), index, lat, lon, time)),
+          onDelete: () => dispatch(removeSegmentPoint(current.get('id'), index))
+        },);
       }
 
     const openPopupFor = (layer, index, bulk = false) => {
