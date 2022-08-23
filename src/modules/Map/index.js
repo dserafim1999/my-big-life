@@ -54,6 +54,7 @@ export default class LeafletMap extends Component {
 
     this.map = undefined;
     this.mapRef = React.createRef(); 
+
     /**
      * Holds the segments currently displayed in their leaflet form
      *  key: segment id
@@ -72,7 +73,7 @@ export default class LeafletMap extends Component {
     this.locations = {};
     this.pointHighlights = [];
     this.heatmapLayer = null;
-    this.loadTrips = false;
+    this.state = {loadTrips: false};
   }
 
   getBoundsObj () {
@@ -423,13 +424,13 @@ export default class LeafletMap extends Component {
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
 
-    if (currentZoom >= detailLevel && this.loadTrips) {
+    if (currentZoom >= decorationLevel && this.state.loadTrips) {
       dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
       this.toggleSegmentsAndLocations();
-      this.loadTrips = false;
-    } else if (currentZoom < decorationLevel && !this.loadTrips) {
+      this.setState({loadTrips: false});
+    } else if (currentZoom < decorationLevel && !this.state.loadTrips) {
       if (segments.size > 0) dispatch(clearTrips());
-      this.loadTrips = true;
+      this.setState({loadTrips: true});
     }
 
     if (this.heatmapLayer) {
@@ -573,6 +574,8 @@ export default class LeafletMap extends Component {
   addSegment (id, points, color, display, filter, canonical) {
     const { detailLevel, activeView } = this.props;
     const currentZoom = this.map.getZoom();
+
+    console.log(id)
 
     const obj = addSegment(id, points, color, display, filter);
     const date = moment(points.get(0).get('time'));
