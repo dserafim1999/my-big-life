@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -8,11 +8,13 @@ import {
 import SegmentToolbox from './SegmentToolbox';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
 
 import { fitSegment, toggleSegmentVisibility } from '../../actions/segments';
 import IconButton from '../../components/Buttons/IconButton';
+import { highlightSegmentInTrack } from '../../actions/tracks';
 
 const metricsStyle = {
   fontSize: '0.8rem',
@@ -56,9 +58,20 @@ const SegmentStartEnd = ({ onClick, index, time}) => {
   }
 }
 
-const Segment = ({ segment, dispatch, segmentId, points, start, end, display, color, metrics, distance, averageVelocity, canEdit = true }) => {
-  const toggleTrack = () => dispatch(toggleSegmentVisibility(segmentId));
+const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, display, color, metrics, distance, averageVelocity, canEdit = true }) => {
+  const [highlighted, setHighlighted] = useState(false);
+  
+  const toggleSegment = () => dispatch(toggleSegmentVisibility(segmentId));
   const fitToSegment = () => dispatch(fitSegment(segmentId));
+  
+  const highlightSegment = (value) => {
+    var value = !highlighted;
+    if (!display) {
+      value = true;
+    }
+    dispatch(highlightSegmentInTrack(trackId, segmentId, value));
+    setHighlighted(value);
+  }
   
   const style = {
     borderLeft: '10px solid ' + color,
@@ -95,15 +108,21 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
             <SegmentStartEnd onClick={centerOnPoint(points.get(0))} index={0} time={start} />
             
             <div>
-              <IconButton title={'Toggle Segment Visibility'} onClick={toggleTrack}>    
-                  <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+              { canEdit ? 
+                (
+                  <IconButton title={'Highlight Track'} onClick={highlightSegment}>    
+                    <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                  </IconButton>
+                ) :
+                (
+                  <IconButton title={'Fit Segment'} onClick={fitToSegment}>    
+                      <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                  </IconButton>
+                )
+              }
+              <IconButton title={'Toggle Track Visibility'} onClick={toggleSegment}>    
+                  <VisibilityOffIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
               </IconButton>
-
-              { !canEdit && (
-                <IconButton title={'Fit Segment'} onClick={fitToSegment}>    
-                    <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-                </IconButton>
-              )}
             </div>
 
             <SegmentStartEnd onClick={centerOnPoint(points.get(-1))} index={-1} time={end} />
@@ -122,6 +141,7 @@ const Segment = ({ segment, dispatch, segmentId, points, start, end, display, co
 const mapStateToProps = (state, { segment }) => {
   return {
     segment,
+    trackId: segment.get('trackId'),
     segmentId: segment.get('id'),
     points: segment.get('points'),
     color: segment.get('color'),

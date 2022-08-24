@@ -575,8 +575,6 @@ export default class LeafletMap extends Component {
     const { detailLevel, activeView } = this.props;
     const currentZoom = this.map.getZoom();
 
-    console.log(id)
-
     const obj = addSegment(id, points, color, display, filter);
     const date = moment(points.get(0).get('time'));
     

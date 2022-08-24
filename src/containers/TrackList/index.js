@@ -27,9 +27,10 @@ let TrackList = ({ dispatch, tracks, className, step, remainingCount }) => {
                     const trackId = track.get('id');
 
                     const onDownload = () => dispatch(downloadTrack(trackId));
-                    const onToggleSegmentsVisibility = () => dispatch(toggleTrackSegmentsVisibility(trackId));
+                    const onShowAllSegments = () => dispatch(toggleTrackSegmentsVisibility(trackId, true));
+                    const onHideAllSegments = () => dispatch(toggleTrackSegmentsVisibility(trackId, false));
                     
-                    return <Track trackId={trackId} key={i} onDownload={onDownload} onToggleSegmentsVisibility={onToggleSegmentsVisibility} remaining={remaining} />;
+                    return <Track trackId={trackId} key={i} onDownload={onDownload} onShowAll={onShowAllSegments} onHideAll={onHideAllSegments} remaining={remaining} />;
                   })
                 }
             </ul>

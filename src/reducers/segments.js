@@ -305,7 +305,7 @@ const toggleSegmentProp = (state, id, prop, force) => {
 
 const toggleSegmentVisibility = (state, action) => {
     const id = action.segmentId;
-    state = toggleSegmentProp(state, id, 'display');
+    state = toggleSegmentProp(state, id, 'display', action.value);
     return state.setIn(['segments', id, 'display'], state.get('segments').get(id).get('display'));
 }
 

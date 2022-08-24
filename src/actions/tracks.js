@@ -73,13 +73,20 @@ export const updateTrackName = (trackId, newName) => {
   }
 }
 
-export const toggleTrackSegmentsVisibility = (trackId) => {
+export const toggleTrackSegmentsVisibility = (trackId, value) => {
   return (dispatch, getState) => {
     const segments = getState().get('tracks').get('tracks').get(trackId).get('segments').toJS();
 
     segments.map((id) => {
-      dispatch(toggleSegmentVisibility(id));
+      dispatch(toggleSegmentVisibility(id, value));
     });
+  }
+}
+
+export const highlightSegmentInTrack = (trackId, segmentId, value) => {
+  return (dispatch, getState) => {
+    dispatch(toggleTrackSegmentsVisibility(trackId, !value));
+    dispatch(toggleSegmentVisibility(segmentId, true));
   }
 }
 

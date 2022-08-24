@@ -126,8 +126,9 @@ export const toggleTimeFilter = (segmentId) => ({
     type: TOGGLE_TIME_FILTER
 })
 
-export const toggleSegmentVisibility = (segmentId) => ({
+export const toggleSegmentVisibility = (segmentId, value) => ({
       segmentId,
+      value,
       type: TOGGLE_SEGMENT_VISIBILITY
 })
   
