@@ -13,7 +13,7 @@ import SimpleButton from '../../components/Buttons/SimpleButton';
 
 import SearchIcon from '@mui/icons-material/Search';
 
-const Search = ({ dispatch, query, isVisible }) => {
+const Search = ({ dispatch, query, isVisible, isQueryLoading }) => {
   if (!isVisible) return null;
 
   const [queryForm, setQueryForm] = useState([]);
@@ -166,11 +166,9 @@ const Search = ({ dispatch, query, isVisible }) => {
         > Add Stay </SimpleButton> 
         <AsyncButton 
           title='Search'
-          className='is-blue'
+          className={'is-blue' + (isQueryLoading ? ' is-loading' : '')}
           onClick={(e, modifier) => {
-            modifier('is-loading');
             onSubmit();
-            modifier();
           }} > 
           Search 
           <SearchIcon style={{marginLeft: '10px'}}/>
@@ -183,7 +181,8 @@ const Search = ({ dispatch, query, isVisible }) => {
 const mapStateToProps = (state) => {
   return {
     query: state.get('queries').get('query'),
-    isVisible: state.get('general').get('isUIVisible')
+    isVisible: state.get('general').get('isUIVisible'),
+    isQueryLoading: state.get('general').get('loading').get('query-button')
   };
 }
 
