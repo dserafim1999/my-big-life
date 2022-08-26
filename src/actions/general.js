@@ -25,7 +25,7 @@ export const fitSegments = (...segmentIds) => {
       return prev.updateWithBounds(segmentBounds);
     }, new BoundsRecord());
 
-    dispatch(updateBounds(bounds));
+    dispatch(updateBounds(bounds.scale(1.1)));
   }
 }
 

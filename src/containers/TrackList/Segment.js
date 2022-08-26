@@ -110,7 +110,7 @@ const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, di
             <div>
               { canEdit ? 
                 (
-                  <IconButton title={'Highlight Track'} onClick={highlightSegment}>    
+                  <IconButton title={'Highlight Segment'} onClick={highlightSegment}>    
                     <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
                   </IconButton>
                 ) :
@@ -120,7 +120,7 @@ const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, di
                   </IconButton>
                 )
               }
-              <IconButton title={'Toggle Track Visibility'} onClick={toggleSegment}>    
+              <IconButton title={'Toggle Segment Visibility'} onClick={toggleSegment}>    
                   <VisibilityOffIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
               </IconButton>
             </div>

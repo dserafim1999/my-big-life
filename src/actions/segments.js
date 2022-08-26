@@ -109,7 +109,8 @@ export const joinSegment = (segmentId, index, details) => ({
 
 export const fitSegment = (segmentId) => {
   return (dispatch, getState) => {
-    const bounds = getState().get('tracks').get('segments').get(segmentId).get('bounds');
+    var bounds = getState().get('tracks').get('segments').get(segmentId).get('bounds');
+    bounds = bounds.scale(1.1);
     dispatch(updateBounds(bounds));
   }
 }
