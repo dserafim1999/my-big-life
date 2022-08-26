@@ -23,7 +23,6 @@ import JoinIcon from '@mui/icons-material/Compress';
 import PointIcon from '@mui/icons-material/LocationOn';
 import TimeFilterIcon from '@mui/icons-material/EventNote';
 
-import { Col } from 'react-bootstrap';
 import IconButton from '../../components/Buttons/IconButton';
 
 const INFO_TIME = 5;
@@ -101,35 +100,33 @@ let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joi
     return (
         <div>
             <div style={{ width: '100%', textAlign:'center' }} className='control has-addons'>
-                <Col>
-                    <SegmentButton description={'Focus on Segment'} onClick={fitToSegment}>
-                        <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
+              <SegmentButton description={'Focus on Segment'} onClick={fitToSegment}>
+                  <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
 
-                    <SegmentButton highlighted={editing} description={'Edit Segment'} onClick={toggleEditing} disabled={!start}>
-                        <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
+              <SegmentButton highlighted={editing} description={'Edit Segment'} onClick={toggleEditing} disabled={!start}>
+                  <EditIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
 
-                    <SegmentButton highlighted={pointDetails} description={'Inspect Points'} onClick={toggleDetails}>
-                        <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
+              <SegmentButton highlighted={pointDetails} description={'Inspect Points'} onClick={toggleDetails}>
+                  <PointIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
 
-                    <SegmentButton highlighted={splitting} description={'Split Segment'} onClick={toggleSplitting} disabled={!start}>
-                        <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
-                                        
-                    <SegmentButton highlighted={joining} disabled={!start} description={'Join Segment'} onClick={toggleJoining}>
-                        <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
+              <SegmentButton highlighted={splitting} description={'Split Segment'} onClick={toggleSplitting} disabled={!start}>
+                  <SplitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
+                                  
+              <SegmentButton highlighted={joining} disabled={!start} description={'Join Segment'} onClick={toggleJoining}>
+                  <JoinIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
 
-                    <SegmentButton highlighted={showTimeFilter} disabled={!start} description={'Filter Points by Time'} onClick={toggleTF}>
-                        <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
-                    
-                    <SegmentButton toggleable={false} description={'Delete Segment'} onClick={deleteSegment} disabled={!start}>
-                        <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
-                    </SegmentButton>
-                </Col>
+              <SegmentButton highlighted={showTimeFilter} disabled={!start} description={'Filter Points by Time'} onClick={toggleTF}>
+                  <TimeFilterIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
+              
+              <SegmentButton toggleable={false} description={'Delete Segment'} onClick={deleteSegment} disabled={!start}>
+                  <DeleteIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }} />
+              </SegmentButton>
             </div>
             {
             showTimeFilter
