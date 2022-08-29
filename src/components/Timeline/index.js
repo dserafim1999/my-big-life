@@ -64,7 +64,8 @@ const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, 
     }
     
     const getMinutes = (date) => {
-        return moment(date).hours() * 60 + moment(date).minutes();
+        date = moment.utc(date)
+        return date.hour() * 60 + date.minutes();
     } 
 
     const getTimelineCoords = (time) => {
@@ -82,9 +83,9 @@ const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, 
                     type.flatMap((span, i) => {
                         const start = getTimelineCoords(span.start);
                         const end = getTimelineCoords(span.end);
-
+                        
                         if (start < startPos || end > endPos) return [];
-
+                        
                         const spanWidth = end - start;
                         const opacity = getOpacityValue(span.freq, maxFreq);
 

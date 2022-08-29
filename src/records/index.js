@@ -139,7 +139,7 @@ const computeMetrics = (points) => {
 
 export const pointsToRecord = (points) => {
   return new List(points.map((point) => {
-    point.time = point.time ? moment(point.time) : null;
+    point.time = point.time ? moment.utc(point.time) : null;
     return new PointRecord(point);
   }));
 }
