@@ -90,6 +90,20 @@ export const highlightSegmentInTrack = (trackId, segmentId, value) => {
   }
 }
 
+export const highlightTrack = (trackId, value) => {
+  return (dispatch, getState) => {
+    const tracks = getState().get('tracks').get('tracks').toJS();
+
+    for (const [key, object] of Object.entries(tracks)) {
+      if (key === trackId) {
+        dispatch(toggleTrackSegmentsVisibility(key, true));
+      } else {
+        dispatch(toggleTrackSegmentsVisibility(key, value));
+      }
+    }
+ }
+}
+
 export const resetHistory = () => ({
   type: RESET_HISTORY
 })

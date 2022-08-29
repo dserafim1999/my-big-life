@@ -14,7 +14,7 @@ import FitIcon from '@mui/icons-material/ZoomOutMap';
 
 import { fitSegment, toggleSegmentVisibility } from '../../actions/segments';
 import IconButton from '../../components/Buttons/IconButton';
-import { highlightSegmentInTrack } from '../../actions/tracks';
+import { highlightSegmentInTrack, highlightTrack as highlightTrackAction } from '../../actions/tracks';
 
 const metricsStyle = {
   fontSize: '0.8rem',
@@ -64,7 +64,19 @@ const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, di
   const toggleSegment = () => dispatch(toggleSegmentVisibility(segmentId));
   const fitToSegment = () => dispatch(fitSegment(segmentId));
   
-  const highlightSegment = (value) => {
+  const highlightTrack = () => {
+    var value;
+    dispatch(highlightTrackAction(trackId, highlighted));
+    
+    if (!display) {
+      value = true;
+    } else {
+      value = !highlighted;
+    }
+    setHighlighted(value);
+  }
+
+  const highlightSegment = () => {
     var value = !highlighted;
     if (!display) {
       value = true;
@@ -106,25 +118,28 @@ const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, di
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SegmentStartEnd onClick={centerOnPoint(points.get(0))} index={0} time={start} />
-            
-            <div>
-              { canEdit ? 
-                (
+            { canEdit ? 
+              (
+                <div>
                   <IconButton title={'Highlight Segment'} onClick={highlightSegment}>    
                     <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
                   </IconButton>
-                ) :
-                (
+                  <IconButton title={'Toggle Segment Visibility'} onClick={toggleSegment}>    
+                    <VisibilityOffIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                  </IconButton>
+                </div>
+              ) :
+              (
+                <div>
                   <IconButton title={'Fit Segment'} onClick={fitToSegment}>    
                       <FitIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
                   </IconButton>
-                )
-              }
-              <IconButton title={'Toggle Segment Visibility'} onClick={toggleSegment}>    
-                  <VisibilityOffIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-              </IconButton>
-            </div>
-
+                  <IconButton title={'Highlight Track'} onClick={() => dispatch(highlightTrack)}>    
+                    <VisibilityIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
+                  </IconButton>
+                </div>
+              )
+            }
             <SegmentStartEnd onClick={centerOnPoint(points.get(-1))} index={-1} time={end} />
           </div>
           <div style={metricsStyle}>

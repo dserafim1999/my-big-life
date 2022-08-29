@@ -79,7 +79,7 @@ const displayTrips = (state, action) => {
     for (var i = 0 ; i < trips.length ; i++) {
       const trip = trips[i];
       _segments.push(new SegmentRecord({
-        trackId: day,
+        trackId: moment(day).format("YYYY-MM-DD"),
         id: trip.id,
         color: colors(color),
         points: pointsToRecord(trip.points)
