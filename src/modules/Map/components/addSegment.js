@@ -17,9 +17,9 @@ export default (id, points, color, display, filter) => {
       return tfLower <= t && t <= tfUpper;
     }
 
-    pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
+    pts = points.filter(timeFilter).map((point) => ({lat: point.get('lat'), lon: point.get('lon'), label: point.get('label')})).toJS();
   } else {
-    pts = points.map((point) => ({lat: point.get('lat'), lon: point.get('lon')})).toJS();
+    pts = points.map((point) => ({lat: point.get('lat'), lon: point.get('lon'), label: point.get('label')})).toJS();
   }
 
   const pline = new Polyline(pts, getPolylineStyle(color, display));

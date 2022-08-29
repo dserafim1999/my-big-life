@@ -38,7 +38,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
     },[query]);
 
     const getBackgroundColor = () => {
-      return selected ? 'yellow' : '#284760';
+      return selected ? '#ffcf57' : '#284760';
     }
 
     const onDoubleClick = (e) => {

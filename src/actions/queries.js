@@ -86,6 +86,9 @@ export const queryResults = (results, clean, total, querySize) => {
                 const res = result[j];
 
                 if (res.type === "interval" || querySize === 1) {
+                    if(res.points.points.length == 1) {
+                        res.points.points[0].label = res.id; // Adds location name to location point
+                    }
                     tracks.push(res.points);
                 } 
             }
