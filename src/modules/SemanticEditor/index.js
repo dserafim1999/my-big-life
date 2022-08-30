@@ -16,9 +16,6 @@ import { selectNextEntity } from './selectNextEntity';
 import SuggestionBox from './SuggestionBox';
 import Gutter from './Gutter';
 
-import WarningIcon from '@mui/icons-material/Warning';
-import { Tooltip } from '@mui/material';
-
 class SemanticEditor extends Component {
   constructor (props) {
     super(props);
@@ -246,8 +243,8 @@ class SemanticEditor extends Component {
         <div style={flexStyle}>
           <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
             {
-              this.warning && this.warning.location.start.line === i
-              ? <Tooltip title={this.warning.message} placement="top" arrow><WarningIcon color='#fcda73'/></Tooltip>
+              this.warning
+              ? <i style={{ color: '#fcda73' }} title={this.warning.message} line={this.warning.location.start.line - 1}>!</i>
               : null
             }
           </Gutter>

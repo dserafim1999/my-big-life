@@ -42,7 +42,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     const onEdit = (e, modifier) => {
         modifier('is-loading');
         const date = moment(activeSegment.getStartTime());
-        dispatch(copyDayToInput(date.format("YYYY-MM-DD"))); //TODO consider custom formatting
+        dispatch(copyDayToInput(date.format("YYYY-MM-DD"))); 
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
         modifier();
     }
