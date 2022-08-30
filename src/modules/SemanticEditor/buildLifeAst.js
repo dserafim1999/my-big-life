@@ -116,11 +116,12 @@ export default (text, segments) => {
       if (block.type === 'Trip' || block.type === 'Stay') {
         const { timespan } = block;
         timespan.timezone = timezoneChange;
+
         const fromTime = timeToMoment(currentDay, timespan.start.value);
         const toTime = timeToMoment(currentDay, timespan.finish.value);
 
         const fromPoint = findPointInSegments(fromTime, segments, false, false);
-        const toPoint = findPointInSegments(toTime, segments, !!fromPoint, false);
+        const toPoint = findPointInSegments(toTime, segments, false, false);
         block.references = { to: toPoint, from: fromPoint };
       }
     }
