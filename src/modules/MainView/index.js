@@ -1,7 +1,7 @@
 import { fromJS } from "immutable";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { deleteDay, loadTripsAndLocations, updateView } from "../../actions/general";
+import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
 import Card from "../../containers/Card";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +19,10 @@ import { copyDayToInput } from "../../actions/process";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE }) => {
+const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE, globalLIFE, segments }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
+        dispatch(getLife());
     }, []);
 
     let navigate = useNavigate();
@@ -53,6 +54,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     }
 
     const state = activeLIFE ? ContentState.createFromText(activeLIFE) : null;
+    const globalState = globalLIFE ? ContentState.createFromText(globalLIFE) : null;
 
     return <>
         { showSegmentInfo && (
@@ -61,7 +63,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                     { activeLIFE && activeSegment && (
                         <SemanticEditor
                             readOnly={true}
-                            style={{padding: '20px 0 10px 0'}}
+                            style={{margin: '10px 0 10px 0', maxHeight: '170px', overflowY: 'auto'}}
                             state={ state }
                             segments={ segment }
                             dispatch={ dispatch }
@@ -87,6 +89,18 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                 </Card>
             )   
         }
+        <Card width={400} height={300} verticalOffset={97} horizontalOffset={1} title={" Your LIFE"}>
+            { globalLIFE && (
+                <SemanticEditor
+                    readOnly={true}
+                    style={{padding: '20px 0 10px 0', height: '215px', overflowY: 'auto'}}
+                    state={ globalState }
+                    segments={ segments }
+                    dispatch={ dispatch }
+                    strategies={ decorators }
+                />
+            )}
+        </Card>
     </> 
 }
 
@@ -98,7 +112,9 @@ const mapStateToProps = (state) => {
         isVisible: state.get('general').get('isUIVisible'),
         showSegmentInfo: state.get('tracks').get('showInfo'),
         activeSegment: segment,
-        activeLIFE: state.get('tracks').get('activeLIFE') 
+        activeLIFE: state.get('tracks').get('activeLIFE'),
+        globalLIFE: state.get('general').get('LIFE'),
+        segments: state.get('tracks').get('segments')
     };
 }
   

@@ -179,7 +179,7 @@ const redo = (state, action) => {
   return state.updateIn(['history', 'future'], (future) => future.pop());
 }
 
-const updateLIFE = (state, action) => {
+const updateTrackLIFE = (state, action) => {
   const { text, warning } = action;
   return state.set('LIFE', new Map({ text, warning }));
 }
@@ -224,7 +224,7 @@ const ACTION_REACTION = {
     'tracks/add_multiple': addMultipleTracks,
     'tracks/update_name': updateTrackName,
     'tracks/toggle_renaming': toggleTrackRenaming,
-    'tracks/update_LIFE': updateLIFE,
+    'tracks/update_LIFE': updateTrackLIFE,
     'tracks/display_trips': displayTrips,
     'tracks/display_canonical_trips': displayCanonicalTrips,
     'tracks/display_locations': displayLocations,

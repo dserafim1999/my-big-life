@@ -4,7 +4,7 @@ export const TOGGLE_TRACK_INFO = 'tracks/toggle_info';
 export const ADD_MULTIPLE_TRACKS = 'tracks/add_multiple';
 export const UPDATE_TRACK_NAME = 'tracks/update_name';
 export const TOGGLE_TRACK_RENAMING = 'tracks/toggle_renaming';
-export const UPDATE_LIFE = 'tracks/update_LIFE';
+export const UPDATE_TRACK_LIFE = 'tracks/update_LIFE';
 export const DISPLAY_TRIPS = 'tracks/display_trips';
 export const DISPLAY_CANONICAL_TRIPS = 'tracks/display_canonical_trips';
 export const RESET_HISTORY = 'tracks/reset_history';
@@ -52,6 +52,7 @@ export const SET_APP_LOADING = 'general/set_app_loading';
 export const UPDATE_CONFIG = 'general/update_config';
 export const UPDATE_SERVER = 'general/update_server';
 export const UPDATE_VIEW = 'general/update_view';
+export const UPDATE_LIFE = 'general/update_LIFE';
 export const TOGGLE_UI = 'general/toggle_ui';
 
 export const UPDATE_BOUNDS = 'map/bounds';

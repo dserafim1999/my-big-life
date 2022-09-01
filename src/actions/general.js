@@ -9,6 +9,7 @@ import {
   UPDATE_VIEW,
   TOGGLE_UI,
   SET_APP_LOADING,
+  UPDATE_LIFE,
 } from "."
 
 import { BoundsRecord } from '../records';
@@ -209,6 +210,27 @@ export const getLifeFromDay = (date) => {
       });
   }
 }
+
+export const getLife = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/life', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(updateLIFE(res));
+      });
+  }
+}
+
+export const updateLIFE = (life) => ({
+  life,
+  type: UPDATE_LIFE
+})
 
 export const deleteDay = (date) => {
   return (dispatch, getState) => {

@@ -3,7 +3,7 @@ import {
   ADD_MULTIPLE_TRACKS, 
   TOGGLE_TRACK_RENAMING,
   UPDATE_TRACK_NAME,
-  UPDATE_LIFE,
+  UPDATE_TRACK_LIFE,
   REMOVE_TRACK,
   RESET_HISTORY,
   DISPLAY_TRIPS,
@@ -170,10 +170,10 @@ export const clearLocations = () => ({
   type: CLEAR_LOCATIONS
 })
 
-export const updateLIFE = (text, warning) => ({
+export const updateTrackLIFE = (text, warning) => ({
   text,
   warning,
-  type: UPDATE_LIFE
+  type: UPDATE_TRACK_LIFE
 })
 
 export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {

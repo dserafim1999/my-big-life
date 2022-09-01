@@ -61,6 +61,10 @@ const updateView = (state, action) => {
   return state.set('activeView', action.view);
 }
 
+const updateLIFE = (state, action) => {
+  return state.set('LIFE', action.life);
+}
+
 const toggleUI = (state, action) => {
   return state.set('isUIVisible', action.isVisible);
 }
@@ -73,6 +77,7 @@ const ACTION_REACTION = {
   'general/update_config': updateConfig,
   'general/update_server': updateServer,
   'general/update_view': updateView,
+  'general/update_LIFE': updateLIFE,
   'general/toggle_ui': toggleUI,
   'process/toggle_remaining_tracks': toggleRemainingTracks,
 }
