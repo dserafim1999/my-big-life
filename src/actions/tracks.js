@@ -207,6 +207,7 @@ export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical)
     dispatch(setAppLoading(true));
 
     const addr = getState().get('general').get('server');
+
     return fetch(addr + '/moreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
@@ -216,3 +217,25 @@ export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical)
       });
   }
 }
+
+export const canLoadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    const addr = getState().get('general').get('server');
+
+    return fetch(addr + '/hasMoreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        if (res) {
+          dispatch(loadMoreTripsInBounds(latMin, lonMin, latMax, lonMax, canonical))
+        }
+      });
+  }
+}
+
+    

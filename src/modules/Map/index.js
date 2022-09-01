@@ -30,7 +30,7 @@ import detailMode from './point/detailMode';
 import addSegment from './components/addSegment';
 import { createMarker, createPointIcon } from './utils';
 import addLocation from './components/addLocation';
-import { clearTrips, loadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
+import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 import moment from 'moment';
 
@@ -409,7 +409,7 @@ export default class LeafletMap extends Component {
     switch (activeView) {
       case MAIN_VIEW:
         if (currentZoom >= detailLevel) {
-          dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
+          dispatch(canLoadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         } 
          
         this.toggleSegmentsAndLocations();
