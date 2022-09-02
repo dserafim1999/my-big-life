@@ -3,19 +3,19 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import MainContainer from './MainContainer';
-import Dropzone from '../components/Dropzone';
-import MenuBar from '../components/MenuBar';
+import MainContainer from './components/MainContainer';
+import Dropzone from './components/Dropzone';
+import MenuBar from './components/MenuBar';
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
-import { addAlert, toggleRemainingTracks, uploadFile } from '../actions/general';
-import { undo, redo, nextStep, previousStep, skipDay } from '../actions/process';
-import { ModuleRoutes } from "../modules/ModuleRoutes";
-import loadFiles from "../utils/loadFiles";
-import { TRACK_PROCESSING } from "../constants";
-import LoadingOverlay from "./Overlay/LoadingOverlay";
+import { addAlert, toggleRemainingTracks, uploadFile } from './actions/general';
+import { undo, redo, nextStep, previousStep, skipDay } from './actions/process';
+import { ModuleRoutes } from "./modules/ModuleRoutes";
+import loadFiles from "./utils/loadFiles";
+import { TRACK_PROCESSING } from "./constants";
+import LoadingOverlay from "./components/Overlay/LoadingOverlay";
 
 let App = ({ showConfig, view, canDropFiles, isAppLoading, dispatch }) => {
   let metaDown = false;

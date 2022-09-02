@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from 'react-redux';
 
-import Card from "../../containers/Card";
+import Card from "../../components/Card";
 import QueryStay from "./QueryStay";
 import QueryRoute from './QueryRoute';
 import QueryDatePicker from "../../components/Form/QueryDatePicker";

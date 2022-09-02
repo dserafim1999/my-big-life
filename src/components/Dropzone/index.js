@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Overlay from '../../containers/Overlay';
+import Overlay from '../Overlay';
 
 const Dropzone = ({ children, onDrop, onOver, canDropFiles, ...props }) => {
   if (!canDropFiles) return children;

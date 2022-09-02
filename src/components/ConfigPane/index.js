@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { saveConfig, getConfig, updateServer } from '../../actions/general';
 
 import Card from '../Card';
-import AsyncButton from '../../components/Buttons/AsyncButton';
-import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
+import AsyncButton from '../Buttons/AsyncButton';
+import { TextField, ToggleField, OptionsField, SectionBlock } from '../Form';
 import { bulkProcess, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';

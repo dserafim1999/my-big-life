@@ -11,7 +11,7 @@ import TrackProcessingIcon from '@mui/icons-material/EditLocationAlt';
 import VisualQueriesIcon from '@mui/icons-material/NotListedLocation';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TrackProcessing from "./TrackProcessing";
-import ConfigPane from "../containers/ConfigPane";
+import ConfigPane from "../components/ConfigPane";
 import { CONFIG_PANEL, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
 import { getActiveRoute } from "../utils";
 import MainView from "./MainView";

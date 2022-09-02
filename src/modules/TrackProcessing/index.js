@@ -8,7 +8,7 @@ import ChangeDayButtons from '../../components/Buttons/ChangeDayButtons';
 import NavigationButtons from '../../components/Buttons/NavigationButtons';
 import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
-import Card from '../../containers/Card';
+import Card from '../../components/Card';
 
 import {
     skipDay,

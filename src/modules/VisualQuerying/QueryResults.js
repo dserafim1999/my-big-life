@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { connect } from 'react-redux';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import Card from "../../containers/Card";
+import Card from "../../components/Card";
 import QueryResult from "./QueryResult";
 import { loadMoreQueryResults } from "../../actions/queries";
 import AsyncButton from "../../components/Buttons/AsyncButton";

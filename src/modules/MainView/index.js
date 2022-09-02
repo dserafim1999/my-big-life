@@ -3,9 +3,9 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
 import { toggleSegmentInfo } from "../../actions/segments";
-import Card from "../../containers/Card";
+import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
-import Segment from "../../containers/TrackList/Segment";
+import Segment from "../../components/TrackList/Segment";
 
 import { ContentState } from 'draft-js';
 import SemanticEditor from '../../modules/SemanticEditor';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ANNOTATE_STAGE, DONE_STAGE } from '../../constants';
-import TrackList from '../../containers/TrackList';
+import TrackList from '../../components/TrackList';
 import SemanticEditor from '../../components/SemanticEditor';
 import DaysLeft from './DaysLeft';
 
