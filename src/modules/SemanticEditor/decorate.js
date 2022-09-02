@@ -1,7 +1,7 @@
 import { EditorState, SelectionState, Modifier, Entity } from 'draft-js';
 import buildLifeAst from './buildLifeAst';
 
-const decriptiveStyle = (contentState, styleType, marks, value, content, lineKeys, more = {}) => {
+const descriptiveStyle = (contentState, styleType, marks, value, content, lineKeys, more = {}) => {
   const { offset, length, line } = marks;
 
   const start = offset;
@@ -27,7 +27,7 @@ const decriptiveStyle = (contentState, styleType, marks, value, content, lineKey
 }
 
 const generalMapping = (contentState, elm, content, lineKeys, more = {}) => {
-  return decriptiveStyle(contentState, elm.type, elm.marks, elm.value, content, lineKeys, { astBranch: elm, ...more });
+  return descriptiveStyle(contentState, elm.type, elm.marks, elm.value, content, lineKeys, { astBranch: elm, ...more });
 }
 
 const StyleMappings = {
@@ -73,28 +73,31 @@ const StyleMappings = {
   }
 }
 
+
 const decorateAstRoot = (contentState, content, root, lineKeys, more) => {
-    content = StyleMappings['Day'](contentState, root.day, content, lineKeys);
-    root.blocks.forEach((block) => {
-      const mapping = StyleMappings[block.type];
-      if (mapping) {
-        content = mapping(contentState, block, content, lineKeys, more);
-      }
-    });
+  root.days.forEach((day) => {
+      content = StyleMappings['Day'](contentState, day.day, content, lineKeys, more);
+      day.blocks.forEach((block) => {
+        const mapping = StyleMappings[block.type];
+        if (mapping) {
+          content = mapping(contentState, block, content, lineKeys, more);
+        }
+      });
+    })
     return content;
   }
   
-  const decorateWithAst = (contentState, previousAst, text, content, lineKeys, segments, more) => {
-    let ast;
-    try {
-      ast = buildLifeAst(text, segments);
-    } catch (e) {
-      return [content, null, e];
-    }
-  
-    content = decorateAstRoot(contentState, content, ast, lineKeys, more);
-    return [content, ast, null];
+const decorateWithAst = (contentState, previousAst, text, content, lineKeys, segments, more) => {
+  let ast;
+  try {
+    ast = buildLifeAst(text, segments);
+  } catch (e) {
+    return [content, null, e];
   }
+
+  content = decorateAstRoot(contentState, content, ast, lineKeys, more);
+  return [content, ast, null];
+}
   
 const decorate = (previousAst, editorState, segments, dispatch) => {
   let content = editorState.getCurrentContent();

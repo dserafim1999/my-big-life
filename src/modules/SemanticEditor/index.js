@@ -241,13 +241,7 @@ class SemanticEditor extends Component {
     return (
       <div style={{...editorStyle, ...this.props.style}} onClick={() => this.editorRef.current.focus()}>
         <div style={flexStyle}>
-          <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
-            {
-              this.warning
-              ? <i style={{ color: '#fcda73' }} title={this.warning.message} line={this.warning.location.start.line - 1}>!</i>
-              : null
-            }
-          </Gutter>
+          <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}/>
         </div>
         <div style={{ display: 'flex' }}>
           <DraftEditor

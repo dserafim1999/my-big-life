@@ -104,25 +104,27 @@ export default (text, segments) => {
   try {
     const fragments = LIFEParser.parse(text);
 
-    const { year, month, day } = fragments.day.value;
-    const currentDay = year + '-' + month + '-' + day;
-    let timezoneChange = 0;
-    let defaultTimezone = 1;
-
-    for (let block of fragments.blocks) {
-      if (block.type === 'Timezone') {
-        timezoneChange = block.value - defaultTimezone;
-      }
-      if (block.type === 'Trip' || block.type === 'Stay') {
-        const { timespan } = block;
-        timespan.timezone = timezoneChange;
-
-        const fromTime = timeToMoment(currentDay, timespan.start.value);
-        const toTime = timeToMoment(currentDay, timespan.finish.value);
-
-        const fromPoint = findPointInSegments(fromTime, segments, false, false);
-        const toPoint = findPointInSegments(toTime, segments, false, false);
-        block.references = { to: toPoint, from: fromPoint };
+    for (let dayFragment of fragments.days) {
+      const { year, month, day } = dayFragment.day.value;
+      const currentDay = year + '-' + month + '-' + day;
+      let timezoneChange = 0;
+      let defaultTimezone = 1;
+  
+      for (let block of dayFragment.blocks) {
+        if (block.type === 'Timezone') {
+          timezoneChange = block.value - defaultTimezone;
+        }
+        if (block.type === 'Trip' || block.type === 'Stay') {
+          const { timespan } = block;
+          timespan.timezone = timezoneChange;
+  
+          const fromTime = timeToMoment(currentDay, timespan.start.value);
+          const toTime = timeToMoment(currentDay, timespan.finish.value);
+  
+          const fromPoint = findPointInSegments(fromTime, segments, false, false);
+          const toPoint = findPointInSegments(toTime, segments, false, false);
+          block.references = { to: toPoint, from: fromPoint };
+        }
       }
     }
     return fragments;

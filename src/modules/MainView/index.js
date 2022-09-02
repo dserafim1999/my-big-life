@@ -89,7 +89,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                 </Card>
             )   
         }
-        <Card width={400} height={300} verticalOffset={97} horizontalOffset={1} title={" Your LIFE"}>
+        <Card width={400} height={300} verticalOffset={97} horizontalOffset={1} title={"Your LIFE"}>
             { globalLIFE && (
                 <SemanticEditor
                     readOnly={true}
