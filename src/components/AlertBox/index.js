@@ -1,4 +1,8 @@
 import React from 'react';
+
+import ImmutablePropTypes  from 'react-immutable-proptypes';
+import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { removeAlert } from '../../actions/general';
 
@@ -7,6 +11,14 @@ const mapType = {
   'success': 'is-success',
   'error': 'is-danger'
 };
+
+/**
+ * Container that houses alerts that are active in the state, displaying them at the top of the screen.
+ * 
+ * @constructor
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {ImmutablePropTypes.List} alerts List containing alert objects (duration, type, ref and message)
+ */
 
 let AlertBox = ({ dispatch, alerts }) => {
   const style = {
@@ -46,5 +58,12 @@ const mapStateToProps = (state) => {
 }
 
 AlertBox = connect(mapStateToProps)(AlertBox);
+
+AlertBox.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** List containing alert objects (duration, type, ref and message) */
+  alerts: ImmutablePropTypes.listOf(PropTypes.object)
+};
 
 export default AlertBox;

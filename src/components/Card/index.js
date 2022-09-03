@@ -30,7 +30,20 @@ const cardOpenStyle = {
 
 
 /**
- * General Card description.
+ * Container that houses other components above the map. These can be dragged, hidden and/or closed.
+ * 
+ * @constructor
+ * @param {number} width 
+ * @param {number} height 
+ * @param {number} verticalOffset Number between 0-100 
+ * @param {number} horizontalOffset Number between 0-100 
+ * @param {string} title Title to be displayed above the card's content
+ * @param {Object | Array<Object>} children
+ * @param {bool} isDraggable 
+ * @param {bool} canToggleVisibility If enabled, a hide/show icon will be displayed on the top left corner 
+ * @param {function} onClose If set, a close button will de displayed on the top right corner with said behaviour on an onClick event
+ * @param {string} containerStyle Extra styling for outer container 
+ * @param {string} innerStyle Extra styling for inner content
  */
 const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true, onClose = undefined }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
@@ -123,17 +136,23 @@ Card.propTypes = {
     /** Number between 0-100 */ 
     verticalOffset: PropTypes.number, 
     /** Number between 0-100 */ 
-    horizontalOffset: PropTypes.number, 
+    horizontalOffset: PropTypes.number,
+    /** Title to be displayed above the card's content */ 
     title: PropTypes.string, 
     children: PropTypes.oneOfType([
         PropTypes.object,
         PropTypes.arrayOf(PropTypes.object)
     ]), 
+    /** If enabled, card can be dragged around the screen */
     isDraggable: PropTypes.bool, 
-    containerStyle: PropTypes.string, 
+    /** If enabled, a hide/show icon will be displayed on the top left corner */
+    canToggleVisibility: PropTypes.bool,
+    /** If set, a close button will de displayed on the top right corner with said behaviour on an onClick event */ 
+    onClose: PropTypes.func,
+    /** Extra styling for outer container */
+    containerStyle: PropTypes.string,
+    /** Extra styling for inner content */
     innerStyle: PropTypes.string, 
-    canToggleVisibility: PropTypes.bool, 
-    onClose: PropTypes.func
-  };
+};
 
 export default Card;

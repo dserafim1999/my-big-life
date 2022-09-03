@@ -1,7 +1,22 @@
-import { Tooltip } from '@mui/material';
 import React, { Component, createRef } from 'react';
+
+import PropTypes from 'prop-types';
+
+import { Tooltip } from '@mui/material';
 import { findDOMNode } from 'react-dom';
 
+
+/**
+ * Button with a loading spinner for async operations.
+ * 
+ * @constructor
+ * @param {Object | Array<Object>} children Inner Content
+ * @param {string} className Aditional CSS classes for button
+ * @param {boolean} disabled Determines whether button is enabled or disabled
+ * @param {function} onClick Behaviour when button is clicked
+ * @param {string} style Aditional CSS styling for button
+ * @param {string} title Tooltip text
+ */
 export default class AsyncButton extends Component {
   constructor (props) {
     super(props);
@@ -12,6 +27,24 @@ export default class AsyncButton extends Component {
       className: '',
       content: null
     };
+  }
+
+  static propTypes = {
+    /** Inner content */
+    children: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
+    /** Aditional CSS classes for button */
+    className: PropTypes.string,
+    /** Determines whether button is enabled or disabled */
+    disabled: PropTypes.bool,
+    /** Behaviour when button is clicked */
+    onClick: PropTypes.func,
+    /** Aditional CSS styling for button */
+    style: PropTypes.string,
+    /** Tooltip text */
+    title: PropTypes.string
   }
 
   createClassName (additional, filter = () => (true)) {

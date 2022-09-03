@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { toggleRemainingTracks, addAlert } from '../../actions/general';
 import { clearAll, resetHistory } from '../../actions/tracks';
 
-import ChangeDayButtons from '../../components/Buttons/ChangeDayButtons';
-import NavigationButtons from '../../components/Buttons/NavigationButtons';
+import ChangeDayButtons from './ChangeDayButtons';
+import NavigationButtons from './NavigationButtons';
 import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
 import Card from '../../components/Card';

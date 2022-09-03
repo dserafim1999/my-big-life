@@ -1,5 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+
+import PropTypes from 'prop-types';
+
 import Overlay from '../Overlay';
+
+/**
+ * Container that performs a certain operation with files that are dropped onto the screen.
+ * 
+ * @constructor
+ * @param {function} onDrop Behaviour when files are dropped onto the screen
+ * @param {function} onHover Behaviour when files are hovering over the screen
+ * @param {boolean} canDropFiles Determines whether files can be dropped onto the screen
+ * @param {Object | Array<Object>} children
+ */
 
 const Dropzone = ({ children, onDrop, onOver, canDropFiles, ...props }) => {
   if (!canDropFiles) return children;
@@ -53,6 +66,19 @@ const Dropzone = ({ children, onDrop, onOver, canDropFiles, ...props }) => {
       </div>
     </>
   )
+}
+
+Dropzone.propTypes = {
+  /** Behaviour when files are dropped onto the screen */
+  onDrop: PropTypes.func,
+  /** Behaviour when files are hovering over the screen */
+  onHover: PropTypes.func,
+  /** Determines whether files can be dropped onto the screen */
+  canDropFiles: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
 }
 
 export default Dropzone

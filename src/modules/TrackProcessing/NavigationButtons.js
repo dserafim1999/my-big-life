@@ -1,5 +1,5 @@
 import React from 'react';
-import AsyncButton from './AsyncButton';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';

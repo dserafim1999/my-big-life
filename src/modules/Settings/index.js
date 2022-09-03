@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { saveConfig, getConfig, updateServer } from '../../actions/general';
 
-import Card from '../Card';
-import AsyncButton from '../Buttons/AsyncButton';
-import { TextField, ToggleField, OptionsField, SectionBlock } from '../Form';
+import Card from '../../components/Card';
+import AsyncButton from '../../components/Buttons/AsyncButton';
+import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
 import { bulkProcess, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import SaveIcon from '@mui/icons-material/Save';
 
-const ConfigPane = ({ dispatch, address, config, isLoading, isVisible, isLoadingBulk }) => {
+const Settings = ({ dispatch, address, config, isLoading, isVisible, isLoadingBulk }) => {
     if (!isVisible) return null;
     
     const bulkClassName = 'is-blue' + (isLoadingBulk ? ' is-loading' : '');
@@ -200,6 +200,6 @@ const mapStateToProps = (state) => {
   };
 }
 
-const CPane = connect(mapStateToProps)(ConfigPane);
+const CPane = connect(mapStateToProps)(Settings);
 
 export default CPane;
