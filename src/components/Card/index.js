@@ -125,7 +125,10 @@ Card.propTypes = {
     /** Number between 0-100 */ 
     horizontalOffset: PropTypes.number, 
     title: PropTypes.string, 
-    children: PropTypes.arrayOf(PropTypes.element), 
+    children: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.arrayOf(PropTypes.object)
+    ]), 
     isDraggable: PropTypes.bool, 
     containerStyle: PropTypes.string, 
     innerStyle: PropTypes.string, 
