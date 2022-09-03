@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
+import { IconButton } from "@mui/material";
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton } from "@mui/material";
 
 const wrapper = {
     position: 'fixed',
@@ -26,6 +28,10 @@ const cardOpenStyle = {
     zIndex: '1001'
 }
 
+
+/**
+ * General Card description.
+ */
 const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true, onClose = undefined }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
     const innerHeight = height != undefined ? window.innerHeight - height : window.innerHeight;
@@ -109,5 +115,22 @@ const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefin
         </Draggable>
     )
 };
+
+
+Card.propTypes = {
+    width: PropTypes.number, 
+    height: PropTypes.number,
+    /** Number between 0-100 */ 
+    verticalOffset: PropTypes.number, 
+    /** Number between 0-100 */ 
+    horizontalOffset: PropTypes.number, 
+    title: PropTypes.string, 
+    children: PropTypes.arrayOf(PropTypes.element), 
+    isDraggable: PropTypes.bool, 
+    containerStyle: PropTypes.string, 
+    innerStyle: PropTypes.string, 
+    canToggleVisibility: PropTypes.bool, 
+    onClose: PropTypes.func
+  };
 
 export default Card;
