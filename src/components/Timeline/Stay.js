@@ -1,6 +1,8 @@
-import { Tooltip } from "@mui/material";
 import React from "react";
 
+import PropTypes from "prop-types";
+
+import { Tooltip } from "@mui/material";
 
 const legendStyle = {
     color: "white",
@@ -16,6 +18,18 @@ const legendStyle = {
     padding: "5px"
 }
 
+/**
+ * Represents a Stay (or part of) on a Timeline.
+ *
+ * See `Timeline`
+ *  
+ * @constructor
+ * @param {number} start Start position  
+ * @param {number} width Route width
+ * @param {number} opacity Route color opacity  
+ * @param {string} legend Stay location name
+ * @param {string} color Hex code for Stay's color  
+ */
 const Stay = ({ start, width, opacity, legend, color }) => {
     const stayStyle =  {
         position:"absolute",
@@ -41,6 +55,19 @@ const Stay = ({ start, width, opacity, legend, color }) => {
             </div>
         </Tooltip>
     );
+}
+
+Stay.propTypes = {
+    /** Start position */
+    start: PropTypes.number,
+    /** Route width */
+    width: PropTypes.number,
+    /** Route color opacity */
+    opacity: PropTypes.number, 
+    /**Stay location name */
+    legend: PropTypes.string, 
+    /** Hex code for Stay's color */  
+    color: PropTypes.string 
 }
   
 export default Stay;

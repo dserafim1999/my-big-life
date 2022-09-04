@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'My Big Life',
+    title: 'MyBigLife',
     // sections: [
     //   {
     //     name: 'Introduction',

@@ -11,11 +11,12 @@ import Overlay from '../Overlay';
  * @param {function} onDrop Behaviour when files are dropped onto the screen
  * @param {function} onHover Behaviour when files are hovering over the screen
  * @param {boolean} canDropFiles Determines whether files can be dropped onto the screen
- * @param {Object | Array<Object>} children
+ * @param {any} children
  */
 
 const Dropzone = ({ children, onDrop, onOver, canDropFiles, ...props }) => {
   if (!canDropFiles) return children;
+  console.log(typeof children);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -75,10 +76,7 @@ Dropzone.propTypes = {
   onHover: PropTypes.func,
   /** Determines whether files can be dropped onto the screen */
   canDropFiles: PropTypes.bool,
-  children: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
+  children: PropTypes.any
 }
 
 export default Dropzone

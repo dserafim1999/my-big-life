@@ -1,8 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addNewSegment } from '../../actions/segments';
-import Segment from './Segment';
 
+import Segment from './Segment';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
+import { Date } from 'moment';
+import { connect } from 'react-redux';
+import { TrackRecord } from '../../records';
+import { addNewSegment } from '../../actions/segments';
 import { updateBounds } from '../../actions/map';
 import { computeBounds } from '../../records';
 
@@ -20,6 +25,15 @@ const newSegmentParentStyle = {
   paddingLeft: '6px'
 }
 
+/**
+ * Container for Track's Segments
+ * 
+ * @constructor
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {ImmutablePropTypes.list} segments List of the Track's Segments to display  
+ * @param {TrackRecord} track Track to be represented
+ * @param {Date} lastTime Soonest time in Track
+ */
 const TrackSegments = ({ dispatch, segments, track, lastTime }) => {
   const newSegment = () => dispatch(addNewSegment(track.get('id'), lastTime));
   return (
@@ -85,6 +99,17 @@ const mapStateToProps = (state, { trackId }) => {
     segments,
     lastTime
   }
+}
+
+TrackSegments.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** List of the Track's Segments to display */
+  segments: ImmutablePropTypes.list,
+  /** Track to be represented */
+  track: PropTypes.instanceOf(TrackRecord),
+  /** Soonest time in Track */
+  lastTime: PropTypes.instanceOf(Date),
 }
 
 export default connect(mapStateToProps)(TrackSegments);

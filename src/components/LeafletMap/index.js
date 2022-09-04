@@ -1,6 +1,9 @@
-import React from 'react';
 import { connect } from "react-redux";
 import PerfMap from "../../modules/Map";
+
+/**
+ * Container that sets up data for the Map module
+ */
 
 const mapStateToProps = (state) => {
   const history = state.get('tracks').get('history');

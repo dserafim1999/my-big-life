@@ -9,11 +9,11 @@ import { Tooltip } from '@mui/material';
  * 
  * @constructor
  * @param {string} title Tooltip text
- * @param {string} style Aditional CSS styling for button
+ * @param {object} style Aditional CSS styling for button
  * @param {function} onClick Behaviour when button is clicked
  * @param {boolean} isDiv If true, wraps content in a div
  * @param {string} tooltipPlacement Tooltip placement
- * @param {Object | Array<Object>} children Material Icon to use in button
+ * @param {any} children Material Icon to use in button
  * @param {boolean} disabled Determines whether button is enabled or disabled 
  * @param {string} className Aditional CSS classes for button
  * @param {boolean} withoutBtnClass If true, 'button' Bulma CSS class is not used
@@ -53,7 +53,7 @@ SimpleButton.propTypes = {
   /** Tooltip text */
   title: PropTypes.string,
   /** Aditional CSS styling for button */
-  style: PropTypes.string,
+  style: PropTypes.object,
   /** Behaviour when button is clicked */
   onClick: PropTypes.func,
   /** If true, wraps content in a div */
@@ -61,10 +61,7 @@ SimpleButton.propTypes = {
   /** Tooltip placement */
   tooltipPlacement: PropTypes.string,
   /** Material Icon to use in button */
-  children: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
+  children: PropTypes.any,
   /** Determines whether button is enabled or disabled */
   disabled: PropTypes.bool,
   /** Aditional CSS classes for button */

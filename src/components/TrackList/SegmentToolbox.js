@@ -1,5 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import TimeSlider from '../../components/TimeSlider';
+import IconButton from '../../components/Buttons/IconButton';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import Date from 'moment';
 
 import {
   toggleSegmentEditing,
@@ -11,9 +16,8 @@ import {
   updateTimeFilterSegment,
   fitSegment
 } from '../../actions/segments';
-
 import { addAlert, removeAlert } from '../../actions/general';
-import TimeSlider from '../../components/TimeSlider';
+import { connect } from 'react-redux';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,10 +27,18 @@ import JoinIcon from '@mui/icons-material/Compress';
 import PointIcon from '@mui/icons-material/LocationOn';
 import TimeFilterIcon from '@mui/icons-material/EventNote';
 
-import IconButton from '../../components/Buttons/IconButton';
-
 const INFO_TIME = 5;
 
+/**
+ * Button for Segment operations
+ * 
+ * @constructor
+ * @param {any} children
+ * @param {string} description Tooltip text
+ * @param {function} Behaviour when button is clicked
+ * @param {boolean} highlighted If button is highlighted
+ * @param {boolean} disabled If button is disabled
+ */
 let SegmentButton = ({children, description, onClick, highlighted, disabled}) => {
   const className = [];
   if (highlighted) {
@@ -72,9 +84,24 @@ const toggleAlert = (dispatch, ref, alert, should) => {
     dispatch(addAlert(alert, 'success', INFO_TIME, ref));
   }
 }
-    
+
+/**
+ * Container for Segment operations. Can toggle editing, splitting, joining, viewing and more.
+ * 
+ * @constructor
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {number} segmentId Segment's Id
+ * @param {Date} start Start time
+ * @param {Date} end End time
+ * @param {Date} initialStart Filter start time
+ * @param {Date} initialEnd Filter end time
+ * @param {boolean} editing Toggles Segment edit mode
+ * @param {boolean} splitting Toggles Segment split mode
+ * @param {boolean} joining Toggles Segment join mode
+ * @param {boolean} pointDetails Toggles Segment points view mode
+ * @param {boolean} showTimeFilter Toggles Segment Time Filter mode
+ */
 let SegmentToolbox = ({ dispatch, segmentId, start, end, editing, splitting, joining, pointDetails, showTimeFilter, filterStart, filterEnd }) => {
-  
   const toggleEditing = () => {
     dispatch(toggleSegmentEditing(segmentId));
     toggleAlert(dispatch, 'EDIT_INFO', EDIT_ALERT, editing);
@@ -150,6 +177,29 @@ const mapStateToProps = (state, { segment }) => {
     filterStart: segment.get('timeFilter').get(0),
     filterEnd: segment.get('timeFilter').get(1)
   }
+}
+
+SegmentToolbox.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** Start time */
+  start: PropTypes.instanceOf(Date),
+  /** End time */
+  end: PropTypes.instanceOf(Date),
+  /** Filter start time */
+  initialStart: PropTypes.instanceOf(Date),
+  /** Filter end time */
+  initialEnd: PropTypes.instanceOf(Date),
+  /** Toggles Segment edit mode */
+  editing: PropTypes.bool,
+  /** Toggles Segment split mode */
+  splitting: PropTypes.bool,
+  /** Toggles Segment join mode */
+  joining: PropTypes.bool,
+  /** Toggles Segment points view mode */
+  pointDetails: PropTypes.bool,
+  /** Toggles Segment Time Filter mode */
+  showTimeFilter: PropTypes.bool
 }
 
 export default connect(mapStateToProps)(SegmentToolbox);

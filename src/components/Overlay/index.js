@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+
+import PropTypes from 'prop-types';
 
 const overlayStyle = {
   position: 'fixed',
@@ -8,12 +10,23 @@ const overlayStyle = {
   zIndex: '1000'
 }
 
+/**
+ * Container that displays content over the main application.
+ * 
+ * @constructor
+ * @param {any} children Content to be displayed above the application.
+ */
 const Overlay = ({ children, ...props }) => {
   return (
     <div style={overlayStyle} {...props}>
       { children }
     </div>
   );
+}
+
+Overlay.propTypes = {
+  /** Content to be displayed above the application */
+  children: PropTypes.any 
 }
 
 export default Overlay;

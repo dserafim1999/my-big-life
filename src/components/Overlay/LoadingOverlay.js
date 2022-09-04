@@ -8,7 +8,12 @@ const loadingStyle = {
     transform: 'translate(-50%, -50%)'
 }
 
-const LoadingOverlay = ({}) => {
+/**
+ * Overlay that displays a loading spinner.
+ * 
+ * @constructor
+ */
+const LoadingOverlay = () => {
   return (
     <Overlay>
         <div style={loadingStyle}>

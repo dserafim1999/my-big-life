@@ -17,7 +17,7 @@ const mapType = {
  * 
  * @constructor
  * @param {function} dispatch Redux store action dispatcher
- * @param {ImmutablePropTypes.List} alerts List containing alert objects (duration, type, ref and message)
+ * @param {ImmutablePropTypes.List} alerts Immutable List containing alert objects (duration, type, ref and message)
  */
 
 let AlertBox = ({ dispatch, alerts }) => {
@@ -62,7 +62,7 @@ AlertBox = connect(mapStateToProps)(AlertBox);
 AlertBox.propTypes = {
   /** Redux store action dispatcher */
   dispatch: PropTypes.func,
-  /** List containing alert objects (duration, type, ref and message) */
+  /** Immutable List containing alert objects (duration, type, ref and message) */
   alerts: ImmutablePropTypes.listOf(PropTypes.object)
 };
 

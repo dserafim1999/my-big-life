@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 
 import IconButton from "@mui/material/IconButton";
+import PropTypes from 'prop-types';
+
+import HideUIIcon from "@mui/icons-material/VisibilityOff";
+import ShowUIIcon from "@mui/icons-material/Menu";
+
 import { ModuleRoutes } from "../../modules/ModuleRoutes";
 import { connect } from "react-redux";
 import { toggleUI as toggleUIAction, updateView } from "../../actions/general";
 import { MAIN_VIEW } from "../../constants";
 import { Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-import HideUIIcon from "@mui/icons-material/VisibilityOff";
-import ShowUIIcon from "@mui/icons-material/Menu";
 import { routeTo } from "../../reducers/utils";
 
 const wrapperStyle = {
@@ -24,7 +26,14 @@ const wrapperStyle = {
     display: 'flex'
 }
 
-const MenuBar = ({dispatch, activeView, isVisible}) => {
+/**
+ * Navigation Menu that displays the program's modules.
+ * 
+ * @constructor
+ * @param {function} dispatch Redux store action dispatcher.
+ * @param {number} activeView Active module view index.
+ */
+const MenuBar = ({dispatch, activeView}) => {
     const [panelOpen, setIsPanelOpen] = useState(true);
     let navigate = useNavigate();
 
@@ -99,6 +108,13 @@ const mapStateToProps = (state) => {
         activeView: state.get('general').get('activeView'),
         isVisible: state.get('general').get('isUIVisible')
     };
-  }
+}
+
+MenuBar.propTypes = {
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+    /** Active module view index */
+    activeView: PropTypes.number
+}
   
 export default connect(mapStateToProps)(MenuBar);

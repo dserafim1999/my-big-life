@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-
-import {
-  centerMap
-} from '../../actions/map';
 
 import SegmentToolbox from './SegmentToolbox';
+import IconButton from '../../components/Buttons/IconButton';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import Date from 'moment';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
 
+import { connect } from 'react-redux';
+import { centerMap } from '../../actions/map';
 import { fitSegment, toggleSegmentVisibility } from '../../actions/segments';
-import IconButton from '../../components/Buttons/IconButton';
 import { highlightSegmentInTrack, highlightTrack as highlightTrackAction } from '../../actions/tracks';
+import { SegmentRecord } from '../../records';
 
 const metricsStyle = {
   fontSize: '0.8rem',
@@ -42,6 +43,14 @@ const middleStatsChild = {
   verticalAlign: 'baseline'
 }
 
+/**
+ * Container that holds either the start or the end date
+ * 
+ * @constructor
+ * @param {function} onClick Behaviour when container is clicked
+ * @param {number} index
+ * @param {Date} time Time to display
+ */
 const SegmentStartEnd = ({ onClick, index, time}) => {
   const descr = index === 0 ? 'from' : 'to';
  
@@ -58,9 +67,27 @@ const SegmentStartEnd = ({ onClick, index, time}) => {
   }
 }
 
-const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, display, color, metrics, distance, averageVelocity, canEdit = true }) => {
-  const [highlighted, setHighlighted] = useState(false);
-  
+
+/**
+ * Segment Information container
+ * 
+ * @constructor
+ * @param {SegmentRecord} segment Segment to be represented
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {number} trackId Id for the track that contains the segment
+ * @param {number} segmentId Segment's Id
+ * @param {ImmutablePropTypes.list} points Segment points
+ * @param {Date} start Segment's start date
+ * @param {Date} end Segment's end date
+ * @param {boolean} display If true, segment is displayed on the map
+ * @param {string} color Hex code for Segment's color
+ * @param {number} distance Total distance covered in Segment
+ * @param {number} averageVelocity Average velocity travelled in Segment
+ * @param {boolean} canEdit If true, Segment can be edited
+ */
+const Segment = ({ segment, dispatch, trackId, segmentId, points, start, end, display, color, distance, averageVelocity, canEdit = true }) => {
+  const [highlighted, setHighlighted] = useState(false); 
+
   const toggleSegment = () => dispatch(toggleSegmentVisibility(segmentId));
   const fitToSegment = () => dispatch(fitSegment(segmentId));
   
@@ -166,6 +193,33 @@ const mapStateToProps = (state, { segment }) => {
     distance: segment.get('metrics').get('distance'),
     averageVelocity: segment.get('metrics').get('averageVelocity')
   }
+}
+
+Segment.propTypes = {
+  /** Segment to be represented */
+  segment: PropTypes.instanceOf(SegmentRecord),
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** Id for the track that contains the segment */
+  trackId: PropTypes.number,
+  /** Segment's Id */
+  segmentId: PropTypes.number,
+  /** Segment points */
+  points: ImmutablePropTypes.list,
+  /** Segment's start date */
+  start: PropTypes.instanceOf(Date), 
+  /** Segment's end date */
+  end: PropTypes.instanceOf(Date),
+  /** If true, segment is displayed on the map */
+  display: PropTypes.bool,
+  /** Hex code for Segment's color */
+  color: PropTypes.string,
+  /** Total distance covered in Segment */
+  distance: PropTypes.number,
+  /** Average velocity travelled in Segment */
+  averageVelocity: PropTypes.number,
+  /** If true, Segment can be edited */
+  canEdit: PropTypes.bool
 }
 
 export default connect(mapStateToProps)(Segment);

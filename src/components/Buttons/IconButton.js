@@ -1,13 +1,14 @@
 import React from 'react';
 
 import PropType from 'prop-types';
+
 import { Tooltip } from '@mui/material';
 
 /**
  * Bordered button that houses material icons.
  * 
  * @constructor
- * @param {Object | Array<Object>} children Material Icon to use in button 
+ * @param {any} children Material Icon to use in button 
  * @param {string} className Aditional CSS classes for button
  * @param {function} onClick Behaviour when button is clicked
  * @param {string} title Tooltip text
@@ -26,7 +27,7 @@ const IconButton = ({ tooltipPlacement, title, className = '', children, onClick
 
 IconButton.propTypes = {
   /** Material Icon to use in button */
-  children: PropType.string,
+  children: PropType.any,
   /** Aditional CSS classes for button */
   className: PropType.string,
   /** Behaviour when button is clicked */

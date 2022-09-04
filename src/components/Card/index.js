@@ -38,12 +38,12 @@ const cardOpenStyle = {
  * @param {number} verticalOffset Number between 0-100 
  * @param {number} horizontalOffset Number between 0-100 
  * @param {string} title Title to be displayed above the card's content
- * @param {Object | Array<Object>} children
+ * @param {any} children
  * @param {bool} isDraggable 
  * @param {bool} canToggleVisibility If enabled, a hide/show icon will be displayed on the top left corner 
  * @param {function} onClose If set, a close button will de displayed on the top right corner with said behaviour on an onClick event
- * @param {string} containerStyle Extra styling for outer container 
- * @param {string} innerStyle Extra styling for inner content
+ * @param {object} containerStyle Extra styling for outer container 
+ * @param {object} innerStyle Extra styling for inner content
  */
 const Card = ({ width, height, verticalOffset, horizontalOffset, title = undefined, children, isDraggable = true, containerStyle, innerStyle, canToggleVisibility = true, onClose = undefined }) => {
     const innerWidth = width != undefined ? window.innerWidth - width : window.innerWidth;
@@ -139,10 +139,7 @@ Card.propTypes = {
     horizontalOffset: PropTypes.number,
     /** Title to be displayed above the card's content */ 
     title: PropTypes.string, 
-    children: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.arrayOf(PropTypes.object)
-    ]), 
+    children: PropTypes.any, 
     /** If enabled, card can be dragged around the screen */
     isDraggable: PropTypes.bool, 
     /** If enabled, a hide/show icon will be displayed on the top left corner */
@@ -150,9 +147,9 @@ Card.propTypes = {
     /** If set, a close button will de displayed on the top right corner with said behaviour on an onClick event */ 
     onClose: PropTypes.func,
     /** Extra styling for outer container */
-    containerStyle: PropTypes.string,
+    containerStyle: PropTypes.object,
     /** Extra styling for inner content */
-    innerStyle: PropTypes.string, 
+    innerStyle: PropTypes.object, 
 };
 
 export default Card;

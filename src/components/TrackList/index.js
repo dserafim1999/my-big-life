@@ -1,11 +1,11 @@
 import React from "react";
-import { connect } from 'react-redux';
 
 import Track from './Track';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes  from 'react-immutable-proptypes';
 
-import {
-  downloadTrack, toggleTrackSegmentsVisibility
-} from '../../actions/tracks';
+import { downloadTrack, toggleTrackSegmentsVisibility } from '../../actions/tracks';
+import { connect } from 'react-redux';
 
 const LOADING = <span className='button is-large is-loading' style={{ border: 0 }}>Loading</span>;
 
@@ -17,7 +17,17 @@ const style = {
   width: '100%'
 }
 
-let TrackList = ({ dispatch, tracks, className, step, remainingCount }) => {
+/**
+ * Container that holds a list of tracks to display in the context of Track Processing.
+ * 
+ * See `TrackProcessing`
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {ImmutablePropTypes.seq} tracks List of Tracks to display  
+ * @param {number} step Processing step
+ * @param {number} remainingCount Number of days remaining to process 
+ */
+let TrackList = ({ dispatch, tracks, step, remainingCount }) => {
     if (tracks.count() !== 0) {
         return (
             <ul style={{padding: 0}}>
@@ -59,7 +69,8 @@ const mapStateToProps = (state) => {
   const tracks = state
     .get('tracks').get('tracks').valueSeq().sort((a, b) => {
       return findStart(a).getStartTime().diff(findStart(b));
-    });
+  });
+
 
   return {
     tracks,
@@ -69,5 +80,16 @@ const mapStateToProps = (state) => {
 }
   
 TrackList = connect(mapStateToProps)(TrackList);
-  
+
+TrackList.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** List of Tracks to display */
+  tracks: ImmutablePropTypes.seq,
+  /** Processing step */
+  step: PropTypes.number,
+  /** Number of days remaining to process */
+  remainingCount: PropTypes.number
+}
+
 export default TrackList;
