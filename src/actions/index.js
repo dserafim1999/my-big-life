@@ -69,6 +69,8 @@ export const ADVANCE_TO_ANNOTATE = 'process/advance_annotate';
 export const SET_SERVER_STATE = 'process/set_server_state';
 export const TOGGLE_REMAINING_TRACKS = 'process/toggle_remaining_tracks';
 export const SET_LIFE = 'process/set_LIFE';
+export const SET_BULK_PROGRESS = 'process/set_bulk_progress';
+export const SET_IS_BULK_PROCESSING = 'process/set_is_bulk_processing';
 
 export const UPDATE_QUERY_BLOCK = 'queries/update_query_block';
 export const ADD_QUERY_STAY = 'queries/add_query_stay';

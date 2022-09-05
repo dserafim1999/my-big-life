@@ -28,7 +28,8 @@ const GPXOfDay = ({ date, size }) => {
 
 const EMPTY_FOLDER = (
   <div style={{ margin: 'auto', marginTop: '1rem', color: 'rgb(191, 191, 191)', textAlign: 'center' }}>
-    <CheckIcon style={{ color: 'rgb(191, 191, 191)' }} /> Every day is processed
+    <CheckIcon style={{ color: 'rgb(191, 191, 191)', verticalAlign: 'middle', marginRight: '5px' }} /> 
+    <span style={{verticalAlign: 'middle'}}> Every day is processed </span>
   </div>
 );
 

@@ -16,7 +16,6 @@ import Overlay from '../Overlay';
 
 const Dropzone = ({ children, onDrop, onOver, canDropFiles, ...props }) => {
   if (!canDropFiles) return children;
-  console.log(typeof children);
 
   const [isDragging, setIsDragging] = useState(false);
 

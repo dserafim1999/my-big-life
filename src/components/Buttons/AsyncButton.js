@@ -5,6 +5,13 @@ import PropTypes from 'prop-types';
 import { Tooltip } from '@mui/material';
 import { findDOMNode } from 'react-dom';
 
+const statusStyle = {
+  height: '100%',
+  position: 'absolute',
+  right: 0,
+  backgroundColor: 'rgb(0,0,0,0.5)',
+  marginTop: '1px'
+}
 
 /**
  * Button with a loading spinner for async operations.
@@ -16,6 +23,8 @@ import { findDOMNode } from 'react-dom';
  * @param {function} onClick Behaviour when button is clicked
  * @param {object} style Aditional CSS styling for button
  * @param {string} title Tooltip text
+ * @param {boolean} showStatus If enabled, a loading overlay will be displayed reflecting the async operation's status
+ * @param {number} statusPercentage Value used to represent status percentage if showStatus is active
  */
 export default class AsyncButton extends Component {
   constructor (props) {
@@ -41,7 +50,11 @@ export default class AsyncButton extends Component {
     /** Aditional CSS styling for button */
     style: PropTypes.object,
     /** Tooltip text */
-    title: PropTypes.string
+    title: PropTypes.string,
+    /** If enabled, a loading overlay will be displayed reflecting the async operation's status */
+    showStatus: PropTypes.bool, 
+    /** Value used to represent status percentage if showStatus is active */
+    statusPercentage: PropTypes.number 
   }
 
   createClassName (additional, filter = () => (true)) {
@@ -52,7 +65,7 @@ export default class AsyncButton extends Component {
   }
 
   onClick (e) {
-    if (this.props.onClick) {
+    if (this.props.onClick && !this.props.disabled) {
       this.props.onClick(e, (className, filter, content) => {
         const button = findDOMNode(this.btnRef.current);
         
@@ -81,6 +94,7 @@ export default class AsyncButton extends Component {
   render () {
     const { style } = this.props;
     const classes = this.createClassName();
+
     if (this.props.isFile) {
       const id='fkdhf';
       const onChange = (evt) => {
@@ -101,11 +115,15 @@ export default class AsyncButton extends Component {
           reader.readAsText(f);
         }
       }
+
       return (
        <div style={style} className={classes} ref={this.btnRef}>
           <input type='file' id={id} style={{display: 'none'}} onChange={onChange}/>
           <label htmlFor={id}>
-            { this.state.content || this.props.children }
+            { this.props.showStatus && 
+              <div style={{...statusStyle, width: (100 - this.props.statusPercentage) + '%'}}/>
+            }
+            { this.props.children }
           </label>
         </div>
       )
@@ -113,7 +131,10 @@ export default class AsyncButton extends Component {
       return (
         <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top' } >  
           <div style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
-            { this.state.content || this.props.children }
+            { this.props.showStatus && 
+              <div style={{...statusStyle, width: (100 - this.props.statusPercentage) + '%'}}/>
+            }
+            { this.props.children }
           </div>
         </Tooltip>
       );
@@ -121,7 +142,10 @@ export default class AsyncButton extends Component {
       return (
         <Tooltip title={this.title}  placement={this.props.tooltipPlacement !== undefined ? this.props.tooltipPlacement : 'top'} >  
           <a style={style} className={classes} onClick={this.onClick.bind(this)} ref={this.btnRef}>
-            { this.state.content || this.props.children }
+            { this.props.showStatus && 
+              <div style={{...statusStyle, width: (100 - this.props.statusPercentage) + '%'}}/>
+            }
+            { this.props.children }
           </a>
         </Tooltip>
       );

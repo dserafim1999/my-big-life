@@ -102,7 +102,7 @@ let App = ({ showConfig, view, canDropFiles, isAppLoading, dispatch }) => {
 
 const mapStateToProps = (state) => ({
   view: state.get('general').get('activeView'),
-  canDropFiles: state.get('general').get('activeView') === TRACK_PROCESSING,
+  canDropFiles: state.get('general').get('activeView') === TRACK_PROCESSING && !state.get('process').get('isBulkProcessing'),
   isAppLoading: state.get('general').get('isAppLoading')
 });
 

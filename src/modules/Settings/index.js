@@ -5,18 +5,19 @@ import { saveConfig, getConfig, updateServer } from '../../actions/general';
 import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
-import { bulkProcess, rawBulkProcess } from '../../actions/process';
+import { bulkProcess, getBulkProcessStatus, rawBulkProcess } from '../../actions/process';
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import SaveIcon from '@mui/icons-material/Save';
 
-const Settings = ({ dispatch, address, config, isLoading, isVisible, isLoadingBulk }) => {
+const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProcessing, bulkProgress }) => {
     if (!isVisible) return null;
     
-    const bulkClassName = 'is-blue' + (isLoadingBulk ? ' is-loading' : '');
+    const bulkClassName = 'is-blue' + (isBulkProcessing ? ' is-loading' : '');
 
     useEffect( () => {
       dispatch(getConfig(dispatch));
+      dispatch(getBulkProcessStatus());
       console.log(address)
    }, []);
 
@@ -169,7 +170,10 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isLoadingBu
           <AsyncButton 
             title='Bulk Upload All Tracks In Input Folder' 
             className={bulkClassName}
-            style={{float: "left"}} 
+            style={{float: "left"}}
+            disabled={isBulkProcessing} 
+            showStatus={isBulkProcessing} 
+            statusPercentage={bulkProgress} 
             onClick={onBulkClick}>
               <DownloadingIcon style={{marginRight: '10px'}}/>
               Bulk Track Upload
@@ -196,7 +200,8 @@ const mapStateToProps = (state) => {
     config: serverConfig ? serverConfig.toJS() : null,
     isLoading: state.get('general').get('loading').has('config'),
     isVisible: state.get('general').get('isUIVisible'),
-    isLoadingBulk: state.get('general').get('loading').has('bulk-button')
+    isBulkProcessing: state.get('process').get('isBulkProcessing'),
+    bulkProgress: state.get('process').get('bulkProgress'),
   };
 }
 

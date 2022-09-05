@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { COPY_DAY_TO_INPUT, REDO, REMOVE_TRACKS_FOR, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
+import { COPY_DAY_TO_INPUT, REDO, REMOVE_TRACKS_FOR, SET_BULK_PROGRESS, SET_IS_BULK_PROCESSING, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
 import { addAlert, fitSegments, setLoading } from './general';
 import { reset as resetId } from '../reducers/idState';
 import { toggleSegmentJoining, addPossibilities } from './segments';
@@ -71,8 +71,9 @@ export const completeTrip = (segmentId, from, to, index) => {
 
 const updateState = (dispatch, json, getState, reverse = false) => {
   resetId();
+  dispatch(getBulkProcessStatus());
   
-  if (!json) {
+  if (!json || json.isBulkProcessing) {
     return;
   }
 
@@ -131,7 +132,7 @@ export const requestServerState = () => {
     })
     .then((json) => {
         dispatch(clearAll());
-        updateState(dispatch, json, getState)
+        updateState(dispatch, json, getState);
     });
   }
 }
@@ -291,47 +292,124 @@ export const skipDay = () => {
   }
 }
 
-export const bulkProcess = () => {
+export const getBulkProcessStatus = () => {
   return (dispatch, getState) => {
-    dispatch(setLoading('bulk-button', true));
     const options = {
       method: 'GET',
       mode: 'cors'
     }
+    return fetch(getState().get('general').get('server') + '/process/bulkProgress', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((json) => {
+        const isBulkProcessing = json.progress >= 0 && json.progress < 100;
+        dispatch(setIsBulkProcessing(isBulkProcessing));
+
+        if (isBulkProcessing) {
+          dispatch(getBulkProgress());
+        }
+      });
+  }
+}
+
+var timeout;
+async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, force) {
+  let progress;
+  
+  const options = {
+    method: 'GET',
+    mode: 'cors'
+  }
+  
+  try {
+    await fetch(url, options)
+      .then((response) => response.json())
+      .catch((err) => console.log(err))
+      .then((json) => {
+        progress = json.progress === -1 && force ? 0 : json.progress;
+        setProgress(json.progress);
+      });
+  } catch (e) {
+    console.error("Error: ", e);
+  }
+  
+  if (progress < 0 || progress === 100) {
+    setIsBulkProcessing;
+    clearTimeout(timeout);
+    return false;
+  }
+   
+  timeout = setTimeout(() => getBulkProgressStatus(url, setProgress), 1000);
+}
+
+const getBulkProgress = (force = false) => {
+  return (dispatch, getState) => {
+    getBulkProgressStatus(
+      getState().get('general').get('server') + '/process/bulkProgress', 
+      (progress) => dispatch(setBulkProgress(progress)),
+      () => dispatch(setIsBulkProcessing(false)),
+      force
+    );
+  }
+}
+
+export const setIsBulkProcessing = (isBulkProcessing) => ({
+  isBulkProcessing,
+  type: SET_IS_BULK_PROCESSING
+})
+
+export const setBulkProgress = (progress) => ({
+  progress,
+  type: SET_BULK_PROGRESS
+})
+
+export const bulkProcess = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(setIsBulkProcessing(true));
+    dispatch(getBulkProgress(true));
+    dispatch(addAlert('Starting bulk processing. You can see the progress on the Track Processing menu.', 'info', 5, 'bulk-start'));
+
     return fetch(getState().get('general').get('server') + '/process/bulk', options)
       .then((response) => response.json())
       .catch((err) => {
         dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'bulk-err'));
-        dispatch(setLoading('bulk-button', false));
+        dispatch(setIsBulkProcessing(false));
         throw err;
       })
       .then((json) => {
         dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
-        dispatch(setLoading('bulk-button', false));
-        updateState(dispatch, json, getState)
+        dispatch(setIsBulkProcessing(false));
+        updateState(dispatch, json, getState);
       });
   }
 }
 
 export const rawBulkProcess = () => {
   return (dispatch, getState) => {
-    dispatch(setLoading('bulk-button', false));
-
     const options = {
       method: 'GET',
       mode: 'cors'
     }
+
+    dispatch(setIsBulkProcessing(true));
+    dispatch(getBulkProgress(true));
+
     return fetch(getState().get('general').get('server') + '/process/rawBulk', options)
       .then((response) => response.json())
       .catch((err) => {
         dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'config-err'));
-        dispatch(setLoading('bulk-button', false));
+        dispatch(setIsBulkProcessing(false));
         throw err;
       })
       .then((json) => {
         dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
-        dispatch(setLoading('bulk-button', false));
-        updateState(dispatch, json, getState)
+        dispatch(setIsBulkProcessing(false));
+        updateState(dispatch, json, getState);
       });
   }
 }
