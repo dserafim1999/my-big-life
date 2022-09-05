@@ -8,7 +8,7 @@ import OptionsField from './OptionsField';
  * 
  * @constructor
  * @param {string} title Input Field name
- * @param {checked} checked Default value ('Yes' or 'No')
+ * @param {boolean} checked 
  * @param {function} onChange Behaviour when value changes
  */
 const ToggleField = ({ title, checked, onChange }) => {
@@ -20,8 +20,8 @@ const ToggleField = ({ title, checked, onChange }) => {
 ToggleField.propTypes = {
   /** Input Field name */
   title: PropTypes.string,
-  /** Default value ('Yes' or 'No') */
-  checked: PropTypes.string,
+  /** Default value */
+  checked: PropTypes.bool,
   /** Behaviour when value changes */
   onChange: PropTypes.func
 }

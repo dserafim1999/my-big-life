@@ -11,12 +11,12 @@ import { InputAdornment, MenuItem, TextField as TextInput } from '@mui/material'
  * @param {string} title Input Field name
  * @param {string} placeholder Placeholder text
  * @param {string} type Value type
- * @param {string} defaultValue Default value for input value
- * @param {string} help Help text
+ * @param {string | number} defaultValue Default value for input value
+ * @param {string | object} help Help text
  * @param {function} onChange Behaviour when value is changed
  * @param {boolean} hasOperators If true, operators can be selected via a Select Menu (<,≤,=,≥,>)
  * @param {string} suffix Input adornment text
- * @param {number} min Minimum numeric value (if type is 'number')
+ * @param {string} min Minimum numeric value (if type is 'number')
  */
 const TextField = ({ title, placeholder, type, defaultValue, help, onChange, hasOperators=false, suffix=null, min,...details }) => {
   const [value, setValue] = useState(defaultValue);
@@ -86,7 +86,6 @@ const TextField = ({ title, placeholder, type, defaultValue, help, onChange, has
         value={value || ''}
         variant='filled' 
         type={type || 'text'}
-        defaultValue={defaultValue} 
         placeholder={placeholder} 
         onChange={(e) => onValueChange(e)} 
         helperText={help}
@@ -111,9 +110,15 @@ TextField.propTypes = {
   /** Value type */
   type: PropTypes.string,
   /** Default value for input value */
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Help text */
-  help: PropTypes.string,
+  help: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   /** Behaviour when value is changed */
   onChange: PropTypes.func,
   /** If true, operators can be selected via a Select Menu (<,≤,=,≥,>) */
@@ -121,7 +126,7 @@ TextField.propTypes = {
   /** Input adornment text */
   suffix: PropTypes.string,
   /** Minimum numeric value (if type is 'number') */
-  min: PropTypes.number,
+  min: PropTypes.string,
 } 
 
 export default TextField;

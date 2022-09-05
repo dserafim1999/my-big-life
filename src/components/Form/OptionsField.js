@@ -9,9 +9,9 @@ import { MenuItem, TextField } from '@mui/material';
  * 
  * @constructor
  * @param {string} title Input Field name
- * @param {object} options Dictionary with option key and values
- * @param {defaultValue} defaultValue Default key/value pair
- * @param {string} help Help text
+ * @param {Array} options Dictionary with option key and values
+ * @param {any} defaultValue Default key/value pair
+ * @param {string | object} help Help text
  * @param {function} onChange Behaviour when value changes
  */
 const OptionsField = ({title, options, defaultValue, help, onChange}) => {
@@ -37,11 +37,14 @@ OptionsField.propTypes = {
   /** Input Field name */
   title: PropTypes.string,
   /** Dictionary with option key and values */
-  options: PropTypes.object,
+  options: PropTypes.array,
   /** Default key/value pair */
-  defaultValue: PropTypes.object,
+  defaultValue: PropTypes.any,
   /** Help text */
-  help: PropTypes.string,
+  help: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   /** Behaviour when value changes */
   onChange: PropTypes.func
 }
