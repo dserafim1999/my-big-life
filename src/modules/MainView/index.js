@@ -2,7 +2,7 @@ import { fromJS } from "immutable";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
-import { toggleSegmentInfo } from "../../actions/segments";
+import { toggleSegmentInfo, updateActiveLIFE } from "../../actions/segments";
 import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
 import Segment from "../../components/TrackList/Segment";
@@ -31,6 +31,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 
     const onClose = () =>  {
         dispatch(toggleSegmentInfo(false));
+        dispatch(updateActiveLIFE(null));
     }
     
     const onDelete = (e, modifier) => {
@@ -53,24 +54,15 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
         segment = fromJS({segment: activeSegment});
     }
 
-    const state = activeLIFE ? ContentState.createFromText(activeLIFE) : null;
-    const globalState = globalLIFE ? ContentState.createFromText(globalLIFE) : null;
+    const state = activeLIFE ? ContentState.createFromText(activeLIFE) : (globalLIFE ? ContentState.createFromText(globalLIFE) : null);
+
+    console.log(state)
 
     return <>
         { showSegmentInfo && (
                 <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose}>
                     { activeSegment && <Segment segment={activeSegment} canEdit={false}/>}
-                    { activeLIFE && activeSegment && (
-                        <SemanticEditor
-                            readOnly={true}
-                            style={{margin: '10px 0 10px 0', maxHeight: '170px', overflowY: 'auto'}}
-                            state={ state }
-                            segments={ segment }
-                            dispatch={ dispatch }
-                            strategies={ decorators }
-                        />
-                    )}
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
                         <AsyncButton 
                             title='Delete Day'
                             className='is-red'
@@ -89,18 +81,18 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
                 </Card>
             )   
         }
-        <Card width={400} height={300} verticalOffset={97} horizontalOffset={1} title={"Your LIFE"}>
-            { globalLIFE && (
-                <SemanticEditor
-                    readOnly={true}
-                    style={{padding: '20px 0 10px 0', height: '215px', overflowY: 'auto'}}
-                    state={ globalState }
-                    segments={ segments }
-                    dispatch={ dispatch }
-                    strategies={ decorators }
-                />
-            )}
-        </Card>
+        { state && 
+            <Card width={400} height={400} verticalOffset={97} horizontalOffset={1} title={"LIFE"}>
+                    <SemanticEditor
+                        readOnly={true}
+                        style={{padding: '20px 0 10px 0', height: '310px', overflowY: 'auto'}}
+                        state={ state }
+                        segments={ segments }
+                        dispatch={ dispatch }
+                        strategies={ decorators }
+                    />
+            </Card>
+        }
     </> 
 }
 

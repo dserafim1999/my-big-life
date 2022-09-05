@@ -27,7 +27,7 @@ class SemanticEditor extends Component {
     
     const { state, strategies } = this.props;
     const decorator = new CompositeDecorator(strategies);
-    
+
     const editorState = this.decorate(EditorState.createWithContent(state, decorator));
 
     this.state = {
@@ -50,7 +50,7 @@ class SemanticEditor extends Component {
     if (prev.initial !== this.props.initial) {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
-    } else if (prev.segments !== this.props.segments) {
+    } else if (prev.segments !== this.props.segments || prev.state.getPlainText() !== state.getPlainText()) {
       const editorState = this.decorate(EditorState.createWithContent(state, decorator));
       this.setState({editorState, suggestions: this.state.suggestions});
     }

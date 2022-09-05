@@ -516,9 +516,10 @@ const addNewSegment = (state, action) => {
 }
 
 const toggleSegmentInfo = (state, action) => {
+  const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
   return state
-    .set('showInfo', action.value !== undefined? action.value : !state.get('showInfo'))
-    .set('activeSegment', action.segmentId);
+    .set('showInfo', showInfo)
+    .set('activeSegment', showInfo ? action.segmentId : null);
 }
 
 const updateActiveLIFE = (state, action) => {
