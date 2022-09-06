@@ -35,7 +35,7 @@ export default (map, actions) => {
   map.buttons = btns;
   
   new ControlButton({
-    button: (<MyLocationIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit', color: 'black' }} className='clickable' />),
+    button: (<MyLocationIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit', color: 'black', verticalAlign: 'middle' }} className='clickable' />),
     title: 'Position on your location',
     onClick: () => map.locate({setView: true})
   }).addTo(map);
