@@ -6,7 +6,7 @@ const loadingBarStyle = {
     width: '100%', 
     backgroundColor: 'lightgrey', 
     marginTop: '15px', 
-    borderRadius: '5px'
+    borderRadius: '5px',
 }
 
 /**
@@ -24,7 +24,7 @@ const LoadingBar = ({value, height, showPercentage = true}) => {
         <div style={{...loadingBarStyle, height: height + 'px'}}>
             <div style={{height: '100%', width: value + '%', backgroundColor: 'var(--main)', borderRadius: '5px'}}>
                 { showPercentage && (
-                    <span style={{color: 'white', verticalAlign: 'middle' }}>{ percentage + '%'}</span>
+                    <span style={{color: 'white', verticalAlign: 'middle', textOverflow: 'ellipsis' }}>{ percentage + '%'}</span>
                 )}
             </div>
         </div>

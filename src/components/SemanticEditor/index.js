@@ -15,7 +15,7 @@ import { setLIFE } from '../../actions/process';
  * 
  * @constructor
  * @param {function} dispatch Redux store action dispatcher
- * @param {ImmutablePropTypes.List} segments Immutable List containing segment objects.
+ * @param {ImmutablePropTypes.Map} segments Immutable List containing segment objects.
  * @param {string} life LIFE string
  */
 let SE = ({ dispatch, segments, life }) => {
@@ -47,7 +47,7 @@ SE.propTypes = {
   /** Redux store action dispatcher */
   dispatch: PropTypes.func,
   /** Immutable List containing segment objects */
-  segments: ImmutablePropTypes.listOf(PropTypes.object),
+  segments: ImmutablePropTypes.mapOf(PropTypes.object),
   /** LIFE string */
   life: PropTypes.string
 }
