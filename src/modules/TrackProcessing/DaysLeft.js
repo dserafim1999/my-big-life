@@ -53,7 +53,7 @@ const DayButton = ({className, title, icon, onClick}) => {
 const Day = ({ date, gpxs, isSelected, onDismiss, onDelete }) => {
   const mDate = moment(date);
   return (
-    <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#738492' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid' }}>
+    <div className='clickable day-left' style={{ width: '345px', padding: '0.2rem', backgroundColor: isSelected ? '#666666' : '', color: isSelected ? 'white' : '', border: '1px #bbb solid', borderRadius: '5px', margin: '2px 0' }}>
       <DayButton className='button is-red is-white' title='Dismiss day. Does not delete track.' onClick={onDismiss} icon={<CloseIcon sx={{ fontSize: '0.85rem' }}/>}/>
       <DayButton className='button is-blue is-white' title='Delete track from input.' onClick={(e) => onDelete(e, gpxs)} icon={<DeleteIcon sx={{ fontSize: '0.85rem' }}/>}/>
       <Tooltip title='Click to change the day to process' placement='bottom'>

@@ -7,9 +7,10 @@ import { connect } from 'react-redux';
 import { removeAlert } from '../../actions/general';
 
 const mapType = {
-  'warning': 'is-warning',
-  'success': 'is-success',
-  'error': 'is-danger'
+  'warning': 'is-warning is-light',
+  'info': 'is-info is-light',
+  'success': 'is-info is-light',
+  'error': 'is-danger is-light'
 };
 
 /**

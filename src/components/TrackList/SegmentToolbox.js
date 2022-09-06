@@ -81,7 +81,7 @@ const toggleAlert = (dispatch, ref, alert, should) => {
   if (should) {
     dispatch(removeAlert(null, ref));
   } else {
-    dispatch(addAlert(alert, 'success', INFO_TIME, ref));
+    dispatch(addAlert(alert, 'info', INFO_TIME, ref));
   }
 }
 
