@@ -1,17 +1,17 @@
 import React from 'react';
 
-import SemanticEditor from '../../modules/SemanticEditor';
+import SemanticEditor from '../SemanticEditor';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes  from 'react-immutable-proptypes';
 
-import decorators from '../../modules/SemanticEditor/editDecorators';
-import suggestionsGetters from '../../modules/SemanticEditor/suggestionsGetters';
+import decorators from '../SemanticEditor/editDecorators';
+import suggestionsGetters from '../SemanticEditor/suggestionsGetters';
 import { connect } from 'react-redux';
 import { ContentState } from 'draft-js';
 import { setLIFE } from '../../actions/process';
 
 /**
- * Container that sets up data for the Semantic Editor module
+ * Container that sets up data regarding processing for the Semantic Editor module
  * 
  * @constructor
  * @param {function} dispatch Redux store action dispatcher

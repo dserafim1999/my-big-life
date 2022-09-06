@@ -3,7 +3,7 @@ import React from 'react';
 import { ANNOTATE_STAGE, DONE_STAGE } from '../../constants';
 
 import TrackList from './TrackList';
-import SemanticEditor from '../../components/SemanticEditor';
+import SemanticEditor from './SemanticEditor';
 import DaysLeft from './DaysLeft';
 
 const PaneContent = ({ showList, stage }) => {
