@@ -18,14 +18,6 @@ import {
 } from '../../actions/process';
 import LoadingBar from '../../components/LoadingBar';
 
-const loadingBarStyle = {
-    height: '30px', 
-    width: '100%', 
-    backgroundColor: 'lightgrey', 
-    marginTop: '15px', 
-    borderRadius: '5px'
-}
-
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
     <div>

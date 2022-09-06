@@ -4,7 +4,7 @@ import Segment from './Segment';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
-import { Date } from 'moment';
+import Date from 'moment';
 import { connect } from 'react-redux';
 import { TrackRecord } from '../../records';
 import { addNewSegment } from '../../actions/segments';

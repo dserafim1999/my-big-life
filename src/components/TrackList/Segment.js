@@ -74,7 +74,7 @@ const SegmentStartEnd = ({ onClick, index, time}) => {
  * @constructor
  * @param {SegmentRecord} segment Segment to be represented
  * @param {function} dispatch Redux store action dispatcher
- * @param {string} trackId Id for the track that contains the segment
+ * @param {string | number} trackId Id for the track that contains the segment
  * @param {number} segmentId Segment's Id
  * @param {ImmutablePropTypes.list} points Segment points
  * @param {Date} start Segment's start date
@@ -201,7 +201,10 @@ Segment.propTypes = {
   /** Redux store action dispatcher */
   dispatch: PropTypes.func,
   /** Id for the track that contains the segment */
-  trackId: PropTypes.string,
+  trackId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   /** Segment's Id */
   segmentId: PropTypes.number,
   /** Segment points */
