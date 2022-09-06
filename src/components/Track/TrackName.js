@@ -1,7 +1,7 @@
 import React from 'react';
 
 import moment from 'moment';
-import IconButton from '../../components/Buttons/IconButton';
+import IconButton from '../Buttons/IconButton';
 import PropTypes from 'prop-types';
 
 import DownloadIcon from '@mui/icons-material/Download';

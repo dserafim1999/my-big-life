@@ -1,19 +1,20 @@
-import { fromJS } from "immutable";
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
-import { toggleSegmentInfo, updateActiveLIFE } from "../../actions/segments";
-import Card from "../../components/Card";
-import { useNavigate } from "react-router-dom";
-import Segment from "../../components/TrackList/Segment";
 
-import { ContentState } from 'draft-js';
+import Card from "../../components/Card";
+import Segment from "../../components/Segment";
 import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../SemanticEditor/viewDecorators';
 import AsyncButton from "../../components/Buttons/AsyncButton";
+import moment from "moment";
+
+import { fromJS } from "immutable";
+import { connect } from "react-redux";
+import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
+import { toggleSegmentInfo, updateActiveLIFE } from "../../actions/segments";
+import { useNavigate } from "react-router-dom";
+import { ContentState } from 'draft-js';
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
-import moment from "moment";
 import { copyDayToInput } from "../../actions/process";
 
 import DeleteIcon from '@mui/icons-material/Delete';

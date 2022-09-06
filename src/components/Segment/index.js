@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import SegmentToolbox from './SegmentToolbox';
-import IconButton from '../../components/Buttons/IconButton';
+import IconButton from '../Buttons/IconButton';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Date from 'moment';

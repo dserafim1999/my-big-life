@@ -1,6 +1,6 @@
 import React from "react";
 
-import Track from './Track';
+import Track from '../../components/Track';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes  from 'react-immutable-proptypes';
 

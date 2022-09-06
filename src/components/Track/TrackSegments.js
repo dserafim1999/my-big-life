@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Segment from './Segment';
+import Segment from '../Segment';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 

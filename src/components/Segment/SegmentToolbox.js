@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TimeSlider from '../../components/TimeSlider';
-import IconButton from '../../components/Buttons/IconButton';
+import TimeSlider from '../TimeSlider';
+import IconButton from '../Buttons/IconButton';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Date from 'moment';
