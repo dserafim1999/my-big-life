@@ -1,25 +1,21 @@
+const path = require('path');
+
 module.exports = {
     title: 'MyBigLife',
-    // sections: [
-    //   {
-    //     name: 'Introduction',
-    //     content: 'docs/introduction.md'
-    //   },
-    //   {
-    //     name: 'Documentation',
-    //     sections: [
-    //       {
-    //         name: 'Installation',
-    //         content: 'docs/installation.md',
-    //         description: 'The description for the installation section'
-    //       },
-    //       {
-    //         name: 'Configuration',
-    //         content: 'docs/configuration.md'
-    //       }
-    //     ]
-    //   }
-    // ],
+    sections: [
+      {
+        name: 'Introduction',
+        content: 'docs/introduction.md'
+      },
+      {
+        name: 'State',
+        content: 'docs/state.md',
+      },
+      {
+        name: 'Components',
+        components: 'src/components/[A-Z]*/[A-Z]*.js'
+      }
+    ],
     webpackConfig: {
       module: {
         rules: [
