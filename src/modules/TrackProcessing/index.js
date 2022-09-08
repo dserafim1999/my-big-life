@@ -8,7 +8,8 @@ import Card from '../../components/Card';
 import DownloadingIcon from '@mui/icons-material/Downloading';
 
 import { connect } from 'react-redux';
-import { toggleRemainingTracks, addAlert } from '../../actions/general';
+import { addAlert } from '../../actions/general';
+import { toggleRemainingTracks } from '../../actions/process';
 import { clearAll, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';

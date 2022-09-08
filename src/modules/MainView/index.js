@@ -57,8 +57,6 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 
     const state = activeLIFE ? ContentState.createFromText(activeLIFE) : (globalLIFE ? ContentState.createFromText(globalLIFE) : null);
 
-    console.log(state)
-
     return <>
         { showSegmentInfo && (
                 <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose}>

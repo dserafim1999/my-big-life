@@ -7,7 +7,9 @@ import {
   HIGHLIGHT_SEGMENT,
   DEHIGHLIGHT_SEGMENT,
   ADD_POINT_PROMPT,
-  REMOVE_POINT_PROMPT
+  REMOVE_POINT_PROMPT,
+  SELECT_POINT_ON_MAP,
+  DESELECT_POINT_ON_MAP
 } from '../actions';
 
 const changeSegmentHighlight = (state, action) => {
@@ -38,6 +40,16 @@ const changePointHighlight = (state, action) => {
   });
 }
 
+const selectPointOnMap = (state, action) => {
+  const { onClick, segmentId, highlightedPoint } = action;
+  return state.setIn(['segments', segmentId, 'pointAction'], Map({ highlightedPoint, onClick }));
+}
+
+const deselectPointOnMap = (state, action) => {
+  const { segmentId } = action;
+  return state.setIn(['segments', segmentId, 'pointAction'], null);
+}
+
 const MapRecord = new Record({
   bounds: undefined,
   center: undefined,
@@ -64,6 +76,10 @@ const map = (state = INITIAL_STATE, action) => {
       return state.set('pointPrompt', action.callback);
     case REMOVE_POINT_PROMPT:
       return state.set('pointPrompt', null);
+    case SELECT_POINT_ON_MAP:
+      return selectPointOnMap(state, action);
+    case DESELECT_POINT_ON_MAP:
+      return deselectPointOnMap(state, action);
     default:
       return state;
   }

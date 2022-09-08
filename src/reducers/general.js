@@ -53,7 +53,6 @@ const updateConfig  = (state, action) => {
 }
 
 const updateServer = (state, action) => {
-  console.log(action.server)
   return state.set('server', action.server);
 }
 

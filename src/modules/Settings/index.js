@@ -16,15 +16,12 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
     const bulkClassName = 'is-blue' + (isBulkProcessing ? ' is-loading' : '');
 
     useEffect( () => {
-      dispatch(getConfig(dispatch));
+      dispatch(getConfig());
       dispatch(getBulkProcessStatus());
-      console.log(address)
    }, []);
 
    const [state, setState] = useState({...config, address: address});
 
-
-   console.log(state)
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
       const use_processing = 'bulk_uses_processing' in state ?  state.bulk_uses_processing : config.bulk_uses_processing;

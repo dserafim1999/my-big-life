@@ -10,8 +10,8 @@ import MenuBar from './components/MenuBar';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
-import { addAlert, toggleRemainingTracks, uploadFile } from './actions/general';
-import { undo, redo, nextStep, previousStep, skipDay } from './actions/process';
+import { addAlert, uploadFile } from './actions/general';
+import { undo, redo, nextStep, previousStep, skipDay, toggleRemainingTracks } from './actions/process';
 import { ModuleRoutes } from "./modules/ModuleRoutes";
 import loadFiles from "./utils/loadFiles";
 import { TRACK_PROCESSING } from "./constants";

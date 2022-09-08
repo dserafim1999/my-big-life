@@ -11,25 +11,40 @@ import {
   CLEAR_ALL,
   DISPLAY_CANONICAL_TRIPS,
   CLEAR_TRIPS,
-  TOGGLE_TRACK_INFO,
   CLEAR_LOCATIONS
 } from ".";
 
 import { Set } from 'immutable';
-import { fitSegments, setAppLoading } from './general';
-import saveData from "../modules/TrackProcessing/saveData";
+import { setAppLoading } from './general';
+import { fitSegments } from './map';
 import { toggleSegmentInfo, toggleSegmentVisibility } from "./segments";
+import saveData from "../modules/TrackProcessing/saveData";
 
-export const addTrack = (segments, name, locations = []) => {  
-    return {
-        segments,
-        name,
-        locations,
-        type: ADD_TRACK,
-    }
-}
+/**
+ * Adds track to global state.
+ * 
+ * @action
+ * @param {Array} segments Array with track's segments
+ * @param {string} name Name of GPX file that contains track
+ * @param {Array} locations Array with track's from and to location objects 
+ * @returns Action Object
+ */
+export const addTrack = (segments, name, locations = []) => ({
+    segments,
+    name,
+    locations,
+    type: ADD_TRACK,
+})
 
-export const addMultipleTracks = (tracks, options) => {
+/**
+ * Add multiple tracks to global state.
+ * 
+ * See `addTrack `.
+ * 
+ * @function
+ * @param {Array} tracks Array with tracks 
+ */
+export const addMultipleTracks = (tracks) => {
   return (dispatch, getState) => {
     const getSegKeys = () => Set(getState().get('tracks').get('segments').keySeq());
     const previous = getSegKeys();
@@ -43,36 +58,51 @@ export const addMultipleTracks = (tracks, options) => {
   }
 }
 
+/**
+ * Adds trips to global state to be displayed.
+ * 
+ * @action
+ * @param {Array} trips Array with track objects 
+ * @returns  Action Object
+ */
 export const displayTrips = (trips) => ({
   trips,
   type: DISPLAY_TRIPS
 })
 
+/**
+ * Adds canonical trips to global state to be displayed.
+ * 
+ * @action
+ * @param {Array} trips Array with canonical track objects
+ * @returns Action Object
+ */
 export const displayCanonicalTrips = (trips) => ({
   trips,
   type: DISPLAY_CANONICAL_TRIPS
 })
 
+/**
+ * Adds canonical locations to global state to be displayed.
+ * 
+ * @action
+ * @param {Array} locations Array with canonical location objects 
+ * @returns Action Object
+ */
 export const displayLocations = (locations) => ({
   locations,
   type: DISPLAY_LOCATIONS
 })
 
-export const toggleTrackRenaming = (trackId) => {
-    return {
-      trackId,
-      type: TOGGLE_TRACK_RENAMING
-    }
-}
-
-export const updateTrackName = (trackId, newName) => {
-  return {
-    trackId,
-    name: newName,
-    type: UPDATE_TRACK_NAME
-  }
-}
-
+/**
+ * Sets whether segments in a track are visible.
+ * 
+ * If no boolean value is set, value is toggled
+ * 
+ * @function
+ * @param {number | string} trackId Track Id 
+ * @param {boolean} value If track segments are visible. 
+ */
 export const toggleTrackSegmentsVisibility = (trackId, value) => {
   return (dispatch, getState) => {
     const segments = getState().get('tracks').get('tracks').get(trackId).get('segments').toJS();
@@ -83,6 +113,14 @@ export const toggleTrackSegmentsVisibility = (trackId, value) => {
   }
 }
 
+/**
+ * Highlight a segment in a track.
+ * 
+ * @function
+ * @param {number | string} trackId Track Id 
+ * @param {number} segmentId Segment Id 
+ * @param {boolean} value If other track segments are highlighted 
+ */
 export const highlightSegmentInTrack = (trackId, segmentId, value) => {
   return (dispatch, getState) => {
     dispatch(toggleTrackSegmentsVisibility(trackId, !value));
@@ -90,6 +128,13 @@ export const highlightSegmentInTrack = (trackId, segmentId, value) => {
   }
 }
 
+/**
+ * Fully highlight a track.
+ * 
+ * @function
+ * @param {number | string} trackId Track Id 
+ * @param {boolean} value If track is highlighted  
+ */
 export const highlightTrack = (trackId, value) => {
   return (dispatch, getState) => {
     const tracks = getState().get('tracks').get('tracks').toJS();
@@ -104,13 +149,23 @@ export const highlightTrack = (trackId, value) => {
  }
 }
 
+/**
+ * @returns Action Object
+ */
 export const resetHistory = () => ({
   type: RESET_HISTORY
 })
 
 const MS_REG = /.[0-9]{3}Z$/;
 
-// converts track into GPX format
+/**
+ * Converts track into GPX format
+ * 
+ * @function
+ * @param {number | string} trackId Track Id 
+ * @param {object} state Global state
+ * @returns GPX formatted string
+ */
 const exportGPX = (trackId, state) => {
   const segments = state.get('tracks').get('tracks').get(trackId).get('segments').toJS().map((segmentId, i) => {
     const segment = state.get('tracks').get('segments').get(segmentId);
@@ -134,7 +189,12 @@ const exportGPX = (trackId, state) => {
   ].join('\n');
 }
 
-// triggers download with track converted to GPX format
+/**
+ * Triggers download with track converted to GPX format
+ * 
+ * @function
+ * @param {number | string} trackId Track Id 
+ */
 export const downloadTrack = (trackId) => {
   return (_, getState) => {
     let str = exportGPX(trackId, getState());
@@ -142,6 +202,11 @@ export const downloadTrack = (trackId) => {
   }
 }
 
+/**
+ * Download all tracks edited in the Track Processing menu
+ * 
+ * @function 
+ */
 export const downloadAll = () => {
   return (dispatch, getState) => {
     getState().get('tracks').get('tracks').keySeq().forEach((t) => {
@@ -150,15 +215,34 @@ export const downloadAll = () => {
   }
 }
 
+/**
+ * Remove a track from the global state.
+ * 
+ * @action
+ * @param {number | string} trackId Track Id 
+ * @returns Action Object
+ */
 export const removeTrack = (trackId) => ({
   trackId,
   type: REMOVE_TRACK
 })
 
+/**
+ * Remove all tracks/segments and canonical trips/locations from state.
+ * 
+ * @action
+ * @returns Action Object
+ */
 export const clearAll = () => ({
   type: CLEAR_ALL
 })
 
+/**
+ * Remove all tracks/segments from state.
+ * 
+ * @function
+ * @returns Action Object
+ */
 export const clearTrips = () => {
   return (dispatch, getState) => {
     dispatch(toggleSegmentInfo(false));
@@ -166,16 +250,40 @@ export const clearTrips = () => {
   }
 }
 
+/**
+ * Remove canonical locations from state.
+ * 
+ * @action
+ * @returns Action Object
+ */
 export const clearLocations = () => ({
   type: CLEAR_LOCATIONS
 })
 
+/**
+ * Updates the LIFE representation of a track.
+ * 
+ * @action
+ * @param {string} text Track LIFE representation 
+ * @param {string} warning Warning message
+ * @returns Action Object
+ */
 export const updateTrackLIFE = (text, warning) => ({
   text,
   warning,
   type: UPDATE_TRACK_LIFE
 })
 
+/**
+ * Loads trips contained in certain bounds.
+ * 
+ * @request
+ * @param {number} latMin Minimum bounds latitude
+ * @param {number} lonMin Minimum bounds longitude
+ * @param {number} latMax Maximum bounds latitude
+ * @param {number} lonMax Maximum bounds longitude
+ * @param {boolean} canonical If trips are canonical 
+ */
 export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
   return (dispatch, getState) => {
     const options = {
@@ -197,6 +305,16 @@ export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => 
   }
 }
 
+/**
+ * Loads another load of trips contained in certain bounds.
+ * 
+ * @request
+ * @param {number} latMin Minimum bounds latitude
+ * @param {number} lonMin Minimum bounds longitude
+ * @param {number} latMax Maximum bounds latitude
+ * @param {number} lonMax Maximum bounds longitude
+ * @param {boolean} canonical If trips are canonical 
+ */
 export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
   return (dispatch, getState) => {
     const options = {
@@ -218,6 +336,18 @@ export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical)
   }
 }
 
+/**
+ * Determines if certain bounds require more loading of trips.
+ * 
+ * If all trips in bounds have been loading, then no loading is required.
+ * 
+ * @request
+ * @param {number} latMin Minimum bounds latitude
+ * @param {number} lonMin Minimum bounds longitude
+ * @param {number} latMax Maximum bounds latitude
+ * @param {number} lonMax Maximum bounds longitude
+ * @param {boolean} canonical If trips are canonical 
+ */
 export const canLoadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
   return (dispatch, getState) => {
     const options = {

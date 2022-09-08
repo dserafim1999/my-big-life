@@ -37,13 +37,10 @@ export const FIT_SEGMENT = 'segments/fit';
 export const UPDATE_TIME_FILTER_SEGMENT = 'segments/time_filter';
 export const UPDATE_LOCATION_NAME = 'segments/update_location_name';
 export const UPDATE_ACTIVE_LIFE = 'segments/update_active_LIFE';
-export const SELECT_POINT_IN_MAP = 'segments/select_point_in_map';
-export const DESELECT_POINT_IN_MAP = 'segments/deselect_point_in_map';
 export const SELECT_POINT = 'segments/select_point';
 export const DESELECT_POINT = 'segments/deselect_point';
 export const UPDATE_POINT = 'segments/update_point';
 export const STRAIGHT_SELECTED = 'segments/straight_selected';
-export const INTERPOLATED_TIME_SELECTED = 'segments/interpolated_time_selected';
 
 export const ADD_ALERT = 'general/add_alert';
 export const REMOVE_ALERT = 'general/remove_alert';
@@ -57,6 +54,8 @@ export const TOGGLE_UI = 'general/toggle_ui';
 
 export const UPDATE_BOUNDS = 'map/bounds';
 export const CENTER_MAP = 'map/center';
+export const SELECT_POINT_ON_MAP = 'map/select_point_on_map';
+export const DESELECT_POINT_ON_MAP = 'map/deselect_point_on_map';
 export const HIGHLIGHT_SEGMENT = 'map/highlight_segment';
 export const DEHIGHLIGHT_SEGMENT = 'map/dehighlight_segment';
 export const HIGHLIGHT_POINT = 'map/highlight_point';

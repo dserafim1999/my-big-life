@@ -29,16 +29,6 @@ const addMultipleTracks = (state, action) => {
   }, state);
 }
 
-const toggleTrackRenaming = (state, action) => {
-  let renaming = !state.get('tracks').get(action.trackId).get('renaming');
-
-  return state.setIn(['tracks', action.trackId, 'renaming'], renaming);
-}
-
-const updateTrackName = (state, action) => {
-  return state.setIn(['tracks', action.trackId, 'name'], action.name);
-}
-
 const removeTracksFor = (state, action) => {
   state = state
     .updateIn(['tracks'], (tracks) => {
@@ -222,8 +212,6 @@ const ACTION_REACTION = {
     'tracks/add': addTrack,
     'tracks/remove': removeTrack,
     'tracks/add_multiple': addMultipleTracks,
-    'tracks/update_name': updateTrackName,
-    'tracks/toggle_renaming': toggleTrackRenaming,
     'tracks/update_LIFE': updateTrackLIFE,
     'tracks/display_trips': displayTrips,
     'tracks/display_canonical_trips': displayCanonicalTrips,

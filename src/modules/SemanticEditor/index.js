@@ -126,7 +126,6 @@ class SemanticEditor extends Component {
 
     let content = editorState.getCurrentContent();
     content = Modifier.replaceText(content, range, suggestion);
-    // TODO replace value in entity
     let newEditorState = this.decorate(EditorState.push(editorState, content, 'insert-characters'));
     const sl = editorState.getSelection().merge({
       hasFocus: false

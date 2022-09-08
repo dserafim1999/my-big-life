@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { changeDayToProcess, dismissDay, removeDay } from '../../actions/process';
-import { toggleRemainingTracks } from '../../actions/general';
+import { toggleRemainingTracks } from '../../actions/process';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 
 import CloseIcon from '@mui/icons-material/Close';

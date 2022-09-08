@@ -13,9 +13,9 @@ import {
   toggleSegmentJoining,
   toggleSegmentPointDetails,
   toggleTimeFilter,
-  updateTimeFilterSegment,
-  fitSegment
+  updateTimeFilterSegment
 } from '../../actions/segments';
+import { fitSegment } from '../../actions/map';
 import { addAlert, removeAlert } from '../../actions/general';
 import { connect } from 'react-redux';
 

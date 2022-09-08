@@ -413,16 +413,6 @@ const updateLocationName = (state, action) => {
   return state.setIn(['segments', segmentId, 'locations', locationIndex, 'label'], name);
 }
 
-const selectPointInMap = (state, action) => {
-  const { onClick, segmentId, highlightedPoint } = action;
-  return state.setIn(['segments', segmentId, 'pointAction'], Map({ highlightedPoint, onClick }));
-}
-
-const deselectPointInMap = (state, action) => {
-  const { segmentId } = action;
-  return state.setIn(['segments', segmentId, 'pointAction'], null);
-}
-
 const selectPoint = (state, action) => {
   const { segmentId, point } = action;
 
@@ -549,8 +539,6 @@ const ACTION_REACTION = {
 
     'segments/update_location_name': updateLocationName,
     'segments/update_active_LIFE': updateActiveLIFE,
-    'segments/select_point_in_map': selectPointInMap,
-    'segments/deselect_point_in_map': deselectPointInMap,
     'segments/select_point': selectPoint,
     'segments/deselect_point': deselectPoint,
 

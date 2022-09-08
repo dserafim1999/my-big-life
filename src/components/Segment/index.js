@@ -12,8 +12,8 @@ import CalendarIcon from '@mui/icons-material/CalendarToday';
 import FitIcon from '@mui/icons-material/ZoomOutMap';
 
 import { connect } from 'react-redux';
-import { centerMap } from '../../actions/map';
-import { fitSegment, toggleSegmentVisibility } from '../../actions/segments';
+import { fitSegment, centerMap } from '../../actions/map';
+import { toggleSegmentVisibility } from '../../actions/segments';
 import { highlightSegmentInTrack, highlightTrack as highlightTrackAction } from '../../actions/tracks';
 import { SegmentRecord } from '../../records';
 

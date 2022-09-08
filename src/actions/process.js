@@ -1,10 +1,19 @@
 import fetch from 'isomorphic-fetch';
-import { COPY_DAY_TO_INPUT, REDO, REMOVE_TRACKS_FOR, SET_BULK_PROGRESS, SET_IS_BULK_PROCESSING, SET_LIFE, SET_SERVER_STATE, UNDO } from '.';
-import { addAlert, fitSegments, setLoading } from './general';
-import { reset as resetId } from '../reducers/idState';
-import { toggleSegmentJoining, addPossibilities } from './segments';
-import { resetHistory, clearAll } from './tracks';
 
+import { REDO, REMOVE_TRACKS_FOR, SET_BULK_PROGRESS, SET_IS_BULK_PROCESSING, SET_LIFE, SET_SERVER_STATE, TOGGLE_REMAINING_TRACKS, UNDO } from '.';
+import { addAlert, setLoading } from './general';
+import { fitSegments } from './map';
+import { reset as resetId } from '../reducers/idState';
+import { addPossibilities } from './segments';
+import { resetHistory, clearAll } from './tracks';
+import { PointRecord } from '../records';
+
+/**
+ * Converts Immutable Map of segment objects to a JSON object
+ * 
+ * @param {object} state Redux state
+ * @returns Object with segments where the key is the segments' Id 
+ */
 const segmentsToJson = (state) => {
   return state.get('tracks').get('segments').valueSeq().map((segment) => {
     return {
@@ -14,36 +23,36 @@ const segmentsToJson = (state) => {
   }).toJS();
 }
 
-export const handleError = (error, dispatch) => {
-  if (error.message === 'Failed to fetch') {
-    //TODO route to config
-  }
-}
-
-export const setServerState = (step, tracksRemaining, daySelected, life, lifeQueue) => {
-  return {
+/**
+ * Set state of track processing from server 
+ * 
+ * @action
+ * @param {number} step Current processing step 
+ * @param {number} tracksRemaining Number of tracks yet to be processed 
+ * @param {string} daySelected Current day to be processed 
+ * @param {string} life Active LIFE string
+ * @param {Array} lifeQueue List of LIFE files in input
+ * @returns Action Object
+ */
+export const setServerState = (step, tracksRemaining, daySelected, life, lifeQueue) => ({
     step,
     life,
     tracksRemaining,
     daySelected,
     lifeQueue,
     type: SET_SERVER_STATE
-  }
-}
+})
 
-export const loadLIFE = (content) => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'POST',
-      mode: 'cors',
-      body: content
-    }
-    return fetch(getState().get('general').get('server') + '/process/loadLIFE', options)
-      .catch((e) => console.error(e))
-      .then((response) => response.json());
-  }
-}
-
+/**
+ * Fetches possible ways to complete an incomplete trip.
+ * 
+ * @request
+ * @param {number} segmentId Segment to complete
+ * @param {object} from Point to start infering trip
+ * @param {object} to Point to finish infering trip
+ * @param {number} index Possibility index in list of possibilities
+ * @returns 
+ */
 export const completeTrip = (segmentId, from, to, index) => {
   return (dispatch, getState) => {
     const options = {
@@ -58,9 +67,6 @@ export const completeTrip = (segmentId, from, to, index) => {
     console.log('going to the server');
     fetch(getState().get('general').get('server') + '/process/completeTrip', options)
       .then((response) => response.json())
-      // .catch((err) => {
-      //   console.log(err);
-      // })
       .then((json) => {
         json.possibilities.forEach((p, i) => {
           dispatch(addPossibilities(segmentId, p, index, json.weights[i]));
@@ -69,7 +75,31 @@ export const completeTrip = (segmentId, from, to, index) => {
   }
 }
 
-const updateState = (dispatch, json, getState, reverse = false) => {
+/** 
+ * Sets whether Change Day menu is active in Track Processing Module. 
+ * 
+ * If no boolean value is set, value is toggled.
+ * 
+ * @function
+ * @param {bool} value If menu should be active 
+ */
+ export const toggleRemainingTracks = (value = undefined) => {
+  return (dispatch, getState) => {
+    dispatch(reloadQueue());
+    dispatch({value, type: TOGGLE_REMAINING_TRACKS});
+  }
+}
+
+/**
+ * Updates current processing state.
+ * 
+ * @function
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {object} json Object with server processing state to update
+ * @param {function} getState Function that returns global state
+ * @returns 
+ */
+const updateState = (dispatch, json, getState) => {
   resetId();
   dispatch(getBulkProcessStatus());
   
@@ -98,6 +128,11 @@ const updateState = (dispatch, json, getState, reverse = false) => {
   dispatch(fitSegments(...segments));
 }
 
+/**
+ * Fetches current processing state in the server.
+ * 
+ * @request
+ */
 export const requestServerState = () => {
   return (dispatch, getState) => {
     const options = {
@@ -107,7 +142,7 @@ export const requestServerState = () => {
     fetch(getState().get('general').get('server') + '/process/current', options)
       .then((response) => response.json())
       .catch((err) => {
-        handleError(err, dispatch);
+        dispatch(addAlert("Couldn't fetch server state.", 'error', 5, 'server-state'));
     })
     .then((json) => {
         dispatch(clearAll());
@@ -116,6 +151,11 @@ export const requestServerState = () => {
   }
 }
 
+/**
+ * Returns to previous processing step.
+ * 
+ * @request
+ */
 export const previousStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('previous-button', true));
@@ -131,6 +171,11 @@ export const previousStep = () => {
   }
 }
 
+/**
+ * Advances to next processing step.
+ * 
+ * @request
+ */
 export const nextStep = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('continue-button', true));
@@ -158,14 +203,25 @@ export const nextStep = () => {
   }
 }
 
-export const removeTracksFor = (segments, name) => {
-  return {
+/**
+ * Updates current day tracks based on server state changes
+ * 
+ * @action
+ * @param {Array} segments List of segments for current day
+ * @param {string} name Name of the current day's GPX file 
+ * @returns 
+ */
+export const removeTracksFor = (segments, name) => ({
     segments,
     name,
     type: REMOVE_TRACKS_FOR
-  }
-}
+})
 
+/**
+ * Redo a step.
+ * 
+ * @function
+ */
 export const redo = () => {
   return (dispatch, getState) => {
     const state = getState().get('tracks');
@@ -182,13 +238,22 @@ export const redo = () => {
   }
 }
 
-export const undo = () => {
-  return {
+/**
+ * Undo a step
+ * 
+ * @action
+ */
+export const undo = () => ({
     type: UNDO
-  }
-}
+})
 
-
+/**
+ * Change current selected day to process
+ * 
+ * @request
+ * @param {string} newDay Date of new day to process 
+ * @returns 
+ */
 export const changeDayToProcess = (newDay) => {
   return (dispatch, getState) => {
     const options = {
@@ -205,6 +270,11 @@ export const changeDayToProcess = (newDay) => {
   }
 }
 
+/**
+ * Reload processing queue
+ * 
+ * @request
+ */
 export const reloadQueue = () => {
   return (dispatch, getState) => {
     dispatch(setLoading('refresh-button', true));
@@ -220,6 +290,12 @@ export const reloadQueue = () => {
    }
 }
 
+/**
+ * Ignore day to process in queue 
+ * 
+ * @param {string} day Date of day to dismiss
+ * @returns 
+ */
 export const dismissDay = (day) => {
   return (dispatch, getState) => {
     const options = {
@@ -236,6 +312,12 @@ export const dismissDay = (day) => {
   }
 }
 
+/**
+ * Remove day to process from queue and input folder 
+ * 
+ * @param {string} day Date of day to remove 
+ * @returns 
+ */
 export const removeDay = (files) => {
   return (dispatch, getState) => {
     const options = {
@@ -258,6 +340,11 @@ export const removeDay = (files) => {
   }
 }
 
+/**
+ * Skip day to process.
+ * 
+ * @request
+ */
 export const skipDay = () => {
   return (dispatch, getState) => {
     const options = {
@@ -271,6 +358,11 @@ export const skipDay = () => {
   }
 }
 
+/**
+ * Check if server is bulk processing and start fetching for progress status if so.
+ * 
+ * @request
+ */
 export const getBulkProcessStatus = () => {
   return (dispatch, getState) => {
     const options = {
@@ -292,6 +384,7 @@ export const getBulkProcessStatus = () => {
 }
 
 var timeout;
+/** Fetches bulk processing progress status until operation is complete */
 async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, force) {
   let progress;
   
@@ -321,6 +414,11 @@ async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, forc
   timeout = setTimeout(() => getBulkProgressStatus(url, setProgress), 1000);
 }
 
+/**
+ * Get percentage of days processed in bulk processing
+ * @param {*} force 
+ * @returns 
+ */
 const getBulkProgress = (force = false) => {
   return (dispatch, getState) => {
     getBulkProgressStatus(
@@ -332,16 +430,35 @@ const getBulkProgress = (force = false) => {
   }
 }
 
+/**
+ * Sets whether server is bulk processing or not
+ * 
+ * @action
+ * @param {boolean} isBulkProcessing If server is bulk processing
+ * @returns Action Object 
+ */
 export const setIsBulkProcessing = (isBulkProcessing) => ({
   isBulkProcessing,
   type: SET_IS_BULK_PROCESSING
 })
 
+/**
+ * Set percentage of days processed in bulk processing
+ * 
+ * @action
+ * @param {number} progress Percentage of tracks already processed in bulk 
+ * @returns 
+ */
 export const setBulkProgress = (progress) => ({
   progress,
   type: SET_BULK_PROGRESS
 })
 
+/**
+ * Tells server to bulk process all tracks in input folder
+ * 
+ * @request
+ */
 export const bulkProcess = () => {
   return (dispatch, getState) => {
     const options = {
@@ -368,6 +485,11 @@ export const bulkProcess = () => {
   }
 }
 
+/**
+ * Tells server to bulk process all tracks in input folder (without preprocessing)
+ * 
+ * @request
+ */
 export const rawBulkProcess = () => {
   return (dispatch, getState) => {
     const options = {
@@ -394,7 +516,15 @@ export const rawBulkProcess = () => {
   }
 }
 
+/**
+ * Fetches location suggestions based on coordinates
+ * 
+ * @function
+ * @param {PointRecord} point Point to suggest location for
+ * @returns 
+ */
 export const getLocationSuggestion = (point) => {
+  console.log(point, typeof point)
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
@@ -408,6 +538,12 @@ export const getLocationSuggestion = (point) => {
   }
 }
 
+/**
+ * Sets LIFE for track in process
+ * 
+ * @param {string} text LIFE string
+ * @returns 
+ */
 export const setLIFE = (text) => {
   return {
     text,
@@ -415,6 +551,12 @@ export const setLIFE = (text) => {
   }
 }
 
+/**
+ * Copies GPX file from day into input (to be edited)
+ * 
+ * @param {string} date Date of day to be copied to input 
+ * @returns 
+ */
 export const copyDayToInput = (date) => {
   return (dispatch, getState) => {
     const options = {

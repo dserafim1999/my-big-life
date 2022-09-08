@@ -12,9 +12,9 @@ As state is immutable, values should also be updated immutably. In other words, 
 An action is "an event that describes something that happened in the application". It is described as a plain JavaScript object containing a type field. These can be found in the `actions` folder.
 
 
-The type field is a descriptive name like "map/highlight_segment". In this project, the first part represents the feature the action belongs to, and the second part the action itself. Features are described in their separate JS file. These types are also abstracted into constants and can be found at `actions\index.js`.
+The type field is a descriptive name like "map/highlight_segment". In this project, the first part represents the feature the action belongs to, and the second part the action itself. Features are described in their separate JS file. These types are also abstracted into constants and can be found at `actions\index.js`. There you will also be able to find HTTP requests to the server, as these require the `dispatch` method and/or the global state to parse the incoming data.
 
-An action object can also have other fields with additional parameters .
+An action object can also have other fields with additional parameters.
 
 A typical action object might look like this:
 ```js static
