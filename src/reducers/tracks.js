@@ -2,7 +2,7 @@ import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord
 import segments from "./segments";
 import { List, Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
-import colors from "./colors";
+import colors from "../utils/colors";
 import { groupBy } from "../utils";
 import moment from "moment";
 

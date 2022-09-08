@@ -1,6 +1,6 @@
 import { min, max } from "../utils";
 import { generateSegmentId, generateTrackId } from "./idState";
-import colors from "./colors";
+import colors from "../utils/colors";
 import haversine from '../utils/haversine';
 import moment from 'moment';
 import { Map, List, fromJS } from 'immutable';
