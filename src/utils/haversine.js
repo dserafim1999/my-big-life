@@ -1,7 +1,13 @@
-// haversine
-// By Nick Justice (niix)
-// https://github.com/niix/haversine
 
+
+/**
+ * By Nick Justice (niix)
+ * https://github.com/niix/haversine
+ * 
+ * Determines the great-circle distance between two points on a sphere given their longitudes and latitudes
+ * 
+ * @function
+ */
 var haversine = (function () {
   // convert to radians
   var toRad = function (num) {

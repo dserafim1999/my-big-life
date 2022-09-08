@@ -1,7 +1,7 @@
 import { min, max } from "../utils";
 import { generateSegmentId, generateTrackId } from "./idState";
 import colors from "./colors";
-import haversine from '../haversine';
+import haversine from '../utils/haversine';
 import moment from 'moment';
 import { Map, List, fromJS } from 'immutable';
 import { getRoute } from "../modules/ModuleRoutes";

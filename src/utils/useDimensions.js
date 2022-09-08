@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Keeps track of component's dimensions.
+ * 
+ * @param {ReactRef} ref Ref of component to monitor dimensions 
+ * @returns 
+ */
 const useDimensions = (ref) => {
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   

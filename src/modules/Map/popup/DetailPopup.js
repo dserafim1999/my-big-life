@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import haversine from '../../../haversine';
+import haversine from '../../../utils/haversine';
 
 import LeftIcon from '@mui/icons-material/ChevronLeft';
 import RightIcon from '@mui/icons-material/ChevronRight';
