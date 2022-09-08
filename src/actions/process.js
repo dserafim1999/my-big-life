@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch';
 import { REDO, REMOVE_TRACKS_FOR, SET_BULK_PROGRESS, SET_IS_BULK_PROCESSING, SET_LIFE, SET_SERVER_STATE, TOGGLE_REMAINING_TRACKS, UNDO } from '.';
 import { addAlert, setLoading } from './general';
 import { fitSegments } from './map';
-import { reset as resetId } from '../reducers/idState';
+import { reset as resetId } from '../records/idState';
 import { addPossibilities } from './segments';
 import { resetHistory, clearAll } from './tracks';
 import { PointRecord } from '../records';

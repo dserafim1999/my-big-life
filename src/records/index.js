@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { generateTrackId, generateSegmentId } from '../reducers/idState';
+import { generateTrackId, generateSegmentId } from '../records/idState';
 import colors from '../utils/colors';
 import haversine from '../utils/haversine';
 import { Record, List, Set, fromJS } from 'immutable';

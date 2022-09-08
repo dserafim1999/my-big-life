@@ -1,3 +1,7 @@
+/**
+ * Keeps state for track and segment id generations
+ */
+
 let _trackId = 0;
 let _segmentId = 0;
 

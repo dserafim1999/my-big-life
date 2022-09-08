@@ -1,5 +1,5 @@
 import { min, max } from "../utils";
-import { generateSegmentId, generateTrackId } from "./idState";
+import { generateSegmentId, generateTrackId } from "../records/idState";
 import colors from "../utils/colors";
 import haversine from '../utils/haversine';
 import moment from 'moment';
