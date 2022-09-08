@@ -168,8 +168,8 @@ export const removeSegment = (segmentId) => ({
  * 
  * @action
  * @param {number} segmentId Segment Id
- * @param {number} index TODO
- * @param {number} details TODO 
+ * @param {number} index Index of segmentt point to join
+ * @param {number} details 
  * @returns Action Object
  */
 export const joinSegment = (segmentId, index, details) => ({
@@ -284,9 +284,9 @@ export const toggleSegmentPointDetails = (segmentId) => ({
  * 
  * @action
  * @param {number} segmentId Segment Id 
- * @param {*} points TODO
- * @param {*} index TODO
- * @param {*} weight TODO
+ * @param {Array} points Points that define the possibility
+ * @param {number} index Index of the segment point to join
+ * @param {number} weight Represents how strong a possibility is compared to others
  * @returns Action Object
  */
 export const addPossibilities = (segmentId, points, index, weight = 0.5) => ({
