@@ -1,8 +1,6 @@
 import { 
   ADD_TRACK,
   ADD_MULTIPLE_TRACKS, 
-  TOGGLE_TRACK_RENAMING,
-  UPDATE_TRACK_NAME,
   UPDATE_TRACK_LIFE,
   REMOVE_TRACK,
   RESET_HISTORY,
@@ -150,6 +148,8 @@ export const highlightTrack = (trackId, value) => {
 }
 
 /**
+ * Reset history of changes to track
+ * 
  * @returns Action Object
  */
 export const resetHistory = () => ({

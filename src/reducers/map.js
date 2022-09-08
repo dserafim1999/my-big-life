@@ -12,6 +12,9 @@ import {
   DESELECT_POINT_ON_MAP
 } from '../actions';
 
+/**
+ * Update highlighted segments.
+ */
 const changeSegmentHighlight = (state, action) => {
   let fn;
   if (action.type === HIGHLIGHT_SEGMENT) {
@@ -26,6 +29,9 @@ const changeSegmentHighlight = (state, action) => {
   });
 }
 
+/**
+ * Update highlighted segment points.
+ */
 const changePointHighlight = (state, action) => {
   let fn;
   if (action.type === HIGHLIGHT_POINT) {

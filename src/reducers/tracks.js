@@ -1,11 +1,15 @@
-import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord } from "../records";
 import segments from "./segments";
-import { List, Map, fromJS } from 'immutable';
-import { addTrack as addTrackAction } from '../actions/tracks';
 import colors from "../utils/colors";
-import { groupBy } from "../utils";
 import moment from "moment";
 
+import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord } from "../records";
+import { List, Map, fromJS } from 'immutable';
+import { addTrack as addTrackAction } from '../actions/tracks';
+import { groupBy } from "../utils";
+
+/**
+ * Adds track to global state.
+ */
 export const addTrack = (state, action) => {
   let { name, segments, locations } = action;
   let track = createTrackObj(name, segments, locations, state.get('segments').count());
@@ -21,6 +25,11 @@ export const addTrack = (state, action) => {
   return state;
 }
 
+/**
+ * Add multiple tracks to global state.
+ * 
+ * See `addTrack `.
+ */
 const addMultipleTracks = (state, action) => {
   return action.tracks.reduce((state, track) => {
     const { segments, name } = track;
@@ -29,6 +38,9 @@ const addMultipleTracks = (state, action) => {
   }, state);
 }
 
+/**
+ * Updates current day tracks based on server state changes
+ */
 const removeTracksFor = (state, action) => {
   state = state
     .updateIn(['tracks'], (tracks) => {
@@ -46,6 +58,9 @@ const removeTracksFor = (state, action) => {
     return addTrack(state, act);
 }
 
+/**
+ * Adds trips to global state to be displayed.
+ */
 const displayTrips = (state, action) => {
   const { trips } = action;
 
@@ -96,6 +111,9 @@ const displayTrips = (state, action) => {
     });
 }
 
+/**
+ * Adds canonical trips to global state to be displayed.
+ */
 const displayCanonicalTrips = (state, action) => {
   const { trips } = action;
 
@@ -125,6 +143,9 @@ const displayCanonicalTrips = (state, action) => {
     });
 }
 
+/**
+ * Adds canonical locations to global state to be displayed.
+ */
 const displayLocations = (state, action) => {
   const { locations } = action;
   const _points = [];
@@ -147,6 +168,9 @@ const displayLocations = (state, action) => {
     });
 }
 
+/**
+ * Undo changes to track
+ */
 const undo = (state, action) => {
   let toPut = state.get('history').get('past').get(-1);
   if (toPut) {
@@ -165,21 +189,33 @@ const undo = (state, action) => {
   }
 }
 
+/**
+ * Redo changes to track
+ */
 const redo = (state, action) => {
   return state.updateIn(['history', 'future'], (future) => future.pop());
 }
 
+/**
+ * Updates the LIFE representation of a track.
+ */
 const updateTrackLIFE = (state, action) => {
   const { text, warning } = action;
   return state.set('LIFE', new Map({ text, warning }));
 }
 
+/**
+ * Reset history of changes to track
+ */
 const resetHistory = (state, action) => {
   return state
     .updateIn(['history', 'future'], (history) => history.clear())
     .updateIn(['history', 'past'], (history) => history.clear());
 }
 
+/**
+ * Remove a track from the global state.
+ */
 const removeTrack = (state, action) => {
   const { trackId } = action;
 
@@ -194,16 +230,25 @@ const removeTrack = (state, action) => {
   return cState.deleteIn(['tracks', trackId]);
 }
 
+/**
+ * Remove canonical locations from state.
+ */
 const clearLocations = (state, action) => {
   return state.setIn(["locations"], fromJS({}));
 }
 
+/**
+ * Remove all tracks/segments from state.
+ */
 const clearTrips = (state, action) => {
   return state
     .setIn(["tracks"], fromJS({}))
     .setIn(["segments"], fromJS({}));
 }
 
+/**
+ * Remove all tracks/segments and canonical trips/locations from state.
+ */
 const clearAll = (state, action) => {
   return initialState;
 }

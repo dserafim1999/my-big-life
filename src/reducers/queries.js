@@ -1,5 +1,13 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, List } from 'immutable';
 
+/**
+ * Updates a query block's neighbours' x position constraints.
+ * 
+ * @function
+ * @param {object} query Query block
+ * @param {number} index Index of query block in query object 
+ * @returns Updated query object 
+ */
 const updateNeighbourMinMaxX = (query, index) => {
   if (query.length > 1 && index % 2 === 0) {
     if (index === 0) {
@@ -15,6 +23,14 @@ const updateNeighbourMinMaxX = (query, index) => {
   return query;
 }
 
+/**
+ * Updates a query block's x position constraints.
+ * 
+ * @function
+ * @param {object} query Query block
+ * @param {number} index Index of query block in query object 
+ * @returns Updated query object 
+ */
 const updateMinMaxX = (query, index) => {
     if (query.length > 1 && index % 2 === 0) {
       if (index === 0) {
@@ -33,6 +49,11 @@ const updateMinMaxX = (query, index) => {
   return query;
 }
 
+/**
+ * Updates a query block on the timeline.
+ * 
+ * A query block contains the content of the query component (`Stay` or `Route`) and info for the visual representation.
+ */
 const updateQueryBlock = (state, action) => {
   var query = state.toJS()["query"];
   const index = query.findIndex((obj) => obj.queryBlock.id === action.block.queryBlock.id);
@@ -46,6 +67,11 @@ const updateQueryBlock = (state, action) => {
   return state.setIn(['query'], List(query));
 }
 
+/**
+ * Adds a `Stay` object to the query.
+ * 
+ * (A `Stay` represents a period of time spent at a location)
+ */
 const addQueryStay = (state, action) => {
   var query = state.toJS()["query"];
 
@@ -58,6 +84,11 @@ const addQueryStay = (state, action) => {
   return state.setIn(['query'], List(query));
 }
 
+/**
+ * Adds a `Stay` object to the query and the `Route` between it and the last `Stay` in the query.
+ * 
+ * (A `Stay` represents a period of time spent at a location, while a `Route` represents a period of time between `Stay`s)
+ */
 const addQueryStayAndRoute = (state, action) => {
   var query = state.toJS()["query"];
   
@@ -72,6 +103,14 @@ const addQueryStayAndRoute = (state, action) => {
   return state.setIn(['query'], List(query));
 }
 
+/**
+ * Connects 2 `Stay`s with a `Route`
+ * 
+ * @param {object} stay1 A `Stay`
+ * @param {object} route `Route` that connects `Stay`s
+ * @param {object} stay2 Another `Stay`
+ * @returns Array with `Stay`s and connecting `Route`
+ */
 const connectStayWithRoute = (stay1, route, stay2) => {
   route.start = stay1.end;
   route.end = stay2.start;
@@ -79,6 +118,9 @@ const connectStayWithRoute = (stay1, route, stay2) => {
   return [route, stay2];        
 }
 
+/**
+ * Removes `Stay` (and connecting `Route`, if any) from current query object.
+ */
 const removeQueryStay = (state, action) => {
   const query = state.toJS()["query"];
   const index = query.findIndex((obj) => obj.queryBlock.id === action.stayId);
@@ -111,6 +153,9 @@ const removeQueryStay = (state, action) => {
   return state.setIn(["query"], List(query));
 }
 
+/**
+ * Clears query object from state.
+ */
 const resetQuery = (state) => {
   return state
     .setIn(["query"], List())
@@ -118,6 +163,11 @@ const resetQuery = (state) => {
     .setIn(["canLoadMore"], true);
 }
 
+/**
+ * Loads results for the executed query. 
+ * 
+ * Only loads x amount of results at a time, defined in Settings.
+ */
 const queryResults = (state, action) => {
   return state
     .setIn(["results"], List(action.results))

@@ -5,14 +5,36 @@ import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { List, Map } from 'immutable';
 import { PointRecord } from '../records';
 
+/**
+ * Returns a Segment's start time.
+ * 
+ * @function
+ * @param {object} segment Segment 
+ * @returns Segment's start time
+ */
 const segmentStartTime = (segment) => {
+  console.log(typeof segment)
   return segment.get('points').get(0).get('time');
 }
 
+/**
+ * Returns a Segment's end time.
+ * 
+ * @function
+ * @param {object} segment Segment 
+ * @returns Segment's end time
+ */
 const segmentEndTime = (segment) => {
   return segment.get('points').get(-1).get('time');
 }
 
+/**
+ * Updates segment bounds and metrics.
+ * 
+ * @param {*} state Global state 
+ * @param {number} id Segment id 
+ * @returns 
+ */
 const updateSegment = (state, id) => {
   return state.updateIn(['segments', id], (segment) =>
     segment
@@ -21,6 +43,9 @@ const updateSegment = (state, id) => {
   );
 }
 
+/**
+ * Move segment point's position.
+ */
 const changeSegmentPoint = (state, action) => {
   const id = action.segmentId;
 
@@ -41,6 +66,9 @@ const changeSegmentPoint = (state, action) => {
   return state;
 }
 
+/**
+ * Remove point from segment.
+ */
 const removeSegmentPoint = (state, action) => {
   const id = action.segmentId;
   const point = state.get('segments').get(id).get('points').get(action.index);
@@ -51,7 +79,10 @@ const removeSegmentPoint = (state, action) => {
 
   return state.deleteIn(['segments', id, 'points', action.index]);
 }
-    
+
+/**
+ * Adds a new point to the end of a segment.
+ */    
 const extendSegment = (state, action) => {
     const id = action.segmentId;
     
@@ -95,6 +126,9 @@ const extendSegment = (state, action) => {
     });
 }
 
+/**
+ * Add a point to a segment.
+ */
 const addSegmentPoint = (state, action) => {
     const id = action.segmentId;
 
@@ -124,6 +158,9 @@ const addSegmentPoint = (state, action) => {
     });
 }
 
+/**
+ * Removes segment from list of segments.
+ */
 const removeSegment = (state, action) => {
     const id = action.segmentId;
     const trackId = state.get('segments').get(id).get('trackId');
@@ -152,6 +189,9 @@ const removeSegment = (state, action) => {
     return state;
 }
 
+/**
+ * Splits a segment into two on the point with the provided index.
+ */
 const splitSegment = (state, action) => {
     const id = action.segmentId;
     const segment = state.get('segments').get(id);
@@ -198,6 +238,9 @@ const splitSegment = (state, action) => {
     }
 }
 
+/**
+ * Joins two segments together into one.
+ */
 const joinSegment = (state, action) => {
   const { details } = action;
   const union = details.union[action.index];
@@ -285,30 +328,50 @@ const joinSegment = (state, action) => {
   return updateSegment(state, action.segmentId);
 }
 
+/**
+ * Updates segment time filter.
+ */
 const updateTimeFilterSegment = (state, action) => {
   return state.updateIn(['segments', action.segmentId, 'timeFilter'], (f) => {
     return f.set(0, action.lower).set(1, action.upper);
   });
 }
 
+/**
+ * Toggle whether segment's time filter is active.
+ */
 const toggleTimeFilter = (state, action) => {
   return state.updateIn(['segments', action.segmentId, 'showTimeFilter'], (f) => {
     return !f;
   });
 }
 
-// sets prop as true and false to others, in order to indicate the active feature
+/**
+ * Sets prop as true and false to others, in order to indicate the active mode
+ * 
+ * @function
+ * @param {*} state Globa state
+ * @param {number} id Segment id 
+ * @param {string} prop  Mode to toggle
+ * @param {boolean} force Boolean value to force instead of toggling 
+ */
 const toggleSegmentProp = (state, id, prop, force) => {
   return state
     .updateIn(['segments', id], (seg) => seg.toggleMode(prop, force));
 }    
 
+/**
+ * Toggle whether segment is visible.
+ */
 const toggleSegmentVisibility = (state, action) => {
     const id = action.segmentId;
     state = toggleSegmentProp(state, id, 'display', action.value);
     return state.setIn(['segments', id, 'display'], state.get('segments').get(id).get('display'));
 }
 
+/**
+ * Toggle whether segment is in edit mode.
+ */
 const toggleSegmentEditing = (state, action) => {
   const id = action.segmentId;
 
@@ -320,18 +383,27 @@ const toggleSegmentEditing = (state, action) => {
   return toggleSegmentProp(state, id, 'editing');
 }
 
+/**
+ * Toggle whether segment is in split mode.
+ */
 const toggleSegmentSplitting = (state, action) => {
   const id = action.segmentId;
 
   return toggleSegmentProp(state, id, 'splitting');
 }
 
+/**
+ * Toggle whether segment is in point details mode.
+ */
 const toggleSegmentPointDetails = (state, action) => {
   const id = action.segmentId;
 
   return toggleSegmentProp(state, id, 'pointDetails');
 }
 
+/**
+ * Toggle whether segment is in join mode.
+ */
 const toggleSegmentJoining = function (state, action) {
   var id = action.segmentId;
   var segment = state.get('segments').get(id);
@@ -391,6 +463,9 @@ const toggleSegmentJoining = function (state, action) {
   return state;
 }
 
+/**
+ * Add trip completion possibilities.
+ */
 const addPossibilities = (state, action) => {
   return state.updateIn(['segments', action.segmentId, 'joinPossible'], (arr) => {
     const points = action.points.map((point) => {
@@ -407,12 +482,16 @@ const addPossibilities = (state, action) => {
   });
 }
 
+/** TODO */
 const updateLocationName = (state, action) => {
   const { segmentId, start, name } = action;
   const locationIndex = start ? 0 : 1;
   return state.setIn(['segments', segmentId, 'locations', locationIndex, 'label'], name);
 }
 
+/**
+ * Add point to selected points list.
+ */
 const selectPoint = (state, action) => {
   const { segmentId, point } = action;
 
@@ -433,6 +512,9 @@ const selectPoint = (state, action) => {
   })
 }
 
+/**
+ * Remove point from selected points list.
+ */
 const deselectPoint = (state, action) => {
   const { segmentId, point } = action;
   if (point) {
@@ -444,6 +526,13 @@ const deselectPoint = (state, action) => {
   }
 }
 
+/**
+ * TODO
+ * @param {object} a  
+ * @param {object} b 
+ * @param {object} p 
+ * @returns 
+ */
 const closestPointOnLineSegment = (a, b, p) => {
   const ap = { lat: p.lat - a.lat, lon: p.lon - a.lon };
   const ab = { lat: b.lat - a.lat, lon: b.lon - a.lon };
@@ -464,6 +553,9 @@ const closestPointOnLineSegment = (a, b, p) => {
   }
 }
 
+/**
+ * Straightens segment portion containing selected points.
+ */
 const straightSelected = (state, action) => {
   const { segmentId } = action;
   const selected = state.get('segments').get(segmentId).get('selectedPoints').sort();
@@ -487,6 +579,9 @@ const straightSelected = (state, action) => {
   })
 }
 
+/**
+ * Edit point location and date.
+ */
 const updatePoint = (state, action) => {
   const { segmentId, index, lat, lon, time } = action;
   return state.updateIn(['segments', segmentId, 'points', index], (point) => {
@@ -497,6 +592,9 @@ const updatePoint = (state, action) => {
   });
 }
 
+/**
+ * Adds new segment to track.
+ */
 const addNewSegment = (state, action) => {
   const { trackId, point } = action;
   const seg = createSegmentObj(trackId, [point]);
@@ -505,6 +603,9 @@ const addNewSegment = (state, action) => {
     .updateIn(['tracks', trackId, 'segments'], (segs) => segs.add(seg.get('id')));
 }
 
+/**
+ * Toggle panel with segment information.
+ */
 const toggleSegmentInfo = (state, action) => {
   const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
   return state
@@ -512,6 +613,9 @@ const toggleSegmentInfo = (state, action) => {
     .set('activeSegment', showInfo ? action.segmentId : null);
 }
 
+/**
+ * Update active segment LIFE string in state.
+ */
 const updateActiveLIFE = (state, action) => {
   return state
     .set('activeLIFE', action.life);

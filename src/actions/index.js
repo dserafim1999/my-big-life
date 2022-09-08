@@ -9,12 +9,12 @@ export const DISPLAY_TRIPS = 'tracks/display_trips';
 export const DISPLAY_CANONICAL_TRIPS = 'tracks/display_canonical_trips';
 export const RESET_HISTORY = 'tracks/reset_history';
 export const REMOVE_TRACKS_FOR = 'tracks/remove_track_for';
-export const UNDO = 'tracks/undo';
-export const REDO = 'tracks/redo';
 export const DISPLAY_LOCATIONS = 'tracks/display_locations';
 export const CLEAR_ALL = 'tracks/clear_all';
 export const CLEAR_TRIPS = 'tracks/clear_trips';
 export const CLEAR_LOCATIONS = 'tracks/clear_locations';
+export const UNDO = 'tracks/undo';
+export const REDO = 'tracks/redo';
 
 export const TOGGLE_SEGMENT_VISIBILITY = 'segments/toggle_visibility';
 export const TOGGLE_SEGMENT_EDITING = 'segments/toggle_edit';
