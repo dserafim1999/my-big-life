@@ -486,37 +486,6 @@ export const bulkProcess = () => {
 }
 
 /**
- * Tells server to bulk process all tracks in input folder (without preprocessing)
- * 
- * @request
- */
-export const rawBulkProcess = () => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-
-    dispatch(setIsBulkProcessing(true));
-    dispatch(getBulkProgress(true));
-    dispatch(addAlert('Starting bulk processing. You can see the progress on the Track Processing menu.', 'info', 5, 'bulk-start'));
-
-    return fetch(getState().get('general').get('server') + '/process/rawBulk', options)
-      .then((response) => response.json())
-      .catch((err) => {
-        dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'config-err'));
-        dispatch(setIsBulkProcessing(false));
-        throw err;
-      })
-      .then((json) => {
-        dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
-        dispatch(setIsBulkProcessing(false));
-        updateState(dispatch, json, getState);
-      });
-  }
-}
-
-/**
  * Fetches location suggestions based on coordinates
  * 
  * @function

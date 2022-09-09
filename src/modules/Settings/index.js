@@ -13,6 +13,7 @@ import SaveIcon from '@mui/icons-material/Save';
 const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProcessing, bulkProgress }) => {
     if (!isVisible) return null;
     
+    
     const bulkClassName = 'is-blue' + (isBulkProcessing ? ' is-loading' : '');
 
     useEffect( () => {
@@ -24,9 +25,7 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
 
     const onBulkClick = (e, modifier) => {
       modifier('is-loading')
-      const use_processing = 'bulk_uses_processing' in state ?  state.bulk_uses_processing : config.bulk_uses_processing;
-      
-      dispatch(use_processing ? bulkProcess() : rawBulkProcess())
+      dispatch(bulkProcess())
           .then(() => modifier());
     }
 
@@ -54,7 +53,7 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
         <div>
           <SectionBlock name='General'>
             <OptionsField title='Default timezone' options={timezones} defaultValue={config.default_timezone} onChange={(e) => setState({...state, default_timezone: e.target.value})} />
-            <ToggleField title='Use processing on bulk track upload' checked={config.bulk_uses_processing} onChange={(e) => setState({...state, bulk_uses_processing: e.target.value})} />
+            <ToggleField title='Calculate canonical trips/locations on bulk track upload' checked={config.bulk_calculate_canonical} onChange={(e) => setState({...state, bulk_calculate_canonical: e.target.value})} />
           </SectionBlock>
 
           <SectionBlock name='Folders'>

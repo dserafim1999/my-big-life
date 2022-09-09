@@ -104,7 +104,7 @@ const mapStateToProps = (state) => {
         showSegmentInfo: state.get('tracks').get('showInfo'),
         activeSegment: segment,
         activeLIFE: state.get('tracks').get('activeLIFE'),
-        globalLIFE: state.get('general').get('LIFE'),
+        //globalLIFE: state.get('general').get('LIFE'),
         segments: state.get('tracks').get('segments')
     };
 }
