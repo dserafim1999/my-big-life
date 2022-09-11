@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 import Card from "../../components/Card";
-import Segment from "../../components/Segment";
 import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../SemanticEditor/viewDecorators';
 import AsyncButton from "../../components/Buttons/AsyncButton";
@@ -59,8 +58,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 
     return <>
         { showSegmentInfo && (
-                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose}>
-                    { activeSegment && <Segment segment={activeSegment} canEdit={false}/>}
+                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={activeSegment}>
                     <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
                         <AsyncButton 
                             title='Delete Day'
@@ -96,13 +94,11 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 }
 
 const mapStateToProps = (state) => {
-    const activeSegmentId = state.get('tracks').get('activeSegment');
-    let segment = state.get('tracks').get('segments').get(activeSegmentId);
 
     return {
         isVisible: state.get('general').get('isUIVisible'),
         showSegmentInfo: state.get('tracks').get('showInfo'),
-        activeSegment: segment,
+        activeSegment: state.get('tracks').get('activeSegment'),
         activeLIFE: state.get('tracks').get('activeLIFE'),
         //globalLIFE: state.get('general').get('LIFE'),
         segments: state.get('tracks').get('segments')

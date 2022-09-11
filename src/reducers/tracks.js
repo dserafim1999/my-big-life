@@ -1,9 +1,9 @@
 import segments from "./segments";
 import colors from "../utils/colors";
-import moment from "moment";
+import moment from 'moment';
 
-import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord } from "../records";
-import { List, Map, fromJS } from 'immutable';
+import { pointsToRecord, SegmentRecord, createTrackObj, PointRecord } from "../records";
+import { Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
 import { groupBy } from "../utils";
 
@@ -68,47 +68,21 @@ const displayTrips = (state, action) => {
     return state;
   }
 
-  const tripsByDay = groupBy(trips, "date");
-  const _tracks = [], _segments = [];
+  const tripsByDay = groupBy(trips, "id");
+  const _tracks = []
 
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
-    _tracks.push(new TrackRecord({
-        id: moment(day).format("YYYY-MM-DD"),
-        segments: new List(trips.map((segment, i) => {
-          return segment.id
-        }))
-      })
-    );
-
-    for (var i = 0 ; i < trips.length ; i++) {
-      const trip = trips[i];
-      _segments.push(new SegmentRecord({
-        trackId: moment(day).format("YYYY-MM-DD"),
-        id: trip.id,
-        color: colors(color),
-        points: pointsToRecord(trip.points)
-      }));
-    }
-
-    color++;
+    const _color = colors(color++);
+    _tracks.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color})
   }
 
   return state
-    .updateIn(['history', 'past'], (past) => past.clear())
-    .updateIn(['history', 'future'], (future) => future.clear())
     .updateIn(['tracks'], (tracks) => {
       // tracks = tracks.clear();
       return _tracks.reduce((tracks, track) => {
         return tracks.set(track.id, track);
-      }, tracks)
-    })
-    .updateIn(['segments'], (segments) => {
-      // segments = segments.clear();
-      return _segments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
-    });
+      }, tracks)});
 }
 
 /**

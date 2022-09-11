@@ -68,6 +68,7 @@ export default class LeafletMap extends Component {
      *    }
      *    this should be reconstructed each time there is an update to the points or the visualization mode.
      */
+    this.trips = {};
     this.segments = {};
     this.canonical = {};
     this.locations = {};
@@ -132,6 +133,7 @@ export default class LeafletMap extends Component {
       highlighted,
       highlightedPoints,
       segments,
+      trips,
       canonicalTrips,
       locations,
       dispatch,
@@ -139,7 +141,6 @@ export default class LeafletMap extends Component {
       canUndo,
       canRedo,
       pointPrompt,
-      detailLevel
     } = this.props;
 
     if (canUndo !== prev.canUndo) {
@@ -155,7 +156,7 @@ export default class LeafletMap extends Component {
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
         this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips, dispatch);
         this.shouldUpdateLocations(locations, prev.locations);
-
+        this.shouldUpdateTrips(trips, prev.trips);
         break;
       default:
         if (this.heatmapLayer) {
@@ -253,7 +254,31 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateSegment (current, previous, lseg, dispatch) {
+  shouldUpdateTrips (trips, previous) {
+    if (trips !== previous) {
+      console.log(trips)
+      trips.forEach((trip) => {
+        const id = trip.id;
+        const lseg = this.trips[id];
+
+        if (!lseg) {
+          this.shouldUpdateTrip(trip, previous.get(id));
+        }
+      });
+
+      this.shouldRemoveTrips(trips, previous);
+    }
+  }
+  
+  shouldUpdateTrip (trip, previous) {
+    if (trip !== previous) {
+      const trips = trip.trips.map((t) => t.geoJSON);
+      
+      this.addTrip(trip.id, trip.color, trips);
+    }    
+  }
+
+  shouldUpdateSegment (current, previous, lseg) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
@@ -268,7 +293,7 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateCanonicalTrips (segments, previous, dispatch) {
+  shouldUpdateCanonicalTrips (segments, previous) {
     if (segments !== previous) {
       segments.forEach((segment) => {
         const id = segment.get('id');
@@ -291,7 +316,7 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldAddSegment(current, previous, dispatch) {
+  shouldAddSegment(current, previous) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
@@ -324,7 +349,7 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateHighlightedPoints (highlighted, previous, allSegments) {
+  shouldUpdateHighlightedPoints (highlighted, previous) {
     if (highlighted === previous) {
       return;
     }
@@ -390,6 +415,14 @@ export default class LeafletMap extends Component {
       }
     }
 
+    for (const [key, value] of Object.entries(this.trips)) {
+      if (currentZoom >= detailLevel) {
+        value.layergroup.addTo(this.map);       
+      } else {
+        this.map.removeLayer(value.layergroup);
+      }
+    }
+
     for (const [key, value] of Object.entries(this.locations)) {
       if (currentZoom >= decorationLevel) {
         value.layergroup.addTo(this.map);
@@ -424,7 +457,7 @@ export default class LeafletMap extends Component {
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
 
-    if (currentZoom >= decorationLevel && this.state.loadTrips) {
+    if (currentZoom >= detailLevel && this.state.loadTrips) {
       dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
       this.toggleSegmentsAndLocations();
       this.setState({loadTrips: false});
@@ -571,30 +604,40 @@ export default class LeafletMap extends Component {
     }
   }
 
+  addTrip (id, color, trips, canonical) {
+    const layergroup = L.geoJSON(trips, {style: {color: color}}).addTo(this.map);
+    const date = moment(id);
+    const { activeView } = this.props;
+    
+    if (canonical) {
+      this.canonical[id] = {layergroup};
+      layergroup.bindTooltip(
+        "<div style='width: 50px'>" +
+        "   <span style='border: 3px solid white; background-color: #E93E3A; width: 100%; padding: 5px 10px'> Zoom In For More Detail </span>" +
+        "</div>"
+        , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+      } else {
+      this.trips[id] = {layergroup};
+      layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
+
+      layergroup.bindTooltip(
+        "<div style='width: 50px'>" +
+        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
+        "</div>"
+      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+    } 
+  }
+
   addSegment (id, points, color, display, filter, canonical) {
     const { detailLevel, activeView } = this.props;
     const currentZoom = this.map.getZoom();
 
     const obj = addSegment(id, points, color, display, filter);
-    const date = moment(points.get(0).get('time'));
     
     if (canonical) {
       this.canonical[id] = obj;
-
-      obj.layergroup.bindTooltip(
-        "<div style='width: 50px'>" +
-        "   <span style='border: 3px solid white; background-color: #E93E3A; width: 100%; padding: 5px 10px'> Zoom In For More Detail </span>" +
-        "</div>"
-      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } else {
       this.segments[id] = obj;
-      obj.layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
-
-      obj.layergroup.bindTooltip(
-        "<div style='width: 50px'>" +
-        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
-        "</div>"
-      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } 
     
     if (activeView !== MAIN_VIEW) {
@@ -625,6 +668,18 @@ export default class LeafletMap extends Component {
     if (currentZoom >= detailLevel) {
       obj.layergroup.addTo(this.map);
       obj.details.addTo(obj.layergroup);
+    }
+  }
+
+  shouldRemoveTrips (trips, prev) {
+    if (trips !== prev) {
+      // delete trip if needed
+      Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
+        if (this.trips[s]) {
+          this.map.removeLayer(this.trips[s].layergroup);
+          delete this.trips[s];
+        }
+      })
     }
   }
 
