@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
     highlighted: state.get('map').get('highlighted'),
     highlightedPoints: state.get('map').get('highlightedPoints'),
     segments: state.get('tracks').get('segments'),
-    trips: state.get('tracks').get('tracks'),
+    trips: state.get('tracks').get('trips'),
     locations: state.get('tracks').get('locations'),
     canonicalTrips: state.get('tracks').get('canonicalTrips'),
     canUndo: history.get('past').count() !== 0,

@@ -69,20 +69,19 @@ const displayTrips = (state, action) => {
   }
 
   const tripsByDay = groupBy(trips, "id");
-  const _tracks = []
+  const _trips = []
 
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     const _color = colors(color++);
-    _tracks.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color})
+    _trips.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color})
   }
 
   return state
-    .updateIn(['tracks'], (tracks) => {
-      // tracks = tracks.clear();
-      return _tracks.reduce((tracks, track) => {
-        return tracks.set(track.id, track);
-      }, tracks)});
+    .updateIn(['trips'], (trips) => {
+      return _trips.reduce((trips, trip) => {
+        return trips.set(trip.id, trip);
+      }, trips)});
 }
 
 /**
@@ -95,25 +94,19 @@ const displayCanonicalTrips = (state, action) => {
     return state;
   }
 
-  const _segments = [];
+  const _trips = [];
 
-  var color = 0;
   for (var i = 0 ; i < trips.length ; i++) {
     const trip = trips[i];
-    _segments.push(new SegmentRecord({
-      trackId: i,
-      id: trip.id,
-      color: 'rgb(233,62,58)',
-      points: pointsToRecord(trip.points)
-    }));
+    _trips.push({id: trip.id, geoJSON: trip.geoJSON, color: '#e93e3a'});
   }
 
   return state
-    .updateIn(['canonicalTrips'], (segments) => {
-      segments = segments.clear();
-      return _segments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
+    .updateIn(['canonicalTrips'], (trips) => {
+      trips = trips.clear();
+      return _trips.reduce((trips, trip) => {
+        return trips.set(trip.id, trip);
+      }, trips);
     });
 }
 
@@ -212,16 +205,17 @@ const clearLocations = (state, action) => {
 }
 
 /**
- * Remove all tracks/segments from state.
+ * Remove all tracks/segments and trips from state.
  */
 const clearTrips = (state, action) => {
   return state
     .setIn(["tracks"], fromJS({}))
-    .setIn(["segments"], fromJS({}));
+    .setIn(["segments"], fromJS({}))
+    .setIn(["trips"], fromJS({}));
 }
 
 /**
- * Remove all tracks/segments and canonical trips/locations from state.
+ * Remove all map representations from state.
  */
 const clearAll = (state, action) => {
   return initialState;
@@ -252,6 +246,7 @@ const initialState = fromJS({
   tracks: {},
   locations: {},
   segments: {},
+  trips: {},
   canonicalTrips: {},
   history: {
     past: [],
