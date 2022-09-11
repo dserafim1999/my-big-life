@@ -5,7 +5,7 @@ import { addAlert, setLoading } from './general';
 import { fitSegments } from './map';
 import { reset as resetId } from '../records/idState';
 import { addPossibilities } from './segments';
-import { resetHistory, clearAll } from './tracks';
+import { resetHistory, clearTracks } from './tracks';
 import { PointRecord } from '../records';
 
 /**
@@ -111,13 +111,13 @@ const updateState = (dispatch, json, getState) => {
     if(json.queue.length > 0) {
       dispatch(changeDayToProcess(json.queue.pop()[0]));
     } else {
-      dispatch(clearAll());
+      dispatch(clearTracks());
     }
   } 
   
   dispatch(setServerState(json.step, json.queue, json.currentDay, json.life, json.lifeQueue));
   if (json.step < 0 || json.track == undefined) {
-    dispatch(clearAll());
+    dispatch(clearTracks());
     return;
   }
 
@@ -145,7 +145,7 @@ export const requestServerState = () => {
         dispatch(addAlert("Couldn't fetch server state.", 'error', 5, 'server-state'));
     })
     .then((json) => {
-        dispatch(clearAll());
+        dispatch(clearTracks());
         updateState(dispatch, json, getState);
     });
   }

@@ -1,21 +1,23 @@
 export const ADD_TRACK = 'tracks/add';
 export const REMOVE_TRACK = 'tracks/remove';
-export const REMOVE_TRIP = 'trips/remove';
 export const TOGGLE_TRACK_INFO = 'tracks/toggle_info';
 export const ADD_MULTIPLE_TRACKS = 'tracks/add_multiple';
 export const UPDATE_TRACK_NAME = 'tracks/update_name';
 export const TOGGLE_TRACK_RENAMING = 'tracks/toggle_renaming';
 export const UPDATE_TRACK_LIFE = 'tracks/update_LIFE';
-export const DISPLAY_TRIPS = 'tracks/display_trips';
-export const DISPLAY_CANONICAL_TRIPS = 'tracks/display_canonical_trips';
 export const RESET_HISTORY = 'tracks/reset_history';
 export const REMOVE_TRACKS_FOR = 'tracks/remove_track_for';
-export const DISPLAY_LOCATIONS = 'tracks/display_locations';
-export const CLEAR_ALL = 'tracks/clear_all';
-export const CLEAR_TRIPS = 'tracks/clear_trips';
-export const CLEAR_LOCATIONS = 'tracks/clear_locations';
+export const CLEAR_TRACKS = 'tracks/clear';
 export const UNDO = 'tracks/undo';
 export const REDO = 'tracks/redo';
+
+export const DISPLAY_TRIPS = 'trips/display';
+export const DISPLAY_CANONICAL_TRIPS = 'trips/display_canonical';
+export const DISPLAY_LOCATIONS = 'trips/display_locations';
+export const CLEAR_TRIPS = 'trips/clear';
+export const CLEAR_CANONICAL_TRIPS = 'trips/clear_canonical';
+export const CLEAR_LOCATIONS = 'trips/clear_locations';
+export const REMOVE_TRIP = 'trips/remove';
 
 export const TOGGLE_SEGMENT_VISIBILITY = 'segments/toggle_visibility';
 export const TOGGLE_SEGMENT_EDITING = 'segments/toggle_edit';

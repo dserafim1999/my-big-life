@@ -10,7 +10,7 @@ import DownloadingIcon from '@mui/icons-material/Downloading';
 import { connect } from 'react-redux';
 import { addAlert } from '../../actions/general';
 import { toggleRemainingTracks } from '../../actions/process';
-import { clearAll, resetHistory } from '../../actions/tracks';
+import { clearTracks, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';
 import { DONE_STAGE } from '../../constants';
@@ -42,12 +42,12 @@ class TrackProcessing extends Component {
     }
 
     componentDidMount() {
-        this.dispatch(clearAll());
+        this.dispatch(clearTracks());
         this.dispatch(requestServerState());
     }
 
     componentWillUnmount() {
-        this.dispatch(clearAll());
+        this.dispatch(clearTracks());
         this.dispatch(resetHistory());
         this.dispatch(updateBounds(this.bounds));
     }

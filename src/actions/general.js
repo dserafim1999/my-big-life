@@ -12,7 +12,8 @@ import {
 } from "."
 
 import { toggleSegmentInfo, updateActiveLIFE } from "./segments";
-import { clearAll, displayLocations, displayCanonicalTrips, displayTrips, removeTrip } from "./tracks";
+import { displayLocations, displayCanonicalTrips, displayTrips, removeTrip, clearTrips } from "./trips";
+import { clearTracks } from "./tracks";
 
 
 /**
@@ -173,7 +174,8 @@ export const updateView = (view, route, navigate) => {
   navigate(route);
   
   return (dispatch, getState) => {
-    dispatch(clearAll());
+    dispatch(clearTrips());
+    dispatch(clearTracks());
     dispatch({view, type: UPDATE_VIEW});
   }
 }

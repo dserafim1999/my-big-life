@@ -1,11 +1,8 @@
 import segments from "./segments";
-import colors from "../utils/colors";
-import moment from 'moment';
 
-import { pointsToRecord, SegmentRecord, createTrackObj, PointRecord } from "../records";
+import { createTrackObj } from "../records";
 import { Map, fromJS } from 'immutable';
 import { addTrack as addTrackAction } from '../actions/tracks';
-import { groupBy } from "../utils";
 
 /**
  * Adds track to global state.
@@ -56,83 +53,6 @@ const removeTracksFor = (state, action) => {
     const act = addTrackAction(points, name, locations);
 
     return addTrack(state, act);
-}
-
-/**
- * Adds trips to global state to be displayed.
- */
-const displayTrips = (state, action) => {
-  const { trips } = action;
-
-  if (!trips) {
-    return state;
-  }
-
-  const tripsByDay = groupBy(trips, "id");
-  const _trips = []
-
-  var color = 0;
-  for (const [day, trips] of Object.entries(tripsByDay)) {
-    const _color = colors(color++);
-    _trips.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color})
-  }
-
-  return state
-    .updateIn(['trips'], (trips) => {
-      return _trips.reduce((trips, trip) => {
-        return trips.set(trip.id, trip);
-      }, trips)});
-}
-
-/**
- * Adds canonical trips to global state to be displayed.
- */
-const displayCanonicalTrips = (state, action) => {
-  const { trips } = action;
-
-  if (!trips) {
-    return state;
-  }
-
-  const _trips = [];
-
-  for (var i = 0 ; i < trips.length ; i++) {
-    const trip = trips[i];
-    _trips.push({id: trip.id, geoJSON: trip.geoJSON, color: 'var(--main)'});
-  }
-
-  return state
-    .updateIn(['canonicalTrips'], (trips) => {
-      trips = trips.clear();
-      return _trips.reduce((trips, trip) => {
-        return trips.set(trip.id, trip);
-      }, trips);
-    });
-}
-
-/**
- * Adds canonical locations to global state to be displayed.
- */
-const displayLocations = (state, action) => {
-  const { locations } = action;
-  const _points = [];
-
-  for (const [i, location] of Object.entries(locations)) {
-    _points.push(new PointRecord({
-        lat: location.lat,
-        lon: location.lon,
-        label: location.label
-      })
-    );
-  }
-  
-  return state
-    .updateIn(['locations'], (locations) => {
-      locations = locations.clear(); 
-      return _points.reduce((locations, location) => {
-        return locations.set(location.label, location);
-      }, locations)
-    });
 }
 
 /**
@@ -198,52 +118,20 @@ const removeTrack = (state, action) => {
 }
 
 /**
- * Remove a trip from the global state.
+ * Remove all tracks/segments from state.
  */
- const removeTrip = (state, action) => {
-  const { tripId } = action;
-
-  return state.deleteIn(['trips', tripId]);
-}
-
-/**
- * Remove canonical locations from state.
- */
-const clearLocations = (state, action) => {
-  return state.setIn(["locations"], fromJS({}));
-}
-
-/**
- * Remove all tracks/segments and trips from state.
- */
-const clearTrips = (state, action) => {
-  return state
-    .setIn(["tracks"], fromJS({}))
-    .setIn(["segments"], fromJS({}))
-    .setIn(["trips"], fromJS({}));
-}
-
-/**
- * Remove all map representations from state.
- */
-const clearAll = (state, action) => {
+const clearTracks = (state, action) => {
   return initialState;
 }
 
 const ACTION_REACTION = {
     'tracks/add': addTrack,
     'tracks/remove': removeTrack,
-    'trips/remove': removeTrip,
     'tracks/add_multiple': addMultipleTracks,
     'tracks/update_LIFE': updateTrackLIFE,
-    'tracks/display_trips': displayTrips,
-    'tracks/display_canonical_trips': displayCanonicalTrips,
-    'tracks/display_locations': displayLocations,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
-    'tracks/clear_all': clearAll,
-    'tracks/clear_trips': clearTrips,
-    'tracks/clear_locations': clearLocations,
+    'tracks/clear_tracks': clearTracks,
     'tracks/undo': undo,
     'tracks/redo': redo,
 }
@@ -254,10 +142,7 @@ const UNDO_LIMIT = 50
 
 const initialState = fromJS({
   tracks: {},
-  locations: {},
   segments: {},
-  trips: {},
-  canonicalTrips: {},
   history: {
     past: [],
     future: []

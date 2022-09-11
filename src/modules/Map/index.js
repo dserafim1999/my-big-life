@@ -25,7 +25,7 @@ import {
   toggleSegmentInfo
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
-import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
+import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
 

@@ -1,6 +1,6 @@
-import { clearAll, displayTrips } from "./tracks";
 import { setLoading } from './general';
 import { ADD_QUERY_STAY, ADD_QUERY_STAY_AND_ROUTE, QUERY_RESULTS, REMOVE_QUERY_STAY, RESET_QUERY, UPDATE_QUERY_BLOCK } from ".";
+import { displayTrips, clearTrips, clearLocations } from "./trips";
 
 /**
  * Sends query object to server to be executed.
@@ -115,7 +115,8 @@ export const removeQueryStay = (stayId) => ({
  */
 export const resetQuery = () => {
     return (dispatch) => {
-        dispatch(clearAll());
+        dispatch(clearTrips());
+        dispatch(clearLocations());
         dispatch({type: RESET_QUERY});
     }
 };
@@ -155,7 +156,8 @@ export const queryResults = (results, clean, total, querySize) => {
             }
         }        
         
-        dispatch(clearAll());
+        dispatch(clearTrips());
+        dispatch(clearLocations());
         dispatch(displayTrips(tracks));
         dispatch({results, clean, canLoadMore, type: QUERY_RESULTS});
     }
