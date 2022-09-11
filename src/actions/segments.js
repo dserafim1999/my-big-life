@@ -97,7 +97,7 @@ export const addSegmentPoint = (segmentId, index, lat, lon) => ({
  * Adds new segment to track.
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @param {Date} lastTime Date of last point in track
  */
 export const addNewSegment = (trackId, lastTime) => {

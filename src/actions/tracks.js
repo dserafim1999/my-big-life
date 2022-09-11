@@ -56,7 +56,7 @@ export const addMultipleTracks = (tracks) => {
  * If no boolean value is set, value is toggled
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @param {boolean} value If track segments are visible. 
  */
 export const toggleTrackSegmentsVisibility = (trackId, value) => {
@@ -73,7 +73,7 @@ export const toggleTrackSegmentsVisibility = (trackId, value) => {
  * Highlight a segment in a track.
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @param {number} segmentId Segment Id 
  * @param {boolean} value If other track segments are highlighted 
  */
@@ -88,7 +88,7 @@ export const highlightSegmentInTrack = (trackId, segmentId, value) => {
  * Fully highlight a track.
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @param {boolean} value If track is highlighted  
  */
 export const highlightTrack = (trackId, value) => {
@@ -120,7 +120,7 @@ const MS_REG = /.[0-9]{3}Z$/;
  * Converts track into GPX format
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @param {object} state Global state
  * @returns GPX formatted string
  */
@@ -151,7 +151,7 @@ const exportGPX = (trackId, state) => {
  * Triggers download with track converted to GPX format
  * 
  * @function
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  */
 export const downloadTrack = (trackId) => {
   return (_, getState) => {
@@ -177,7 +177,7 @@ export const downloadAll = () => {
  * Remove a track from the global state.
  * 
  * @action
- * @param {number | string} trackId Track Id 
+ * @param {number} trackId Track Id 
  * @returns Action Object
  */
 export const removeTrack = (trackId) => ({
