@@ -610,7 +610,7 @@ const toggleSegmentInfo = (state, action) => {
   const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
   return state
     .set('showInfo', showInfo)
-    .set('activeSegment', showInfo ? action.segmentId : null);
+    .set('activeSegment', showInfo ? action.id : null);
 }
 
 /**

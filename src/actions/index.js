@@ -1,5 +1,6 @@
 export const ADD_TRACK = 'tracks/add';
 export const REMOVE_TRACK = 'tracks/remove';
+export const REMOVE_TRIP = 'trips/remove';
 export const TOGGLE_TRACK_INFO = 'tracks/toggle_info';
 export const ADD_MULTIPLE_TRACKS = 'tracks/add_multiple';
 export const UPDATE_TRACK_NAME = 'tracks/update_name';

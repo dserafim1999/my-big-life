@@ -191,14 +191,7 @@ export default class LeafletMap extends Component {
       Object.values(current.toJS()).forEach((trip) => trip.geoJSON.coordinates.forEach((point) => _points.push([point[1], point[0], 1.0])));
       
       this.heatmapLayer = L.heatLayer(_points, {
-        radius: 15,
-        gradient: {
-          '0': 'rgb(233,62,58)',
-          '0.4': 'rgb(237,104,60)',
-          '0.6': 'rgb(243,144,63)',
-          '0.8': 'rgb(253,199,12)',
-          '1': 'rgb(255,243,59)'
-        }
+        radius: 18
       }).addTo(this.map);
     }
   }
@@ -611,7 +604,7 @@ export default class LeafletMap extends Component {
         , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } else {
         this.trips[id] = {layergroup};
-        layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
+        layergroup.on('click', () => this.onTripClick(id));
 
         layergroup.bindTooltip(
           "<div style='width: 50px'>" +
@@ -642,12 +635,12 @@ export default class LeafletMap extends Component {
     }
   }
 
-  onSegmentClick(segmentId, date, activeView) {
-    const { dispatch } = this.props;
+  onTripClick(id) {
+    const { dispatch, activeView } = this.props;
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleSegmentInfo(true, segmentId, date));
+        dispatch(toggleSegmentInfo(true, id));
         break;
     }
   }

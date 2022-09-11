@@ -12,7 +12,7 @@ import {
 } from "."
 
 import { toggleSegmentInfo, updateActiveLIFE } from "./segments";
-import { clearAll, displayLocations, displayCanonicalTrips, displayTrips, removeTrack } from "./tracks";
+import { clearAll, displayLocations, displayCanonicalTrips, displayTrips, removeTrip } from "./tracks";
 
 
 /**
@@ -321,7 +321,7 @@ export const deleteDay = (date) => {
         .catch((e) => console.error(e))
         .then((res) => {
           dispatch(toggleSegmentInfo(false));
-          dispatch(removeTrack(moment(date).format('YYYY-MM-DD')));
+          dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
           dispatch(loadTripsAndLocations());
         })

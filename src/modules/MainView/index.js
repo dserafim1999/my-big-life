@@ -36,14 +36,14 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     
     const onDelete = (e, modifier) => {
         modifier('is-loading');
-        const date = moment(activeSegment.getStartTime());
+        const date = moment(activeSegment);
         dispatch(deleteDay(date.format("YYYY-MM-DD")));
         modifier(); 
     }
     
     const onEdit = (e, modifier) => {
         modifier('is-loading');
-        const date = moment(activeSegment.getStartTime());
+        const date = moment(activeSegment);
         dispatch(copyDayToInput(date.format("YYYY-MM-DD"))); 
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
         modifier();

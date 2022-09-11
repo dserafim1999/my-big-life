@@ -9,7 +9,8 @@ import {
   CLEAR_ALL,
   DISPLAY_CANONICAL_TRIPS,
   CLEAR_TRIPS,
-  CLEAR_LOCATIONS
+  CLEAR_LOCATIONS,
+  REMOVE_TRIP
 } from ".";
 
 import { Set } from 'immutable';
@@ -225,6 +226,18 @@ export const downloadAll = () => {
 export const removeTrack = (trackId) => ({
   trackId,
   type: REMOVE_TRACK
+})
+
+/**
+ * Remove a trip from the global state.
+ * 
+ * @action
+ * @param {string} tripId Trip Id 
+ * @returns Action Object
+ */
+ export const removeTrip = (tripId) => ({
+  tripId,
+  type: REMOVE_TRIP
 })
 
 /**

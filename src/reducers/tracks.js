@@ -98,7 +98,7 @@ const displayCanonicalTrips = (state, action) => {
 
   for (var i = 0 ; i < trips.length ; i++) {
     const trip = trips[i];
-    _trips.push({id: trip.id, geoJSON: trip.geoJSON, color: '#e93e3a'});
+    _trips.push({id: trip.id, geoJSON: trip.geoJSON, color: 'var(--main)'});
   }
 
   return state
@@ -198,6 +198,15 @@ const removeTrack = (state, action) => {
 }
 
 /**
+ * Remove a trip from the global state.
+ */
+ const removeTrip = (state, action) => {
+  const { tripId } = action;
+
+  return state.deleteIn(['trips', tripId]);
+}
+
+/**
  * Remove canonical locations from state.
  */
 const clearLocations = (state, action) => {
@@ -224,6 +233,7 @@ const clearAll = (state, action) => {
 const ACTION_REACTION = {
     'tracks/add': addTrack,
     'tracks/remove': removeTrack,
+    'trips/remove': removeTrip,
     'tracks/add_multiple': addMultipleTracks,
     'tracks/update_LIFE': updateTrackLIFE,
     'tracks/display_trips': displayTrips,

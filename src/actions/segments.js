@@ -390,12 +390,12 @@ export const updatePoint = (segmentId, index, lat, lon, time) => ({
  * @param {Date} date Segment day 
  * @returns Action Object 
  */
-export const toggleSegmentInfo = (value = undefined, segmentId = undefined, date = undefined) => {
+export const toggleSegmentInfo = (value = undefined, id = undefined, date = undefined) => {
   return (dispatch, getState) => {
     if (date) dispatch(getLifeFromDay(date));
     dispatch({
       value,
-      segmentId, 
+      id, 
       type: TOGGLE_SEGMENT_INFO
     });
   }
