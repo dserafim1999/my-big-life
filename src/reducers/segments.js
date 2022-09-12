@@ -1,6 +1,4 @@
-import {
-  createSegmentObj,
-} from '../records';
+import { createSegmentObj } from '../records';
 import { removeSegment as removeSegmentAction } from "../actions/segments";
 import { List, Map } from 'immutable';
 import { PointRecord } from '../records';
@@ -13,7 +11,6 @@ import { PointRecord } from '../records';
  * @returns Segment's start time
  */
 const segmentStartTime = (segment) => {
-  console.log(typeof segment)
   return segment.get('points').get(0).get('time');
 }
 
@@ -603,26 +600,7 @@ const addNewSegment = (state, action) => {
     .updateIn(['tracks', trackId, 'segments'], (segs) => segs.add(seg.get('id')));
 }
 
-/**
- * Toggle panel with segment information.
- */
-const toggleSegmentInfo = (state, action) => {
-  const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
-  return state
-    .set('showInfo', showInfo)
-    .set('activeSegment', showInfo ? action.id : null);
-}
-
-/**
- * Update active segment LIFE string in state.
- */
-const updateActiveLIFE = (state, action) => {
-  return state
-    .set('activeLIFE', action.life);
-}
-
 const ACTION_REACTION = {
-    'segments/toggle_info': toggleSegmentInfo,
     'segments/toggle_visibility': toggleSegmentVisibility,
     'segments/toggle_edit': toggleSegmentEditing,
     'segments/toggle_split': toggleSegmentSplitting,
@@ -642,7 +620,6 @@ const ACTION_REACTION = {
     'segments/time_filter': updateTimeFilterSegment,
 
     'segments/update_location_name': updateLocationName,
-    'segments/update_active_LIFE': updateActiveLIFE,
     'segments/select_point': selectPoint,
     'segments/deselect_point': deselectPoint,
 

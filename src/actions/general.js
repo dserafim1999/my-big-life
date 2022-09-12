@@ -10,9 +10,15 @@ import {
   SET_APP_LOADING,
   UPDATE_LIFE,
 } from "."
-
-import { toggleSegmentInfo, updateActiveLIFE } from "./segments";
-import { displayLocations, displayCanonicalTrips, displayTrips, removeTrip, clearTrips } from "./trips";
+import { 
+  displayLocations, 
+  displayCanonicalTrips, 
+  displayTrips, 
+  removeTrip, 
+  clearTrips, 
+  updateActiveLIFE,
+  toggleDayInfo
+} from "./trips";
 import { clearTracks } from "./tracks";
 
 
@@ -322,7 +328,7 @@ export const deleteDay = (date) => {
         .then((response) => response.json())
         .catch((e) => console.error(e))
         .then((res) => {
-          dispatch(toggleSegmentInfo(false));
+          dispatch(toggleDayInfo(false));
           dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
           dispatch(loadTripsAndLocations());

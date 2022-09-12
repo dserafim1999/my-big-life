@@ -20,11 +20,9 @@ import {
   STRAIGHT_SELECTED,
   UPDATE_POINT,
   ADD_NEW_SEGMENT,
-  TOGGLE_SEGMENT_INFO,
-  UPDATE_ACTIVE_LIFE,
 } from ".";
 
-import { addAlert, getLifeFromDay, removeAlert } from './general';
+import { addAlert, removeAlert } from './general';
 import { centerMap, addPointPrompt, removePointPrompt } from './map';
 import { completeTrip } from './process';
 
@@ -381,34 +379,3 @@ export const updatePoint = (segmentId, index, lat, lon, time) => ({
   type: UPDATE_POINT
 })
 
-/**
- * Toggle panel with segment information.
- * 
- * @action
- * @param {boolean} value If panel is active
- * @param {number} segmentId Segment Id 
- * @param {Date} date Segment day 
- * @returns Action Object 
- */
-export const toggleSegmentInfo = (value = undefined, id = undefined, date = undefined) => {
-  return (dispatch, getState) => {
-    if (date) dispatch(getLifeFromDay(date));
-    dispatch({
-      value,
-      id, 
-      type: TOGGLE_SEGMENT_INFO
-    });
-  }
-}
-
-/**
- * Update active segment LIFE string in state.
- * 
- * @action
- * @param {string} life Segment LIFE representation 
- * @returns Action Object
- */
-export const updateActiveLIFE = (life) => ({
-  life,
-  type: UPDATE_ACTIVE_LIFE
-})

@@ -5,21 +5,20 @@ import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../SemanticEditor/viewDecorators';
 import AsyncButton from "../../components/Buttons/AsyncButton";
 import moment from "moment";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { fromJS } from "immutable";
 import { connect } from "react-redux";
 import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
-import { toggleSegmentInfo, updateActiveLIFE } from "../../actions/segments";
 import { useNavigate } from "react-router-dom";
 import { ContentState } from 'draft-js';
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
+import { updateActiveLIFE, toggleDayInfo } from "../../actions/trips";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-
-const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeLIFE, globalLIFE, segments }) => {
+const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, activeLIFE, globalLIFE, segments }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
         dispatch(getLife());
@@ -30,35 +29,28 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
     if (!isVisible) return null;
 
     const onClose = () =>  {
-        dispatch(toggleSegmentInfo(false));
+        dispatch(toggleDayInfo(false));
         dispatch(updateActiveLIFE(null));
     }
     
     const onDelete = (e, modifier) => {
         modifier('is-loading');
-        const date = moment(activeSegment);
-        dispatch(deleteDay(date.format("YYYY-MM-DD")));
+        dispatch(deleteDay(activeDay.format("YYYY-MM-DD")));
         modifier(); 
     }
     
     const onEdit = (e, modifier) => {
         modifier('is-loading');
-        const date = moment(activeSegment);
-        dispatch(copyDayToInput(date.format("YYYY-MM-DD"))); 
+        dispatch(copyDayToInput(activeDay.format("YYYY-MM-DD"))); 
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
         modifier();
-    }
-
-    let segment;
-    if (activeSegment) {
-        segment = fromJS({segment: activeSegment});
     }
 
     const state = activeLIFE ? ContentState.createFromText(activeLIFE) : (globalLIFE ? ContentState.createFromText(globalLIFE) : null);
 
     return <>
         { showSegmentInfo && (
-                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={activeSegment}>
+                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={activeDay.format('DD/MM/YYYY')}>
                     <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
                         <AsyncButton 
                             title='Delete Day'
@@ -94,12 +86,11 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeSegment, activeL
 }
 
 const mapStateToProps = (state) => {
-
     return {
         isVisible: state.get('general').get('isUIVisible'),
-        showSegmentInfo: state.get('tracks').get('showInfo'),
-        activeSegment: state.get('tracks').get('activeSegment'),
-        activeLIFE: state.get('tracks').get('activeLIFE'),
+        showSegmentInfo: state.get('trips').get('showInfo'),
+        activeDay: state.get('trips').get('activeDay'),
+        activeLIFE: state.get('trips').get('activeLIFE'),
         //globalLIFE: state.get('general').get('LIFE'),
         segments: state.get('tracks').get('segments')
     };

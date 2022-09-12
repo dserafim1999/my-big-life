@@ -5,11 +5,12 @@ import {
     CLEAR_TRIPS,
     CLEAR_LOCATIONS,
     REMOVE_TRIP,
-    CLEAR_CANONICAL_TRIPS
+    CLEAR_CANONICAL_TRIPS,
+    UPDATE_ACTIVE_LIFE,
+    TOGGLE_DAY_INFO
   } from ".";
   
-  import { setAppLoading } from './general';
-  import { toggleSegmentInfo } from "./segments";
+  import { getLifeFromDay, setAppLoading } from './general';
   
   /**
    * Adds trips to global state to be displayed.
@@ -67,7 +68,7 @@ import {
    */
   export const clearTrips = () => {
     return (dispatch, getState) => {
-      dispatch(toggleSegmentInfo(false));
+      dispatch(toggleDayInfo(false));
       dispatch({type: CLEAR_TRIPS});
     }
   }
@@ -187,5 +188,36 @@ import {
         });
     }
   }
-  
+
+/**
+ * Update active day's LIFE string in state.
+ * 
+ * @action
+ * @param {string} life Segment LIFE representation 
+ * @returns Action Object
+ */
+export const updateActiveLIFE = (life) => ({
+  life,
+  type: UPDATE_ACTIVE_LIFE
+})
+
+/**
+ * Toggle panel with information about day.
+ * 
+ * @action
+ * @param {boolean} value If panel is active
+ * @param {Date} date Day to observe 
+ * @returns Action Object 
+ */
+ export const toggleDayInfo = (value = undefined, date = undefined) => {
+  return (dispatch, getState) => {
+    console.log(date)
+    if (date) dispatch(getLifeFromDay(date.format('YYYY-MM-DD')));
+    dispatch({
+      value,
+      date, 
+      type: TOGGLE_DAY_INFO
+    });
+  }
+}
       

@@ -21,11 +21,10 @@ import {
   changeSegmentPoint,
   addSegmentPoint,
   removeSegmentPoint,
-  joinSegment,
-  toggleSegmentInfo
+  joinSegment
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
-import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
+import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
 import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
 
@@ -604,7 +603,7 @@ export default class LeafletMap extends Component {
         , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } else {
         this.trips[id] = {layergroup};
-        layergroup.on('click', () => this.onTripClick(id));
+        layergroup.on('click', () => this.onTripClick(date));
 
         layergroup.bindTooltip(
           "<div style='width: 50px'>" +
@@ -635,12 +634,12 @@ export default class LeafletMap extends Component {
     }
   }
 
-  onTripClick(id) {
+  onTripClick(date) {
     const { dispatch, activeView } = this.props;
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleSegmentInfo(true, id));
+        dispatch(toggleDayInfo(true, date));
         break;
     }
   }

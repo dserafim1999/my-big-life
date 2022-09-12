@@ -411,7 +411,7 @@ async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, forc
     return false;
   }
    
-  timeout = setTimeout(() => getBulkProgressStatus(url, setProgress), 1000);
+  timeout = setTimeout(() => getBulkProgressStatus(url, setProgress), 5000);
 }
 
 /**
