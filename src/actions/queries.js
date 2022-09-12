@@ -134,7 +134,7 @@ export const resetQuery = () => {
  */
 export const queryResults = (results, clean, total, querySize) => {
     return (dispatch, getState) => {
-        var tracks = [];
+        var trips = [];
         
         if (!clean) {
             results = getState().get("queries").toJS()["results"].concat(results);
@@ -148,17 +148,20 @@ export const queryResults = (results, clean, total, querySize) => {
                 const res = result[j];
 
                 if (res.type === "interval" || querySize === 1) {
-                    if(res.points.points.length == 1) {
-                        res.points.points[0].label = res.id; // Adds location name to location point
-                    }
-                    tracks.push(res.points);
+                    // if(res.points.length == 1) {
+                    //     res.points[0].label = res.id; // Adds location name to location point
+                    // }
+                    trips.push(res.points);
                 } 
             }
-        }        
+        }
+        
+        console.log(trips)
+        
         
         dispatch(clearTrips());
         dispatch(clearLocations());
-        dispatch(displayTrips(tracks));
+        dispatch(displayTrips(trips));
         dispatch({results, clean, canLoadMore, type: QUERY_RESULTS});
     }
 };

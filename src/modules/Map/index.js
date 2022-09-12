@@ -150,14 +150,15 @@ export default class LeafletMap extends Component {
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
         this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
         this.shouldUpdateLocations(locations, prev.locations);
-        this.shouldUpdateTrips(trips, prev.trips);
+        this.toggleSegmentsAndLocations();
         break;
-      default:
-        if (this.heatmapLayer) {
-          this.map.removeLayer(this.heatmapLayer);        
+        default:
+          if (this.heatmapLayer) {
+            this.map.removeLayer(this.heatmapLayer);        
+          }
         }
-    }
-      
+        
+    this.shouldUpdateTrips(trips, prev.trips);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
