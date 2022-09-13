@@ -25,7 +25,7 @@ import {
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
 import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
-import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
+import { MAIN_VIEW, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
 
 const DEFAULT_PROPS = {
@@ -145,19 +145,8 @@ export default class LeafletMap extends Component {
       this.map.buttons.setEnabled(1, canRedo);
     }
 
-    switch (activeView) {
-      case MAIN_VIEW:
-        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
-        this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
-        this.shouldUpdateLocations(locations, prev.locations);
-        this.toggleSegmentsAndLocations();
-        break;
-        default:
-          if (this.heatmapLayer) {
-            this.map.removeLayer(this.heatmapLayer);        
-          }
-        }
-        
+    this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
+    this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdateTrips(trips, prev.trips);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
     this.shouldUpdateZoom(zoom, prev.zoom);
@@ -166,9 +155,18 @@ export default class LeafletMap extends Component {
     this.shouldUpdateHighlighted(highlighted, prev.highlighted, segments);
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
-
     this.shouldUpdateSegmentsArePoints(this.props, prev);
-      
+    
+    switch (activeView) {
+      case MAIN_VIEW:
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
+        this.toggleSegmentsAndLocations();
+        break;
+        default:
+          if (this.heatmapLayer) {
+            this.map.removeLayer(this.heatmapLayer);        
+          }
+        }
   }
 
   shouldUpdateSegmentsArePoints (current, previous) {
@@ -410,7 +408,7 @@ export default class LeafletMap extends Component {
     }
 
     for (const [key, value] of Object.entries(this.locations)) {
-      if (currentZoom >= decorationLevel) {
+      if (currentZoom >= decorationLevel && currentZoom < detailLevel) {
         value.layergroup.addTo(this.map);
       } else {
         this.map.removeLayer(value.layergroup);
@@ -646,15 +644,24 @@ export default class LeafletMap extends Component {
   }
 
   addLocationPoint(point) {
-    const obj = addLocation(point, '#000000');
-    this.locations[point.label] = obj;
-
     const currentZoom = this.map.getZoom();
-    const { detailLevel } = this.props;
-    if (currentZoom >= detailLevel) {
-      obj.layergroup.addTo(this.map);
-      obj.details.addTo(obj.layergroup);
+    const { detailLevel, activeView } = this.props;
+    let obj = addLocation(point, 'var(--secondary)');
+    
+    switch(activeView) {
+      case MAIN_VIEW:
+        if (currentZoom >= detailLevel) {
+          obj.layergroup.addTo(this.map);
+          obj.details.addTo(obj.layergroup);
+        }
+        break;
+      case VISUAL_QUERIES:
+        obj = addLocation(point, '#c3c3c3');
+        break;
     }
+    
+    this.locations[point.label] = obj;
+    obj.layergroup.addTo(this.map);
   }
 
   shouldRemoveTrips (trips, prev) {

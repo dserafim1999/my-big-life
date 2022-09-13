@@ -19,7 +19,7 @@ import {
   DESELECT_POINT,
   STRAIGHT_SELECTED,
   UPDATE_POINT,
-  ADD_NEW_SEGMENT,
+  ADD_SEGMENT,
 } from ".";
 
 import { addAlert, removeAlert } from './general';
@@ -98,7 +98,7 @@ export const addSegmentPoint = (segmentId, index, lat, lon) => ({
  * @param {number} trackId Track Id 
  * @param {Date} lastTime Date of last point in track
  */
-export const addNewSegment = (trackId, lastTime) => {
+export const addSegment = (trackId, lastTime) => {
   return (dispatch, getState) => {
     dispatch(addAlert('Click on the map to insert a point.', 'info', 3, 'point-prompt'));
     dispatch(addPointPrompt((point) => {
@@ -107,7 +107,7 @@ export const addNewSegment = (trackId, lastTime) => {
       dispatch({
         trackId,
         point,
-        type: ADD_NEW_SEGMENT
+        type: ADD_SEGMENT
       });
 
       dispatch(removePointPrompt());

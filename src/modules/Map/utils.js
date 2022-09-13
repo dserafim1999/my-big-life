@@ -38,7 +38,13 @@ export const createMarker = (point, icon, draggable = false) =>
   new Marker(point, { icon, draggable });
 
 export const createLocationMarker = (point, color) => {
-  const marker = createMarker(point, createLocationIcon(color, renderToString(<LocationIcon className='center' sx={{ fontSize: 16 }}/>)));
+  const locationStyle = {
+    color: color
+  };
+  const marker = createMarker(point, createLocationIcon(color, 
+    renderToString(
+      <LocationIcon className='center' style={locationStyle} sx={{ fontSize: 16 }}/>
+    )));
   marker.bindTooltip(point.label, {direction: 'top'});
 
   return marker;

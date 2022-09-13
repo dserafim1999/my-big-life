@@ -7,7 +7,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Date from 'moment';
 import { connect } from 'react-redux';
 import { TrackRecord } from '../../records';
-import { addNewSegment } from '../../actions/segments';
+import { addSegment } from '../../actions/segments';
 import { updateBounds } from '../../actions/map';
 import { computeBounds } from '../../records';
 
@@ -35,7 +35,7 @@ const newSegmentParentStyle = {
  * @param {Date} lastTime Soonest time in Track
  */
 const TrackSegments = ({ dispatch, segments, track, lastTime }) => {
-  const newSegment = () => dispatch(addNewSegment(track.get('id'), lastTime));
+  const newSegment = () => dispatch(addSegment(track.get('id'), lastTime));
   return (
     <ul style={{listStyleType: 'none', margin: 0, padding: 0, overflowY: 'auto', maxHeight: '450px'}}>
       {

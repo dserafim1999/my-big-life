@@ -16,7 +16,7 @@ import AsyncButton from '../../components/Buttons/AsyncButton';
 import useDraggableScroll from 'use-draggable-scroll';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
-const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
+const QueryTimeline = ({ dispatch, query }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
     const height = 125, stayWidth = 200, maxWidth = 2000;
 
@@ -194,7 +194,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
                         { TimelineComponents() }
                         <div style={{zIndex: "1", backgroundColor: "white", position: 'relative', top: '50%', transform: 'translateY(-40%)'}}>
                             <div>
-                                <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement="left" className={isQueryLoading ? 'is-loading' : ''} style={{border: 'none'}}>
+                                <AsyncButton title='Submit Query' onClick={onSubmit} tooltipPlacement="left" style={{border: 'none'}}>
                                     <IconButton>
                                         <SearchIcon></SearchIcon>
                                     </IconButton>
@@ -215,8 +215,7 @@ const QueryTimeline = ({ dispatch, query, isQueryLoading }) => {
 };
 
 const mapStateToProps = (state) => { return {
-    query: state.get('queries').get('query'),
-    isQueryLoading: state.get('general').get('loading').get('query-button')
+    query: state.get('queries').get('query')
 }; }
   
 export default connect(mapStateToProps)(QueryTimeline);

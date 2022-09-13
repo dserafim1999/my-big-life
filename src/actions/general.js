@@ -11,9 +11,9 @@ import {
   UPDATE_LIFE,
 } from "."
 import { 
-  displayLocations, 
-  displayCanonicalTrips, 
-  displayTrips, 
+  addLocations, 
+  addCanonicalTrips, 
+  addTrips, 
   removeTrip, 
   clearTrips, 
   updateActiveLIFE,
@@ -197,57 +197,6 @@ export const toggleUI = (isVisible) => ({
   isVisible,
   type: TOGGLE_UI
 })
-
-/**
- * Loads canonical trips and locations
- * 
- * @request
- */
-export const loadTripsAndLocations = () => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-
-    dispatch(setAppLoading(true));
-    
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/tripsLocations', options)
-    .then((response) => response.json())
-    .catch((e) => console.error(e))
-    .then((res) => {
-      dispatch(displayCanonicalTrips(res.trips));
-      dispatch(displayLocations(res.locations));
-      dispatch(setAppLoading(false));
-    });
-  }
-}
-
-/**
- * Loads all trips in database
- * 
- * @request
- */
-export const loadAllTrips = () => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-
-    dispatch(setAppLoading(true));
-
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/allTrips', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(displayTrips(res.trips))
-        dispatch(setAppLoading(false));
-      });
-  }
-}
 
 /**
  * Fetches LIFE file from certain day and sets active LIFE in state 

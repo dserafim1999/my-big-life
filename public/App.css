@@ -155,7 +155,6 @@ a.button {
 .location-point {
   background-color: white;
   border-color: var(--main); 
-  color: var(--secondary); 
   border-radius: 50%;
   width: 18px !important;
   height: 18px !important;

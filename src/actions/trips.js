@@ -1,13 +1,13 @@
 import { 
-    DISPLAY_TRIPS,
-    DISPLAY_LOCATIONS,
-    DISPLAY_CANONICAL_TRIPS,
     CLEAR_TRIPS,
     CLEAR_LOCATIONS,
     REMOVE_TRIP,
     CLEAR_CANONICAL_TRIPS,
     UPDATE_ACTIVE_LIFE,
-    TOGGLE_DAY_INFO
+    TOGGLE_DAY_INFO,
+    ADD_TRIPS,
+    ADD_CANONICAL_TRIPS,
+    ADD_LOCATIONS
   } from ".";
   
   import { getLifeFromDay, setAppLoading } from './general';
@@ -19,9 +19,9 @@ import {
    * @param {Array} trips Array with track objects 
    * @returns  Action Object
    */
-  export const displayTrips = (trips) => ({
+  export const addTrips = (trips) => ({
     trips,
-    type: DISPLAY_TRIPS
+    type: ADD_TRIPS
   })
   
   /**
@@ -31,9 +31,9 @@ import {
    * @param {Array} trips Array with canonical track objects
    * @returns Action Object
    */
-  export const displayCanonicalTrips = (trips) => ({
+  export const addCanonicalTrips = (trips) => ({
     trips,
-    type: DISPLAY_CANONICAL_TRIPS
+    type: ADD_CANONICAL_TRIPS
   })
   
   /**
@@ -43,9 +43,9 @@ import {
    * @param {Array} locations Array with canonical location objects 
    * @returns Action Object
    */
-  export const displayLocations = (locations) => ({
+  export const addLocations = (locations) => ({
     locations,
-    type: DISPLAY_LOCATIONS
+    type: ADD_LOCATIONS
   })
   
   /**
@@ -120,7 +120,7 @@ import {
         .catch((e) => console.error(e))
         .then((res) => {
           dispatch(clearTrips());
-          dispatch(displayTrips(res.trips));
+          dispatch(addTrips(res.trips));
           dispatch(setAppLoading(false));
         });
     }
@@ -151,7 +151,7 @@ import {
         .then((response) => response.json())
         .catch((e) => console.error(e))
         .then((res) => {
-          dispatch(displayTrips(res.trips));
+          dispatch(addTrips(res.trips));
           dispatch(setAppLoading(false));
         });
     }
@@ -211,7 +211,6 @@ export const updateActiveLIFE = (life) => ({
  */
  export const toggleDayInfo = (value = undefined, date = undefined) => {
   return (dispatch, getState) => {
-    console.log(date)
     if (date) dispatch(getLifeFromDay(date.format('YYYY-MM-DD')));
     dispatch({
       value,
@@ -220,4 +219,109 @@ export const updateActiveLIFE = (life) => ({
     });
   }
 }
+
+/**
+ * Loads canonical trips and locations
+ * 
+ * @request
+ */
+ export const loadTripsAndLocations = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(setAppLoading(true));
+    
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/tripsLocations', options)
+    .then((response) => response.json())
+    .catch((e) => console.error(e))
+    .then((res) => {
+      dispatch(clearCanonicalTrips());
+      dispatch(clearLocations());
+      dispatch(addCanonicalTrips(res.trips));
+      dispatch(addLocations(res.locations));
+      dispatch(setAppLoading(false));
+    });
+  }
+}
+
+/**
+ * Loads canonical trips
+ * 
+ * @request
+ */
+ export const loadCanonicalTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(setAppLoading(true));
+    
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/canonicalTrips', options)
+    .then((response) => response.json())
+    .catch((e) => console.error(e))
+    .then((res) => {
+      dispatch(addCanonicalTrips(res.trips));
+      dispatch(setAppLoading(false));
+    });
+  }
+}
+
+/**
+ * Loads canonical locations
+ * 
+ * @request
+ */
+ export const loadLocations = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(setAppLoading(true));
+    
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/locations', options)
+    .then((response) => response.json())
+    .catch((e) => console.error(e))
+    .then((res) => {
+      console.log('hey')
+      dispatch(addLocations(res.locations));
+      dispatch(setAppLoading(false));
+    });
+  }
+}
+
+/**
+ * Loads all trips in database
+ * 
+ * @request
+ */
+export const loadAllTrips = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(setAppLoading(true));
+
+    const addr = getState().get('general').get('server');
+    return fetch(addr + '/allTrips', options)
+      .then((response) => response.json())
+      .catch((e) => console.error(e))
+      .then((res) => {
+        dispatch(addTrips(res.trips))
+        dispatch(setAppLoading(false));
+      });
+  }
+}
+
       

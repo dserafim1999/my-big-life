@@ -4,19 +4,17 @@ import Card from "../../components/Card";
 import SemanticEditor from '../../modules/SemanticEditor';
 import decorators from '../SemanticEditor/viewDecorators';
 import AsyncButton from "../../components/Buttons/AsyncButton";
-import moment from "moment";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-import { fromJS } from "immutable";
 import { connect } from "react-redux";
-import { deleteDay, getLife, loadTripsAndLocations, updateView } from "../../actions/general";
+import { deleteDay, getLife, updateView } from "../../actions/general";
 import { useNavigate } from "react-router-dom";
 import { ContentState } from 'draft-js';
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
-import { updateActiveLIFE, toggleDayInfo } from "../../actions/trips";
+import { loadTripsAndLocations, updateActiveLIFE, toggleDayInfo } from "../../actions/trips";
 
 const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, activeLIFE, globalLIFE, segments }) => {
     useEffect( () => {

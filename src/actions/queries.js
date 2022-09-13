@@ -1,6 +1,6 @@
-import { setLoading } from './general';
+import { setAppLoading, setLoading } from './general';
 import { ADD_QUERY_STAY, ADD_QUERY_STAY_AND_ROUTE, QUERY_RESULTS, REMOVE_QUERY_STAY, RESET_QUERY, UPDATE_QUERY_BLOCK } from ".";
-import { displayTrips, clearTrips, clearLocations } from "./trips";
+import { addTrips, clearTrips, clearLocations, loadLocations, addLocations } from "./trips";
 
 /**
  * Sends query object to server to be executed.
@@ -10,19 +10,21 @@ import { displayTrips, clearTrips, clearLocations } from "./trips";
  */
 export const executeQuery = (params) => {
     return (dispatch, getState) => {
-        dispatch(setLoading('query-button', true));
         const options = {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(params)
         }
+        
         const addr = getState().get('general').get('server');
+        dispatch(setAppLoading(true));
+
         return fetch(addr + '/queries/execute', options)
             .then((response) => response.json())
             .catch((e) => console.error(e))
             .then((res) => {
-                dispatch(setLoading('query-button', false));
                 dispatch(queryResults(res.results, true, res.total, res.querySize))
+                dispatch(setAppLoading(false));
             }
         ); 
     }
@@ -134,7 +136,7 @@ export const resetQuery = () => {
  */
 export const queryResults = (results, clean, total, querySize) => {
     return (dispatch, getState) => {
-        var trips = [];
+        var trips = [], locations = [];
         
         if (!clean) {
             results = getState().get("queries").toJS()["results"].concat(results);
@@ -147,21 +149,20 @@ export const queryResults = (results, clean, total, querySize) => {
             for(var j = 0 ; j < result.length ; j++) {
                 const res = result[j];
 
-                if (res.type === "interval" || querySize === 1) {
-                    // if(res.points.length == 1) {
-                    //     res.points[0].label = res.id; // Adds location name to location point
-                    // }
+                if (res.type === "interval") {
                     trips.push(res.points);
-                } 
+                } else if (res.type === "range") {
+                    locations.push(res.points);
+                }
             }
         }
         
-        console.log(trips)
-        
-        
         dispatch(clearTrips());
         dispatch(clearLocations());
-        dispatch(displayTrips(trips));
+
+        dispatch(addLocations(locations))
+        dispatch(addTrips(trips));
+
         dispatch({results, clean, canLoadMore, type: QUERY_RESULTS});
     }
 };

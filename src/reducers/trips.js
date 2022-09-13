@@ -8,7 +8,7 @@ import { groupBy } from "../utils";
 /**
  * Adds trips to global state to be displayed.
  */
-const displayTrips = (state, action) => {
+const addTrips = (state, action) => {
   const { trips } = action;
 
   if (!trips) {
@@ -34,7 +34,7 @@ const displayTrips = (state, action) => {
 /**
  * Adds canonical trips to global state to be displayed.
  */
-const displayCanonicalTrips = (state, action) => {
+const addCanonicalTrips = (state, action) => {
   const { trips } = action;
 
   if (!trips) {
@@ -60,14 +60,14 @@ const displayCanonicalTrips = (state, action) => {
 /**
  * Adds canonical locations to global state to be displayed.
  */
-const displayLocations = (state, action) => {
+const addLocations = (state, action) => {
   const { locations } = action;
   const _points = [];
 
   for (const [i, location] of Object.entries(locations)) {
     _points.push(new PointRecord({
-        lat: location.lat,
-        lon: location.lon,
+        lat: location.geoJSON.coordinates[1],
+        lon: location.geoJSON.coordinates[0],
         label: location.label
       })
     );
@@ -132,9 +132,9 @@ const clearCanonicalTrips = (state, action) => {
 
 const ACTION_REACTION = {
     'trips/remove': removeTrip,
-    'trips/display': displayTrips,
-    'trips/display_canonical': displayCanonicalTrips,
-    'trips/display_locations': displayLocations,
+    'trips/add': addTrips,
+    'trips/add_canonical': addCanonicalTrips,
+    'trips/add_locations': addLocations,
     'trips/clear': clearTrips,
     'trips/clear_canonical': clearCanonicalTrips,
     'trips/clear_locations': clearLocations,

@@ -592,7 +592,7 @@ const updatePoint = (state, action) => {
 /**
  * Adds new segment to track.
  */
-const addNewSegment = (state, action) => {
+const addSegment = (state, action) => {
   const { trackId, point } = action;
   const seg = createSegmentObj(trackId, [point]);
   return state
@@ -625,7 +625,7 @@ const ACTION_REACTION = {
 
     'segments/straight_selected': straightSelected,
     'segments/update_point': updatePoint,
-    'segments/new': addNewSegment
+    'segments/add': addSegment
 }
 
 const segments = (state = [], action) => {
