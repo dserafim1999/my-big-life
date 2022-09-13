@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import { toggleRemainingTracks, addAlert } from '../../actions/general';
-import { clearAll, resetHistory } from '../../actions/tracks';
-
-import ChangeDayButtons from '../../components/Buttons/ChangeDayButtons';
-import NavigationButtons from '../../components/Buttons/NavigationButtons';
+import ChangeDayButtons from './ChangeDayButtons';
+import NavigationButtons from './NavigationButtons';
 import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
-import Card from '../../containers/Card';
+import Card from '../../components/Card';
+import DownloadingIcon from '@mui/icons-material/Downloading';
 
-import {
-    skipDay,
-    nextStep,
-    previousStep,
-    requestServerState,
-    reloadQueue
-  } from '../../actions/process';
-import { updateBounds } from '../../actions/map';
+import { connect } from 'react-redux';
+import { addAlert } from '../../actions/general';
+import { toggleRemainingTracks } from '../../actions/process';
+import { clearTracks, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
+import { updateBounds } from '../../actions/map';
 import { DONE_STAGE } from '../../constants';
+import { 
+    skipDay, nextStep, previousStep, requestServerState, reloadQueue
+} from '../../actions/process';
+import LoadingBar from '../../components/LoadingBar';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -44,12 +42,12 @@ class TrackProcessing extends Component {
     }
 
     componentDidMount() {
-        this.dispatch(clearAll());
+        this.dispatch(clearTracks());
         this.dispatch(requestServerState());
     }
 
     componentWillUnmount() {
-        this.dispatch(clearAll());
+        this.dispatch(clearTracks());
         this.dispatch(resetHistory());
         this.dispatch(updateBounds(this.bounds));
     }
@@ -86,10 +84,30 @@ class TrackProcessing extends Component {
     }
     
     render () {
-        const { dispatch, showList, step, isLoadingNext, isLoadingPrevious, isLoadingQueue, remainingCount, canProceed, daysLeft, isVisible} = this.props;
+        const {
+            dispatch,
+            showList, 
+            step, 
+            isLoadingNext, 
+            isLoadingPrevious, 
+            isLoadingQueue, 
+            remainingCount, 
+            canProceed, 
+            daysLeft, 
+            isVisible, 
+            isBulkProcessing, 
+            bulkProgress
+        } = this.props;
+
+        const BULK_PROCESSING = (
+            <div style={{ margin: 'auto', marginTop: '1rem', color: 'rgb(191, 191, 191)', textAlign: 'center' }}>
+                <DownloadingIcon style={{ color: 'rgb(191, 191, 191)', verticalAlign: 'middle', marginRight: '5px' }} /> 
+                <span style={{verticalAlign: 'middle'}}>Bulk processing currently in progress.</span>
+                <LoadingBar height={30} value={bulkProgress}/>
+            </div>
+        );
 
         if (!isVisible) return null;
-
 
         const progress = (
             <ProgressBar state={step}>
@@ -132,11 +150,16 @@ class TrackProcessing extends Component {
             <Card width={375} verticalOffset={1} horizontalOffset={1}>
                 { progress }
                 <div style={{marginTop: '10px'}}/>
-                <PaneContent showList={showList} stage={step}/>
-    
-                <div style={{ marginTop: '0.5rem' }}>
-                        { buttons }
-                </div>
+                {
+                    isBulkProcessing ? 
+                        BULK_PROCESSING :
+                        (<>
+                            <PaneContent showList={showList} stage={step}/>
+                            <div style={{ marginTop: '0.5rem' }}>
+                                { buttons }
+                            </div>
+                        </>)
+                }
             </Card>
         );
     }
@@ -154,7 +177,9 @@ const mapStateToProps = (state) => {
     isLoadingNext: state.get('general').get('loading').has('continue-button'),
     isLoadingPrevious: state.get('general').get('loading').has('previous-button'),
     isLoadingQueue: state.get('general').get('loading').has('refresh-button'),
-    isVisible: state.get('general').get('isUIVisible')
+    isVisible: state.get('general').get('isUIVisible'),
+    isBulkProcessing: state.get('process').get('isBulkProcessing'),
+    bulkProgress: state.get('process').get('bulkProgress')
   }
 }
 

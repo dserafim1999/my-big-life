@@ -27,7 +27,7 @@ class SemanticEditor extends Component {
     
     const { state, strategies } = this.props;
     const decorator = new CompositeDecorator(strategies);
-    
+
     const editorState = this.decorate(EditorState.createWithContent(state, decorator));
 
     this.state = {
@@ -50,7 +50,7 @@ class SemanticEditor extends Component {
     if (prev.initial !== this.props.initial) {
       const state = EditorState.push(this.state.editorState, this.props.initial, 'insert-characters');
       this.onChange(state);
-    } else if (prev.segments !== this.props.segments) {
+    } else if (prev.segments !== this.props.segments || prev.state.getPlainText() !== state.getPlainText()) {
       const editorState = this.decorate(EditorState.createWithContent(state, decorator));
       this.setState({editorState, suggestions: this.state.suggestions});
     }
@@ -126,7 +126,6 @@ class SemanticEditor extends Component {
 
     let content = editorState.getCurrentContent();
     content = Modifier.replaceText(content, range, suggestion);
-    // TODO replace value in entity
     let newEditorState = this.decorate(EditorState.push(editorState, content, 'insert-characters'));
     const sl = editorState.getSelection().merge({
       hasFocus: false
@@ -241,13 +240,7 @@ class SemanticEditor extends Component {
     return (
       <div style={{...editorStyle, ...this.props.style}} onClick={() => this.editorRef.current.focus()}>
         <div style={flexStyle}>
-          <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}>
-            {
-              this.warning
-              ? <i style={{ color: '#fcda73' }} title={this.warning.message} line={this.warning.location.start.line - 1}>!</i>
-              : null
-            }
-          </Gutter>
+          <Gutter editorState={editorState} defaultGutter={(i) => i + 1} style={gutterStyle}/>
         </div>
         <div style={{ display: 'flex' }}>
           <DraftEditor

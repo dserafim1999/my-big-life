@@ -1,7 +1,19 @@
-import moment from 'moment';
-import ReactSlider from 'react-slider';
 import React, { Component } from 'react';
 
+import Date from 'moment';
+import ReactSlider from 'react-slider';
+import PropTypes from 'prop-types';
+
+/**
+ * Time Range Slider to filter dates.
+ * 
+ * @constructor
+ * @param {Date} start Start time
+ * @param {Date} end End time
+ * @param {Date} initialStart Filter start time
+ * @param {Date} initialEnd Filter end time
+ * @param {function} onChange Behaviour when time value is changed
+ */
 export default class TimeSlider extends Component {
   constructor (props) {
     super(props);
@@ -23,6 +35,19 @@ export default class TimeSlider extends Component {
       left,
       right
     }
+  }
+
+  static propTypes = {
+    /** Start time */
+    start: PropTypes.instanceOf(Date),
+    /** End time */
+    end: PropTypes.instanceOf(Date),
+    /** Filter start time */
+    initialStart: PropTypes.instanceOf(Date),
+    /** Filter end time */
+    initialEnd: PropTypes.instanceOf(Date),
+    /** Behaviour when time value is changed */
+    onChange: PropTypes.func
   }
 
   onChange (value) {

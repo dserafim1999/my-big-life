@@ -41,9 +41,10 @@ export const getSpecialMarkers = (pts, color) => {
                 end: createMarker(pts[pts.length - 1], createPointIcon(color, renderToString(<StopIcon className='center' sx={{ fontSize: 16 }}/>)))
               };
         default:
+            // TODO refactor
             if (pts.length === 1) { // if only 1 point exists then it is a Location (derived from a Stay)
                 return {
-                    end: createLocationMarker(pts[0], color)
+                    end: createLocationMarker(pts[0], "var(--secondary)")
                 }
             } else { // no start/end markers
                 return {}

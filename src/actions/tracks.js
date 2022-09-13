@@ -1,35 +1,42 @@
 import { 
   ADD_TRACK,
   ADD_MULTIPLE_TRACKS, 
-  TOGGLE_TRACK_RENAMING,
-  UPDATE_TRACK_NAME,
-  UPDATE_LIFE,
+  UPDATE_TRACK_LIFE,
   REMOVE_TRACK,
   RESET_HISTORY,
-  DISPLAY_TRIPS,
-  DISPLAY_LOCATIONS,
-  CLEAR_ALL,
-  DISPLAY_CANONICAL_TRIPS,
-  CLEAR_TRIPS,
-  TOGGLE_TRACK_INFO,
-  CLEAR_LOCATIONS
+  CLEAR_TRACKS
 } from ".";
 
 import { Set } from 'immutable';
-import { fitSegments, setAppLoading } from './general';
+import { fitSegments } from './map';
+import { toggleSegmentVisibility } from "./segments";
 import saveData from "../modules/TrackProcessing/saveData";
-import { toggleSegmentInfo, toggleSegmentVisibility } from "./segments";
 
-export const addTrack = (segments, name, locations = []) => {  
-    return {
-        segments,
-        name,
-        locations,
-        type: ADD_TRACK,
-    }
-}
+/**
+ * Adds track to global state.
+ * 
+ * @action
+ * @param {Array} segments Array with track's segments
+ * @param {string} name Name of GPX file that contains track
+ * @param {Array} locations Array with track's from and to location objects 
+ * @returns Action Object
+ */
+export const addTrack = (segments, name, locations = []) => ({
+    segments,
+    name,
+    locations,
+    type: ADD_TRACK,
+})
 
-export const addMultipleTracks = (tracks, options) => {
+/**
+ * Add multiple tracks to global state.
+ * 
+ * See `addTrack `.
+ * 
+ * @function
+ * @param {Array} tracks Array with tracks 
+ */
+export const addMultipleTracks = (tracks) => {
   return (dispatch, getState) => {
     const getSegKeys = () => Set(getState().get('tracks').get('segments').keySeq());
     const previous = getSegKeys();
@@ -43,36 +50,15 @@ export const addMultipleTracks = (tracks, options) => {
   }
 }
 
-export const displayTrips = (trips) => ({
-  trips,
-  type: DISPLAY_TRIPS
-})
-
-export const displayCanonicalTrips = (trips) => ({
-  trips,
-  type: DISPLAY_CANONICAL_TRIPS
-})
-
-export const displayLocations = (locations) => ({
-  locations,
-  type: DISPLAY_LOCATIONS
-})
-
-export const toggleTrackRenaming = (trackId) => {
-    return {
-      trackId,
-      type: TOGGLE_TRACK_RENAMING
-    }
-}
-
-export const updateTrackName = (trackId, newName) => {
-  return {
-    trackId,
-    name: newName,
-    type: UPDATE_TRACK_NAME
-  }
-}
-
+/**
+ * Sets whether segments in a track are visible.
+ * 
+ * If no boolean value is set, value is toggled
+ * 
+ * @function
+ * @param {number} trackId Track Id 
+ * @param {boolean} value If track segments are visible. 
+ */
 export const toggleTrackSegmentsVisibility = (trackId, value) => {
   return (dispatch, getState) => {
     const segments = getState().get('tracks').get('tracks').get(trackId).get('segments').toJS();
@@ -83,6 +69,14 @@ export const toggleTrackSegmentsVisibility = (trackId, value) => {
   }
 }
 
+/**
+ * Highlight a segment in a track.
+ * 
+ * @function
+ * @param {number} trackId Track Id 
+ * @param {number} segmentId Segment Id 
+ * @param {boolean} value If other track segments are highlighted 
+ */
 export const highlightSegmentInTrack = (trackId, segmentId, value) => {
   return (dispatch, getState) => {
     dispatch(toggleTrackSegmentsVisibility(trackId, !value));
@@ -90,6 +84,13 @@ export const highlightSegmentInTrack = (trackId, segmentId, value) => {
   }
 }
 
+/**
+ * Fully highlight a track.
+ * 
+ * @function
+ * @param {number} trackId Track Id 
+ * @param {boolean} value If track is highlighted  
+ */
 export const highlightTrack = (trackId, value) => {
   return (dispatch, getState) => {
     const tracks = getState().get('tracks').get('tracks').toJS();
@@ -104,13 +105,25 @@ export const highlightTrack = (trackId, value) => {
  }
 }
 
+/**
+ * Reset history of changes to track
+ * 
+ * @returns Action Object
+ */
 export const resetHistory = () => ({
   type: RESET_HISTORY
 })
 
 const MS_REG = /.[0-9]{3}Z$/;
 
-// converts track into GPX format
+/**
+ * Converts track into GPX format
+ * 
+ * @function
+ * @param {number} trackId Track Id 
+ * @param {object} state Global state
+ * @returns GPX formatted string
+ */
 const exportGPX = (trackId, state) => {
   const segments = state.get('tracks').get('tracks').get(trackId).get('segments').toJS().map((segmentId, i) => {
     const segment = state.get('tracks').get('segments').get(segmentId);
@@ -134,7 +147,12 @@ const exportGPX = (trackId, state) => {
   ].join('\n');
 }
 
-// triggers download with track converted to GPX format
+/**
+ * Triggers download with track converted to GPX format
+ * 
+ * @function
+ * @param {number} trackId Track Id 
+ */
 export const downloadTrack = (trackId) => {
   return (_, getState) => {
     let str = exportGPX(trackId, getState());
@@ -142,6 +160,11 @@ export const downloadTrack = (trackId) => {
   }
 }
 
+/**
+ * Download all tracks edited in the Track Processing menu
+ * 
+ * @function 
+ */
 export const downloadAll = () => {
   return (dispatch, getState) => {
     getState().get('tracks').get('tracks').keySeq().forEach((t) => {
@@ -150,69 +173,39 @@ export const downloadAll = () => {
   }
 }
 
+/**
+ * Remove a track from the global state.
+ * 
+ * @action
+ * @param {number} trackId Track Id 
+ * @returns Action Object
+ */
 export const removeTrack = (trackId) => ({
   trackId,
   type: REMOVE_TRACK
 })
 
-export const clearAll = () => ({
-  type: CLEAR_ALL
+/**
+ * Remove all tracks/segments from state.
+ * 
+ * @action
+ * @returns Action Object
+ */
+export const clearTracks = () => ({
+  type: CLEAR_TRACKS
 })
 
-export const clearTrips = () => {
-  return (dispatch, getState) => {
-    dispatch(toggleSegmentInfo(false));
-    dispatch({type: CLEAR_TRIPS});
-  }
-}
-
-export const clearLocations = () => ({
-  type: CLEAR_LOCATIONS
-})
-
-export const updateLIFE = (text, warning) => ({
+/**
+ * Updates the LIFE representation of a track.
+ * 
+ * @action
+ * @param {string} text Track LIFE representation 
+ * @param {string} warning Warning message
+ * @returns Action Object
+ */
+export const updateTrackLIFE = (text, warning) => ({
   text,
   warning,
-  type: UPDATE_LIFE
+  type: UPDATE_TRACK_LIFE
 })
-
-export const loadTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-
-    dispatch(setAppLoading(true));
-
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(clearTrips());
-        dispatch(displayTrips(res.trips));
-        dispatch(setAppLoading(false));
-      });
-  }
-}
-
-export const loadMoreTripsInBounds = (latMin, lonMin, latMax, lonMax, canonical) => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'GET',
-      mode: 'cors'
-    }
-
-    dispatch(setAppLoading(true));
-
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/moreTrips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(displayTrips(res.trips));
-        dispatch(setAppLoading(false));
-      });
-  }
-}
+    

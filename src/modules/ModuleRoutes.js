@@ -1,20 +1,20 @@
 import React from "react";
 
 import { nanoid } from "nanoid";
+import { CONFIG_PANEL, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
+import { getActiveRoute } from "../utils";
 
 import Search from "./Search";
 import VisualQuerying from "./VisualQuerying";
+import TrackProcessing from "./TrackProcessing";
+import Settings from "./Settings";
+import MainView from "./MainView";
 
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import TrackProcessingIcon from '@mui/icons-material/EditLocationAlt';
 import VisualQueriesIcon from '@mui/icons-material/NotListedLocation';
 import SettingsIcon from '@mui/icons-material/Settings';
-import TrackProcessing from "./TrackProcessing";
-import ConfigPane from "../containers/ConfigPane";
-import { CONFIG_PANEL, MAIN_VIEW, SEARCH, TRACK_PROCESSING, VISUAL_QUERIES } from "../constants";
-import { getActiveRoute } from "../utils";
-import MainView from "./MainView";
 
 export const getRoute = (view) => {
     const activeView = ModuleRoutes.find((module) => module.view === view);
@@ -69,7 +69,7 @@ export const ModuleRoutes = [
         icon: <SettingsIcon fontSize="large"/>,
         route: "/settings",
         view: CONFIG_PANEL,
-        component: <ConfigPane/>,
+        component: <Settings/>,
         id: nanoid()
     },
 ];

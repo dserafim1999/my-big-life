@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { clearCanonicalTrips, clearLocations, clearTrips } from "../../actions/trips";
 
 import QueryResults from "./QueryResults";
 import QueryTimeline from "./QueryTimeline"
 
-const VisualQuerying = ({isVisible}) => {
+const VisualQuerying = ({ isVisible, dispatch }) => {
     if (!isVisible) return null;
+
+    useEffect( () => {
+        dispatch(clearTrips());
+        dispatch(clearCanonicalTrips());
+        dispatch(clearLocations())
+    }, []);
 
     return (
         <>

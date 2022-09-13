@@ -1,11 +1,12 @@
-import { pointsToRecord, SegmentRecord, TrackRecord, createTrackObj, PointRecord } from "../records";
 import segments from "./segments";
-import { List, Map, fromJS } from 'immutable';
-import { addTrack as addTrackAction } from '../actions/tracks';
-import colors from "./colors";
-import { groupBy } from "../utils";
-import moment from "moment";
 
+import { createTrackObj } from "../records";
+import { Map, fromJS } from 'immutable';
+import { addTrack as addTrackAction } from '../actions/tracks';
+
+/**
+ * Adds track to global state.
+ */
 export const addTrack = (state, action) => {
   let { name, segments, locations } = action;
   let track = createTrackObj(name, segments, locations, state.get('segments').count());
@@ -21,6 +22,11 @@ export const addTrack = (state, action) => {
   return state;
 }
 
+/**
+ * Add multiple tracks to global state.
+ * 
+ * See `addTrack `.
+ */
 const addMultipleTracks = (state, action) => {
   return action.tracks.reduce((state, track) => {
     const { segments, name } = track;
@@ -29,16 +35,9 @@ const addMultipleTracks = (state, action) => {
   }, state);
 }
 
-const toggleTrackRenaming = (state, action) => {
-  let renaming = !state.get('tracks').get(action.trackId).get('renaming');
-
-  return state.setIn(['tracks', action.trackId, 'renaming'], renaming);
-}
-
-const updateTrackName = (state, action) => {
-  return state.setIn(['tracks', action.trackId, 'name'], action.name);
-}
-
+/**
+ * Updates current day tracks based on server state changes
+ */
 const removeTracksFor = (state, action) => {
   state = state
     .updateIn(['tracks'], (tracks) => {
@@ -56,107 +55,9 @@ const removeTracksFor = (state, action) => {
     return addTrack(state, act);
 }
 
-const displayTrips = (state, action) => {
-  const { trips } = action;
-
-  if (!trips) {
-    return state;
-  }
-
-  const tripsByDay = groupBy(trips, "date");
-  const _tracks = [], _segments = [];
-
-  var color = 0;
-  for (const [day, trips] of Object.entries(tripsByDay)) {
-    _tracks.push(new TrackRecord({
-        id: moment(day).format("YYYY-MM-DD"),
-        segments: new List(trips.map((segment, i) => {
-          return segment.id
-        }))
-      })
-    );
-
-    for (var i = 0 ; i < trips.length ; i++) {
-      const trip = trips[i];
-      _segments.push(new SegmentRecord({
-        trackId: moment(day).format("YYYY-MM-DD"),
-        id: trip.id,
-        color: colors(color),
-        points: pointsToRecord(trip.points)
-      }));
-    }
-
-    color++;
-  }
-
-  return state
-    .updateIn(['history', 'past'], (past) => past.clear())
-    .updateIn(['history', 'future'], (future) => future.clear())
-    .updateIn(['tracks'], (tracks) => {
-      // tracks = tracks.clear();
-      return _tracks.reduce((tracks, track) => {
-        return tracks.set(track.id, track);
-      }, tracks)
-    })
-    .updateIn(['segments'], (segments) => {
-      // segments = segments.clear();
-      return _segments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
-    });
-}
-
-const displayCanonicalTrips = (state, action) => {
-  const { trips } = action;
-
-  if (!trips) {
-    return state;
-  }
-
-  const _segments = [];
-
-  var color = 0;
-  for (var i = 0 ; i < trips.length ; i++) {
-    const trip = trips[i];
-    _segments.push(new SegmentRecord({
-      trackId: i,
-      id: trip.id,
-      color: 'rgb(233,62,58)',
-      points: pointsToRecord(trip.points)
-    }));
-  }
-
-  return state
-    .updateIn(['canonicalTrips'], (segments) => {
-      segments = segments.clear();
-      return _segments.reduce((segments, segment) => {
-        return segments.set(segment.id, segment);
-      }, segments);
-    });
-}
-
-const displayLocations = (state, action) => {
-  const { locations } = action;
-  const _points = [];
-
-  for (const [i, location] of Object.entries(locations)) {
-    _points.push(new PointRecord({
-        lat: location.lat,
-        lon: location.lon,
-        label: location.label
-      })
-    );
-  }
-  
-  return state
-    .updateIn(['locations'], (locations) => {
-      locations = locations.clear(); 
-      return _points.reduce((locations, location) => {
-        return locations.set(location.label, location);
-      }, locations)
-    });
-}
-
+/**
+ * Undo changes to track
+ */
 const undo = (state, action) => {
   let toPut = state.get('history').get('past').get(-1);
   if (toPut) {
@@ -175,21 +76,33 @@ const undo = (state, action) => {
   }
 }
 
+/**
+ * Redo changes to track
+ */
 const redo = (state, action) => {
   return state.updateIn(['history', 'future'], (future) => future.pop());
 }
 
-const updateLIFE = (state, action) => {
+/**
+ * Updates the LIFE representation of a track.
+ */
+const updateTrackLIFE = (state, action) => {
   const { text, warning } = action;
   return state.set('LIFE', new Map({ text, warning }));
 }
 
+/**
+ * Reset history of changes to track
+ */
 const resetHistory = (state, action) => {
   return state
     .updateIn(['history', 'future'], (history) => history.clear())
     .updateIn(['history', 'past'], (history) => history.clear());
 }
 
+/**
+ * Remove a track from the global state.
+ */
 const removeTrack = (state, action) => {
   const { trackId } = action;
 
@@ -204,17 +117,10 @@ const removeTrack = (state, action) => {
   return cState.deleteIn(['tracks', trackId]);
 }
 
-const clearLocations = (state, action) => {
-  return state.setIn(["locations"], fromJS({}));
-}
-
-const clearTrips = (state, action) => {
-  return state
-    .setIn(["tracks"], fromJS({}))
-    .setIn(["segments"], fromJS({}));
-}
-
-const clearAll = (state, action) => {
+/**
+ * Remove all tracks/segments from state.
+ */
+const clearTracks = (state, action) => {
   return initialState;
 }
 
@@ -222,17 +128,10 @@ const ACTION_REACTION = {
     'tracks/add': addTrack,
     'tracks/remove': removeTrack,
     'tracks/add_multiple': addMultipleTracks,
-    'tracks/update_name': updateTrackName,
-    'tracks/toggle_renaming': toggleTrackRenaming,
-    'tracks/update_LIFE': updateLIFE,
-    'tracks/display_trips': displayTrips,
-    'tracks/display_canonical_trips': displayCanonicalTrips,
-    'tracks/display_locations': displayLocations,
+    'tracks/update_LIFE': updateTrackLIFE,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
-    'tracks/clear_all': clearAll,
-    'tracks/clear_trips': clearTrips,
-    'tracks/clear_locations': clearLocations,
+    'tracks/clear_tracks': clearTracks,
     'tracks/undo': undo,
     'tracks/redo': redo,
 }
@@ -243,9 +142,7 @@ const UNDO_LIMIT = 50
 
 const initialState = fromJS({
   tracks: {},
-  locations: {},
   segments: {},
-  canonicalTrips: {},
   history: {
     past: [],
     future: []

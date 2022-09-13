@@ -23,8 +23,13 @@ const append = (elm, arr) => {
 }
 }
 
+Days
+  = days:DayBlock+ {
+    return { type: 'Days', days }
+  }
+
 DayBlock
-  = _ day:DayDate _ nl+ blocks:StaysTrips { return { day, blocks } }
+  = e:Empty day:DayDate _ nl+ blocks:StaysTrips { return { day, blocks } }
 
 StaysTrips
   = head:StayTrip nl+ rest:StaysTrips { return append(head, rest) }
@@ -35,12 +40,6 @@ StayTrip
   / Trip
   / Stay
   / Empty
-
-/*
-  = StayTripBlock StaysTrips
-  / Stay StaysTrips
-  / Empty
-*/
 
 Empty
   = Comment
@@ -60,18 +59,7 @@ Stay
   = timespan:Timespan _ location:Location details:Details* comment:_ {
   return { type: 'Stay', timespan, location, comment, details }
   }
-/*
-First
-  = day:DayDate nl? value:Start { return { day, value } }
-  / value:Start { return { day: undefined, value } }
 
-Start
-  = h:OneOf nl? r:Start { return [h, ...r] }
-  / nl r:Start { return r }
-  / h:OneOf { return [h] }
-  / nl { return [] }
-
-*/
 TimezoneOffset
   = "+" offset:[0-9]+ { return Number(offset.join('')) }
   / "-" offset:[0-9]+ { return -Number(offset.join('')) }
@@ -79,12 +67,6 @@ TimezoneOffset
 Timezone "timezone"
   = "@"? "UTC" offset:TimezoneOffset? ws:ws comment:Comment? { return d('Timezone', { value: offset || 0, comment }) }
 
-/*
-OneOf
-  = Trip
-  / Stay
-  / Comment
-*/
 Timespan
   = start:Time "-" finish:Time ":" {
   return d('Timespan', { start, finish } , { length: start.marks.length + finish.marks.length + 1 })

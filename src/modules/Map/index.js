@@ -1,6 +1,18 @@
-import { map, latLngBounds } from 'leaflet';
-import "leaflet.heat";
 import React, { Component } from 'react';
+import setupTileLayers from './components/setupTileLayers';
+import setupControls from './components/setupControls';
+import editMode from './editing/editMode';
+import joinMode from './editing/joinMode';
+import splitMode from './editing/splitMode';
+import updatePoints from './point/updatePoints';
+import pointActionMode from './editing/pointActionMode';
+import detailMode from './point/detailMode';
+import addSegment from './components/addSegment';
+import addLocation from './components/addLocation';
+import moment from 'moment';
+import "leaflet.heat";
+
+import { map, latLngBounds } from 'leaflet';
 import { Set } from 'immutable';
 import { findDOMNode } from 'react-dom';
 import {
@@ -9,30 +21,12 @@ import {
   changeSegmentPoint,
   addSegmentPoint,
   removeSegmentPoint,
-  joinSegment,
-  toggleSegmentInfo
+  joinSegment
 } from '../../actions/segments';
-
-import {
-  undo, 
-  redo
-} from '../../actions/process';
-
-import setupTileLayers from './components/setupTileLayers';
-import setupControls from './components/setupControls';
-
-import editMode from './editing/editMode';
-import joinMode from './editing/joinMode';
-import splitMode from './editing/splitMode';
-import updatePoints from './point/updatePoints';
-import pointActionMode from './editing/pointActionMode';
-import detailMode from './point/detailMode';
-import addSegment from './components/addSegment';
+import { undo, redo } from '../../actions/process';
+import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
+import { MAIN_VIEW, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
-import addLocation from './components/addLocation';
-import { clearTrips, loadMoreTripsInBounds, loadTripsInBounds } from '../../actions/tracks';
-import { MAIN_VIEW, TRACK_PROCESSING } from '../../constants';
-import moment from 'moment';
 
 const DEFAULT_PROPS = {
   detailLevel: 15,
@@ -68,6 +62,7 @@ export default class LeafletMap extends Component {
      *    }
      *    this should be reconstructed each time there is an update to the points or the visualization mode.
      */
+    this.trips = {};
     this.segments = {};
     this.canonical = {};
     this.locations = {};
@@ -132,6 +127,7 @@ export default class LeafletMap extends Component {
       highlighted,
       highlightedPoints,
       segments,
+      trips,
       canonicalTrips,
       locations,
       dispatch,
@@ -139,7 +135,6 @@ export default class LeafletMap extends Component {
       canUndo,
       canRedo,
       pointPrompt,
-      detailLevel
     } = this.props;
 
     if (canUndo !== prev.canUndo) {
@@ -150,19 +145,9 @@ export default class LeafletMap extends Component {
       this.map.buttons.setEnabled(1, canRedo);
     }
 
-    switch (activeView) {
-      case MAIN_VIEW:
-        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
-        this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips, dispatch);
-        this.shouldUpdateLocations(locations, prev.locations);
-
-        break;
-      default:
-        if (this.heatmapLayer) {
-          this.map.removeLayer(this.heatmapLayer);        
-        }
-    }
-      
+    this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
+    this.shouldUpdateLocations(locations, prev.locations);
+    this.shouldUpdateTrips(trips, prev.trips);
     this.shouldUpdateSegments(segments, prev.segments, dispatch);
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
@@ -170,9 +155,18 @@ export default class LeafletMap extends Component {
     this.shouldUpdateHighlighted(highlighted, prev.highlighted, segments);
     this.shouldUpdateHighlightedPoints(highlightedPoints, prev.highlightedPoints, segments);
     this.shouldUpdatePrompt(pointPrompt, prev.pointPrompt);
-
     this.shouldUpdateSegmentsArePoints(this.props, prev);
-      
+    
+    switch (activeView) {
+      case MAIN_VIEW:
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
+        this.toggleSegmentsAndLocations();
+        break;
+        default:
+          if (this.heatmapLayer) {
+            this.map.removeLayer(this.heatmapLayer);        
+          }
+        }
   }
 
   shouldUpdateSegmentsArePoints (current, previous) {
@@ -188,19 +182,17 @@ export default class LeafletMap extends Component {
   }
 
   shouldUpdateHeatMap (current, previous) {
-    if (current !== previous) {
-      const _points = [];
-      Object.values(current.toJS()).forEach((segment) => segment.points.forEach((point) => _points.push([point.lat, point.lon, 1.0])));
+    const currentZoom = this.map.getZoom();
+    const { detailLevel } = this.props;
 
+    if (current !== previous && currentZoom < detailLevel) {
+      const _points = [];
+      
+      // Add all points from canonical trips to array. geoJSON coordinates are defined by (longitude, latitude)
+      Object.values(current.toJS()).forEach((trip) => trip.geoJSON.coordinates.forEach((point) => _points.push([point[1], point[0], 1.0])));
+      
       this.heatmapLayer = L.heatLayer(_points, {
-        radius: 15,
-        gradient: {
-          '0': 'rgb(233,62,58)',
-          '0.4': 'rgb(237,104,60)',
-          '0.6': 'rgb(243,144,63)',
-          '0.8': 'rgb(253,199,12)',
-          '1': 'rgb(255,243,59)'
-        }
+        radius: 18
       }).addTo(this.map);
     }
   }
@@ -253,7 +245,50 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateSegment (current, previous, lseg, dispatch) {
+  shouldUpdateTrips (trips, previous) {
+    if (trips !== previous) {
+      trips.forEach((trip) => {
+        const id = trip.id;
+        const lseg = this.trips[id];
+
+        if (!lseg) {
+          this.shouldUpdateTrip(trip, previous.get(id));
+        }
+      });
+
+      this.shouldRemoveTrips(trips, previous);
+    }
+  }
+  
+  shouldUpdateTrip (trip, previous) {
+    if (trip !== previous) {
+      const trips = trip.trips.map((t) => t.geoJSON);
+      
+      this.addTrip(trip.id, trip.color, trips, false);
+    }    
+  }
+  
+  shouldUpdateCanonicalTrips (trips, previous) {
+    if (trips !== previous) {
+      trips.forEach((trip) => {
+        const id = trip.id;
+        const lseg = this.canonical[id];
+        if (!lseg) {
+          this.shouldUpdateCanonicalTrip(trip, previous.get(id));
+        }
+      });
+      
+      this.shouldRemoveCanonicalTrips(trips, previous);
+    }
+  }
+  
+  shouldUpdateCanonicalTrip (trip, previous) {
+    if (trip !== previous) {
+      this.addTrip(trip.id, trip.color, trip.geoJSON, true);
+    }    
+  }
+  
+  shouldUpdateSegment (current, previous, lseg) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
@@ -267,31 +302,8 @@ export default class LeafletMap extends Component {
       this.shouldUpdateMode(lseg, current, previous);
     }
   }
-
-  shouldUpdateCanonicalTrips (segments, previous, dispatch) {
-    if (segments !== previous) {
-      segments.forEach((segment) => {
-        const id = segment.get('id');
-        const lseg = this.segments[id];
-
-        if (!lseg) {
-          if (segment !== previous.get(id)) {
-            const points = segment.get('points');
-            const color = segment.get('color');
-            const display = segment.get('display');
-            const id = segment.get('id');
-            const filter = segment.get('timeFilter');
-        
-            this.addSegment(id, points, color, display, filter, true);
-          }
-        }
-      });
-      
-      this.shouldRemoveCanonicalTrips(segments, previous);
-    }
-  }
-
-  shouldAddSegment(current, previous, dispatch) {
+  
+  shouldAddSegment(current, previous) {
     if (current !== previous) {
       const points = current.get('points');
       const color = current.get('color');
@@ -324,7 +336,7 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateHighlightedPoints (highlighted, previous, allSegments) {
+  shouldUpdateHighlightedPoints (highlighted, previous) {
     if (highlighted === previous) {
       return;
     }
@@ -390,6 +402,14 @@ export default class LeafletMap extends Component {
       }
     }
 
+    for (const [key, value] of Object.entries(this.trips)) {
+      if (currentZoom >= detailLevel) {
+        value.layergroup.addTo(this.map);       
+      } else {
+        this.map.removeLayer(value.layergroup);
+      }
+    }
+
     for (const [key, value] of Object.entries(this.locations)) {
       if (currentZoom >= decorationLevel) {
         value.layergroup.addTo(this.map);
@@ -409,7 +429,7 @@ export default class LeafletMap extends Component {
     switch (activeView) {
       case MAIN_VIEW:
         if (currentZoom >= detailLevel) {
-          dispatch(loadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
+          dispatch(canLoadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         } 
          
         this.toggleSegmentsAndLocations();
@@ -424,7 +444,7 @@ export default class LeafletMap extends Component {
     const southWestBounds = bounds.getSouthWest();
     const northEastBounds = bounds.getNorthEast();
 
-    if (currentZoom >= decorationLevel && this.state.loadTrips) {
+    if (currentZoom >= detailLevel && this.state.loadTrips) {
       dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
       this.toggleSegmentsAndLocations();
       this.setState({loadTrips: false});
@@ -571,30 +591,40 @@ export default class LeafletMap extends Component {
     }
   }
 
+  addTrip (id, color, trips, canonical) {
+    const layergroup = L.geoJSON(trips, {style: {color: color}}).addTo(this.map);
+    const date = moment(id);
+    const { activeView } = this.props;
+    
+    if (canonical) {
+      this.canonical[id] = {layergroup};
+      layergroup.bindTooltip(
+        "<div style='width: 50px'>" +
+        "   <span style='border: 3px solid white; background-color: #E93E3A; width: 100%; padding: 5px 10px'> Zoom In For More Detail </span>" +
+        "</div>"
+        , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+    } else {
+        this.trips[id] = {layergroup};
+        layergroup.on('click', () => this.onTripClick(date));
+
+        layergroup.bindTooltip(
+          "<div style='width: 50px'>" +
+          "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
+          "</div>"
+        , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
+    } 
+  }
+
   addSegment (id, points, color, display, filter, canonical) {
     const { detailLevel, activeView } = this.props;
     const currentZoom = this.map.getZoom();
 
     const obj = addSegment(id, points, color, display, filter);
-    const date = moment(points.get(0).get('time'));
     
     if (canonical) {
       this.canonical[id] = obj;
-
-      obj.layergroup.bindTooltip(
-        "<div style='width: 50px'>" +
-        "   <span style='border: 3px solid white; background-color: #E93E3A; width: 100%; padding: 5px 10px'> Zoom In For More Detail </span>" +
-        "</div>"
-      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } else {
       this.segments[id] = obj;
-      obj.layergroup.on('click', () => this.onSegmentClick(id, date.format("YYYY_MM_DD"), activeView));
-
-      obj.layergroup.bindTooltip(
-        "<div style='width: 50px'>" +
-        "   <span style='border: 3px solid white; background-color: "+ color +"; width: 100%; padding: 5px 10px'> "+ date.format("DD/MM/YYYY") +" </span>" +
-        "</div>"
-      , {sticky: true, className: 'custom-leaflet-tooltip', direction: 'right'});
     } 
     
     if (activeView !== MAIN_VIEW) {
@@ -606,30 +636,51 @@ export default class LeafletMap extends Component {
     }
   }
 
-  onSegmentClick(segmentId, date, activeView) {
-    const { dispatch } = this.props;
+  onTripClick(date) {
+    const { dispatch, activeView } = this.props;
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleSegmentInfo(true, segmentId, date));
+        dispatch(toggleDayInfo(true, date));
         break;
     }
   }
 
   addLocationPoint(point) {
-    const obj = addLocation(point, '#000000');
-    this.locations[point.label] = obj;
-
     const currentZoom = this.map.getZoom();
-    const { detailLevel } = this.props;
-    if (currentZoom >= detailLevel) {
-      obj.layergroup.addTo(this.map);
-      obj.details.addTo(obj.layergroup);
+    const { detailLevel, activeView } = this.props;
+    let obj = addLocation(point, 'var(--secondary)');
+    
+    switch(activeView) {
+      case MAIN_VIEW:
+        if (currentZoom >= detailLevel) {
+          obj.layergroup.addTo(this.map);
+          obj.details.addTo(obj.layergroup);
+        }
+        break;
+      case VISUAL_QUERIES:
+        obj = addLocation(point, '#c3c3c3');
+        break;
+    }
+    
+    this.locations[point.label] = obj;
+    obj.layergroup.addTo(this.map);
+  }
+
+  shouldRemoveTrips (trips, prev) {
+    if (trips !== prev && Object.keys(this.trips).length > 0) {
+      // delete trip if needed
+      Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
+        if (this.trips[s]) {
+          this.map.removeLayer(this.trips[s].layergroup);
+          delete this.trips[s];
+        }
+      })
     }
   }
 
   shouldRemoveSegments (segments, prev) {
-    if (segments !== prev) {
+    if (segments !== prev && Object.keys(this.segments).length > 0) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
         if (this.segments[s]) {
@@ -640,10 +691,10 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldRemoveCanonicalTrips (segments, prev) {
-    if (segments !== prev) {
+  shouldRemoveCanonicalTrips (trips, prev) {
+    if (trips !== prev && Object.keys(this.canonical).length > 0) {
       // delete segment if needed
-      Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
+      Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
         this.map.removeLayer(this.canonical[s].layergroup);
         delete this.canonical[s];
       })
@@ -651,7 +702,7 @@ export default class LeafletMap extends Component {
   }
 
   shouldRemoveLocations (points, prev) {
-    if (points !== prev) {
+    if (points !== prev && Object.keys(this.locations).length > 0) {
       // delete point if needed
       Set(prev.keySeq()).subtract(points.keySeq()).forEach((s) => {
         this.map.removeLayer(this.locations[s].layergroup);

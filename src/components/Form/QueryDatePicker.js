@@ -1,10 +1,13 @@
-import { createTheme, IconButton, InputAdornment, TextField, ThemeProvider, Tooltip } from "@mui/material";
-import { Box } from "@mui/system";
-import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
-import moment from 'moment';
+
+import PropTypes from 'prop-types';
+import moment, { Date } from 'moment';
 import DateIcon from '@mui/icons-material/DateRange';
 import SimpleButton from "../Buttons/SimpleButton";
+
+import { createTheme, IconButton, InputAdornment, TextField, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/system";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const boxStyle = {
     alignItems: "center", 
@@ -17,6 +20,19 @@ const boxStyle = {
     width: '85px'
 }
 
+/**
+ * Custom Input Field with Date Picker for Querying
+ * 
+ * @constructor
+ * @param {string} value Current value
+ * @param {boolean} open If Date Picker is open
+ * @param {function} onChange Behaviour if value is changed
+ * @param {function} onClose Behaviour if Date Picker is closed
+ * @param {function} onClick Behaviour if Input Field is clicked 
+ * @param {string} title Input Field name
+ * @param {string} help Help text
+ * @param {boolean} visual If not visual, Text Fields are used 
+ */
 const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, visual=false}) => {
     const calendarIcon = (
         <SimpleButton title='Select Date' tooltipPlacement="top" style={{border: 'none'}}>
@@ -116,6 +132,23 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
     );
 };
 
-
+QueryDatePicker.propTypes = {
+    /** Current value */
+    value: PropTypes.string,
+    /** If Date Picker is open */
+    open: PropTypes.bool,
+    /** Behaviour if value is changed */
+    onChange: PropTypes.func,
+    /** Behaviour if Date Picker is closed */
+    onClose: PropTypes.func,
+    /** Behaviour if Input Field is clicked */ 
+    onClick: PropTypes.func,
+    /** Input Field name */
+    title: PropTypes.string,
+    /** Help text */
+    help: PropTypes.string,
+    /** If not visual, Text Fields are used */
+    visual: PropTypes.bool,
+}
 
 export default QueryDatePicker;

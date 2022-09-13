@@ -5,9 +5,9 @@ import { createStore, applyMiddleware } from 'redux';
 import reducers from './reducers';
 import { Map } from 'immutable';
 
-import { DEHIGHLIGHT_POINT, DEHIGHLIGHT_SEGMENT, HIGHLIGHT_POINT, HIGHLIGHT_SEGMENT } from './actions';
+import { DEHIGHLIGHT_POINT, DEHIGHLIGHT_SEGMENT, HIGHLIGHT_POINT, HIGHLIGHT_SEGMENT, SET_BULK_PROGRESS } from './actions';
 
-const actionsToNotLog = new Set([DEHIGHLIGHT_SEGMENT, HIGHLIGHT_SEGMENT, HIGHLIGHT_POINT, DEHIGHLIGHT_POINT]);
+const actionsToNotLog = new Set([DEHIGHLIGHT_SEGMENT, HIGHLIGHT_SEGMENT, HIGHLIGHT_POINT, DEHIGHLIGHT_POINT, SET_BULK_PROGRESS]);
 
 const loggerMiddleware = createLogger({
   stateTransformer: (state) => state.toJS(),

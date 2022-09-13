@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "webpack serve --config ./webpack.config.js --mode development",
     "build": "webpack --mode production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "styleguide": "styleguidist server --config ./styleguide.config.js",
+    "styleguide:build": "styleguidist build --config ./styleguide.config.js"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +41,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.4",
+    "react-immutable-proptypes": "^2.2.0",
     "react-redux": "^7.2.6",
     "react-rnd": "^10.3.7",
     "react-router-dom": "^6.2.1",
@@ -54,6 +57,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.18.10",
     "@babel/preset-env": "^7.16.8",
     "@babel/preset-react": "^7.16.7",
     "babel-loader": "^8.2.3",
@@ -61,6 +65,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.6",
+    "react-styleguidist": "^11.2.0",
     "source-map-loader": "^3.0.1",
     "style-loader": "^3.3.1",
     "webpack": "^5.66.0",

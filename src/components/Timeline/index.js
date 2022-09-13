@@ -1,13 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
+
 import moment from "moment";
-import { normalize, clamp } from "../../utils";
-import useDimensions from "../../utils/useDimensions";
-import { MINUTES_IN_DAY } from "../../constants";
-import useDraggableScroll from "use-draggable-scroll";
 import Stay from "./Stay";
 import Route from "./Route";
-import { drawAxisMarking } from './drawAxisMarking';
+import PropTypes from 'prop-types';
 
+import drawAxisMarking from './drawAxisMarking';
+import useDimensions from "../../utils/useDimensions";
+import useDraggableScroll from "use-draggable-scroll";
+import { normalize, clamp } from "../../utils";
+import { MINUTES_IN_DAY } from "../../constants";
+
+/**
+ * Timeline that represents data for Stays and Routes between them for a certain day.
+ * 
+ * @constructor
+ * @param {object} render Dictionary that contains render data for Stays and Routes
+ * @param {number} height Timeline height
+ * @param {boolean} showTimeLegend If true, displays time below markings on the extremities
+ * @param {boolean} showStayLegend If true, displays Stay name in the center of a Stay
+ * @param {string} color Hex code for Timeline Stays' color
+ * @param {function} onClick Behaviour when Timeline is clicked 
+ */
 const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, color, onClick }) => {
     const [zoomLevel, setZoomLevel] = useState(1); 
     const ref = useRef(null);
@@ -112,6 +126,7 @@ const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, 
             <>
                 <hr className="horizontalAxis" style={{position: "absolute", left: buffer, width: timelineWidth}}/>
                 {
+                    // Draws all axis markings on the main axis, bookended by start and end markings
                     [...Array(25).keys()].map((i) => {
                         if (i == 0) return drawAxisMarking(i, startPos, 40, 3, showTimeLegend, true, false);
                         if (i == 24) return drawAxisMarking(i, endPos, 40, 3, showTimeLegend, false, true);
@@ -132,5 +147,20 @@ const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, 
         </div>
     )
 };
+
+Timeline.propTypes = {
+    /** Dictionary that contains render data for Stays and Routes */
+    render: PropTypes.object,
+    /** Timeline height */
+    height: PropTypes.number,
+    /** If true, displays time below markings on the extremities */
+    showTimeLegend: PropTypes.bool,
+    /** If true, displays Stay name in the center of a Stay */
+    showStayLegend: PropTypes.bool,
+    /** Hex code for Timeline Stays color */
+    color: PropTypes.string, 
+    /** Behaviour when Timeline is clicked */
+    onClick: PropTypes.func
+}
   
 export default Timeline;

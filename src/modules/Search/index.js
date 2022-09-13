@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-import Card from '../../containers/Card';
+import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import { addQueryStay, addQueryStayAndRoute, executeQuery, removeQueryStay, resetQuery, updateQueryBlock } from '../../actions/queries';
 import SearchStay from './SearchStay';

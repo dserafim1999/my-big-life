@@ -5,13 +5,15 @@ import tracks from './tracks';
 import process from './process';
 import map from './map';
 import queries from './queries';
+import trips from './trips';
 
 const app = combineReducers({
   tracks,
   general,
   process,
   map,
-  queries
+  queries,
+  trips
 });
 
 export default app;

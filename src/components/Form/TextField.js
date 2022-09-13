@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
+
+import PropTypes from 'prop-types';
+
 import { InputAdornment, MenuItem, TextField as TextInput } from '@mui/material';
 
+/**
+ * Text Input Field for Form
+ *  
+ * @constructor
+ * @param {string} title Input Field name
+ * @param {string} placeholder Placeholder text
+ * @param {string} type Value type
+ * @param {string | number} defaultValue Default value for input value
+ * @param {string | object} help Help text
+ * @param {function} onChange Behaviour when value is changed
+ * @param {boolean} hasOperators If true, operators can be selected via a Select Menu (<,≤,=,≥,>)
+ * @param {string} suffix Input adornment text
+ * @param {string} min Minimum numeric value (if type is 'number')
+ */
 const TextField = ({ title, placeholder, type, defaultValue, help, onChange, hasOperators=false, suffix=null, min,...details }) => {
   const [value, setValue] = useState(defaultValue);
   const [operator, setOperator] = useState('');
@@ -69,7 +86,6 @@ const TextField = ({ title, placeholder, type, defaultValue, help, onChange, has
         value={value || ''}
         variant='filled' 
         type={type || 'text'}
-        defaultValue={defaultValue} 
         placeholder={placeholder} 
         onChange={(e) => onValueChange(e)} 
         helperText={help}
@@ -85,5 +101,32 @@ const TextField = ({ title, placeholder, type, defaultValue, help, onChange, has
     </span>
   );
 }
+
+TextField.propTypes = {
+  /** Input Field name */
+  title: PropTypes.string,
+  /** Placeholder text */
+  placeholder: PropTypes.string,
+  /** Value type */
+  type: PropTypes.string,
+  /** Default value for input value */
+  defaultValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  /** Help text */
+  help: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
+  /** Behaviour when value is changed */
+  onChange: PropTypes.func,
+  /** If true, operators can be selected via a Select Menu (<,≤,=,≥,>) */
+  hasOperators: PropTypes.bool,
+  /** Input adornment text */
+  suffix: PropTypes.string,
+  /** Minimum numeric value (if type is 'number') */
+  min: PropTypes.string,
+} 
 
 export default TextField;

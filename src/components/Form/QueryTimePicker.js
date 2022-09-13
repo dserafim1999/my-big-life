@@ -1,10 +1,26 @@
+import React, { useState } from "react";
+
+import PropTypes from 'prop-types';
+import TimeIcon from "@mui/icons-material/AccessTime";
+
 import { createTheme, InputAdornment, TextField, ThemeProvider } from "@mui/material";
 import { Box } from "@mui/system";
 import { TimePicker } from "@mui/x-date-pickers";
-import React, { useState } from "react";
-import TimeIcon from "@mui/icons-material/AccessTime";
 
-
+/**
+ * Custom Input Field with Time Picker for Querying
+ * 
+ * @constructor
+ * @param {string} value Current value
+ * @param {boolean} open If Date Picker is open
+ * @param {function} onChange Behaviour if value is changed
+ * @param {function} onClose Behaviour if Time Picker is closed
+ * @param {function} onClick Behaviour if Input Field is clicked 
+ * @param {string} title Input Field name
+ * @param {string} help Help text
+ * @param {boolean} visual If not visual, Text Fields are used 
+ * @param {object} style Aditional CSS styling 
+ */
 const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false, title, help, style}) => {
     const [operator, setOperator] = useState("");
     const [valueState, setValueState] = useState(value);
@@ -118,6 +134,25 @@ const QueryTimePicker = ({value, open, onChange, onClose, onClick, visual=false,
     );
 };
 
-
+QueryTimePicker.propTypes = {
+    /** Current value */
+    value: PropTypes.string,
+    /** If Date Picker is open */
+    open: PropTypes.bool,
+    /** Behaviour if value is changed */
+    onChange: PropTypes.func,
+    /** Behaviour if Date Picker is closed */
+    onClose: PropTypes.func,
+    /** Behaviour if Input Field is clicked */ 
+    onClick: PropTypes.func,
+    /** Input Field name */
+    title: PropTypes.string,
+    /** Help text */
+    help: PropTypes.string,
+    /** If not visual, Text Fields are used */
+    visual: PropTypes.bool,
+    /** Aditional CSS styling */
+    style: PropTypes.object
+}
 
 export default QueryTimePicker;
