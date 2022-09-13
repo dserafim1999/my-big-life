@@ -212,6 +212,7 @@ export const updateActiveLIFE = (life) => ({
  export const toggleDayInfo = (value = undefined, date = undefined) => {
   return (dispatch, getState) => {
     if (date) dispatch(getLifeFromDay(date.format('YYYY-MM-DD')));
+    if (value !== undefined && !value) dispatch(updateActiveLIFE(null));
     dispatch({
       value,
       date, 
@@ -292,7 +293,6 @@ export const updateActiveLIFE = (life) => ({
     .then((response) => response.json())
     .catch((e) => console.error(e))
     .then((res) => {
-      console.log('hey')
       dispatch(addLocations(res.locations));
       dispatch(setAppLoading(false));
     });

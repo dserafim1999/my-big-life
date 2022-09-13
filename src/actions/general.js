@@ -11,13 +11,11 @@ import {
   UPDATE_LIFE,
 } from "."
 import { 
-  addLocations, 
-  addCanonicalTrips, 
-  addTrips, 
   removeTrip, 
   clearTrips, 
   updateActiveLIFE,
-  toggleDayInfo
+  toggleDayInfo,
+  loadTripsAndLocations
 } from "./trips";
 import { clearTracks } from "./tracks";
 

@@ -64,7 +64,6 @@ export const completeTrip = (segmentId, from, to, index) => {
       })
     };
 
-    console.log('going to the server');
     fetch(getState().get('general').get('server') + '/process/completeTrip', options)
       .then((response) => response.json())
       .then((json) => {
@@ -493,7 +492,6 @@ export const bulkProcess = () => {
  * @returns 
  */
 export const getLocationSuggestion = (point) => {
-  console.log(point, typeof point)
   return (dispatch, getState) => {
     const options = {
       method: 'GET',

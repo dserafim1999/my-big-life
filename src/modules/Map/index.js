@@ -182,7 +182,10 @@ export default class LeafletMap extends Component {
   }
 
   shouldUpdateHeatMap (current, previous) {
-    if (current !== previous) {
+    const currentZoom = this.map.getZoom();
+    const { detailLevel } = this.props;
+
+    if (current !== previous && currentZoom < detailLevel) {
       const _points = [];
       
       // Add all points from canonical trips to array. geoJSON coordinates are defined by (longitude, latitude)
@@ -692,7 +695,6 @@ export default class LeafletMap extends Component {
     if (trips !== prev && Object.keys(this.canonical).length > 0) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
-        console.log(this.canonical)
         this.map.removeLayer(this.canonical[s].layergroup);
         delete this.canonical[s];
       })

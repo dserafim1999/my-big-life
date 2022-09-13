@@ -10,9 +10,6 @@ const ALLOWED_EXTENSIONS = /^(gpx)$|^(life)$/;
  * @param {function} error Error function 
  */
 function loadFiles (files, cb, error) {
-  console.log(files, typeof files)
-  console.log(cb, typeof cb)
-  console.log(error, typeof error)
   map(files, (file) => {
     const extension = file.name.split('.').pop();
     
