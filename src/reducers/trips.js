@@ -21,7 +21,7 @@ const addTrips = (state, action) => {
   var color = 0;
   for (const [day, trips] of Object.entries(tripsByDay)) {
     const _color = colors(color++);
-    _trips.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color})
+    _trips.push({id: moment(day).format('YYYY-MM-DD'), trips: trips, color: _color, display: true})
   }
 
   return state
@@ -130,6 +130,7 @@ const clearCanonicalTrips = (state, action) => {
     .set('activeDay', showInfo ? action.date : null);
 }
 
+
 const ACTION_REACTION = {
     'trips/remove': removeTrip,
     'trips/add': addTrips,
@@ -139,7 +140,7 @@ const ACTION_REACTION = {
     'trips/clear_canonical': clearCanonicalTrips,
     'trips/clear_locations': clearLocations,
     'trips/update_active_LIFE': updateActiveLIFE,
-    'trips/toggle_info': toggleDayInfo,
+    'trips/toggle_day_info': toggleDayInfo
 }
 
 const initialState = fromJS({

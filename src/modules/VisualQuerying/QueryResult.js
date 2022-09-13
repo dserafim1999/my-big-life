@@ -1,14 +1,12 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
+
+import moment from "moment";
 import Timeline from "../../components/Timeline";
-import { groupBy } from "../../utils";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-import { dehighlightSegment, highlightSegment } from "../../actions/map";
-
-import { IconButton, Tooltip } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { groupBy } from "../../utils";
+import { IconButton } from "@mui/material";
 
 const dateDivStyle = {
     position: "relative", 
@@ -23,7 +21,6 @@ const dateStyle = {
 
 const QueryResult = ({ result, querySize, dispatch }) => {
     const [seeMore, setSeeMore] = useState(false);
-    const [highlighted, setHighlighted] = useState("");
     const height = 75;
     const multipleColor = "#738492", singleColor = "#821d1d";
 
@@ -49,21 +46,6 @@ const QueryResult = ({ result, querySize, dispatch }) => {
         if (result.multiple) {
             setSeeMore(!seeMore);
         }
-    }
-
-    const highlightResultSegment = () => {
-        var segIds = [];
-
-        result.result.forEach((res) => {
-            if (res.type === "interval" || querySize === 1) {
-                segIds.push(res.points.id);
-            }
-        });
-        
-        const isHighlighted = highlighted === (segIds + "");
-        
-        dispatch(isHighlighted ? dehighlightSegment(segIds) : highlightSegment(segIds));
-        setHighlighted(isHighlighted ? "" : segIds + "");
     }
 
     const getSeeMoreButton = () => {
@@ -100,16 +82,7 @@ const QueryResult = ({ result, querySize, dispatch }) => {
             <div style={{...dateDivStyle, padding: showMoreButton ? "" : "10px"}}>
                 { showMoreButton ?
                     getSeeMoreButton() : 
-                    (<span style={dateStyle}>{date}</span>)
-                }
-                {
-                    !showMoreButton && (
-                        <Tooltip title='Highlight Segment'>
-                            <IconButton onClick={() => highlightResultSegment()}>
-                                <VisibilityIcon></VisibilityIcon>
-                            </IconButton>
-                        </Tooltip>
-                    )
+                    (<span style={dateStyle}>{date.format("DD/MM/YYYY")}</span>)
                 }
             </div>
         )
@@ -144,7 +117,7 @@ const QueryResult = ({ result, querySize, dispatch }) => {
     }
 
     const getDate = (results) => {
-        return results.length > 0 ? moment(results[0].date).format("DD/MM/YYYY") : "";
+        return results.length > 0 ? moment(results[0].date) : "";
     }
 
     const renderSingleTimeline = () => {

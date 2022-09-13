@@ -19,7 +19,7 @@ export const CLEAR_CANONICAL_TRIPS = 'trips/clear_canonical';
 export const CLEAR_LOCATIONS = 'trips/clear_locations';
 export const REMOVE_TRIP = 'trips/remove';
 export const UPDATE_ACTIVE_LIFE = 'trips/update_active_LIFE';
-export const TOGGLE_DAY_INFO = 'trips/toggle_info';
+export const TOGGLE_DAY_INFO = 'trips/toggle_day_info';
 
 export const TOGGLE_SEGMENT_VISIBILITY = 'segments/toggle_visibility';
 export const TOGGLE_SEGMENT_EDITING = 'segments/toggle_edit';
