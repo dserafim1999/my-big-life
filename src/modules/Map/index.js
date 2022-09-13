@@ -665,7 +665,7 @@ export default class LeafletMap extends Component {
   }
 
   shouldRemoveTrips (trips, prev) {
-    if (trips !== prev) {
+    if (trips !== prev && Object.keys(this.trips).length > 0) {
       // delete trip if needed
       Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
         if (this.trips[s]) {
@@ -677,7 +677,7 @@ export default class LeafletMap extends Component {
   }
 
   shouldRemoveSegments (segments, prev) {
-    if (segments !== prev) {
+    if (segments !== prev && Object.keys(this.segments).length > 0) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(segments.keySeq()).forEach((s) => {
         if (this.segments[s]) {
@@ -689,9 +689,10 @@ export default class LeafletMap extends Component {
   }
 
   shouldRemoveCanonicalTrips (trips, prev) {
-    if (trips !== prev) {
+    if (trips !== prev && Object.keys(this.canonical).length > 0) {
       // delete segment if needed
       Set(prev.keySeq()).subtract(trips.keySeq()).forEach((s) => {
+        console.log(this.canonical)
         this.map.removeLayer(this.canonical[s].layergroup);
         delete this.canonical[s];
       })
@@ -699,7 +700,7 @@ export default class LeafletMap extends Component {
   }
 
   shouldRemoveLocations (points, prev) {
-    if (points !== prev) {
+    if (points !== prev && Object.keys(this.locations).length > 0) {
       // delete point if needed
       Set(prev.keySeq()).subtract(points.keySeq()).forEach((s) => {
         this.map.removeLayer(this.locations[s].layergroup);
