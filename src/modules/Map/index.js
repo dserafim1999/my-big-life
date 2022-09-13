@@ -408,7 +408,7 @@ export default class LeafletMap extends Component {
     }
 
     for (const [key, value] of Object.entries(this.locations)) {
-      if (currentZoom >= decorationLevel && currentZoom < detailLevel) {
+      if (currentZoom >= decorationLevel) {
         value.layergroup.addTo(this.map);
       } else {
         this.map.removeLayer(value.layergroup);
