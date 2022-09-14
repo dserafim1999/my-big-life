@@ -113,21 +113,12 @@ const clearCanonicalTrips = (state, action) => {
 }
 
 /**
- * Update active day's LIFE string in state.
- */
- const updateActiveLIFE = (state, action) => {
-  return state
-    .set('activeLIFE', action.life);
-}
-
-/**
  * Toggle panel with information about day.
  */
  const toggleDayInfo = (state, action) => {
   const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
-  return state
-    .set('showInfo', showInfo)
-    .set('activeDay', showInfo ? action.date : null);
+  
+  return state.set('showInfo', showInfo);
 }
 
 
@@ -139,7 +130,6 @@ const ACTION_REACTION = {
     'trips/clear': clearTrips,
     'trips/clear_canonical': clearCanonicalTrips,
     'trips/clear_locations': clearLocations,
-    'trips/update_active_LIFE': updateActiveLIFE,
     'trips/toggle_day_info': toggleDayInfo
 }
 

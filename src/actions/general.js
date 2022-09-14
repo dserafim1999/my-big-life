@@ -9,11 +9,11 @@ import {
   TOGGLE_UI,
   SET_APP_LOADING,
   UPDATE_GLOBAL_LIFE,
+  UPDATE_SELECTED_DAY,
 } from "."
 import { 
   removeTrip, 
   clearTrips, 
-  updateActiveLIFE,
   toggleDayInfo,
   loadTripsAndLocations,
   clearLocations
@@ -198,27 +198,16 @@ export const toggleUI = (isVisible) => ({
 })
 
 /**
- * Fetches LIFE file from certain day and sets active LIFE in state 
+ * Update current selected day
  * 
- * @request 
- * @param {string} date 'YYYY-MM-DD' format 
+ * @action
+ * @param {Date} date moment date object
+ * @returns Action Object
  */
-export const getLifeFromDay = (date) => {
-  return (dispatch, getState) => {
-    const options = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({date: date})
-    }
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/lifeFromDay', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(updateActiveLIFE(res));
-      });
-  }
-}
+ export const setSelectedDay = (date) => ({
+  date,
+  type: UPDATE_SELECTED_DAY
+})
 
 /**
  * Fetches global LIFE JSON file
@@ -231,12 +220,14 @@ export const getGlobalLife = () => {
       method: 'GET',
       mode: 'cors'
     }
+    dispatch(setLoading('life-viewer', true));
     const addr = getState().get('general').get('server');
     return fetch(addr + '/life', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        dispatch(updateGlobalLIFE(res));
+        dispatch(setGlobalLIFE(res));
+        dispatch(setLoading('life-viewer', false));
       });
   }
 }
@@ -247,7 +238,7 @@ export const getGlobalLife = () => {
  * @action 
  * @param {string} life LIFE string
  */
-export const updateGlobalLIFE = (life) => ({
+export const setGlobalLIFE = (life) => ({
   life,
   type: UPDATE_GLOBAL_LIFE
 })

@@ -3,14 +3,13 @@ import {
     CLEAR_LOCATIONS,
     REMOVE_TRIP,
     CLEAR_CANONICAL_TRIPS,
-    UPDATE_ACTIVE_LIFE,
     TOGGLE_DAY_INFO,
     ADD_TRIPS,
     ADD_CANONICAL_TRIPS,
     ADD_LOCATIONS
   } from ".";
   
-  import { getLifeFromDay, setAppLoading } from './general';
+  import { setAppLoading, setSelectedDay } from './general';
   
   /**
    * Adds trips to global state to be displayed.
@@ -68,7 +67,6 @@ import {
    */
   export const clearTrips = () => {
     return (dispatch, getState) => {
-      dispatch(toggleDayInfo(false));
       dispatch({type: CLEAR_TRIPS});
     }
   }
@@ -190,18 +188,6 @@ import {
   }
 
 /**
- * Update active day's LIFE string in state.
- * 
- * @action
- * @param {string} life Segment LIFE representation 
- * @returns Action Object
- */
-export const updateActiveLIFE = (life) => ({
-  life,
-  type: UPDATE_ACTIVE_LIFE
-})
-
-/**
  * Toggle panel with information about day.
  * 
  * @action
@@ -211,13 +197,10 @@ export const updateActiveLIFE = (life) => ({
  */
  export const toggleDayInfo = (value = undefined, date = undefined) => {
   return (dispatch, getState) => {
-    if (date) dispatch(getLifeFromDay(date.format('YYYY-MM-DD')));
-    if (value !== undefined && !value) dispatch(updateActiveLIFE(null));
-    dispatch({
-      value,
-      date, 
-      type: TOGGLE_DAY_INFO
-    });
+    if (date) dispatch(setSelectedDay(date));
+    if (value !== undefined && !value) dispatch(setSelectedDay(null));
+
+    dispatch({ value, type: TOGGLE_DAY_INFO });
   }
 }
 

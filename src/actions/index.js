@@ -18,7 +18,6 @@ export const CLEAR_TRIPS = 'trips/clear';
 export const CLEAR_CANONICAL_TRIPS = 'trips/clear_canonical';
 export const CLEAR_LOCATIONS = 'trips/clear_locations';
 export const REMOVE_TRIP = 'trips/remove';
-export const UPDATE_ACTIVE_LIFE = 'trips/update_active_LIFE';
 export const TOGGLE_DAY_INFO = 'trips/toggle_day_info';
 
 export const TOGGLE_SEGMENT_VISIBILITY = 'segments/toggle_visibility';
@@ -52,7 +51,8 @@ export const SET_APP_LOADING = 'general/set_app_loading';
 export const UPDATE_CONFIG = 'general/update_config';
 export const UPDATE_SERVER = 'general/update_server';
 export const UPDATE_VIEW = 'general/update_view';
-export const UPDATE_GLOBAL_LIFE = 'general/update_LIFE';
+export const UPDATE_GLOBAL_LIFE = 'general/set_LIFE';
+export const UPDATE_SELECTED_DAY = 'general/set_selected_day';
 export const TOGGLE_UI = 'general/toggle_ui';
 
 export const UPDATE_BOUNDS = 'map/bounds';

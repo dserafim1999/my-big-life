@@ -12,10 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
-import { loadTripsAndLocations, updateActiveLIFE, toggleDayInfo } from "../../actions/trips";
+import { loadTripsAndLocations, toggleDayInfo } from "../../actions/trips";
 import { highlightLocation } from "../../actions/map";
 
-const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, globalLIFE, activeLIFE }) => {
+const MainView = ({ dispatch, isVisible, showSegmentInfo, selectedDay, globalLIFE, isLifeLoading }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
         dispatch(getGlobalLife());
@@ -27,18 +27,17 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, globalLIFE,
 
     const onClose = () =>  {
         dispatch(toggleDayInfo(false));
-        dispatch(updateActiveLIFE(null));
     }
     
     const onDelete = (e, modifier) => {
         modifier('is-loading');
-        dispatch(deleteDay(activeDay.format("YYYY-MM-DD")));
+        dispatch(deleteDay(selectedDay.format("YYYY-MM-DD")));
         modifier(); 
     }
     
     const onEdit = (e, modifier) => {
         modifier('is-loading');
-        dispatch(copyDayToInput(activeDay.format("YYYY-MM-DD"))); 
+        dispatch(copyDayToInput(selectedDay.format("YYYY-MM-DD"))); 
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
         modifier();
     }
@@ -47,7 +46,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, globalLIFE,
 
     return <>
         { showSegmentInfo && (
-                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={activeDay.format('DD/MM/YYYY')}>
+                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={selectedDay.format('DD/MM/YYYY')}>
                     <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
                         <AsyncButton 
                             title='Delete Day'
@@ -78,8 +77,9 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, globalLIFE,
                 /> */}
                 <LIFEViewer 
                     life={life}
-                    onDayClick={(x) => console.log(x)} 
-                    onLocationClick={(x) => dispatch(highlightLocation(x))}
+                    onDayClick={(day) => dispatch(toggleDayInfo(true, day))} 
+                    onLocationClick={(loc) => dispatch(highlightLocation(loc))}
+                    isLoading={isLifeLoading}
                 />
         </Card>
     </> 
@@ -89,8 +89,8 @@ const mapStateToProps = (state) => {
     return {
         isVisible: state.get('general').get('isUIVisible'),
         showSegmentInfo: state.get('trips').get('showInfo'),
-        activeDay: state.get('trips').get('activeDay'),
-        activeLIFE: state.get('trips').get('activeLIFE'),
+        selectedDay: state.get('general').get('selectedDay'),
+        isLifeLoading: state.get('general').get('loading').has('life-viewer'),
         globalLIFE: state.get('general').get('LIFE')
     };
 }

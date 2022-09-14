@@ -501,8 +501,9 @@ export default class LeafletMap extends Component {
 
   onZoomEnd (e) {
     const { dispatch } = this.props;
+    const currentZoom = this.map.getZoom();
 
-    dispatch(setZoomLevel(this.map.getZoom()));
+    dispatch(setZoomLevel(currentZoom));
 
     switch(this.props.activeView) {
       case MAIN_VIEW:
