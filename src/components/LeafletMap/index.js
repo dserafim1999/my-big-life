@@ -13,6 +13,7 @@ const mapStateToProps = (state) => {
     activeView: state.get('general').get('activeView'),
     bounds: state.get('map').get('bounds'),
     center: state.get('map').get('center'),
+    zoom: state.get('map').get('zoom'),
     pointPrompt: state.get('map').get('pointPrompt'),
     highlighted: state.get('map').get('highlighted'),
     highlightedPoints: state.get('map').get('highlightedPoints'),

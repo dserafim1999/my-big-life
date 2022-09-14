@@ -63,10 +63,10 @@ export const loadMoreQueryResults = () => {
  * @param {object} block Query block object
  * @returns Action Object
  */
-export const updateQueryBlock = (block) => {console.log(block); return{
+export const updateQueryBlock = (block) => ({
     block,
     type: UPDATE_QUERY_BLOCK
-}};
+});
 
 /**
  * Adds a `Stay` object to the query.

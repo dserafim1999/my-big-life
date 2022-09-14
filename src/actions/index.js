@@ -52,7 +52,7 @@ export const SET_APP_LOADING = 'general/set_app_loading';
 export const UPDATE_CONFIG = 'general/update_config';
 export const UPDATE_SERVER = 'general/update_server';
 export const UPDATE_VIEW = 'general/update_view';
-export const UPDATE_LIFE = 'general/update_LIFE';
+export const UPDATE_GLOBAL_LIFE = 'general/update_LIFE';
 export const TOGGLE_UI = 'general/toggle_ui';
 
 export const UPDATE_BOUNDS = 'map/bounds';
@@ -65,6 +65,7 @@ export const HIGHLIGHT_POINT = 'map/highlight_point';
 export const DEHIGHLIGHT_POINT = 'map/dehighlight_point';
 export const ADD_POINT_PROMPT = 'map/add_point_prompt';
 export const REMOVE_POINT_PROMPT = 'map/remove_point_prompt';
+export const SET_ZOOM_LEVEL = 'map/set_zoom_level';
 
 export const ADVANCE_TO_ADJUST = 'process/advance_adjust';
 export const ADVANCE_TO_ANNOTATE = 'process/advance_annotate';

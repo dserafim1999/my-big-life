@@ -25,12 +25,13 @@ import {
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
 import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
-import { MAIN_VIEW, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
+import { MAIN_VIEW, MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
+import { setZoomLevel } from '../../actions/map';
 
 const DEFAULT_PROPS = {
-  detailLevel: 15,
-  decorationLevel: 13,
+  detailLevel: MAP_DETAIL_ZOOM_LEVEL,
+  decorationLevel: MAP_DECORATION_ZOOM_LEVEL,
   mapCreation: {
     zoomControl: false,
     zoomDelta: 0.4,
@@ -68,7 +69,7 @@ export default class LeafletMap extends Component {
     this.locations = {};
     this.pointHighlights = [];
     this.heatmapLayer = null;
-    this.state = {loadTrips: false};
+    this.state = {loadTrips: true};
   }
 
   getBoundsObj () {
@@ -130,7 +131,6 @@ export default class LeafletMap extends Component {
       trips,
       canonicalTrips,
       locations,
-      dispatch,
       activeView,
       canUndo,
       canRedo,
@@ -148,7 +148,7 @@ export default class LeafletMap extends Component {
     this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
     this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdateTrips(trips, prev.trips);
-    this.shouldUpdateSegments(segments, prev.segments, dispatch);
+    this.shouldUpdateSegments(segments, prev.segments);
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
     this.shouldUpdateBounds(bounds, prev.bounds);
@@ -224,19 +224,19 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldUpdateSegments (segments, previous, dispatch) {
+  shouldUpdateSegments (segments, previous) {
     if (segments !== previous) {
       segments.forEach((segment) => {
         const id = segment.get('id');
         const lseg = this.segments[id];
 
         if (lseg) {
-          this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
+          this.shouldUpdateSegment(segment, previous.get(id), lseg);
         }
         switch(this.props.activeView) {
           default:
             if (!lseg) {
-              this.shouldAddSegment(segment, previous.get(id), dispatch);
+              this.shouldAddSegment(segment, previous.get(id));
             }
         }
       });
@@ -500,6 +500,10 @@ export default class LeafletMap extends Component {
   }
 
   onZoomEnd (e) {
+    const { dispatch } = this.props;
+
+    dispatch(setZoomLevel(this.map.getZoom()));
+
     switch(this.props.activeView) {
       case MAIN_VIEW:
         this.onZoomMainView()

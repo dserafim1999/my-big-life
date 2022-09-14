@@ -8,14 +8,15 @@ import {
   UPDATE_VIEW,
   TOGGLE_UI,
   SET_APP_LOADING,
-  UPDATE_LIFE,
+  UPDATE_GLOBAL_LIFE,
 } from "."
 import { 
   removeTrip, 
   clearTrips, 
   updateActiveLIFE,
   toggleDayInfo,
-  loadTripsAndLocations
+  loadTripsAndLocations,
+  clearLocations
 } from "./trips";
 import { clearTracks } from "./tracks";
 
@@ -220,11 +221,11 @@ export const getLifeFromDay = (date) => {
 }
 
 /**
- * Fetches global LIFE file
+ * Fetches global LIFE JSON file
  * 
  * @request 
  */
-export const getLife = () => {
+export const getGlobalLife = () => {
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
@@ -235,7 +236,7 @@ export const getLife = () => {
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        dispatch(updateLIFE(res));
+        dispatch(updateGlobalLIFE(res));
       });
   }
 }
@@ -246,9 +247,9 @@ export const getLife = () => {
  * @action 
  * @param {string} life LIFE string
  */
-export const updateLIFE = (life) => ({
+export const updateGlobalLIFE = (life) => ({
   life,
-  type: UPDATE_LIFE
+  type: UPDATE_GLOBAL_LIFE
 })
 
 /**
@@ -278,6 +279,8 @@ export const deleteDay = (date) => {
           dispatch(toggleDayInfo(false));
           dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
+          dispatch(clearTrips());
+          dispatch(clearLocations());
           dispatch(loadTripsAndLocations());
         })
     }

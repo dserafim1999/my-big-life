@@ -9,7 +9,8 @@ import {
   ADD_POINT_PROMPT,
   REMOVE_POINT_PROMPT,
   SELECT_POINT_ON_MAP,
-  DESELECT_POINT_ON_MAP
+  DESELECT_POINT_ON_MAP,
+  SET_ZOOM_LEVEL
 } from '../actions';
 
 /**
@@ -58,6 +59,7 @@ const deselectPointOnMap = (state, action) => {
 
 const MapRecord = new Record({
   bounds: undefined,
+  zoom: undefined,
   center: undefined,
   pointPrompt: undefined,
   highlighted: new Set([]),
@@ -72,6 +74,8 @@ const map = (state = INITIAL_STATE, action) => {
       return state.set('bounds', action.bounds);
     case CENTER_MAP:
       return state.set('center', { lat: action.lat, lon: action.lon });
+    case SET_ZOOM_LEVEL:
+      return state.set('zoom', action.zoom);
     case HIGHLIGHT_SEGMENT:
     case DEHIGHLIGHT_SEGMENT:
       return changeSegmentHighlight(state, action);

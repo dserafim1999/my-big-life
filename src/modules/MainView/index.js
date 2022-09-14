@@ -1,25 +1,24 @@
 import React, { useEffect } from "react";
 
 import Card from "../../components/Card";
-import SemanticEditor from '../../modules/SemanticEditor';
-import decorators from '../SemanticEditor/viewDecorators';
 import AsyncButton from "../../components/Buttons/AsyncButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import LIFEViewer from "../../components/LIFEViewer";
 
 import { connect } from "react-redux";
-import { deleteDay, getLife, updateView } from "../../actions/general";
+import { deleteDay, getGlobalLife, updateView } from "../../actions/general";
 import { useNavigate } from "react-router-dom";
-import { ContentState } from 'draft-js';
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
 import { loadTripsAndLocations, updateActiveLIFE, toggleDayInfo } from "../../actions/trips";
+import { highlightLocation } from "../../actions/map";
 
-const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, activeLIFE, globalLIFE, segments }) => {
+const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, globalLIFE, activeLIFE }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
-        dispatch(getLife());
+        dispatch(getGlobalLife());
     }, []);
 
     let navigate = useNavigate();
@@ -44,7 +43,7 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, activeLIFE,
         modifier();
     }
 
-    const state = activeLIFE ? ContentState.createFromText(activeLIFE) : (globalLIFE ? ContentState.createFromText(globalLIFE) : null);
+    const life = globalLIFE;
 
     return <>
         { showSegmentInfo && (
@@ -68,18 +67,21 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, activeDay, activeLIFE,
                 </Card>
             )   
         }
-        { state && 
-            <Card width={400} height={400} verticalOffset={97} horizontalOffset={1} title={"LIFE"}>
-                    <SemanticEditor
-                        readOnly={true}
-                        style={{padding: '20px 0 10px 0', height: '310px', overflowY: 'auto'}}
-                        state={ state }
-                        segments={ segments }
-                        dispatch={ dispatch }
-                        strategies={ decorators }
-                    />
-            </Card>
-        }
+        <Card width={400} height={400} verticalOffset={97} horizontalOffset={1}>
+                {/* <SemanticEditor
+                    readOnly={true}
+                    style={{padding: '20px 0 10px 0', height: '310px', overflowY: 'auto'}}
+                    state={ state }
+                    segments={ segments }
+                    dispatch={ dispatch }
+                    strategies={ decorators }
+                /> */}
+                <LIFEViewer 
+                    life={life}
+                    onDayClick={(x) => console.log(x)} 
+                    onLocationClick={(x) => dispatch(highlightLocation(x))}
+                />
+        </Card>
     </> 
 }
 
@@ -89,8 +91,7 @@ const mapStateToProps = (state) => {
         showSegmentInfo: state.get('trips').get('showInfo'),
         activeDay: state.get('trips').get('activeDay'),
         activeLIFE: state.get('trips').get('activeLIFE'),
-        //globalLIFE: state.get('general').get('LIFE'),
-        segments: state.get('tracks').get('segments')
+        globalLIFE: state.get('general').get('LIFE')
     };
 }
   

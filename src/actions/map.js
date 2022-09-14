@@ -8,8 +8,10 @@ import {
     HIGHLIGHT_SEGMENT,
     DEHIGHLIGHT_SEGMENT,
     SELECT_POINT_ON_MAP,
-    DESELECT_POINT_ON_MAP
+    DESELECT_POINT_ON_MAP,
+    SET_ZOOM_LEVEL
 } from '.';
+import { MAP_DETAIL_ZOOM_LEVEL } from '../constants';
 import { BoundsRecord } from '../records';
 
 /**
@@ -67,6 +69,21 @@ import { BoundsRecord } from '../records';
 }
 
 /**
+ * Highlights canonical location on map.
+ * 
+ * @action
+ * @param {string} location 
+ */
+ export const highlightLocation = (location) => {
+  return (dispatch, getState) => {
+    const loc = getState().get('trips').get('locations').get(location);
+    
+    dispatch(centerMap(loc.lat, loc.lon));
+    dispatch(setZoomLevel(MAP_DETAIL_ZOOM_LEVEL - 1));
+  }
+ }
+
+/**
  * Highlights segment point on map.
  * 
  * @action
@@ -106,6 +123,18 @@ export const centerMap = (lat, lon) => ({
   lat,
   lon,
   type: CENTER_MAP
+})
+
+/**
+ * Sets the map zoom level
+ * 
+ * @action
+ * @param {number} zoom Zoom level
+ * @returns Action Object
+ */
+ export const setZoomLevel = (zoom) => ({
+  zoom,
+  type: SET_ZOOM_LEVEL
 })
 
 /**

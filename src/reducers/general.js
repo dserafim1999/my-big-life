@@ -91,7 +91,7 @@ const toggleUI = (state, action) => {
 /**
  * Updates global LIFE file
  */
-const updateLIFE = (state, action) => {
+const updateGlobalLIFE = (state, action) => {
   return state.set('LIFE', action.life);
 }
 
@@ -112,7 +112,7 @@ const ACTION_REACTION = {
   'general/update_config': updateConfig,
   'general/update_server': updateServer,
   'general/update_view': updateView,
-  'general/update_LIFE': updateLIFE,
+  'general/update_LIFE': updateGlobalLIFE,
   'general/toggle_ui': toggleUI,
   'process/toggle_remaining_tracks': toggleRemainingTracks,
 }
