@@ -24,10 +24,11 @@ import {
   joinSegment
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
-import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
+import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
 import { MAIN_VIEW, MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
 import { setZoomLevel } from '../../actions/map';
+import { setSelectedDay } from '../../actions/general';
 
 const DEFAULT_PROPS = {
   detailLevel: MAP_DETAIL_ZOOM_LEVEL,
@@ -646,7 +647,7 @@ export default class LeafletMap extends Component {
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleDayInfo(true, date));
+        dispatch(setSelectedDay(date));
         break;
     }
   }

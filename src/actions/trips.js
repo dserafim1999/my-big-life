@@ -9,7 +9,7 @@ import {
     ADD_LOCATIONS
   } from ".";
   
-  import { setAppLoading, setSelectedDay } from './general';
+  import { setAppLoading } from './general';
   
   /**
    * Adds trips to global state to be displayed.
@@ -186,21 +186,6 @@ import {
         });
     }
   }
-
-/**
- * Toggle panel with information about day.
- * 
- * @action
- * @param {boolean} value If panel is active
- * @param {Date} date Day to observe 
- * @returns Action Object 
- */
- export const toggleDayInfo = (value = undefined, date = undefined) => {
-  return (dispatch, getState) => {
-    if (date) dispatch(setSelectedDay(date));
-    if (value !== undefined && !value) dispatch(setSelectedDay(null));
-  }
-}
 
 /**
  * Loads canonical trips and locations

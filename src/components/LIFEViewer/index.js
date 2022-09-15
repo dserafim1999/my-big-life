@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React from 'react';
+import React, { useRef } from 'react';
 import DayLIFE from './DayLIFE';
 import IconButton from '../Buttons/IconButton';
 import DeselectDayIcon from '@mui/icons-material/EventBusy';
@@ -19,13 +19,15 @@ const loadingStyle = {
  * @constructor
  */
 
-const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, onDeleteDay, onEditDay, header, life, selectedDay, isLoading }) => {
+const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, onDeleteDay, onEditDay, header, life, selectedDay, isLifeLoading }) => {
+  var lifeRef = useRef(null);
+
   const buildLIFERepresentation = (lifeJSON, onDayClick, onLocationClick) => {
     let days = [];
     for (let day of lifeJSON.days) {
       if (selectedDay) {
         const date = moment(day.date, "--YYYY_MM_DD");
-        days.push(<DayLIFE day={day} isSelectedDay={date.isSame(selectedDay)} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date}/>); 
+        days.push(<DayLIFE day={day} isSelectedDay={date.isSame(selectedDay)} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date} lifeRef={lifeRef}/>); 
       } else {
         days.push(<DayLIFE day={day} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date}/>); 
       }
@@ -52,7 +54,7 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
 
   return (
     <div style={{ height: '100%'}}>
-      { isLoading && (
+      { isLifeLoading && (
         <div style={loadingStyle}>
           <div className='loader'/>
         </div>
@@ -60,7 +62,7 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
       { life && (
         <div style={{ height: '100%'}}>
           { buildHeaderComponent() }
-          <div style={{ height: header ? '90%' : '100%', overflowY: 'auto'}}>
+          <div ref={lifeRef} style={{ height: header ? '90%' : '100%', overflowY: 'auto'}}>
             { buildLIFERepresentation(life, onDayClick, onLocationClick) }
           </div>
         </div>

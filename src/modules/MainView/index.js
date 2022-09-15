@@ -4,12 +4,12 @@ import Card from "../../components/Card";
 import LIFEViewer from "../../components/LIFEViewer";
 
 import { connect } from "react-redux";
-import { deleteDay, getGlobalLife, updateView } from "../../actions/general";
+import { deleteDay, getGlobalLife, setSelectedDay, updateView } from "../../actions/general";
 import { useNavigate } from "react-router-dom";
 import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
-import { loadTripsAndLocations, toggleDayInfo } from "../../actions/trips";
+import { loadTripsAndLocations } from "../../actions/trips";
 import { highlightLocation } from "../../actions/map";
 
 const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading }) => {
@@ -32,18 +32,18 @@ const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading 
     }
 
     const onDeselectDay = () => {
-        dispatch(toggleDayInfo(false));
+        dispatch(setSelectedDay(false));
     }
 
     const onSearchDay = () => {
-        dispatch(toggleDayInfo(false));
+        dispatch(setSelectedDay(false));
     }
 
     const onDayClick = (day) => {
         if(day.isSame(selectedDay)) {
-            dispatch(toggleDayInfo(false));
+            dispatch(setSelectedDay(false));
         } else {
-            dispatch(toggleDayInfo(true, day));
+            dispatch(setSelectedDay(day));
         }
     }
 
@@ -63,7 +63,7 @@ const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading 
                 onSearchDay={onSearchDay}
                 onEditDay={onEditDay}
                 onDeleteDay={onDeleteDay}
-                isLoading={isLifeLoading}
+                isLifeLoading={isLifeLoading}
             />
         </Card>
     );

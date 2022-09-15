@@ -12,13 +12,7 @@ import {
   UPDATE_SELECTED_DAY,
   REMOVE_DAY_FROM_GLOBAL_LIFE,
 } from "."
-import { 
-  removeTrip, 
-  clearTrips, 
-  toggleDayInfo,
-  loadTripsAndLocations,
-  clearLocations
-} from "./trips";
+import { removeTrip, clearTrips } from "./trips";
 import { clearTracks } from "./tracks";
 
 
@@ -205,7 +199,7 @@ export const toggleUI = (isVisible) => ({
  * @param {Date} date moment date object
  * @returns Action Object
  */
- export const setSelectedDay = (date) => ({
+export const setSelectedDay = (date) => ({
   date,
   type: UPDATE_SELECTED_DAY
 })
@@ -279,7 +273,7 @@ export const deleteDay = (date) => {
         .then((response) => response.json())
         .catch((e) => console.error(e))
         .then((res) => {
-          dispatch(toggleDayInfo(false));
+          dispatch(setSelectedDay(false));
           dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
           dispatch(removeDayFromGlobalLIFE(moment(date).format('--YYYY_MM_DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));

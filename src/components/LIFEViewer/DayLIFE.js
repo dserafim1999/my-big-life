@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { SEMANTIC_STYLES } from "../../constants";
 import SpanLIFE from "./SpanLIFE";
 
@@ -9,9 +9,17 @@ import SpanLIFE from "./SpanLIFE";
  * @constructor
  */
 
-const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick }) => {
+const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick, lifeRef }) => {
   const [isHover, setIsHover] = useState(false);
+  let dayRef = useRef(null);
   let spans = [];
+
+  const handleScrollToDay = () => {
+    if (dayRef.current && isSelectedDay) {
+      dayRef.current.scrollIntoView();
+    }
+
+  }
 
   const getStyle = () => {
     if (isSelectedDay === undefined) {
@@ -45,8 +53,10 @@ const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick }) => {
       spans.push(<SpanLIFE key={i} span={span} isSelectedDay={isSelectedDay} onLocationClick={onLocationClick}/>); 
   }
 
+  handleScrollToDay();
+
   return (
-    <div style={getStyle()}>
+    <div ref={dayRef} style={getStyle()}>
       <p style={{margin: '5px'}}>
         <span 
           style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Day"], cursor: 'pointer'}}
