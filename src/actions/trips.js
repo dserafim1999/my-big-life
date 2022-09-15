@@ -199,8 +199,6 @@ import {
   return (dispatch, getState) => {
     if (date) dispatch(setSelectedDay(date));
     if (value !== undefined && !value) dispatch(setSelectedDay(null));
-
-    dispatch({ value, type: TOGGLE_DAY_INFO });
   }
 }
 

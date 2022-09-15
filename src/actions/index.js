@@ -52,6 +52,7 @@ export const UPDATE_CONFIG = 'general/update_config';
 export const UPDATE_SERVER = 'general/update_server';
 export const UPDATE_VIEW = 'general/update_view';
 export const UPDATE_GLOBAL_LIFE = 'general/set_LIFE';
+export const REMOVE_DAY_FROM_GLOBAL_LIFE = 'general/remove_day_from_LIFE'
 export const UPDATE_SELECTED_DAY = 'general/set_selected_day';
 export const TOGGLE_UI = 'general/toggle_ui';
 

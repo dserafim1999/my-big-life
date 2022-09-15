@@ -9,14 +9,24 @@ import SpanLIFE from "./SpanLIFE";
  * @constructor
  */
 
-const DayLIFE = ({ day, onDayClick, onLocationClick }) => {
+const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick }) => {
   const [isHover, setIsHover] = useState(false);
   let spans = [];
-  
-  const dayStyle = {
-    padding: '5px 0',
-    backgroundColor: isHover ? '#fcfcfc' : '',
-    borderLeft: isHover ? '5px solid var(--main)' : '',
+
+  const getStyle = () => {
+    if (isSelectedDay === undefined) {
+      return {
+        padding: '5px 0',
+        backgroundColor: isHover ? '#fcfcfc' : '',
+        borderLeft: isHover ? '5px solid var(--main)' : '',
+      }
+    } else {
+      return {
+        padding: isSelectedDay ? '5px 0' : '',
+        borderLeft: isSelectedDay || isHover ? '5px solid var(--main)' : '',
+        opacity: isSelectedDay ? '1' : isHover ? '0.5' : '0.2'
+      }
+    }
   }
 
   const onMouseEnter = () => {
@@ -32,11 +42,11 @@ const DayLIFE = ({ day, onDayClick, onLocationClick }) => {
   }
   
   for (let [i, span] of day.spans.entries()) {
-      spans.push(<SpanLIFE key={i} span={span} onLocationClick={onLocationClick}/>); 
+      spans.push(<SpanLIFE key={i} span={span} isSelectedDay={isSelectedDay} onLocationClick={onLocationClick}/>); 
   }
 
   return (
-    <div style={dayStyle}>
+    <div style={getStyle()}>
       <p style={{margin: '5px'}}>
         <span 
           style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Day"], cursor: 'pointer'}}

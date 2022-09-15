@@ -1,27 +1,24 @@
 import React, { useState } from "react"
 import { SEMANTIC_STYLES } from "../../constants";
 
-const spanStyle = {
-}
-
 /**
  * 
  * @constructor
  */
 
-const SpanLIFE = ({ span, onLocationClick }) => {
+const SpanLIFE = ({ span, isSelectedDay, onLocationClick }) => {
     const [isHover, setIsHover] = useState(false);
 
     const onMouseEnter = () => {
-        setIsHover(true);
+        if (isSelectedDay === undefined || isSelectedDay) setIsHover(true);
     }
 
     const onMouseLeave = () => {
-        setIsHover(false);
+        if (isSelectedDay === undefined || isSelectedDay) setIsHover(false);
     }
 
     const onClick = (place) => {
-        onLocationClick(place);
+        if (isSelectedDay === undefined || isSelectedDay) onLocationClick(place);
     }
 
     const addOptionalSemantics = (type, value) => {
@@ -44,7 +41,7 @@ const SpanLIFE = ({ span, onLocationClick }) => {
     const tags = span.tags ? ("[" + span.tags.join("|") + "]") : undefined;
 
     return (
-        <div style={spanStyle}>
+        <div>
             <p style={{margin: '5px'}}>
                 <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Time"], marginRight: '3px'}}>{ span.start }</span>
                 <b>-</b>

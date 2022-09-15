@@ -96,6 +96,15 @@ const setGlobalLIFE = (state, action) => {
 }
 
 /**
+ * Delete day from global LIFE file
+ */
+ const removeDayFromGlobalLIFE = (state, action) => {
+  return state.updateIn(['LIFE', 'days'], (days) => {
+    return days.filter((day) => day.date !== action.date);  
+  });
+}
+
+/**
  * Updates current selected day
  */
  const setSelectedDay = (state, action) => {
@@ -120,6 +129,7 @@ const ACTION_REACTION = {
   'general/update_server': updateServer,
   'general/update_view': updateView,
   'general/set_LIFE': setGlobalLIFE,
+  'general/remove_day_from_LIFE': removeDayFromGlobalLIFE,
   'general/set_selected_day': setSelectedDay,
   'general/toggle_ui': toggleUI,
   'process/toggle_remaining_tracks': toggleRemainingTracks,

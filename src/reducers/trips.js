@@ -112,15 +112,6 @@ const clearCanonicalTrips = (state, action) => {
   return state.setIn(["canonicalTrips"], fromJS({}));
 }
 
-/**
- * Toggle panel with information about day.
- */
- const toggleDayInfo = (state, action) => {
-  const showInfo = action.value !== undefined? action.value : !state.get('showInfo');
-  
-  return state.set('showInfo', showInfo);
-}
-
 
 const ACTION_REACTION = {
     'trips/remove': removeTrip,
@@ -129,8 +120,7 @@ const ACTION_REACTION = {
     'trips/add_locations': addLocations,
     'trips/clear': clearTrips,
     'trips/clear_canonical': clearCanonicalTrips,
-    'trips/clear_locations': clearLocations,
-    'trips/toggle_day_info': toggleDayInfo
+    'trips/clear_locations': clearLocations
 }
 
 const initialState = fromJS({

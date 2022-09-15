@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
 
 import Card from "../../components/Card";
-import AsyncButton from "../../components/Buttons/AsyncButton";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import LIFEViewer from "../../components/LIFEViewer";
 
 import { connect } from "react-redux";
@@ -15,7 +12,7 @@ import { copyDayToInput } from "../../actions/process";
 import { loadTripsAndLocations, toggleDayInfo } from "../../actions/trips";
 import { highlightLocation } from "../../actions/map";
 
-const MainView = ({ dispatch, isVisible, showSegmentInfo, selectedDay, globalLIFE, isLifeLoading }) => {
+const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
         dispatch(getGlobalLife());
@@ -24,71 +21,57 @@ const MainView = ({ dispatch, isVisible, showSegmentInfo, selectedDay, globalLIF
     let navigate = useNavigate();
 
     if (!isVisible) return null;
-
-    const onClose = () =>  {
-        dispatch(toggleDayInfo(false));
-    }
     
-    const onDelete = (e, modifier) => {
-        modifier('is-loading');
+    const onDeleteDay = () => {
         dispatch(deleteDay(selectedDay.format("YYYY-MM-DD")));
-        modifier(); 
     }
     
-    const onEdit = (e, modifier) => {
-        modifier('is-loading');
+    const onEditDay = () => {
         dispatch(copyDayToInput(selectedDay.format("YYYY-MM-DD"))); 
         dispatch(updateView(TRACK_PROCESSING, routeTo(MAIN_VIEW, TRACK_PROCESSING), navigate));
-        modifier();
     }
 
-    const life = globalLIFE;
+    const onDeselectDay = () => {
+        dispatch(toggleDayInfo(false));
+    }
 
-    return <>
-        { showSegmentInfo && (
-                <Card width={400} maxHeight={500} verticalOffset={1} horizontalOffset={1} onClose={onClose} title={selectedDay.format('DD/MM/YYYY')}>
-                    <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
-                        <AsyncButton 
-                            title='Delete Day'
-                            className='is-red'
-                            onClick={onDelete} >
-                                <DeleteIcon/>
-                                Delete
-                        </AsyncButton>
-                        <AsyncButton 
-                            title='Edit Day'
-                            className='is-blue'
-                            onClick={onEdit} >
-                                Edit
-                                <EditIcon style={{marginLeft: '10px'}}/>
-                        </AsyncButton>
-                    </div>
-                </Card>
-            )   
+    const onSearchDay = () => {
+        dispatch(toggleDayInfo(false));
+    }
+
+    const onDayClick = (day) => {
+        if(day.isSame(selectedDay)) {
+            dispatch(toggleDayInfo(false));
+        } else {
+            dispatch(toggleDayInfo(true, day));
         }
-        <Card width={400} height={400} verticalOffset={97} horizontalOffset={1}>
-                {/* <SemanticEditor
-                    readOnly={true}
-                    style={{padding: '20px 0 10px 0', height: '310px', overflowY: 'auto'}}
-                    state={ state }
-                    segments={ segments }
-                    dispatch={ dispatch }
-                    strategies={ decorators }
-                /> */}
-                <LIFEViewer 
-                    life={life}
-                    onDayClick={(day) => dispatch(toggleDayInfo(true, day))} 
-                    onLocationClick={(loc) => dispatch(highlightLocation(loc))}
-                    isLoading={isLifeLoading}
-                />
+    }
+
+    const onLocationClick = (loc) => {
+        dispatch(highlightLocation(loc));
+    }
+
+    return (
+        <Card width={400} height={500} verticalOffset={97} horizontalOffset={99}>
+            <LIFEViewer 
+                life={globalLIFE}
+                header={true}
+                selectedDay={selectedDay}
+                onDayClick={(day) => onDayClick(day)} 
+                onLocationClick={(loc) => onLocationClick(loc)}
+                onDeselectDay={onDeselectDay}
+                onSearchDay={onSearchDay}
+                onEditDay={onEditDay}
+                onDeleteDay={onDeleteDay}
+                isLoading={isLifeLoading}
+            />
         </Card>
-    </> 
+    );
 }
 
 const mapStateToProps = (state) => {
     return {
         isVisible: state.get('general').get('isUIVisible'),
-        showSegmentInfo: state.get('trips').get('showInfo'),
         selectedDay: state.get('general').get('selectedDay'),
         isLifeLoading: state.get('general').get('loading').has('life-viewer'),
         globalLIFE: state.get('general').get('LIFE')

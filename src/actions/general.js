@@ -10,6 +10,7 @@ import {
   SET_APP_LOADING,
   UPDATE_GLOBAL_LIFE,
   UPDATE_SELECTED_DAY,
+  REMOVE_DAY_FROM_GLOBAL_LIFE,
 } from "."
 import { 
   removeTrip, 
@@ -244,6 +245,17 @@ export const setGlobalLIFE = (life) => ({
 })
 
 /**
+ * Delete day from global LIFE file
+ * 
+ * @action 
+ * @param {string} date '--YYYY_MM_DD' format
+ */
+ export const removeDayFromGlobalLIFE = (date) => ({
+  date,
+  type: REMOVE_DAY_FROM_GLOBAL_LIFE
+})
+
+/**
  * Deletes a day from the server (including database)
  * 
  * @request
@@ -269,10 +281,8 @@ export const deleteDay = (date) => {
         .then((res) => {
           dispatch(toggleDayInfo(false));
           dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
+          dispatch(removeDayFromGlobalLIFE(moment(date).format('--YYYY_MM_DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
-          dispatch(clearTrips());
-          dispatch(clearLocations());
-          dispatch(loadTripsAndLocations());
         })
     }
   }
