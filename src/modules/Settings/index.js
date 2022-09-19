@@ -9,6 +9,8 @@ import { bulkProcess, getBulkProcessStatus, rawBulkProcess } from '../../actions
 
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import SaveIcon from '@mui/icons-material/Save';
+import { BoundsRecord } from '../../records';
+import { updateBounds } from '../../actions/map';
 
 const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProcessing, bulkProgress }) => {
     if (!isVisible) return null;
@@ -19,6 +21,7 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
     useEffect( () => {
       dispatch(getConfig());
       dispatch(getBulkProcessStatus());
+      dispatch(updateBounds(new BoundsRecord().setWithCoords(90, -200, -90, 200)));
    }, []);
 
    const [state, setState] = useState({...config, address: address});

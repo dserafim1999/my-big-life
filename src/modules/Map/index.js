@@ -24,13 +24,15 @@ import {
   joinSegment
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
-import { toggleDayInfo, clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
-import { MAIN_VIEW, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
+import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
+import { MAIN_VIEW, MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
+import { setZoomLevel } from '../../actions/map';
+import { setSelectedDay } from '../../actions/general';
 
 const DEFAULT_PROPS = {
-  detailLevel: 15,
-  decorationLevel: 13,
+  detailLevel: MAP_DETAIL_ZOOM_LEVEL,
+  decorationLevel: MAP_DECORATION_ZOOM_LEVEL,
   mapCreation: {
     zoomControl: false,
     zoomDelta: 0.4,
@@ -68,7 +70,7 @@ export default class LeafletMap extends Component {
     this.locations = {};
     this.pointHighlights = [];
     this.heatmapLayer = null;
-    this.state = {loadTrips: false};
+    this.state = {loadTrips: true};
   }
 
   getBoundsObj () {
@@ -81,10 +83,12 @@ export default class LeafletMap extends Component {
   }
 
   fitBounds (where) {
+    const { dispatch } = this.props;
     this.map.fitBounds(where, {
       maxZoom: this.map.getBoundsZoom(where, true),
       ...this.getBoundsObj()
     });
+    dispatch(setZoomLevel(this.map.getBoundsZoom(where, true)))
   }
 
   fitWorld () {
@@ -92,13 +96,12 @@ export default class LeafletMap extends Component {
   }
 
   componentDidMount () {
-    const { mapCreation } = this.props;
+    const { mapCreation, dispatch } = this.props;
     const m = findDOMNode(this.mapRef.current);
     this.map = map(m, mapCreation);
 
     setupTileLayers(this.map);
 
-    const { dispatch } = this.props;
     setupControls(this.map, {
       canUndo: this.props.canUndo,
       canRedo: this.props.canRedo,
@@ -107,6 +110,7 @@ export default class LeafletMap extends Component {
     });
 
     this.fitWorld();
+    
     this.map.on('zoomend', this.onZoomEnd.bind(this));
     this.map.on('dragend', this.onMoveEnd.bind(this));
   }
@@ -130,7 +134,6 @@ export default class LeafletMap extends Component {
       trips,
       canonicalTrips,
       locations,
-      dispatch,
       activeView,
       canUndo,
       canRedo,
@@ -148,7 +151,7 @@ export default class LeafletMap extends Component {
     this.shouldUpdateCanonicalTrips(canonicalTrips, prev.canonicalTrips);
     this.shouldUpdateLocations(locations, prev.locations);
     this.shouldUpdateTrips(trips, prev.trips);
-    this.shouldUpdateSegments(segments, prev.segments, dispatch);
+    this.shouldUpdateSegments(segments, prev.segments);
     this.shouldUpdateZoom(zoom, prev.zoom);
     this.shouldUpdateCenter(center, prev.center);
     this.shouldUpdateBounds(bounds, prev.bounds);
@@ -159,8 +162,8 @@ export default class LeafletMap extends Component {
     
     switch (activeView) {
       case MAIN_VIEW:
-        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
-        this.toggleSegmentsAndLocations();
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
+        this.toggleTripsAndLocations();
         break;
         default:
           if (this.heatmapLayer) {
@@ -219,24 +222,32 @@ export default class LeafletMap extends Component {
   }
 
   shouldUpdateCenter (current, previous) {
+    if (this.locationHighlight) {
+      this.locationHighlight.remove(this.map);
+      this.locationHighlight = null;
+    }
     if (current !== previous) {
       this.map.setView({ lat: current.lat, lng: current.lon });
+      const icon = createPointIcon(null, null, 'highlight-point', [19, 19]);
+      this.locationHighlight = createMarker({ lat: current.lat, lng: current.lon}, icon);
+      this.locationHighlight.addTo(this.map);
     }
+
   }
 
-  shouldUpdateSegments (segments, previous, dispatch) {
+  shouldUpdateSegments (segments, previous) {
     if (segments !== previous) {
       segments.forEach((segment) => {
         const id = segment.get('id');
         const lseg = this.segments[id];
 
         if (lseg) {
-          this.shouldUpdateSegment(segment, previous.get(id), lseg, dispatch);
+          this.shouldUpdateSegment(segment, previous.get(id), lseg);
         }
         switch(this.props.activeView) {
           default:
             if (!lseg) {
-              this.shouldAddSegment(segment, previous.get(id), dispatch);
+              this.shouldAddSegment(segment, previous.get(id));
             }
         }
       });
@@ -375,14 +386,32 @@ export default class LeafletMap extends Component {
     const hidden = allSegments.filterNot((s) => highlighted.has(s.get('id'))).map((s) => s.get('id'));
 
     if (highlighted.count() > 0) {
-      setOpacity(highlighted, 1);
-      setOpacity(hidden, 0.2);
+      setOpacity(highlighted, 1, true);
+      setOpacity(hidden, 0.1, false);
     } else {
       setOpacity(hidden, 1);
     }
   }
 
-  toggleSegmentsAndLocations () {
+  shouldHighlightTripVisibility (day, trip) {
+    const { selectedDay } = this.props;
+    let opacity ;
+
+    if (!selectedDay) {
+      opacity = '1';
+    } else if (day !== selectedDay.format("YYYY-MM-DD")) {
+      opacity = '0.1';
+    } else {
+      opacity = '1';
+      trip.layergroup.bringToFront();
+    }
+
+    trip.layergroup.setStyle({
+      opacity
+    });
+  }
+
+  toggleTripsAndLocations () {
     const { decorationLevel, detailLevel } = this.props;
     const currentZoom = this.map.getZoom();
 
@@ -394,15 +423,9 @@ export default class LeafletMap extends Component {
       }
     }
 
-    for (const [key, value] of Object.entries(this.segments)) {
-      if (currentZoom >= detailLevel) {
-        value.layergroup.addTo(this.map);       
-      } else {
-        this.map.removeLayer(value.layergroup);
-      }
-    }
-
     for (const [key, value] of Object.entries(this.trips)) {
+      this.shouldHighlightTripVisibility(key, value);
+      
       if (currentZoom >= detailLevel) {
         value.layergroup.addTo(this.map);       
       } else {
@@ -432,13 +455,13 @@ export default class LeafletMap extends Component {
           dispatch(canLoadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         } 
          
-        this.toggleSegmentsAndLocations();
+        this.toggleTripsAndLocations();
         break;
     }
   }
 
   onZoomMainView () {
-    const { detailLevel, decorationLevel, dispatch, segments } = this.props;
+    const { detailLevel, decorationLevel, dispatch, selectedDay, segments } = this.props;
     const currentZoom = this.map.getZoom();
     const bounds = this.map.getBounds();
     const southWestBounds = bounds.getSouthWest();
@@ -446,7 +469,7 @@ export default class LeafletMap extends Component {
 
     if (currentZoom >= detailLevel && this.state.loadTrips) {
       dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
-      this.toggleSegmentsAndLocations();
+      this.toggleTripsAndLocations();
       this.setState({loadTrips: false});
     } else if (currentZoom < decorationLevel && !this.state.loadTrips) {
       if (segments.size > 0) dispatch(clearTrips());
@@ -461,7 +484,7 @@ export default class LeafletMap extends Component {
       }
     }
     
-    this.toggleSegmentsAndLocations();
+    this.toggleTripsAndLocations();
   }
 
   onZoomTrackProcessing () {
@@ -500,6 +523,11 @@ export default class LeafletMap extends Component {
   }
 
   onZoomEnd (e) {
+    const { dispatch } = this.props;
+    const currentZoom = this.map.getZoom();
+
+    dispatch(setZoomLevel(currentZoom));
+
     switch(this.props.activeView) {
       case MAIN_VIEW:
         this.onZoomMainView()
@@ -594,7 +622,6 @@ export default class LeafletMap extends Component {
   addTrip (id, color, trips, canonical) {
     const layergroup = L.geoJSON(trips, {style: {color: color}}).addTo(this.map);
     const date = moment(id);
-    const { activeView } = this.props;
     
     if (canonical) {
       this.canonical[id] = {layergroup};
@@ -641,7 +668,7 @@ export default class LeafletMap extends Component {
 
     switch (activeView) {
       case MAIN_VIEW:
-        dispatch(toggleDayInfo(true, date));
+        dispatch(setSelectedDay(date));
         break;
     }
   }

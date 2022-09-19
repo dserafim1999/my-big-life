@@ -15,7 +15,7 @@ const flexAlignStyle = {
   margin: 'auto'
 }
 
-const formatTime = (t) => t.local().format('YYYY-MM-DDTHH:mm:ss');
+const formatTime = (t) => t.format('YYYY-MM-DDTHH:mm:ss');
 
 const PointMetrics = ({ current, previous, next, index }) => {
   const ballStyle = {

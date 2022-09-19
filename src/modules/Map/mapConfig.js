@@ -25,8 +25,7 @@ export const getPolylineStyle = (color, display) => {
         default:
             return {
                 color,
-                weight: 3,
-                opacity: display ? 1 : 0
+                weight: 3
               };
     }
 }

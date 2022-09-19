@@ -91,8 +91,26 @@ const toggleUI = (state, action) => {
 /**
  * Updates global LIFE file
  */
-const updateLIFE = (state, action) => {
+const setGlobalLIFE = (state, action) => {
   return state.set('LIFE', action.life);
+}
+
+/**
+ * Delete day from global LIFE file
+ */
+ const removeDayFromGlobalLIFE = (state, action) => {
+  return state.updateIn(['LIFE', 'days'], (days) => {
+    return days.filter((day) => day.date !== action.date);  
+  });
+}
+
+/**
+ * Updates current selected day
+ */
+ const setSelectedDay = (state, action) => {
+  return state
+    .set('selectedDay', action.date)
+    .set('selectedDayColor', action.color);
 }
 
 /** 
@@ -112,7 +130,9 @@ const ACTION_REACTION = {
   'general/update_config': updateConfig,
   'general/update_server': updateServer,
   'general/update_view': updateView,
-  'general/update_LIFE': updateLIFE,
+  'general/set_LIFE': setGlobalLIFE,
+  'general/remove_day_from_LIFE': removeDayFromGlobalLIFE,
+  'general/set_selected_day': setSelectedDay,
   'general/toggle_ui': toggleUI,
   'process/toggle_remaining_tracks': toggleRemainingTracks,
 }
@@ -121,6 +141,7 @@ const initialState = Map({
   alerts: List(),
   loading: Set(),
   activeView: getActiveView(),
+  selectedDayColor: 'lightgrey',
   isUIVisible: true,
   isAppLoading: false,
   server: 'http://localhost:5000'

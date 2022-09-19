@@ -3,14 +3,13 @@ import {
     CLEAR_LOCATIONS,
     REMOVE_TRIP,
     CLEAR_CANONICAL_TRIPS,
-    UPDATE_ACTIVE_LIFE,
     TOGGLE_DAY_INFO,
     ADD_TRIPS,
     ADD_CANONICAL_TRIPS,
     ADD_LOCATIONS
   } from ".";
   
-  import { getLifeFromDay, setAppLoading } from './general';
+  import { setAppLoading, setSelectedDay } from './general';
   
   /**
    * Adds trips to global state to be displayed.
@@ -68,7 +67,6 @@ import {
    */
   export const clearTrips = () => {
     return (dispatch, getState) => {
-      dispatch(toggleDayInfo(false));
       dispatch({type: CLEAR_TRIPS});
     }
   }
@@ -113,6 +111,7 @@ import {
       }
   
       dispatch(setAppLoading(true));
+      const selectedDay = getState().get('general').get('selectedDay');
   
       const addr = getState().get('general').get('server');
       return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
@@ -122,6 +121,7 @@ import {
           dispatch(clearTrips());
           dispatch(addTrips(res.trips));
           dispatch(setAppLoading(false));
+          dispatch(setSelectedDay(selectedDay)); // updates selected day to display trip color on LIFE Viewer
         });
     }
   }
@@ -190,38 +190,6 @@ import {
   }
 
 /**
- * Update active day's LIFE string in state.
- * 
- * @action
- * @param {string} life Segment LIFE representation 
- * @returns Action Object
- */
-export const updateActiveLIFE = (life) => ({
-  life,
-  type: UPDATE_ACTIVE_LIFE
-})
-
-/**
- * Toggle panel with information about day.
- * 
- * @action
- * @param {boolean} value If panel is active
- * @param {Date} date Day to observe 
- * @returns Action Object 
- */
- export const toggleDayInfo = (value = undefined, date = undefined) => {
-  return (dispatch, getState) => {
-    if (date) dispatch(getLifeFromDay(date.format('YYYY-MM-DD')));
-    if (value !== undefined && !value) dispatch(updateActiveLIFE(null));
-    dispatch({
-      value,
-      date, 
-      type: TOGGLE_DAY_INFO
-    });
-  }
-}
-
-/**
  * Loads canonical trips and locations
  * 
  * @request
@@ -240,6 +208,7 @@ export const updateActiveLIFE = (life) => ({
     .then((response) => response.json())
     .catch((e) => console.error(e))
     .then((res) => {
+      dispatch(clearTrips());
       dispatch(clearCanonicalTrips());
       dispatch(clearLocations());
       dispatch(addCanonicalTrips(res.trips));

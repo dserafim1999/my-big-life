@@ -8,16 +8,13 @@ import {
   UPDATE_VIEW,
   TOGGLE_UI,
   SET_APP_LOADING,
-  UPDATE_LIFE,
+  UPDATE_GLOBAL_LIFE,
+  UPDATE_SELECTED_DAY,
+  REMOVE_DAY_FROM_GLOBAL_LIFE,
 } from "."
-import { 
-  removeTrip, 
-  clearTrips, 
-  updateActiveLIFE,
-  toggleDayInfo,
-  loadTripsAndLocations
-} from "./trips";
+import { removeTrip, clearTrips } from "./trips";
 import { clearTracks } from "./tracks";
+import { MAP_DETAIL_ZOOM_LEVEL } from "../constants";
 
 
 /**
@@ -197,45 +194,51 @@ export const toggleUI = (isVisible) => ({
 })
 
 /**
- * Fetches LIFE file from certain day and sets active LIFE in state 
+ * Update current selected day
  * 
- * @request 
- * @param {string} date 'YYYY-MM-DD' format 
+ * @action
+ * @param {Date} date moment date object
+ * @returns Action Object
  */
-export const getLifeFromDay = (date) => {
+export const setSelectedDay = (date) => {
   return (dispatch, getState) => {
-    const options = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({date: date})
+    let color = 'lightgrey';
+
+    if (date) {
+      const dayTrip = getState().get('trips').get('trips').get(date.format("YYYY-MM-DD"));
+      const zoom = getState().get('map').get('zoom');
+      
+      if(dayTrip) {
+        color = dayTrip.color;
+      } 
+      if (!zoom || (zoom &&  zoom < MAP_DETAIL_ZOOM_LEVEL)) {
+        dispatch(addAlert('Zoom in to see day in full detail.', 'info', 2, 'zoom-in'));
+      }
     }
-    const addr = getState().get('general').get('server');
-    return fetch(addr + '/lifeFromDay', options)
-      .then((response) => response.json())
-      .catch((e) => console.error(e))
-      .then((res) => {
-        dispatch(updateActiveLIFE(res));
-      });
+    
+    dispatch({ date, color, type: UPDATE_SELECTED_DAY })
   }
 }
 
 /**
- * Fetches global LIFE file
+ * Fetches global LIFE JSON file
  * 
  * @request 
  */
-export const getLife = () => {
+export const getGlobalLife = () => {
   return (dispatch, getState) => {
     const options = {
       method: 'GET',
       mode: 'cors'
     }
+    dispatch(setLoading('life-viewer', true));
     const addr = getState().get('general').get('server');
     return fetch(addr + '/life', options)
       .then((response) => response.json())
       .catch((e) => console.error(e))
       .then((res) => {
-        dispatch(updateLIFE(res));
+        dispatch(setGlobalLIFE(res));
+        dispatch(setLoading('life-viewer', false));
       });
   }
 }
@@ -246,9 +249,20 @@ export const getLife = () => {
  * @action 
  * @param {string} life LIFE string
  */
-export const updateLIFE = (life) => ({
+export const setGlobalLIFE = (life) => ({
   life,
-  type: UPDATE_LIFE
+  type: UPDATE_GLOBAL_LIFE
+})
+
+/**
+ * Delete day from global LIFE file
+ * 
+ * @action 
+ * @param {string} date '--YYYY_MM_DD' format
+ */
+ export const removeDayFromGlobalLIFE = (date) => ({
+  date,
+  type: REMOVE_DAY_FROM_GLOBAL_LIFE
 })
 
 /**
@@ -275,10 +289,10 @@ export const deleteDay = (date) => {
         .then((response) => response.json())
         .catch((e) => console.error(e))
         .then((res) => {
-          dispatch(toggleDayInfo(false));
+          dispatch(setSelectedDay(false));
           dispatch(removeTrip(moment(date).format('YYYY-MM-DD')));
+          dispatch(removeDayFromGlobalLIFE(moment(date).format('--YYYY_MM_DD')));
           dispatch(addAlert(moment(date).format('DD/MM/YYYY') + " has been successfully deleted from the database.", 'success'));
-          dispatch(loadTripsAndLocations());
         })
     }
   }
