@@ -14,6 +14,7 @@ import {
 } from "."
 import { removeTrip, clearTrips } from "./trips";
 import { clearTracks } from "./tracks";
+import { MAP_DETAIL_ZOOM_LEVEL } from "../constants";
 
 
 /**
@@ -205,10 +206,12 @@ export const setSelectedDay = (date) => {
 
     if (date) {
       const dayTrip = getState().get('trips').get('trips').get(date.format("YYYY-MM-DD"));
+      const zoom = getState().get('map').get('zoom');
       
       if(dayTrip) {
         color = dayTrip.color;
-      } else {
+      } 
+      if (!zoom || (zoom &&  zoom < MAP_DETAIL_ZOOM_LEVEL)) {
         dispatch(addAlert('Zoom in to see day in full detail.', 'info', 2, 'zoom-in'));
       }
     }

@@ -41,9 +41,9 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
       <div style={{ width: '100%', display: 'flex', paddingBottom: '5px'}}>
         <SelectedDay day={selectedDay} color={selectedDayColor} onEditDay={onEditDay} onDeleteDay={onDeleteDay}/>
         <div style={{ display: 'flex', paddingLeft: '5px' }}>
-          <IconButton title={'Search Day'} onClick={onSearchDay}>    
+          {/* <IconButton title={'Search Day'} onClick={onSearchDay}>    
               <SearchDayIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-          </IconButton>
+          </IconButton> */}
           <IconButton title={'Deselect Day'} onClick={onDeselectDay}>    
               <DeselectDayIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
           </IconButton>

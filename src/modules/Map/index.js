@@ -94,13 +94,12 @@ export default class LeafletMap extends Component {
   }
 
   componentDidMount () {
-    const { mapCreation } = this.props;
+    const { mapCreation, dispatch } = this.props;
     const m = findDOMNode(this.mapRef.current);
     this.map = map(m, mapCreation);
 
     setupTileLayers(this.map);
 
-    const { dispatch } = this.props;
     setupControls(this.map, {
       canUndo: this.props.canUndo,
       canRedo: this.props.canRedo,
@@ -109,6 +108,7 @@ export default class LeafletMap extends Component {
     });
 
     this.fitWorld();
+    
     this.map.on('zoomend', this.onZoomEnd.bind(this));
     this.map.on('dragend', this.onMoveEnd.bind(this));
   }
@@ -161,7 +161,7 @@ export default class LeafletMap extends Component {
     switch (activeView) {
       case MAIN_VIEW:
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
-        this.toggleSegmentsAndLocations();
+        this.toggleTripsAndLocations();
         break;
         default:
           if (this.heatmapLayer) {
@@ -409,20 +409,12 @@ export default class LeafletMap extends Component {
     });
   }
 
-  toggleSegmentsAndLocations () {
+  toggleTripsAndLocations () {
     const { decorationLevel, detailLevel } = this.props;
     const currentZoom = this.map.getZoom();
 
     for (const [key, value] of Object.entries(this.canonical)) {
       if (currentZoom >= decorationLevel && currentZoom < detailLevel) {
-        value.layergroup.addTo(this.map);       
-      } else {
-        this.map.removeLayer(value.layergroup);
-      }
-    }
-
-    for (const [key, value] of Object.entries(this.segments)) {
-      if (currentZoom >= detailLevel) {
         value.layergroup.addTo(this.map);       
       } else {
         this.map.removeLayer(value.layergroup);
@@ -461,7 +453,7 @@ export default class LeafletMap extends Component {
           dispatch(canLoadMoreTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
         } 
          
-        this.toggleSegmentsAndLocations();
+        this.toggleTripsAndLocations();
         break;
     }
   }
@@ -475,7 +467,7 @@ export default class LeafletMap extends Component {
 
     if (currentZoom >= detailLevel && this.state.loadTrips) {
       dispatch(loadTripsInBounds(southWestBounds.lat, southWestBounds.lng, northEastBounds.lat, northEastBounds.lng, false));
-      this.toggleSegmentsAndLocations();
+      this.toggleTripsAndLocations();
       this.setState({loadTrips: false});
     } else if (currentZoom < decorationLevel && !this.state.loadTrips) {
       if (segments.size > 0) dispatch(clearTrips());
@@ -490,7 +482,7 @@ export default class LeafletMap extends Component {
       }
     }
     
-    this.toggleSegmentsAndLocations();
+    this.toggleTripsAndLocations();
   }
 
   onZoomTrackProcessing () {
