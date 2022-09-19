@@ -9,7 +9,7 @@ import {
     ADD_LOCATIONS
   } from ".";
   
-  import { setAppLoading } from './general';
+  import { setAppLoading, setSelectedDay } from './general';
   
   /**
    * Adds trips to global state to be displayed.
@@ -111,6 +111,7 @@ import {
       }
   
       dispatch(setAppLoading(true));
+      const selectedDay = getState().get('general').get('selectedDay');
   
       const addr = getState().get('general').get('server');
       return fetch(addr + '/trips?latMin=' + latMin + '&lonMin=' + lonMin + '&latMax=' + latMax + '&lonMax=' + lonMax + '&canonical=' + canonical, options)
@@ -120,6 +121,7 @@ import {
           dispatch(clearTrips());
           dispatch(addTrips(res.trips));
           dispatch(setAppLoading(false));
+          dispatch(setSelectedDay(selectedDay)); // updates selected day to display trip color on LIFE Viewer
         });
     }
   }

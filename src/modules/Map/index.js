@@ -161,7 +161,7 @@ export default class LeafletMap extends Component {
     switch (activeView) {
       case MAIN_VIEW:
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
-        this.toggleSegmentsAndLocations(prev);
+        this.toggleSegmentsAndLocations();
         break;
         default:
           if (this.heatmapLayer) {
@@ -391,11 +391,9 @@ export default class LeafletMap extends Component {
     }
   }
 
-  shouldHighlightTripVisibility (day, prev, trip) {
+  shouldHighlightTripVisibility (day, trip) {
     const { selectedDay } = this.props;
     let opacity ;
-    
-    if (selectedDay === prev) { return; }
 
     if (!selectedDay) {
       opacity = '1';
@@ -411,7 +409,7 @@ export default class LeafletMap extends Component {
     });
   }
 
-  toggleSegmentsAndLocations (prev) {
+  toggleSegmentsAndLocations () {
     const { decorationLevel, detailLevel } = this.props;
     const currentZoom = this.map.getZoom();
 
@@ -432,9 +430,7 @@ export default class LeafletMap extends Component {
     }
 
     for (const [key, value] of Object.entries(this.trips)) {
-      if (prev) {
-        this.shouldHighlightTripVisibility(key, prev.selectedDay, value);
-      } 
+      this.shouldHighlightTripVisibility(key, value);
       
       if (currentZoom >= detailLevel) {
         value.layergroup.addTo(this.map);       
@@ -471,7 +467,7 @@ export default class LeafletMap extends Component {
   }
 
   onZoomMainView () {
-    const { detailLevel, decorationLevel, dispatch, segments } = this.props;
+    const { detailLevel, decorationLevel, dispatch, selectedDay, segments } = this.props;
     const currentZoom = this.map.getZoom();
     const bounds = this.map.getBounds();
     const southWestBounds = bounds.getSouthWest();

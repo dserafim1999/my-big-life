@@ -208,6 +208,8 @@ export const setSelectedDay = (date) => {
       
       if(dayTrip) {
         color = dayTrip.color;
+      } else {
+        dispatch(addAlert('Zoom in to see day in full detail.', 'info', 2, 'zoom-in'));
       }
     }
     
