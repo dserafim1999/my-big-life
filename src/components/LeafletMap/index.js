@@ -23,6 +23,7 @@ const mapStateToProps = (state) => {
     canonicalTrips: state.get('trips').get('canonicalTrips'),
     canUndo: history.get('past').count() !== 0,
     canRedo: history.get('future').count() !== 0,
+    selectedDay: state.get('general').get('selectedDay'),
     segmentsArePoints: !!state.get('tracks').get('canonical')
   }
 }

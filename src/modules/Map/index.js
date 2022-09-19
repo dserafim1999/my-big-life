@@ -160,8 +160,8 @@ export default class LeafletMap extends Component {
     
     switch (activeView) {
       case MAIN_VIEW:
-        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips);        
-        this.toggleSegmentsAndLocations();
+        this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
+        this.toggleSegmentsAndLocations(prev);
         break;
         default:
           if (this.heatmapLayer) {
@@ -376,14 +376,34 @@ export default class LeafletMap extends Component {
     const hidden = allSegments.filterNot((s) => highlighted.has(s.get('id'))).map((s) => s.get('id'));
 
     if (highlighted.count() > 0) {
-      setOpacity(highlighted, 1);
-      setOpacity(hidden, 0.2);
+      setOpacity(highlighted, 1, true);
+      setOpacity(hidden, 0.1, false);
     } else {
       setOpacity(hidden, 1);
     }
   }
 
-  toggleSegmentsAndLocations () {
+  shouldHighlightTripVisibility (day, prev, trip) {
+    const { selectedDay } = this.props;
+    let opacity ;
+    
+    if (selectedDay === prev) { return; }
+
+    if (!selectedDay) {
+      opacity = '1';
+    } else if (day !== selectedDay.format("YYYY-MM-DD")) {
+      opacity = '0.1';
+    } else {
+      opacity = '1';
+      trip.layergroup.bringToFront();
+    }
+
+    trip.layergroup.setStyle({
+      opacity
+    });
+  }
+
+  toggleSegmentsAndLocations (prev) {
     const { decorationLevel, detailLevel } = this.props;
     const currentZoom = this.map.getZoom();
 
@@ -404,6 +424,10 @@ export default class LeafletMap extends Component {
     }
 
     for (const [key, value] of Object.entries(this.trips)) {
+      if (prev) {
+        this.shouldHighlightTripVisibility(key, prev.selectedDay, value);
+      } 
+      
       if (currentZoom >= detailLevel) {
         value.layergroup.addTo(this.map);       
       } else {
@@ -600,7 +624,6 @@ export default class LeafletMap extends Component {
   addTrip (id, color, trips, canonical) {
     const layergroup = L.geoJSON(trips, {style: {color: color}}).addTo(this.map);
     const date = moment(id);
-    const { activeView } = this.props;
     
     if (canonical) {
       this.canonical[id] = {layergroup};
