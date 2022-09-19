@@ -12,6 +12,8 @@ import { SectionBlock } from '../../components/Form';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
 import SearchIcon from '@mui/icons-material/Search';
+import { BoundsRecord } from '../../records';
+import { updateBounds } from '../../actions/map';
 
 const Search = ({ dispatch, query, isVisible, isQueryLoading }) => {
   if (!isVisible) return null;
@@ -23,6 +25,7 @@ const Search = ({ dispatch, query, isVisible, isQueryLoading }) => {
 
   useEffect( () => {
     dispatch(resetQuery());
+    dispatch(updateBounds(new BoundsRecord().setWithCoords(90, -200, -90, 200)));
   }, []);
 
   const addStay = () => {

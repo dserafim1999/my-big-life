@@ -208,6 +208,7 @@ import {
     .then((response) => response.json())
     .catch((e) => console.error(e))
     .then((res) => {
+      dispatch(clearTrips());
       dispatch(clearCanonicalTrips());
       dispatch(clearLocations());
       dispatch(addCanonicalTrips(res.trips));

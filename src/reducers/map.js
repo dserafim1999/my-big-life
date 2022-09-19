@@ -71,7 +71,8 @@ const INITIAL_STATE = new MapRecord();
 const map = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE_BOUNDS:
-      return state.set('bounds', action.bounds);
+      return state
+        .set('bounds', action.bounds);
     case SET_ZOOM_LEVEL:
       return state.set('zoom', action.zoom);
     case CENTER_MAP:

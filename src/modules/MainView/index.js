@@ -10,12 +10,14 @@ import { routeTo } from "../../reducers/utils";
 import { MAIN_VIEW, TRACK_PROCESSING } from "../../constants";
 import { copyDayToInput } from "../../actions/process";
 import { loadTripsAndLocations } from "../../actions/trips";
-import { highlightLocation } from "../../actions/map";
+import { highlightLocation, updateBounds } from "../../actions/map";
+import { BoundsRecord } from "../../records";
 
 const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading, selectedDayColor }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
         dispatch(getGlobalLife());
+        dispatch(updateBounds(new BoundsRecord().setWithCoords(90, -200, -90, 200)));
     }, []);
 
     let navigate = useNavigate();

@@ -131,7 +131,7 @@ const ACTION_REACTION = {
     'tracks/update_LIFE': updateTrackLIFE,
     'tracks/reset_history': resetHistory,
     'tracks/remove_track_for': removeTracksFor,
-    'tracks/clear_tracks': clearTracks,
+    'tracks/clear': clearTracks,
     'tracks/undo': undo,
     'tracks/redo': redo,
 }

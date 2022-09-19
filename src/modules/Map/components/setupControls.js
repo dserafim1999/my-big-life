@@ -12,12 +12,12 @@ export default (map, actions) => {
 
   const btns = new ControlButton([
     {
-      button: (<UndoIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit' }} className='clickable' />),
+      button: (<UndoIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit', verticalAlign: 'middle' }} className='clickable' />),
       title: 'Undo',
       onClick: actions.undo
     },
     {
-      button: (<RedoIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit' }} className='clickable' />),
+      button: (<RedoIcon style={{ font: 'normal normal normal 14px/1', fontSize: 'inherit', verticalAlign: 'middle' }} className='clickable' />),
       title: 'Redo',
       onClick: actions.redo
     }
