@@ -12,7 +12,7 @@ import { copyDayToInput } from "../../actions/process";
 import { loadTripsAndLocations } from "../../actions/trips";
 import { highlightLocation } from "../../actions/map";
 
-const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading }) => {
+const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading, selectedDayColor }) => {
     useEffect( () => {
         dispatch(loadTripsAndLocations());
         dispatch(getGlobalLife());
@@ -52,11 +52,12 @@ const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading 
     }
 
     return (
-        <Card width={400} height={500} verticalOffset={97} horizontalOffset={99}>
+        <Card width={400} height={500} verticalOffset={3} horizontalOffset={1}>
             <LIFEViewer 
                 life={globalLIFE}
                 header={true}
                 selectedDay={selectedDay}
+                selectedDayColor={selectedDayColor}
                 onDayClick={(day) => onDayClick(day)} 
                 onLocationClick={(loc) => onLocationClick(loc)}
                 onDeselectDay={onDeselectDay}
@@ -73,6 +74,7 @@ const mapStateToProps = (state) => {
     return {
         isVisible: state.get('general').get('isUIVisible'),
         selectedDay: state.get('general').get('selectedDay'),
+        selectedDayColor: state.get('general').get('selectedDayColor'),
         isLifeLoading: state.get('general').get('loading').has('life-viewer'),
         globalLIFE: state.get('general').get('LIFE')
     };

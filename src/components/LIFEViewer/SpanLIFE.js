@@ -48,8 +48,8 @@ const SpanLIFE = ({ span, isSelectedDay, onLocationClick }) => {
                 <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Time"], margin: '3px'}}>{ span.end }</span>
                 <b>:</b>
                 { addPlaces(span.place)}
-                { addOptionalSemantics("Semantic", semantics) }
                 { addOptionalSemantics("Tag", tags) }
+                { addOptionalSemantics("Semantic", semantics) }
             </p>
         </div>
   );

@@ -9,7 +9,7 @@ import SpanLIFE from "./SpanLIFE";
  * @constructor
  */
 
-const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick, lifeRef }) => {
+const DayLIFE = ({ day, color, isSelectedDay, onDayClick, onLocationClick, lifeRef }) => {
   const [isHover, setIsHover] = useState(false);
   let dayRef = useRef(null);
   let spans = [];
@@ -26,12 +26,12 @@ const DayLIFE = ({ day, isSelectedDay, onDayClick, onLocationClick, lifeRef }) =
       return {
         padding: '5px 0',
         backgroundColor: isHover ? '#fcfcfc' : '',
-        borderLeft: isHover ? '5px solid var(--main)' : '',
+        borderLeft: isHover ? ('5px solid ' + color) : '',
       }
     } else {
       return {
         padding: isSelectedDay ? '5px 0' : '',
-        borderLeft: isSelectedDay || isHover ? '5px solid var(--main)' : '',
+        borderLeft: isSelectedDay || isHover ? ('5px solid ' + (isSelectedDay ? color : 'lightgrey')) : '',
         opacity: isSelectedDay ? '1' : isHover ? '0.5' : '0.2'
       }
     }

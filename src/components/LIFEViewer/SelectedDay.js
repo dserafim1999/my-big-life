@@ -3,16 +3,14 @@ import IconButton from '../Buttons/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-import { SEMANTIC_STYLES } from "../../constants";
-
 /**
  * 
  * @constructor
  */
 
-const SelectedDay = ({ day, onDeleteDay, onEditDay }) => {
+const SelectedDay = ({ day, color, onDeleteDay, onEditDay }) => {
     return (
-        <div style={{width: '100%', borderRadius: '15px', color: 'white', fontSize: '20px', backgroundColor: 'lightgrey'}}>
+        <div style={{width: '100%', borderRadius: '15px', color: 'white', fontSize: '20px', backgroundColor: color}}>
             <div style={{ width: day ? '60%' : '100%', float:'left', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', height: '100%' }}>
                 { day ? day.format("DD/MM/YYYY") : 'No day selected' }
             </div>

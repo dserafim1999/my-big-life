@@ -108,7 +108,9 @@ const setGlobalLIFE = (state, action) => {
  * Updates current selected day
  */
  const setSelectedDay = (state, action) => {
-  return state.set('selectedDay', action.date);
+  return state
+    .set('selectedDay', action.date)
+    .set('selectedDayColor', action.color);
 }
 
 /** 
@@ -139,6 +141,7 @@ const initialState = Map({
   alerts: List(),
   loading: Set(),
   activeView: getActiveView(),
+  selectedDayColor: 'lightgrey',
   isUIVisible: true,
   isAppLoading: false,
   server: 'http://localhost:5000'

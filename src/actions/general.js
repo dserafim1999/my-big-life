@@ -199,10 +199,21 @@ export const toggleUI = (isVisible) => ({
  * @param {Date} date moment date object
  * @returns Action Object
  */
-export const setSelectedDay = (date) => ({
-  date,
-  type: UPDATE_SELECTED_DAY
-})
+export const setSelectedDay = (date) => {
+  return (dispatch, getState) => {
+    let color = 'lightgrey';
+
+    if (date) {
+      const dayTrip = getState().get('trips').get('trips').get(date.format("YYYY-MM-DD"));
+      
+      if(dayTrip) {
+        color = dayTrip.color;
+      }
+    }
+    
+    dispatch({ date, color, type: UPDATE_SELECTED_DAY })
+  }
+}
 
 /**
  * Fetches global LIFE JSON file

@@ -19,7 +19,7 @@ const loadingStyle = {
  * @constructor
  */
 
-const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, onDeleteDay, onEditDay, header, life, selectedDay, isLifeLoading }) => {
+const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, onDeleteDay, onEditDay, header, life, selectedDay, selectedDayColor, isLifeLoading }) => {
   var lifeRef = useRef(null);
 
   const buildLIFERepresentation = (lifeJSON, onDayClick, onLocationClick) => {
@@ -27,9 +27,9 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
     for (let day of lifeJSON.days) {
       if (selectedDay) {
         const date = moment(day.date, "--YYYY_MM_DD");
-        days.push(<DayLIFE day={day} isSelectedDay={date.isSame(selectedDay)} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date} lifeRef={lifeRef}/>); 
+        days.push(<DayLIFE day={day} color={selectedDayColor} isSelectedDay={date.isSame(selectedDay)} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date} lifeRef={lifeRef}/>); 
       } else {
-        days.push(<DayLIFE day={day} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date}/>); 
+        days.push(<DayLIFE day={day} color={selectedDayColor} onDayClick={onDayClick} onLocationClick={onLocationClick} key={day.date}/>); 
       }
     }
 
@@ -39,7 +39,7 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
   const buildHeaderComponent = () => {
     return header && (
       <div style={{ width: '100%', display: 'flex', paddingBottom: '5px'}}>
-        <SelectedDay day={selectedDay} onEditDay={onEditDay} onDeleteDay={onDeleteDay}/>
+        <SelectedDay day={selectedDay} color={selectedDayColor} onEditDay={onEditDay} onDeleteDay={onDeleteDay}/>
         <div style={{ display: 'flex', paddingLeft: '5px' }}>
           <IconButton title={'Search Day'} onClick={onSearchDay}>    
               <SearchDayIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
