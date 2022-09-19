@@ -220,9 +220,17 @@ export default class LeafletMap extends Component {
   }
 
   shouldUpdateCenter (current, previous) {
+    if (this.locationHighlight) {
+      this.locationHighlight.remove(this.map);
+      this.locationHighlight = null;
+    }
     if (current !== previous) {
       this.map.setView({ lat: current.lat, lng: current.lon });
+      const icon = createPointIcon(null, null, 'highlight-point', [19, 19]);
+      this.locationHighlight = createMarker({ lat: current.lat, lng: current.lon}, icon);
+      this.locationHighlight.addTo(this.map);
     }
+
   }
 
   shouldUpdateSegments (segments, previous) {

@@ -77,9 +77,14 @@ import { BoundsRecord } from '../records';
  export const highlightLocation = (location) => {
   return (dispatch, getState) => {
     const loc = getState().get('trips').get('locations').get(location);
+    const zoom = getState().get('map').get('zoom');
     
     dispatch(centerMap(loc.lat, loc.lon));
-    dispatch(setZoomLevel(MAP_DETAIL_ZOOM_LEVEL - 1));
+    if (!zoom || zoom <= MAP_DETAIL_ZOOM_LEVEL) {
+      // loads location without entering trip loading zoom level
+      dispatch(setZoomLevel(MAP_DETAIL_ZOOM_LEVEL - 0.5));
+    } 
+    
   }
  }
 

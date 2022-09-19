@@ -72,10 +72,10 @@ const map = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE_BOUNDS:
       return state.set('bounds', action.bounds);
-    case CENTER_MAP:
-      return state.set('center', { lat: action.lat, lon: action.lon });
     case SET_ZOOM_LEVEL:
       return state.set('zoom', action.zoom);
+    case CENTER_MAP:
+      return state.set('center', { lat: action.lat, lon: action.lon });
     case HIGHLIGHT_SEGMENT:
     case DEHIGHLIGHT_SEGMENT:
       return changeSegmentHighlight(state, action);
