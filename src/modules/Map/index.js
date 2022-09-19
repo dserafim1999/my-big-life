@@ -83,12 +83,10 @@ export default class LeafletMap extends Component {
   }
 
   fitBounds (where) {
-    const { dispatch } = this.props;
     this.map.fitBounds(where, {
       maxZoom: this.map.getBoundsZoom(where, true),
       ...this.getBoundsObj()
     });
-    dispatch(setZoomLevel(this.map.getBoundsZoom(where, true)))
   }
 
   fitWorld () {
@@ -216,7 +214,7 @@ export default class LeafletMap extends Component {
   }
 
   shouldUpdateZoom (current, previous) {
-    if (current !== previous || this.map.getZoom() !== current) {
+    if (current !== previous) {
       this.map.setZoom(current);
     }
   }

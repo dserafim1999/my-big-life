@@ -54,21 +54,25 @@ const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading,
     }
 
     return (
-        <Card width={400} height={500} verticalOffset={3} horizontalOffset={1}>
-            <LIFEViewer 
-                life={globalLIFE}
-                header={true}
-                selectedDay={selectedDay}
-                selectedDayColor={selectedDayColor}
-                onDayClick={(day) => onDayClick(day)} 
-                onLocationClick={(loc) => onLocationClick(loc)}
-                onDeselectDay={onDeselectDay}
-                onSearchDay={onSearchDay}
-                onEditDay={onEditDay}
-                onDeleteDay={onDeleteDay}
-                isLifeLoading={isLifeLoading}
-            />
-        </Card>
+        <>
+        { globalLIFE && globalLIFE.days.length > 0 && (
+            <Card width={400} height={500} verticalOffset={3} horizontalOffset={1}>
+                <LIFEViewer 
+                    life={globalLIFE}
+                    header={true}
+                    selectedDay={selectedDay}
+                    selectedDayColor={selectedDayColor}
+                    onDayClick={(day) => onDayClick(day)} 
+                    onLocationClick={(loc) => onLocationClick(loc)}
+                    onDeselectDay={onDeselectDay}
+                    onSearchDay={onSearchDay}
+                    onEditDay={onEditDay}
+                    onDeleteDay={onDeleteDay}
+                    isLifeLoading={isLifeLoading}
+                    />
+            </Card>
+        )}
+        </>
     );
 }
 

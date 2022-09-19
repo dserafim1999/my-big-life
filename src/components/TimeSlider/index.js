@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Date from 'moment';
 import ReactSlider from 'react-slider';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 /**
  * Time Range Slider to filter dates.
