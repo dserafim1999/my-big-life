@@ -384,7 +384,7 @@ export const getBulkProcessStatus = () => {
 
 var timeout;
 /** Fetches bulk processing progress status until operation is complete */
-async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, force) {
+async function getBulkProgressStatus(url, setProgress, setIsBulkProcessing, force) {  
   let progress;
   
   const options = {
