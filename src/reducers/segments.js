@@ -197,7 +197,8 @@ const splitSegment = (state, action) => {
 
     
     state = state.updateIn(['segments', id, 'points'], (points) => {
-      return points.slice(0, action.index + 1);
+      //return points.slice(0, action.index + 1);
+      return points.slice(0, action.index);
     })
     
     state = updateSegment(state, id);

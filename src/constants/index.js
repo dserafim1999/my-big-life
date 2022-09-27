@@ -46,7 +46,7 @@ export const SEMANTIC_COLORS = {
   YELLOW: '#b58900',
   ORANGE: '#d4683b',
   RED: '#dc322f',
-  MAGENTA: '#dc322f',
+  MAGENTA: '#a32e2c',
   VIOLET: '#54589c',
   BLUE: '#4d8cb8',
   CYAN: '#71a8ad',
@@ -93,6 +93,6 @@ export const SEMANTIC_STYLES = {
     color: SEMANTIC_COLORS.YELLOW
   },
   'Semantic': {
-    color: SEMANTIC_COLORS.YELLOW
+    color: SEMANTIC_COLORS.MAGENTA
   }
 }
