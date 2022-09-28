@@ -135,7 +135,6 @@ const QueryTimeline = ({ dispatch, query }) => {
     }
 
     const onSubmit = () => {
-        console.log(...query.toArray())
         dispatch(executeQuery(
                 {
                     "data": [

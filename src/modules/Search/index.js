@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 
 import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import { addQueryStay, executeQuery, resetQuery } from '../../actions/queries';
-import SearchStay from './SearchStay';
+import { executeQuery } from '../../actions/queries';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
 import SearchIcon from '@mui/icons-material/Search';
