@@ -127,7 +127,7 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
             }
           </SectionBlock>
 
-          <SectionBlock name='Location sugestions'>
+          <SectionBlock name='Location suggestions'>
             <ToggleField title='Use' onChange={(e) => setState({...state, location: {...state.location, use: e.target.value}})} checked={config.location.use} />
             { (state.location ? state.location.use : config.location.use) && 
               (<>
