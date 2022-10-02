@@ -138,14 +138,13 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
                     <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for place suggestions in LIFE file.
                   </span>
                 } />
-                <TextField title='Google Places key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key}/>
+                <TextField title='Google Places API Key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key}/>
                 <ToggleField title='Use Foursquare Location API' onChange={(e) => setState({...state, location: {...state.location, use_foursquare: e.target.value}})} checked={config.location.use_foursquare} help={
                   <span>
                     <a href='https://developer.foursquare.com/docs/places-api-overview/'>Foursquare Places API key</a> to query for place suggestions in LIFE file.
                   </span>
                 } />
-                <TextField title='Foursquare Places Client ID' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_id: value}})} defaultValue={config.location.foursquare_client_id}/>
-                <TextField title='Foursquare Places Client Secret' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_secret: value}})} defaultValue={config.location.foursquare_client_secret}/>
+                <TextField title='Foursquare Places API Key' onChange={(value) => setState({...state, location: {...state.location, foursquare_key: value}})} defaultValue={config.location.foursquare_key}/>
               </>)
             }
           </SectionBlock>
