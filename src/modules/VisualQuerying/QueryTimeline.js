@@ -36,7 +36,20 @@ const QueryTimeline = ({ dispatch, query }) => {
         const handleResize = () => {
             setFullWidth(window.innerWidth * timelineWidthPercentage);
         }
-        window.addEventListener('resize', handleResize)
+        window.addEventListener('resize', handleResize);
+
+        const keyListener = event => {
+            if (event.code === "Enter" || event.code === "NumpadEnter") {
+              event.preventDefault();
+              onSubmit();
+            }
+          };
+
+        document.addEventListener("keydown", keyListener);
+        return () => {
+            document.removeEventListener("keydown", keyListener);
+            window.removeEventListener('resize', handleResize);
+        };
     });
     
     const onDoubleClick = (e) => {

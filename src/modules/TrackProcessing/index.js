@@ -9,7 +9,7 @@ import DownloadingIcon from '@mui/icons-material/Downloading';
 
 import { connect } from 'react-redux';
 import { addAlert } from '../../actions/general';
-import { toggleRemainingTracks } from '../../actions/process';
+import { redo, toggleRemainingTracks, undo } from '../../actions/process';
 import { clearTracks, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';
@@ -44,12 +44,26 @@ class TrackProcessing extends Component {
     componentDidMount() {
         this.dispatch(clearTracks());
         this.dispatch(requestServerState());
+        document.addEventListener("keydown", (e) => this.keyListener(e, this.dispatch));
     }
 
     componentWillUnmount() {
         this.dispatch(clearTracks());
         this.dispatch(resetHistory());
         this.dispatch(updateBounds(this.bounds));
+        document.removeEventListener("keydown", (e) => this.keyListener(e, this.dispatch));
+    }
+
+    keyListener (event, dispatch) {
+        var zKey = 90, yKey = 89;
+        if(event.ctrlKey && event.which === zKey) {
+            event.preventDefault();
+            dispatch(undo());
+        }
+        if(event.ctrlKey && event.which === yKey) {
+            event.preventDefault();
+            dispatch(redo());
+        }
     }
 
     onPrevious = (e, modifier) => {
