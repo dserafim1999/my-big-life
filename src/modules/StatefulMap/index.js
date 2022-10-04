@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import PerfMap from "../../modules/Map";
+import Map from "../../components/Map";
 
 /**
  * Container that sets up data for the Map module
@@ -28,6 +28,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-const LeafletMap = connect(mapStateToProps)(PerfMap);
+const StatefulMap = connect(mapStateToProps)(Map);
 
-export default LeafletMap;
+export default StatefulMap;

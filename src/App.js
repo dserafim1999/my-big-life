@@ -3,7 +3,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import MainContainer from './components/MainContainer';
 import Dropzone from './components/Dropzone';
 import MenuBar from './components/MenuBar';
 
@@ -16,8 +15,10 @@ import { ModuleRoutes } from "./modules/ModuleRoutes";
 import loadFiles from "./utils/loadFiles";
 import { TRACK_PROCESSING } from "./constants";
 import LoadingOverlay from "./components/Overlay/LoadingOverlay";
+import AlertBox from "./components/AlertBox";
+import StatefulMap from "./modules/StatefulMap";
 
-let App = ({ showConfig, view, canDropFiles, isAppLoading, dispatch }) => {
+let App = ({ view, canDropFiles, isAppLoading, dispatch }) => {
   let metaDown = false;
 
   const onDrop = (e) => {
@@ -88,12 +89,10 @@ let App = ({ showConfig, view, canDropFiles, isAppLoading, dispatch }) => {
             <Dropzone onDrop={onDrop} canDropFiles={canDropFiles}>
               { isAppLoading && <LoadingOverlay/>}
               <MenuBar dispatch={dispatch}/>
-              <MainContainer
-                onKeyUp={keyHandler}
-                onKeyDown={downKeyHandler}
-                showConfig={showConfig}
-                view={view}
-              />
+              <div id='container' onKeyUp={keyHandler} onKeyDown={downKeyHandler} > 
+                <AlertBox/>
+                <StatefulMap/>
+              </div>
             </Dropzone>
           </Router>
     </LocalizationProvider>

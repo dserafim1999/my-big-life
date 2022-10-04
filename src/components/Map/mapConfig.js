@@ -2,7 +2,7 @@ import React from "react";
 
 import { MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING } from "../../constants";
 import { getActiveRoute } from "../../utils"
-import { getView } from "../ModuleRoutes"
+import { getView } from "../../modules/ModuleRoutes"
 import { createPointIcon, createMarker, createLocationMarker } from './utils';
 
 import StopIcon from '@mui/icons-material/Stop';
