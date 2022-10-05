@@ -141,7 +141,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
               style={{color: 'white'}}
               placeholder="location"
               onChange={(e) => setQuery(
-                {...query, "location": e.target.value}
+                {...query, "location": e.target.value.toLowerCase()}
             )}/>
             <QueryNumberPicker
                   style={{color: 'white'}}
