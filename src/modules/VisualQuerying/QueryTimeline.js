@@ -1,5 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DateIcon from '@mui/icons-material/DateRange';
 import { IconButton } from "@mui/material";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -27,6 +28,14 @@ const QueryTimeline = ({ dispatch, query }) => {
     const [dateOpen, setIsDateOpen] = useState(false);
     const [date, setDate] = useState("--/--/----");
     const [fullWidth, setFullWidth] = useState(window.innerWidth * timelineWidthPercentage);
+
+    const calendarIcon = (
+        <SimpleButton title='Select Date' tooltipPlacement="top" style={{border: 'none'}}>
+            <IconButton>
+                <DateIcon></DateIcon>
+            </IconButton>
+        </SimpleButton>
+    );
 
     useEffect( () => {
         onClearQuery();
@@ -201,7 +210,7 @@ const QueryTimeline = ({ dispatch, query }) => {
                                 onChange={(newValue) => onChangeDate(newValue)}
                                 onClick={() => setIsDateOpen(true)}
                                 onClose={(clear) => onCloseDate(clear)}
-                                visual={true}
+                                calendarIcon={calendarIcon}
                             />
                         </div>
                         { TimelineComponents() }

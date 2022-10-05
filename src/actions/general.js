@@ -197,7 +197,7 @@ export const toggleUI = (isVisible) => ({
  * Update current selected day
  * 
  * @action
- * @param {Date} date moment date object
+ * @param {Date | boolean} date moment date object
  * @returns Action Object
  */
 export const setSelectedDay = (date) => {
@@ -205,15 +205,23 @@ export const setSelectedDay = (date) => {
     let color = 'lightgrey';
 
     if (date) {
-      const dayTrip = getState().get('trips').get('trips').get(date.format("YYYY-MM-DD"));
-      const zoom = getState().get('map').get('zoom');
-      
-      if(dayTrip) {
-        color = dayTrip.color;
-      } 
-      if (!zoom || (zoom &&  zoom < MAP_DETAIL_ZOOM_LEVEL)) {
-        dispatch(addAlert('Zoom in to see day in full detail.', 'info', 2, 'zoom-in'));
+      const lifeDay = getState().get('general').get('LIFE').days.find((day) => day.date === date.format("--YYYY_MM_DD"));
+
+      if (lifeDay === undefined) {
+        dispatch(addAlert('Cannot find day in database.', 'error', 2, 'invalid-day'));
+        date = false;
+      } else {
+        const dayTrip = getState().get('trips').get('trips').get(date.format("YYYY-MM-DD"));
+        const zoom = getState().get('map').get('zoom');
+        
+        if(dayTrip) {
+          color = dayTrip.color;
+        } 
+        if (!zoom || (zoom &&  zoom < MAP_DETAIL_ZOOM_LEVEL)) {
+          dispatch(addAlert('Zoom in to see day in full detail.', 'info', 2, 'zoom-in'));
+        }
       }
+
     }
     
     dispatch({ date, color, type: UPDATE_SELECTED_DAY })

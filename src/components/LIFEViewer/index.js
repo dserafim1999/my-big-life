@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react';
+import React, { Component, useRef, useState } from 'react';
 
 import moment from 'moment';
 import DayLIFE from './DayLIFE';
@@ -9,6 +9,7 @@ import SelectedDay from './SelectedDay';
 import MetaLIFE from './MetaLIFE';
 import PropTypes from 'prop-types';
 import Date from 'moment';
+import QueryDatePicker from '../Form/QueryDatePicker';
 
 const loadingStyle = {
   position: 'absolute', 
@@ -36,7 +37,12 @@ const loadingStyle = {
 
 const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, onDeleteDay, onEditDay, header, life, selectedDay, selectedDayColor, isLifeLoading }) => {
   var lifeRef = useRef(null);
-  console.log(life)
+
+  const calendarIcon = (
+    <IconButton title='Select Date' tooltipPlacement="bottom" style={{padding: '4px'}}>
+          <SearchDayIcon sx={{padding: '2px'}}/>
+    </IconButton>
+  );
 
   const buildLIFERepresentation = (lifeJSON, onDayClick, onLocationClick) => {
     let days = [];
@@ -63,14 +69,31 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
     return React.createElement("div", {}, [meta, days]);
   }
 
+  const onCloseDate = (clear) => {
+    if (clear) {
+      setDate("--/--/----");
+    }
+
+    setIsDateOpen(false);
+  }
+
+  const [dateOpen, setIsDateOpen] = useState(false);
+  const [date, setDate] = useState("--/--/----");
+
   const buildHeaderComponent = () => {
     return header && (
       <div style={{ width: '100%', display: 'flex', paddingBottom: '5px'}}>
         <SelectedDay day={selectedDay} color={selectedDayColor} onEditDay={onEditDay} onDeleteDay={onDeleteDay}/>
         <div style={{ display: 'flex', paddingLeft: '5px' }}>
-          {/* <IconButton title={'Search Day'} onClick={onSearchDay}>    
-              <SearchDayIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
-          </IconButton> */}
+          <QueryDatePicker
+            open={dateOpen}
+            value={date}
+            onChange={(newValue) => onSearchDay(moment(newValue, "DD/MM/YYYY"))}
+            onClick={() => setIsDateOpen(true)}
+            onClose={(clear) => onCloseDate(clear)}
+            calendarIcon={calendarIcon}
+            style={{width: "34px"}}
+          />
           <IconButton title={'Deselect Day'} onClick={onDeselectDay}>    
               <DeselectDayIcon className={'absolute-icon-center'} sx={{ fontSize: 20 }}/>
           </IconButton>

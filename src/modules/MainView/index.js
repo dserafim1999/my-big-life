@@ -37,8 +37,8 @@ const MainView = ({ dispatch, isVisible, selectedDay, globalLIFE, isLifeLoading,
         dispatch(setSelectedDay(false));
     }
 
-    const onSearchDay = () => {
-        dispatch(setSelectedDay(false));
+    const onSearchDay = (day) => {
+        dispatch(setSelectedDay(day));
     }
 
     const onDayClick = (day) => {
