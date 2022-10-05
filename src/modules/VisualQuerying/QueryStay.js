@@ -199,7 +199,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                     {...query, "temporalStartRange": ""}
                   )}
                   label="Temporal Start Range"
-                  placeholder="start range"
+                  placeholder="±0min"
                   suffix="min"
                   initialOperator="±"
                   style={{fontSize: '10px'}}
@@ -213,7 +213,7 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
                     {...query, "temporalEndRange": ""}
                   )}
                   label="Temporal End Range"
-                  placeholder="end range"
+                  placeholder="±0min"
                   suffix="min"
                   initialOperator="±"
                   style={{fontSize: '10px'}}
