@@ -39,7 +39,7 @@ const LIFEViewer = ({ onDayClick, onLocationClick, onSearchDay, onDeselectDay, o
   var lifeRef = useRef(null);
 
   const calendarIcon = (
-    <IconButton title='Select Date' tooltipPlacement="bottom" style={{padding: '4px'}}>
+    <IconButton title='Search Day' tooltipPlacement="bottom" style={{padding: '4px'}}>
           <SearchDayIcon sx={{padding: '2px'}}/>
     </IconButton>
   );

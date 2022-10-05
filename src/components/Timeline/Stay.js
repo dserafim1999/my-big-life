@@ -1,6 +1,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
+import moment, { Date } from "moment";
 
 import { Tooltip } from "@mui/material";
 
@@ -24,16 +25,18 @@ const legendStyle = {
  * See `Timeline`
  *  
  * @constructor
- * @param {number} start Start position  
+ * @param {number} startPos Start position  
+ * @param {Date} start Start time  
+ * @param {Date} end End time  
  * @param {number} width Route width
  * @param {number} opacity Route color opacity  
  * @param {string} legend Stay location name
  * @param {string} color Hex code for Stay's color  
  */
-const Stay = ({ start, width, opacity, legend, color }) => {
+const Stay = ({ startPos, start, end, width, opacity, legend, color }) => {
     const stayStyle =  {
         position:"absolute",
-        left: start, 
+        left: startPos, 
         backgroundColor: color, 
         width: width, 
         height: "40px",
@@ -46,8 +49,16 @@ const Stay = ({ start, width, opacity, legend, color }) => {
         return legend !== undefined && legend !== "";
     }
 
+    const getLegend = () => {
+        if (legend) {
+            return <div><b>{legend}</b><br />{moment(start).format("HH:mm")} -> {moment(end).format("HH:mm")}</div>
+        } else {
+            return <div><i>Expand group to see results.</i></div>
+        }
+    }
+
     return (
-        <Tooltip title={legend} style={{display: hasLegend() ? "block" : "none"}}>
+        <Tooltip title={getLegend()} style={{display: hasLegend() ? "block" : "none"}}>
             <div style={stayStyle}>
                 { legend &&
                     <span style={legendStyle}>{legend}</span>
@@ -59,7 +70,11 @@ const Stay = ({ start, width, opacity, legend, color }) => {
 
 Stay.propTypes = {
     /** Start position */
-    start: PropTypes.number,
+    startPos: PropTypes.number,
+    /** Start time */
+    start: PropTypes.instanceOf(Date),
+    /** End time */
+    end: PropTypes.instanceOf(Date),
     /** Route width */
     width: PropTypes.number,
     /** Route color opacity */
