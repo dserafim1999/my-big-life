@@ -21,7 +21,6 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
     useEffect( () => {
       dispatch(getConfig());
       dispatch(getBulkProcessStatus());
-      dispatch(updateBounds(new BoundsRecord().setWithCoords(90, -200, -90, 200)));
    }, []);
 
    const [state, setState] = useState({...config, address: address});

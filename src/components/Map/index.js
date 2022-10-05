@@ -147,14 +147,14 @@ export default class LeafletMap extends Component {
     
     switch (activeView) {
       case MAIN_VIEW:
+        if (this.heatmapLayer) this.map.removeLayer(this.heatmapLayer);        
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
         this.toggleTripsAndLocations();
         break;
-        default:
-          if (this.heatmapLayer) {
-            this.map.removeLayer(this.heatmapLayer);        
-          }
-        }
+      default:
+        if (this.heatmapLayer) this.map.removeLayer(this.heatmapLayer);        
+    }
+        
   }
 
   shouldUpdateSegmentsArePoints (current, previous) {
@@ -173,7 +173,7 @@ export default class LeafletMap extends Component {
     const currentZoom = this.map.getZoom();
     const { detailLevel } = this.props;
 
-    if (current !== previous && currentZoom < detailLevel) {
+    if (currentZoom < detailLevel) {
       const _points = [];
       
       // Add all points from canonical trips to array. geoJSON coordinates are defined by (longitude, latitude)
