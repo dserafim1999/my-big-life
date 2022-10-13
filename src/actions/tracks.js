@@ -10,7 +10,7 @@ import {
 import { Set } from 'immutable';
 import { fitSegments } from './map';
 import { toggleSegmentVisibility } from "./segments";
-import saveData from "../modules/TrackProcessing/saveData";
+import saveData from "../utils/saveData";
 
 /**
  * Adds track to global state.

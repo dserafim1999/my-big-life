@@ -1,21 +1,30 @@
+import React, { useEffect, useRef, useState } from "react";
+
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DateIcon from '@mui/icons-material/DateRange';
-import { IconButton } from "@mui/material";
-
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from 'react-redux';
 
 import Card from "../../components/Card";
 import QueryStay from "./QueryStay";
 import QueryRoute from './QueryRoute';
 import QueryDatePicker from "../../components/Form/QueryDatePicker";
-import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
-
-import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
 import AsyncButton from '../../components/Buttons/AsyncButton';
 import useDraggableScroll from 'use-draggable-scroll';
 import SimpleButton from '../../components/Buttons/SimpleButton';
+import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
+import { IconButton } from "@mui/material";
+import { connect } from 'react-redux';
+import { DEFAULT_ROUTE, DEFAULT_STAY } from '../../constants';
+import { addQueryStayAndRoute, addQueryStay, executeQuery, resetQuery, removeQueryStay } from '../../actions/queries';
+
+/**
+ * Timeline where visual queries are sketched
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {ImmutablePropTypes.List} query Current query state
+ */
 
 const QueryTimeline = ({ dispatch, query }) => {
     const timelineWidthPercentage = 0.9; // sets percentage of width card will occupy
@@ -238,6 +247,13 @@ const QueryTimeline = ({ dispatch, query }) => {
 
 const mapStateToProps = (state) => { return {
     query: state.get('queries').get('query')
-}; }
+}}
+
+QueryTimeline.propTypes = {
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+    /** Current query state */
+    query: ImmutablePropTypes.listOf(PropTypes.object)
+}
   
 export default connect(mapStateToProps)(QueryTimeline);

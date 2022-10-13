@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { saveConfig, getConfig, updateServer } from '../../actions/general';
 
 import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
-import { bulkProcess, getBulkProcessStatus, rawBulkProcess } from '../../actions/process';
-
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import SaveIcon from '@mui/icons-material/Save';
-import { BoundsRecord } from '../../records';
-import { updateBounds } from '../../actions/map';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { saveConfig, getConfig, updateServer } from '../../actions/general';
+import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
+import { bulkProcess, getBulkProcessStatus } from '../../actions/process';
+
+/**
+ * Contains the logic and features for the Settings View
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {string} address Server address 
+ * @param {object} config Current configurations state 
+ * @param {boolean} isLoading Whether configurations file is being loaded from server
+ * @param {boolean} isVisible Determines if view UI components are visible
+ * @param {boolean} isBulkProcessing Whether tracks are currently being uploaded in bulk
+ * @param {number} bulkProgress Percentage of tracks that have already been processed (when bulk processing)
+ */
 
 const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProcessing, bulkProgress }) => {
     if (!isVisible) return null;
-    
     
     const bulkClassName = 'is-blue' + (isBulkProcessing ? ' is-loading' : '');
 
@@ -202,6 +212,22 @@ const mapStateToProps = (state) => {
   };
 }
 
-const CPane = connect(mapStateToProps)(Settings);
+Settings.propTypes ={
+  /** Redux store action dispatcher*/
+  dispatch: PropTypes.func, 
+  /** Server address */
+  address: PropTypes.string, 
+  /** Current configurations state */
+  config: PropTypes.object, 
+  /** Whether configurations file is being loaded from server */
+  isLoading: PropTypes.bool, 
+  /** Determines if view UI components are visible */
+  isVisible: PropTypes.bool, 
+  /** Whether tracks are currently being uploaded in bulk */
+  isBulkProcessing: PropTypes.bool, 
+  /** Percentage of tracks that have already been processed (when bulk processing) */
+  bulkProgress: PropTypes.number 
+}
 
-export default CPane;
+export default connect(mapStateToProps)(Settings);
+

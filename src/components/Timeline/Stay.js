@@ -1,7 +1,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
-import moment, { Date } from "moment";
+import moment from "moment";
 
 import { Tooltip } from "@mui/material";
 
@@ -26,8 +26,8 @@ const legendStyle = {
  *  
  * @constructor
  * @param {number} startPos Start position  
- * @param {Date} start Start time  
- * @param {Date} end End time  
+ * @param {string} start Start time  
+ * @param {string} end End time  
  * @param {number} width Route width
  * @param {number} opacity Route color opacity  
  * @param {string} legend Stay location name
@@ -72,9 +72,9 @@ Stay.propTypes = {
     /** Start position */
     startPos: PropTypes.number,
     /** Start time */
-    start: PropTypes.instanceOf(Date),
+    start: PropTypes.string,
     /** End time */
-    end: PropTypes.instanceOf(Date),
+    end: PropTypes.string,
     /** Route width */
     width: PropTypes.number,
     /** Route color opacity */

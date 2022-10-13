@@ -1,8 +1,4 @@
-export const DONE_STAGE = -1;
-export const PREVIEW_STAGE = 0;
-export const ADJUST_STAGE = 1;
-export const ANNOTATE_STAGE = 2;
-
+/** View identifiers */
 export const MAIN_VIEW = 0;
 export const SEARCH = 1;
 export const LIFE_EDITOR = 2;
@@ -10,9 +6,15 @@ export const TRACK_PROCESSING = 3;
 export const VISUAL_QUERIES = 4;
 export const CONFIG_PANEL = 5;
 
+/** Processing steps */
+export const DONE_STAGE = -1;
+export const PREVIEW_STAGE = 0;
+export const ADJUST_STAGE = 1;
+export const ANNOTATE_STAGE = 2;
+
+/** Map properties */
 export const MAP_DECORATION_ZOOM_LEVEL = 10;
 export const MAP_DETAIL_ZOOM_LEVEL = 14;
-
 export const MAP_STATES = {
   NORMAL: 0,
   EDITING: 1,
@@ -21,6 +23,7 @@ export const MAP_STATES = {
   POINT_DETAILS: 4
 };
 
+/** Visula Queries default components */
 export const DEFAULT_ROUTE = {
   route: "",
   duration:"",
@@ -29,7 +32,6 @@ export const DEFAULT_ROUTE = {
   temporalStartRange: "",
   temporalEndRange: ""
 };
-
 export const DEFAULT_STAY = {
   location: "",
   spatialRange: "",
@@ -40,8 +42,7 @@ export const DEFAULT_STAY = {
   temporalStartRange: ""
 };
 
-export const MINUTES_IN_DAY = 24 * 60;
-
+/** Semantic Viewer/Editor colors */
 export const SEMANTIC_COLORS = {
   YELLOW: '#b58900',
   ORANGE: '#d4683b',
@@ -60,7 +61,6 @@ export const SEMANTIC_COLORS = {
   L92: '#eee8d5',
   L97: '#fdf6e3'
 }
-
 export const SEMANTIC_STYLES = {
   '_': {
     color: '#268bd2',
@@ -96,3 +96,7 @@ export const SEMANTIC_STYLES = {
     color: SEMANTIC_COLORS.MAGENTA
   }
 }
+
+/** Utils */
+export const MINUTES_IN_DAY = 24 * 60;
+export const POINTS_PER_KB = 7.2;

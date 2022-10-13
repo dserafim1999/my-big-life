@@ -4,6 +4,7 @@ import moment from "moment";
 import Timeline from "../../components/Timeline";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import PropTypes from 'prop-types';
 
 import { groupBy } from "../../utils";
 import { IconButton } from "@mui/material";
@@ -19,7 +20,14 @@ const dateStyle = {
     fontSize: "12px",
 }
 
-const QueryResult = ({ result, querySize, dispatch }) => {
+/**
+ * Displays a query result (or group of results) on an draggable and zoomeable timeline
+ * 
+ * @param {object} result Query result data
+ * @param {number} querySize Amount of query components (stays and routes) present in query 
+ */
+
+const QueryResult = ({ result, querySize }) => {
     const [seeMore, setSeeMore] = useState(false);
     const height = 75;
     const multipleColor = "#738492", singleColor = "#821d1d";
@@ -141,5 +149,12 @@ const QueryResult = ({ result, querySize, dispatch }) => {
     )
 };
   
+QueryResult.propTypes = {
+    /** Query result data */
+    result: PropTypes.object, 
+    /** Amount of query components (stays and routes) present in query  */
+    querySize: PropTypes.number 
+}
+
 export default QueryResult;
 

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+
 import { Rnd } from "react-rnd";
 import { updateQueryBlock } from "../../actions/queries";
+
+import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
 import QueryTimePicker from "../../components/Form/QueryTimePicker";
 import QueryNumberPicker from "../../components/Form/QueryNumberPicker";
@@ -12,6 +15,18 @@ const deleteButtonStyle = {
   color: "red",
   cursor: "pointer"
 }
+
+/**
+ * Stay representation on Query Timeline
+ * 
+ * @param {number} id Stay id
+ * @param {number} maxHeight Maximum height for Stay box
+ * @param {number} width Width for Stay box
+ * @param {object} queryState Current query state
+ * @param {function} onDragStay Behaviour when Stay box is dragged
+ * @param {function} onRemove Behaviour when Stay box is removed
+ * @param {function} dispatch Redux store action dispatcher
+ */
 
 const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, dispatch}) => {
     const minWidth = 125;
@@ -224,5 +239,21 @@ const QueryStay = ({id, maxHeight, width, queryState, onDragStay, onRemove, disp
     );
 };
 
+QueryStay.propTypes = {
+  /** Stay id */
+  id: PropTypes.number,
+  /** Maximum height for Stay box */
+  maxHeight: PropTypes.number, 
+  /** Width for Stay box */
+  width: PropTypes.number, 
+  /** Current query state */
+  queryState: PropTypes.object, 
+  /** Behaviour when Stay box is dragged */
+  onDragStay: PropTypes.func,   
+  /** Behaviour when Stay box is removed */
+  onRemove: PropTypes.func,   
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func   
+}
 
 export default QueryStay;

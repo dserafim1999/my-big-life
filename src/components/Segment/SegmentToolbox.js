@@ -3,7 +3,6 @@ import React from 'react';
 import TimeSlider from '../TimeSlider';
 import IconButton from '../Buttons/IconButton';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Date from 'moment';
 
 import {

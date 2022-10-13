@@ -1,9 +1,9 @@
 import React from 'react';
-import AsyncButton from '../../components/Buttons/AsyncButton';
 
+import AsyncButton from '../../components/Buttons/AsyncButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
+import PropTypes from 'prop-types';
 
 /**
  * Buttons used to navigate the Change Day menu in the Track Processing Module
@@ -13,9 +13,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
  * @param {function} onRefresh Behaviour when Track List is refreshed
  * @param {boolean} isEmpty If Track List is empty
  * @param {boolean} isLoadingQueue If Track Queue is loading
- * @param {function} dispatch Redux store action dispatcher
  */
-const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue, dispatch }) => {
+const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue }) => {
   const refreshClassName = 'is-blue' + (isLoadingQueue ? ' is-loading' : '');
 
   const back = isEmpty ? null :
@@ -47,6 +46,17 @@ const ChangeDayButtons = ({ onBack, onRefresh, isEmpty, isLoadingQueue, dispatch
       { refresh }
     </div>
   );
+}
+
+ChangeDayButtons.propTypes = {
+  /** Behaviour when returning to Track Processing */
+  onBack: PropTypes.func,
+  /** Behaviour when Track List is refreshed */
+  onRefresh: PropTypes.func,
+  /** If Track List is empty */
+  isEmpty: PropTypes.bool,
+  /** If Track Queue is loading */
+  isLoadingQueue: PropTypes.bool
 }
 
 export default ChangeDayButtons;

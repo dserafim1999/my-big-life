@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 
 import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import { executeQuery } from '../../actions/queries';
 import SimpleButton from '../../components/Buttons/SimpleButton';
-
 import SearchIcon from '@mui/icons-material/Search';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { executeQuery } from '../../actions/queries';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';
 import { DEFAULT_STAY } from '../../constants';
 import { TextField } from '../../components/Form';
 import { clearLocations, clearTrips } from '../../actions/trips';
 
+/**
+ * Contains the logic and features for the Search View
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {boolean} isVisible Determines if view UI components are visible
+ * @param {boolean} isQueryLoading Whether query results are being loaded from server
+ */
 const Search = ({ dispatch, isVisible, isQueryLoading }) => {
   if (!isVisible) return null;
 
@@ -78,6 +86,16 @@ const mapStateToProps = (state) => {
     isVisible: state.get('general').get('isUIVisible'),
     isQueryLoading: state.get('general').get('loading').get('query-button')
   };
+}
+
+
+Search.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** Determines if view UI components are visible */
+  isVisible: PropTypes.bool, 
+  /** Whether query results are being loaded from server */
+  isQueryLoading: PropTypes.bool
 }
 
 export default connect(mapStateToProps)(Search);

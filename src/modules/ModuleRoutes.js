@@ -32,6 +32,7 @@ export const getActiveView = () => {
     return getView(getActiveRoute());
 }
 
+// Add a new view to the navigation menu
 export const ModuleRoutes = [
     {
         title: "Home",

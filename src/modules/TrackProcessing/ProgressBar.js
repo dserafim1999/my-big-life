@@ -1,6 +1,5 @@
 import React from 'react';
-import ProgressBall from './ProgressBall';
-import ProgressRuler from './ProgressRuler';
+import PropTypes from 'prop-types';
 
 const BALL_DEFAULT_STYLE = {
   width: '16px',
@@ -10,13 +9,48 @@ const BALL_DEFAULT_STYLE = {
   zIndex: 100
 };
 
-const RULER_DEFAULT_STYLE = {
+/**
+ * Ball reflecting current processing step in ProgressBar
+ * 
+ * @param {object} style Aditional CSS styling for component
+ */
+const ProgressBall = ({ style }) => {
+  const stl = {
+    ...style,
+    borderRadius: '50%'
+  };
+
+  return (
+    <div style={stl}></div>
+  );
 }
 
+/**
+ * Line reflecting processing steps in ProgressBar
+ * 
+ * @param {object} style Aditional CSS styling for component
+ */
+const ProgressRuler = ({ style }) => {
+  const _style = { flexGrow: 2, display: 'inline-block' };
+  return (
+    <div style={_style}>
+      <div style={{ backgroundColor: 'white', width: '110%', height: '5px', marginLeft: '-5%', ...style }}>
+      </div>
+    </div>
+  );
+}
 
+/**
+ * Bar reflecting current processing step in Track Processing
+ * 
+ * @param {object} state Current processing step
+ * @param {object} ballStyle Aditional CSS styling for ProgressBall 
+ * @param {object} rulerStyle Aditional CSS styling for ProgressRuler 
+ * @param {any} children
+ */
 const ProgressBar = ({ state, ballStyle, rulerStyle, children }) => {
   ballStyle = ballStyle || BALL_DEFAULT_STYLE;
-  rulerStyle = rulerStyle || RULER_DEFAULT_STYLE;
+  rulerStyle = rulerStyle;
   const borderColor = '#284760';
 
   const p = 10;
@@ -110,6 +144,16 @@ const ProgressBar = ({ state, ballStyle, rulerStyle, children }) => {
       { stepLabels }
     </div>
   );
+}
+
+ProgressBar.propTypes = {
+  /** Current processing step */
+  state: PropTypes.object,
+  /** Aditional CSS styling for ProgressBall  */
+  ballStyle: PropTypes.object,
+  /** Aditional CSS styling for ProgressRuler  */
+  rulerStyle: PropTypes.object,
+  children: PropTypes.any
 }
 
 export default ProgressBar;

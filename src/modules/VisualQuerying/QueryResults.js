@@ -1,12 +1,24 @@
-import { IconButton } from "@mui/material";
-import React, { useState } from "react";
-import { connect } from 'react-redux';
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import React from "react";
 
+import { IconButton } from "@mui/material";
+import { connect } from 'react-redux';
+import { loadMoreQueryResults } from "../../actions/queries";
+
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Card from "../../components/Card";
 import QueryResult from "./QueryResult";
-import { loadMoreQueryResults } from "../../actions/queries";
 import AsyncButton from "../../components/Buttons/AsyncButton";
+import PropTypes from 'prop-types';
+
+/**
+ * Container for query results
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {boolean} isVisible Determines if view UI components are visible
+ * @param {object} results Query results
+ * @param {boolean} isLoadingMore Whether more results are currently being loaded from server
+ * @param {boolean} canLoadMore If there are still more results to be loaded from server
+ */
 
 const QueryResults = ({ dispatch, results, isLoadingMore, canLoadMore }) => {
     if (results.size <= 0) return null;
@@ -42,5 +54,18 @@ const mapStateToProps = (state) => { return {
     canLoadMore: state.get('queries').get('canLoadMore'),
     isLoadingMore: state.get('general').get('loading').get('load-more-button')
 }; }
+
+QueryResults.propTypes = {
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+    /** Determines if view UI components are visible */
+    isVisible: PropTypes.bool,
+    /** Query results */
+    results: PropTypes.object,
+    /** Whether more results are currently being loaded from server */
+    isLoadingMore: PropTypes.bool,
+    /** If there are still more results to be loaded from server */
+    canLoadMore: PropTypes.bool 
+}
   
 export default connect(mapStateToProps)(QueryResults);

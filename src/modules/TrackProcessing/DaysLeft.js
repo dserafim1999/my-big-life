@@ -1,18 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
-
-import { changeDayToProcess, dismissDay, removeDay } from '../../actions/process';
-import { toggleRemainingTracks } from '../../actions/process';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
-import { DONE_STAGE, PREVIEW_STAGE } from '../../constants';
-import { Tooltip } from '@mui/material';
+import PropTypes from 'prop-types';
 
-const POINTS_PER_KB = 7.2;
+import { connect } from 'react-redux';
+import { changeDayToProcess, dismissDay, removeDay } from '../../actions/process';
+import { toggleRemainingTracks } from '../../actions/process';
+import { DONE_STAGE, PREVIEW_STAGE, POINTS_PER_KB } from '../../constants';
+import { Tooltip } from '@mui/material';
 
 const GPXStyle = { paddingLeft: '1rem', fontSize: '0.9rem' };
 const GPXOfDay = ({ date, size }) => {
@@ -40,6 +38,14 @@ const buttonStyle = {
   marginLeft: '5px'
 }
 
+/**
+ * Button for operations on day (deleting/skipping)
+ * 
+ * @param {string} className Adition CSS classes for button
+ * @param {string} title Operation description
+ * @param {HTMLElement} icon Icon in button
+ * @param {function} onClick Behaviour when clicked
+ */
 const DayButton = ({className, title, icon, onClick}) => {
   return (
     <Tooltip title={title} placement='bottom'>
@@ -50,6 +56,15 @@ const DayButton = ({className, title, icon, onClick}) => {
   )
 }
 
+/**
+ * Button to select day to be processed
+ * 
+ * @param {string} date Day date
+ * @param {Array} gpxs Array of gpxs files in input folder
+ * @param {HTMLElement} isSelected Is day currently selected
+ * @param {function} onDismiss Behaviour when day is dismissed
+ * @param {function} onDelete Behaviour when day is deleted
+ */
 const Day = ({ date, gpxs, isSelected, onDismiss, onDelete }) => {
   const mDate = moment(date);
   return (
@@ -74,8 +89,17 @@ const Day = ({ date, gpxs, isSelected, onDismiss, onDelete }) => {
   );
 }
 
+/**
+ * Contains the logic and features for the Main View
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {object} style Aditional CSS styling 
+ * @param {string} selected Current day selected (YYYY-MM-DD format)
+ * @param {boolean} hasChanges Whether changes have been made
+ * @param {Array} lifesExistent LIFE files in input folder
+ * @param {boolean} done If processing is complete
+ */
 let DaysLeft = ({ dispatch, style, remaining, selected, hasChanges, lifesExistent, done }) => {
-
   const remainingDays = remaining.map(([day, gpxs], i) => {
     const onDismiss = (e) => {
       e.preventDefault();
@@ -145,5 +169,20 @@ const mapStateToProps = (state) => {
 }
 
 DaysLeft = connect(mapStateToProps)(DaysLeft);
+
+DaysLeft.propTypes = {
+  /** Redux store action dispatcher */
+  dispatch: PropTypes.func,
+  /** Aditional CSS styling  */
+  style: PropTypes.object,
+  /** Current day selected (YYYY-MM-DD format) */
+  selected: PropTypes.string,
+  /** Whether changes have been made */
+  hasChanges: PropTypes.bool,
+  /** LIFE files in input folder */
+  lifesExistent: PropTypes.arrayOf(PropTypes.string),
+  /** If processing is complete */
+  done: PropTypes.bool
+}
 
 export default DaysLeft;
