@@ -12,6 +12,10 @@ module.exports = {
         content: 'docs/state.md',
       },
       {
+        name: 'Modules',
+        content: 'docs/modules.md',
+      },
+      {
         name: 'Components',
         components: 'src/components/[A-Z]*/[A-Z]*.js'
       }

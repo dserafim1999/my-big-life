@@ -43,7 +43,7 @@ const ProgressRuler = ({ style }) => {
 /**
  * Bar reflecting current processing step in Track Processing
  * 
- * @param {object} state Current processing step
+ * @param {number} state Current processing step
  * @param {object} ballStyle Aditional CSS styling for ProgressBall 
  * @param {object} rulerStyle Aditional CSS styling for ProgressRuler 
  * @param {any} children
@@ -148,7 +148,7 @@ const ProgressBar = ({ state, ballStyle, rulerStyle, children }) => {
 
 ProgressBar.propTypes = {
   /** Current processing step */
-  state: PropTypes.object,
+  state: PropTypes.number,
   /** Aditional CSS styling for ProgressBall  */
   ballStyle: PropTypes.object,
   /** Aditional CSS styling for ProgressRuler  */
