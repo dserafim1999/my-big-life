@@ -24,7 +24,7 @@ To access the program, open the browser at ``` http://localhost:3000 ```
 
 ## Documentation
 
-The documentation for this project can be accesed via a webserver hosted at ``` http://localhost:3000 ```. To tun the web server, use the following command
+The documentation for this project can be accesed via a webserver hosted at ``` http://localhost:6060 ```. To tun the web server, use the following command
 
 ```
     $ npm run docs
