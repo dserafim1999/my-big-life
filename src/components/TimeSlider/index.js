@@ -93,10 +93,10 @@ export default class TimeSlider extends Component {
          />
         <div className='navbar'>
           <div className='navbar-left'>
-            { lower.format('LTS') }
+            { lower.format('HH:mm:ss') }
           </div>
           <div className='navbar-right'>
-            { upper.format('LTS') }
+            { upper.format('HH:mm:ss') }
           </div>
         </div>
       </div>

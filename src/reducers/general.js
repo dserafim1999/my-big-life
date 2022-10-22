@@ -109,7 +109,7 @@ const setGlobalLIFE = (state, action) => {
  */
  const setSelectedDay = (state, action) => {
   return state
-    .set('selectedDay', action.date)
+    .set('selectedDay', action.date ? action.date : null)
     .set('selectedDayColor', action.color);
 }
 

@@ -6,10 +6,12 @@ import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
 import Card from '../../components/Card';
 import DownloadingIcon from '@mui/icons-material/Downloading';
+import LoadingBar from '../../components/LoadingBar';
+import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { addAlert } from '../../actions/general';
-import { toggleRemainingTracks } from '../../actions/process';
+import { redo, toggleRemainingTracks, undo } from '../../actions/process';
 import { clearTracks, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';
@@ -17,7 +19,6 @@ import { DONE_STAGE } from '../../constants';
 import { 
     skipDay, nextStep, previousStep, requestServerState, reloadQueue
 } from '../../actions/process';
-import LoadingBar from '../../components/LoadingBar';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -31,6 +32,20 @@ const errorHandler = (dispatch, err, modifier) => {
     setTimeout(() => modifier(''), 2000);
 }
 
+/**
+ * Contains the logic and features for the Track Processing View
+ * 
+ * @param {boolean} showList Whether to show list of remaining days to process
+ * @param {number} step Current processing step
+ * @param {number} daysLeft Number of days left to process
+ * @param {number} bulkProgress Percentage of tracks that have already been processed (when bulk processing)
+ * @param {boolean} canProceed Whether you can proceed to the next step  
+ * @param {boolean} isLoadingNext Whether next step is being loaded 
+ * @param {boolean} isLoadingPrevious Whether previous step is being loaded 
+ * @param {boolean} isLoadingQueue Whether remaining days list is being loaded
+ * @param {boolean} isVisible Determines if view UI components are visible
+ * @param {boolean} isBulkProcessing Whether tracks are currently being uploaded in bulk
+ */
 class TrackProcessing extends Component {
     constructor(props) {
         super(props);
@@ -41,15 +56,52 @@ class TrackProcessing extends Component {
         this.bounds = new BoundsRecord().setWithCoords(90, -200, -90, 200);
     }
 
+    static propTypes = {
+        /** Whether to show list of remaining days to process */
+        showList: PropTypes.bool,
+        /** Current processing step */
+        step: PropTypes.number,
+        /** Number of days left to process */
+        daysLeft: PropTypes.number,
+        /** Percentage of tracks that have already been processed (when bulk processing) */
+        bulkProgress: PropTypes.number,
+        /** Whether you can proceed to the next step   */
+        canProceed: PropTypes.bool,
+        /** Whether next step is being loaded  */
+        isLoadingNext: PropTypes.bool,
+        /** Whether previous step is being loaded  */
+        isLoadingPrevious: PropTypes.bool,
+        /** Whether remaining days list is being loaded */
+        isLoadingQueue: PropTypes.bool,
+        /** Determines if view UI components are visible */
+        isVisible: PropTypes.bool,
+        /** Whether tracks are currently being uploaded in bulk */
+        isBulkProcessing: PropTypes.bool
+    }
+
     componentDidMount() {
         this.dispatch(clearTracks());
         this.dispatch(requestServerState());
+        document.addEventListener("keydown", (e) => this.keyListener(e, this.dispatch));
     }
 
     componentWillUnmount() {
         this.dispatch(clearTracks());
         this.dispatch(resetHistory());
         this.dispatch(updateBounds(this.bounds));
+        document.removeEventListener("keydown", (e) => this.keyListener(e, this.dispatch));
+    }
+
+    keyListener (event, dispatch) {
+        var zKey = 90, yKey = 89;
+        if(event.ctrlKey && event.which === zKey) {
+            event.preventDefault();
+            dispatch(undo());
+        }
+        if(event.ctrlKey && event.which === yKey) {
+            event.preventDefault();
+            dispatch(redo());
+        }
     }
 
     onPrevious = (e, modifier) => {

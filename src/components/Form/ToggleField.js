@@ -11,9 +11,9 @@ import OptionsField from './OptionsField';
  * @param {boolean} checked 
  * @param {function} onChange Behaviour when value changes
  */
-const ToggleField = ({ title, checked, onChange }) => {
+const ToggleField = ({ title, help, checked, onChange }) => {
     return (
-      <OptionsField title={title} options={[{label: 'Yes', key: true}, {label: 'No', key: false}]} defaultValue={String(checked)} type='boolean' onChange={onChange}/>
+      <OptionsField title={title} help={help} options={[{label: 'Yes', key: true}, {label: 'No', key: false}]} defaultValue={String(checked)} type='boolean' onChange={onChange}/>
     );
 }
 

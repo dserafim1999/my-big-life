@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { TextField, SectionBlock } from '../../components/Form';
+
+import PropTypes from 'prop-types';
 import QueryTimePicker from "../../components/Form/QueryTimePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { updateQueryBlock } from "../../actions/queries";
 import IconButton from "../../components/Buttons/IconButton";
 
+import { TextField, SectionBlock } from '../../components/Form';
+import { updateQueryBlock } from "../../actions/queries";
+
+/**
+ * Textual representation of a query component, related to a Route
+ * 
+ * @param {number} id Stay's id
+ * @param {string} startVal Textual representation of initial query component Start time
+ * @param {string} endVal Textual representation of initial query component End time
+ * @param {object} queryState Query component object related to a route
+ * @param {function} onRemove Behaviour when stay is deleted
+ * @param {function} dispatch Redux store action dispatcher
+ */
 const SearchStay = ({id, startVal, endVal, queryState, onRemove, dispatch}) => {
     const [start, setStart] = useState(startVal);
     const [end, setEnd] = useState(endVal);
@@ -90,6 +103,21 @@ const SearchStay = ({id, startVal, endVal, queryState, onRemove, dispatch}) => {
         </SectionBlock>
     );
 };
+
+SearchStay.propTypes = {
+    /** Stay's id */
+    id: PropTypes.number, 
+    /** Textual representation of initial query component Start time */
+    startVal: PropTypes.string, 
+    /** Textual representation of initial query component End time */
+    endVal: PropTypes.string, 
+    /** Behaviour when stay is deleted */
+    onRemove: PropTypes.func, 
+    /** Query component object related to a route */
+    queryState: PropTypes.object,
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+}
 
 
 export default SearchStay;

@@ -3,7 +3,7 @@ propagation. Therefore, this task is handled by [Redux](https://redux.js.org/), 
 
 ## Structure
 
-The application contains a global state that is shared throught the app that is stored inside an object tree inside a store. The only way to change the state is by creating an action, which describes whatt happened to the state. This action is then dispatched to the store, where a reducer will decide how said action will transform the application's state. 
+The application contains a global state that is shared throughout the app that is stored inside an object tree inside a store. The only way to change the state is by creating an action, which describes what happened to the state. This action is then dispatched to the store, where a reducer will decide how said action will transform the application's state. 
 
 As state is immutable, values should also be updated immutably. In other words, any changes should be performed on copies of an object.
 
@@ -39,7 +39,7 @@ This way, you can create an action by dispatching the method with the parameters
 
 ### Reducers
 
-A reducer is "an event listener which handles events based on the received action type". In other words, a reducer decides how to update the state given the current state and an action object. however, since state is immutable, it will return a modified copy of the previous state. 
+A reducer is "an event listener which handles events based on the received action type". In other words, a reducer decides how to update the state given the current state and an action object. However, since state is immutable, it will return a modified copy of the previous state. 
 
 They can be found in the `reducers` folder. Every feature is described in a separate JS file, and all reducer files are combined in `reducers\index.js`.
 

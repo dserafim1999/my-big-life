@@ -95,17 +95,17 @@ const Timeline = ({ render, height, showTimeLegend=false, showStayLegend=false, 
             <div className={type} style={{position: "absolute", display: "flex", height: "100%"}}>
                 {
                     type.flatMap((span, i) => {
-                        const start = getTimelineCoords(span.start);
-                        const end = getTimelineCoords(span.end);
+                        const _startPos = getTimelineCoords(span.start);
+                        const _endPos = getTimelineCoords(span.end);
                         
-                        if (start < startPos || end > endPos) return [];
+                        if (_startPos < startPos || _endPos > endPos) return [];
                         
-                        const spanWidth = end - start;
+                        const spanWidth = _endPos - _startPos;
                         const opacity = getOpacityValue(span.freq, maxFreq);
-
+                        
                         return block === "stay" ? 
-                            [<Stay key={i} start={start} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : ""} color={color}/>] : 
-                            [<Route key={i} start={start} width={spanWidth} opacity={opacity}/>];
+                            [<Stay key={i} start={span.start} end={span.end} startPos={_startPos} width={spanWidth} opacity={opacity} legend={showStayLegend ? span.location : ""} color={color}/>] : 
+                            [<Route key={i} startPos={_startPos} width={spanWidth} opacity={opacity}/>];
                     })
                 }
             </div>

@@ -2,8 +2,15 @@ import React from "react";
 import IconButton from '../Buttons/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import PropTypes from 'prop-types';
 
 /**
+ * Represents the selected day on the LIFE Viewer's header and allows editting and deleting the day
+ * 
+ * @param {object} day Day in question
+ * @param {string} color Color that represents the day's trip on the map, if loaded
+ * @param {function} onDeleteDay Behaviour when a day is deleted
+ * @param {function} onEditDay Behaviour when a day is edited
  * 
  * @constructor
  */
@@ -29,6 +36,14 @@ const SelectedDay = ({ day, color, onDeleteDay, onEditDay }) => {
 }
 
 SelectedDay.propTypes = {
+    /** Day in question */
+    day: PropTypes.object,
+    /** Color that represents the day's trip on the map, if loaded */
+    color: PropTypes.string,
+    /** Behaviour when a day is deleted */
+    onDeleteDay: PropTypes.func,
+    /** Behaviour when a day is edited */
+    onEditDay: PropTypes.func,
 }
   
 export default SelectedDay;

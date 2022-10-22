@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { saveConfig, getConfig, updateServer } from '../../actions/general';
 
 import Card from '../../components/Card';
 import AsyncButton from '../../components/Buttons/AsyncButton';
-import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
-import { bulkProcess, getBulkProcessStatus, rawBulkProcess } from '../../actions/process';
-
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import SaveIcon from '@mui/icons-material/Save';
-import { BoundsRecord } from '../../records';
-import { updateBounds } from '../../actions/map';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { saveConfig, getConfig, updateServer } from '../../actions/general';
+import { TextField, ToggleField, OptionsField, SectionBlock } from '../../components/Form';
+import { bulkProcess, getBulkProcessStatus } from '../../actions/process';
+
+/**
+ * Contains the logic and features for the Settings View
+ * 
+ * @param {function} dispatch Redux store action dispatcher
+ * @param {string} address Server address 
+ * @param {object} config Current configurations state 
+ * @param {boolean} isLoading Whether configurations file is being loaded from server
+ * @param {boolean} isVisible Determines if view UI components are visible
+ * @param {boolean} isBulkProcessing Whether tracks are currently being uploaded in bulk
+ * @param {number} bulkProgress Percentage of tracks that have already been processed (when bulk processing)
+ */
 
 const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProcessing, bulkProgress }) => {
     if (!isVisible) return null;
-    
     
     const bulkClassName = 'is-blue' + (isBulkProcessing ? ' is-loading' : '');
 
     useEffect( () => {
       dispatch(getConfig());
       dispatch(getBulkProcessStatus());
-      dispatch(updateBounds(new BoundsRecord().setWithCoords(90, -200, -90, 200)));
    }, []);
 
    const [state, setState] = useState({...config, address: address});
@@ -127,7 +136,7 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
             }
           </SectionBlock>
 
-          <SectionBlock name='Location sugestions'>
+          <SectionBlock name='Location suggestions'>
             <ToggleField title='Use' onChange={(e) => setState({...state, location: {...state.location, use: e.target.value}})} checked={config.location.use} />
             { (state.location ? state.location.use : config.location.use) && 
               (<>
@@ -138,14 +147,13 @@ const Settings = ({ dispatch, address, config, isLoading, isVisible, isBulkProce
                     <a href='https://developers.google.com/places/web-service/'>Google Places API key</a> to query for place suggestions in LIFE file.
                   </span>
                 } />
-                <TextField title='Google Places key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key}/>
+                <TextField title='Google Places API Key' onChange={(value) => setState({...state, location: {...state.location, google_key: value}})} defaultValue={config.location.google_key}/>
                 <ToggleField title='Use Foursquare Location API' onChange={(e) => setState({...state, location: {...state.location, use_foursquare: e.target.value}})} checked={config.location.use_foursquare} help={
                   <span>
                     <a href='https://developer.foursquare.com/docs/places-api-overview/'>Foursquare Places API key</a> to query for place suggestions in LIFE file.
                   </span>
                 } />
-                <TextField title='Foursquare Places Client ID' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_id: value}})} defaultValue={config.location.foursquare_client_id}/>
-                <TextField title='Foursquare Places Client Secret' onChange={(value) => setState({...state, location: {...state.location, foursquare_client_secret: value}})} defaultValue={config.location.foursquare_client_secret}/>
+                <TextField title='Foursquare Places API Key' onChange={(value) => setState({...state, location: {...state.location, foursquare_key: value}})} defaultValue={config.location.foursquare_key}/>
               </>)
             }
           </SectionBlock>
@@ -204,6 +212,22 @@ const mapStateToProps = (state) => {
   };
 }
 
-const CPane = connect(mapStateToProps)(Settings);
+Settings.propTypes ={
+  /** Redux store action dispatcher*/
+  dispatch: PropTypes.func, 
+  /** Server address */
+  address: PropTypes.string, 
+  /** Current configurations state */
+  config: PropTypes.object, 
+  /** Whether configurations file is being loaded from server */
+  isLoading: PropTypes.bool, 
+  /** Determines if view UI components are visible */
+  isVisible: PropTypes.bool, 
+  /** Whether tracks are currently being uploaded in bulk */
+  isBulkProcessing: PropTypes.bool, 
+  /** Percentage of tracks that have already been processed (when bulk processing) */
+  bulkProgress: PropTypes.number 
+}
 
-export default CPane;
+export default connect(mapStateToProps)(Settings);
+

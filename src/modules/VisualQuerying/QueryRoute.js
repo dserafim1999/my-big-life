@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+
 import Xarrow from "react-xarrows";
-import { updateQueryBlock } from "../../actions/queries";
 import QueryNumberPicker from "../../components/Form/QueryNumberPicker";
+import PropTypes from 'prop-types';
+
+import { updateQueryBlock } from "../../actions/queries";
 
 const inputStyle={
     border: "none",
@@ -12,10 +15,22 @@ const inputStyle={
     fontSize: "12px",
     position: "relative",
     color: "black"
-  }
+}
+
+/**
+ * Route representation on Query Timeline
+ * 
+ * @param {number} id Route id
+ * @param {string} start Origin Query Stay id 
+ * @param {string} end Destination Query Stay id
+ * @param {object} queryState Current query state
+ * @param {function} dispatch Redux store action dispatcher
+ */
 
 const QueryRoute = ({id, start, end, queryState, dispatch}) => {
     const [query, setQuery] = useState(queryState);
+
+    console.log(start)
 
     useEffect(() => {
         dispatch(updateQueryBlock(query));
@@ -61,5 +76,18 @@ const QueryRoute = ({id, start, end, queryState, dispatch}) => {
         </div>
     );
 };
+
+QueryRoute.propTypes = {
+    /** Route id */
+    id: PropTypes.number,
+    /** Origin Query Stay id  */
+    start: PropTypes.string,
+    /** Destination Query Stay id */
+    end: PropTypes.string,
+    /** Current query state */
+    queryState: PropTypes.object,
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+}
 
 export default QueryRoute;

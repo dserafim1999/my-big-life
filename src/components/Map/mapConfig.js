@@ -1,8 +1,8 @@
 import React from "react";
 
-import { TRACK_PROCESSING } from "../../constants";
+import { MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING } from "../../constants";
 import { getActiveRoute } from "../../utils"
-import { getView } from "../ModuleRoutes"
+import { getView } from "../../modules/ModuleRoutes"
 import { createPointIcon, createMarker, createLocationMarker } from './utils';
 
 import StopIcon from '@mui/icons-material/Stop';
@@ -11,6 +11,20 @@ import PlayIcon from '@mui/icons-material/PlayArrow';
 import { renderToString } from 'react-dom/server';
 
 // file used to set diferent map behaviour based on active route
+
+export const DEFAULT_PROPS = {
+    detailLevel: MAP_DETAIL_ZOOM_LEVEL,
+    decorationLevel: MAP_DECORATION_ZOOM_LEVEL,
+    mapCreation: {
+      zoomControl: false,
+      zoomDelta: 0.4,
+      zoomSnap: 0.4,
+      minZoom: 2,
+      maxBounds: new L.LatLngBounds([[90,-200],[-90,200]]),
+      maxBoundsViscosity: 1
+    },
+    segmentsAreMarkers: true
+}
 
 export const getPolylineStyle = (color, display) => {
     const activeView = getView(getActiveRoute());

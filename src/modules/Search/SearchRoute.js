@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
+
 import { updateQueryBlock } from "../../actions/queries";
 import { TextField, SectionBlock } from '../../components/Form';
 
-const SearchRoute = ({id, queryState, start, end, dispatch}) => {
+/**
+ * Textual representation of a query component, related to a Route
+ * 
+ * @param {object} queryState Query component object related to a route
+ * @param {number} start Id of origin stay
+ * @param {number} end Id of destination stay
+ * @param {function} dispatch Redux store action dispatcher
+ */
+const SearchRoute = ({queryState, start, end, dispatch}) => {
     const [query, setQuery] = useState(queryState);
 
     useEffect(() => {
@@ -27,5 +37,15 @@ const SearchRoute = ({id, queryState, start, end, dispatch}) => {
     );
 };
 
+SearchRoute.propTypes = {
+    /** Redux store action dispatcher */
+    dispatch: PropTypes.func,
+    /** Query component object related to a route */
+    queryState: PropTypes.object, 
+    /** Id of origin stay */
+    start: PropTypes.number, 
+    /** Id of destination stay */
+    end: PropTypes.number
+}
 
 export default SearchRoute;

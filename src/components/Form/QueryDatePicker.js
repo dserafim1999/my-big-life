@@ -1,11 +1,10 @@
 import React from "react";
 
 import PropTypes from 'prop-types';
-import moment, { Date } from 'moment';
+import moment from 'moment';
 import DateIcon from '@mui/icons-material/DateRange';
-import SimpleButton from "../Buttons/SimpleButton";
 
-import { createTheme, IconButton, InputAdornment, TextField, ThemeProvider } from "@mui/material";
+import { createTheme, InputAdornment, TextField, ThemeProvider } from "@mui/material";
 import { Box } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 
@@ -31,19 +30,12 @@ const boxStyle = {
  * @param {function} onClick Behaviour if Input Field is clicked 
  * @param {string} title Input Field name
  * @param {string} help Help text
- * @param {boolean} visual If not visual, Text Fields are used 
+ * @param {HTMLComponent} calendarIcon If set, replaces Text Field with icon 
+ * @param {object} style Extra styling for icon
  */
-const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, visual=false}) => {
-    const calendarIcon = (
-        <SimpleButton title='Select Date' tooltipPlacement="top" style={{border: 'none'}}>
-            <IconButton>
-                <DateIcon></DateIcon>
-            </IconButton>
-        </SimpleButton>
-    );
-
+const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, calendarIcon, style}) => {
     const valueRepresentation = () => {
-        return value === "--/--/----" || value === null ? (visual ? calendarIcon : "--/--/----") : value;
+        return value === "--/--/----" || value === null ? (calendarIcon !== undefined ? calendarIcon : "--/--/----") : value;
     }
 
     const valueFormat = () => {
@@ -74,7 +66,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
     });
 
     const DatePickerRenderer = () => {
-        if (visual) {
+        if (calendarIcon !== undefined) {
             return (
                 <DatePicker
                     value={valueFormat()}
@@ -85,7 +77,7 @@ const QueryDatePicker = ({value, open, onChange, onClose, onClick, title, help, 
                     onClose={() => onClose(false)}
                     renderInput={({inputRef}) => {
                         return (
-                            <Box sx={boxStyle}>
+                            <Box sx={{...boxStyle, ...style}}>
                                 <span onClick={onClick} ref={inputRef}>{valueRepresentation()}</span>
                             </Box>
                         );
@@ -147,8 +139,10 @@ QueryDatePicker.propTypes = {
     title: PropTypes.string,
     /** Help text */
     help: PropTypes.string,
-    /** If not visual, Text Fields are used */
-    visual: PropTypes.bool,
+    /** If set, replaces Text Field with icon  */
+    calendarIcon: PropTypes.element,
+    /** Extra styling for icon */
+    style: PropTypes.object
 }
 
 export default QueryDatePicker;

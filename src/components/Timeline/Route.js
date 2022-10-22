@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
  * See `Timeline`
  *  
  * @constructor
- * @param {number} start Start position  
+ * @param {number} startPos startPos position  
  * @param {number} width Route width
  * @param {number} opacity Route color opacity  
  */
-const Route = ({ start, width, opacity }) => {
+const Route = ({ startPos, width, opacity }) => {
     const routeStyle =  {
         position:"absolute",
-        left: start, 
+        left: startPos, 
         backgroundColor: "grey", 
         width: width, 
         height: "5px",
@@ -30,8 +30,8 @@ const Route = ({ start, width, opacity }) => {
 }
 
 Route.propTypes = {
-    /** Start position */
-    start: PropTypes.number,
+    /** startPos position */
+    startPos: PropTypes.number,
     /** Route width */
     width: PropTypes.number,
     /** Route color opacity */

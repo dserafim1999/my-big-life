@@ -1,20 +1,32 @@
 import React, { useState } from "react"
+
+import PropTypes from 'prop-types';
+
 import { SEMANTIC_STYLES } from "../../constants";
 
 /**
+ * Represent a span in the current LIFE file
+ * 
+ * @param {object} span Span in question
+ * @param {boolean} isSelectedDay If day is currently selected
+ * @param {function} onLocationClick Behaviour when location is selected
  * 
  * @constructor
  */
 
 const SpanLIFE = ({ span, isSelectedDay, onLocationClick }) => {
-    const [isHover, setIsHover] = useState(false);
+    const [hover, setHover] = useState('');
 
-    const onMouseEnter = () => {
-        if (isSelectedDay === undefined || isSelectedDay) setIsHover(true);
+    const onMouseEnter = (location) => {
+        if (isSelectedDay === undefined || isSelectedDay) {
+            setHover(location);
+        }
     }
 
     const onMouseLeave = () => {
-        if (isSelectedDay === undefined || isSelectedDay) setIsHover(false);
+        if (isSelectedDay === undefined || isSelectedDay) {
+            setHover('');
+        }
     }
 
     const onClick = (place) => {
@@ -25,27 +37,44 @@ const SpanLIFE = ({ span, isSelectedDay, onLocationClick }) => {
         return value && <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES[type], margin: '3px'}}>{ value }</span>
     }
 
-    const addPlaces = (places) => {
-        // TODO consider '->' places
+    const renderLocationPill = (location) => {
         return (
             <span 
-                style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Location"], border: isHover ? '2px solid var(--main)' : '', margin: '3px', cursor: 'pointer'}}
-                onClick={() => onClick(span.place)}
-                onMouseEnter={onMouseEnter}
+                style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Location"], border: hover === location ? '2px solid var(--main)' : '', margin: '3px', cursor: 'pointer'}}
+                onClick={() => onClick(location)}
+                onMouseEnter={() => onMouseEnter(location)}
                 onMouseLeave={onMouseLeave}
-            >{ places }</span>
-        );
+            >{ location }</span>
+        )
     }
 
-    const semantics = span.semantics ? ("{" + span.semantics.join("|") + "}") : undefined;
-    const tags = span.tags ? ("[" + span.tags.join("|") + "]") : undefined;
+    const renderTimePill = (time) => {
+        return <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Time"], marginRight: '3px'}}>{ time }</span>
+    }
+
+    const addPlaces = (places) => {
+        if (Array.isArray(places)) {
+            return (
+                <>
+                    { renderLocationPill(places[0]) }
+                    {' -> '} 
+                    { renderLocationPill(places[1]) }
+                </>
+            );
+        } else {
+            return renderLocationPill(places);
+        }
+    }
+
+    const semantics = span.semantics ? ("{" + span.semantics.join(" | ") + "}") : undefined;
+    const tags = span.tags ? ("[" + span.tags.join(" | ") + "]") : undefined;
 
     return (
         <div>
             <p style={{margin: '5px'}}>
-                <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Time"], marginRight: '3px'}}>{ span.start }</span>
+                { renderTimePill(span.start)}
                 <b>-</b>
-                <span style={{ ...SEMANTIC_STYLES["_"], ...SEMANTIC_STYLES["Time"], margin: '3px'}}>{ span.end }</span>
+                { renderTimePill(span.end)}
                 <b>:</b>
                 { addPlaces(span.place)}
                 { addOptionalSemantics("Tag", tags) }
@@ -56,6 +85,12 @@ const SpanLIFE = ({ span, isSelectedDay, onLocationClick }) => {
 }
 
 SpanLIFE.propTypes = {
+    /** Span in question */
+    span: PropTypes.object,
+    /** If day is currently selected */
+    isSelectedDay: PropTypes.bool,
+    /** Behaviour when location is selected */
+    onLocationClick: PropTypes.func
 }
   
 export default SpanLIFE;

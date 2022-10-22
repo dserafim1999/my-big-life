@@ -1,4 +1,3 @@
-import { BorderBottom } from '@mui/icons-material';
 import React from 'react';
 
 const SuggestionBox = ({ left, top, selected, onSelect, suggestions, show }) => {

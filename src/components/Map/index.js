@@ -25,24 +25,11 @@ import {
 } from '../../actions/segments';
 import { undo, redo } from '../../actions/process';
 import { clearTrips, canLoadMoreTripsInBounds, loadTripsInBounds } from '../../actions/trips';
-import { MAIN_VIEW, MAP_DECORATION_ZOOM_LEVEL, MAP_DETAIL_ZOOM_LEVEL, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
+import { MAIN_VIEW, TRACK_PROCESSING, VISUAL_QUERIES } from '../../constants';
 import { createMarker, createPointIcon } from './utils';
 import { setZoomLevel } from '../../actions/map';
 import { setSelectedDay } from '../../actions/general';
-
-const DEFAULT_PROPS = {
-  detailLevel: MAP_DETAIL_ZOOM_LEVEL,
-  decorationLevel: MAP_DECORATION_ZOOM_LEVEL,
-  mapCreation: {
-    zoomControl: false,
-    zoomDelta: 0.4,
-    zoomSnap: 0.4,
-    minZoom: 2,
-    maxBounds: new L.LatLngBounds([[90,-200],[-90,200]]),
-    maxBoundsViscosity: 1
-  },
-  segmentsAreMarkers: true
-}
+import { DEFAULT_PROPS } from './mapConfig';
 
 export default class LeafletMap extends Component {
   constructor (props) {
@@ -160,14 +147,14 @@ export default class LeafletMap extends Component {
     
     switch (activeView) {
       case MAIN_VIEW:
+        if (this.heatmapLayer) this.map.removeLayer(this.heatmapLayer);        
         this.shouldUpdateHeatMap(canonicalTrips, prev.canonicalTrips); 
         this.toggleTripsAndLocations();
         break;
-        default:
-          if (this.heatmapLayer) {
-            this.map.removeLayer(this.heatmapLayer);        
-          }
-        }
+      default:
+        if (this.heatmapLayer) this.map.removeLayer(this.heatmapLayer);        
+    }
+        
   }
 
   shouldUpdateSegmentsArePoints (current, previous) {
@@ -186,7 +173,7 @@ export default class LeafletMap extends Component {
     const currentZoom = this.map.getZoom();
     const { detailLevel } = this.props;
 
-    if (current !== previous && currentZoom < detailLevel) {
+    if (currentZoom < detailLevel) {
       const _points = [];
       
       // Add all points from canonical trips to array. geoJSON coordinates are defined by (longitude, latitude)
@@ -385,7 +372,7 @@ export default class LeafletMap extends Component {
 
     if (highlighted.count() > 0) {
       setOpacity(highlighted, 1, true);
-      setOpacity(hidden, 0.1, false);
+      setOpacity(hidden, 0.01, false);
     } else {
       setOpacity(hidden, 1);
     }
@@ -398,7 +385,7 @@ export default class LeafletMap extends Component {
     if (!selectedDay) {
       opacity = '1';
     } else if (day !== selectedDay.format("YYYY-MM-DD")) {
-      opacity = '0.1';
+      opacity = '0.01';
     } else {
       opacity = '1';
       trip.layergroup.bringToFront();
