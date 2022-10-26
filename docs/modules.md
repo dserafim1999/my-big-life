@@ -3,6 +3,10 @@ As our application contains several features that serve the global interaction w
 used for specific contexts, we designate each functionality to a module. The idea is that, as more
 functionality is added to the system, the logic is contained in its own context. 
 
+## Boilerplate
+
+You can find all the necessary changes and additions when creating a new module in the [templates](..\templates) directory. This should help you understand the different elements required, as well as help you so you can copy and paste the base structure and modify it to satisfy your requirements. 
+
 ## New module
 To create a new module, simply create a new directory in the [modules](..\src\modules) directory with a base component to house the module's logic. A module should be presented to users using [cards](..\src\components\Card\index.js), displayed over the map.
 
