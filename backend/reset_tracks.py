@@ -108,11 +108,14 @@ class TracksReset(object):
     def reset_track_files(self):
         """ Applies all steps to reset tracks state
         """
+        print("Reseting tracks in files...")
         self.backup_to_input()
         self.remove_files(self.config['output_path'])
         self.remove_files(self.config['life_path'])
         self.reset_life_file()
+        print("Reseting database...")
         self.reset_db()
+        print("Backend reset!")
 
     def reset_db(self):
         """ Drops all tables in database and recreates them
