@@ -1,7 +1,8 @@
-# Setup
+# Back-End
+## Setup
 
 Below you will find the steps to manually setup the backend.
-## Requirements
+### Requirements
 
 The required Python libraries to run the backend server can be found in the "requirements.txt" file. To install them, you can run:
 
@@ -13,7 +14,7 @@ If you are using a virtual environment to install MyBigLife Backend's requiremen
 
 **NOTE:** tracktotrip3 requires Microsoft Visual C++ 14.0. It can be found using the [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/?q=build+tools)
 
-## Configuration
+### Configuration
 
 A few parameters need to be adjusted in order to run the backend. A JSON file should be created so that it can be passed as a parameter when launching the program.
 
@@ -47,11 +48,11 @@ JSON File Example with required parameters:
 }
 ```
 
-## Database
+### Database
 
 Database access is not mandatory, however some functionalities may not work. Create a [PostgreSQL 14](https://www.postgresql.org/download/) database with [PostGis 3.2](https://postgis.net/install/). The latter can be installed using Stack Builder, which comes bundled with the PostgreSQL instalation.
 
-# Run
+## Run
 
 
 The program can be run by using the following command:
@@ -66,7 +67,7 @@ The server is highly parameterable, use the following command for more options:
 $ python server.py --help
 ```
 
-# Reset Tracks
+## Reset Tracks
 
 The database can be reset by running the following command:
 
@@ -76,12 +77,12 @@ The database can be reset by running the following command:
 
 This command will also move the tracks saved in the backup folder back into the input folder, removing files from the output and life folders, in order to revert to the initial state for development.
 
-# Adding a new manager
+## Adding a new manager
 
 A manager's goal is to keep module specific logic self contained within their respective folders. The idea
 is: as new functionality is introduced, its logic is contained in its own manager file which helps keep the system modular for work to come. 
 
-## Create a python package
+### Create a python package
 
 The first step is creating a new folder where the manager will be stored. To be able to import it in another file (such as, for instance, the server file) you need to add an empty file named ```__init__.py```. Then, you can import the package as follows:
 
@@ -89,11 +90,11 @@ The first step is creating a new folder where the manager will be stored. To be 
     from folder_name import manager_name
 ```
 
-## Create the manager
+### Create the manager
 
 After that, a manager file should be created containing a class. This class will inherit from the ```Manager``` class that is defined in [utils.py](utils.py). This base class will save the configurations provided to the server, as well as expose a mthod that creates a connection with the database called ```db_setup```.
 
-## Create endpoints
+### Create endpoints
 
 After implementing the logic for your manager, it's time to link it to the server. Head to the [server](server.py) file and create a new instance of the manager. Then you can create the endpoints you wish to add to this manager. To keep endpoints consistent within their managers, a convention was set where you prefix the endpoint's route with a name that identifies the managers behaviour. For instance, if we wanted to add a 'play' endpoint to a video manager, we could name give it the route ```/video/play```. 
 
