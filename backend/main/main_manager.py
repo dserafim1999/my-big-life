@@ -10,7 +10,6 @@ from os.path import join, expanduser, isfile
 from life.life import Life
 from main import db
 from utils import Manager, merge_bounding_boxes
-
 class MainManager(Manager):
     """ Manager that contains general features
 
@@ -24,7 +23,8 @@ class MainManager(Manager):
         self.run_schema()
 
     def run_schema(self):
-        """ Runs schema on database. If tables already exist, creation is ignored
+        """ Runs schema on database. If tables already exist, creation is ignored.
+        If no connection is made with the database, program exits.
         """
         conn, cur = self.db_connect()
         schema_sql = open('schema.sql', 'r')
@@ -33,6 +33,9 @@ class MainManager(Manager):
         if conn and cur:
             db.execute_query(cur, schema_query,self.debug)
             db.dispose(conn, cur)
+        else:
+            print("WARNING: Could not establish a connection with the database. Please check you have provided the correct database configurations in the config file.")
+            quit()
 
     def update_config(self, new_config):
         """ Updates the config object by overlapping with the new config object
