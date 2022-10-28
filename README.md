@@ -4,7 +4,7 @@ _MyBigLife_ enables users to easily process, analyse and query their spatial and
 
 ## Setup
 
-To setup the system automatically, you can run the [setup](setup.bat) batch script. 
+To setup the system automatically, you can run the [setup](setup.bat) batch script. [Python3](https://www.python.org/downloads/) with _pip_ is required for the back-end, and [node.js](https://nodejs.org/en/download/) with _npm_ is required for the front-end.
 
 **NOTE:** The Python dependency tracktotrip3 requires Microsoft Visual C++ 14.0. It can be found using the [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/?q=build+tools) and should be installed before running the setup script.
 
@@ -12,8 +12,9 @@ Instructions to manually setup the back-end and front-end can be found in their 
 
 ## Configuration
 
-A few parameters need to be adjusted in order to run the backend. A JSON file should be created so that it can be passed as a parameter when launching the program.
+A few parameters need to be adjusted in order to run the backend. A JSON file should be created so that it can be passed as a parameter when launching the program. A default configuration file, as well as the required directories, will be created and ignored in the _.gitignore_ when running the [setup](setup.bat) script. However, you can define another configurations file and directories if you so desire. 
 
+The required parameters are:
 - **input_path**: defines the directory where the input .gpx files are located 
 - **backup_path**: defines the directory where the original .gpx files are saved after processing  
 - **output_path**: defines the directory where the processed .gpx files will be stored
