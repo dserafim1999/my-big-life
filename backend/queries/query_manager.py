@@ -223,6 +223,10 @@ class QueryManager(Manager):
         items = []
         global date
         date = obj[0]["date"]
+        
+        if date != "--/--/----":
+            date = datetime.datetime.strptime(date,  "%d/%m/%Y")
+            date = datetime.datetime.strftime(date, "%Y-%m-%d")
 
         iterobj = iter(obj) #skip the first, that is the date
         next(iterobj)
@@ -485,8 +489,6 @@ class Range:
 
         global date
         if date != "--/--/----":
-            date = datetime.datetime.strptime(date,  "%d/%m/%Y")
-            date = datetime.datetime.strftime(date, "%Y-%m-%d")
             where_chunks.append(f" start_date::date = '{date}' ")
 
         return tables, with_chunks, where_chunks        
@@ -723,8 +725,6 @@ class Interval:
 
         global date
         if date != "--/--/----":
-            date = datetime.datetime.strptime(date,  "%d/%m/%Y")
-            date = datetime.datetime.strftime(date, "%Y-%m-%d")
             where_chunks.append(f" start_date::date = '{date}' ")
 
         return tables, with_chunks, where_chunks        
