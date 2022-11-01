@@ -388,6 +388,7 @@ class ProcessingManager(Manager):
         """ Starts bulk processing all GPXs queued
         """
 
+        self.reset()
         self.reload_queue()
 
         processed = 1
