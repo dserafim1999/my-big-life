@@ -32,10 +32,10 @@ def create_config_file(input_path, output_path, backup_path, life_path, life_all
         json.dump(config, config_file, indent=4)
 
 if __name__ == "__main__":
-    input_path    = str(Path.cwd()) + '\\tracks\\input'
-    output_path   = str(Path.cwd()) + '\\tracks\\output'
-    backup_path   = str(Path.cwd()) + '\\tracks\\backup'
-    life_path     = str(Path.cwd()) + '\\tracks\\life'
+    input_path    = str(Path.cwd()) + '\\tracks\\input\\'
+    output_path   = str(Path.cwd()) + '\\tracks\\output\\'
+    backup_path   = str(Path.cwd()) + '\\tracks\\backup\\'
+    life_path     = str(Path.cwd()) + '\\tracks\\life\\'
     life_all_path = str(Path.cwd()) + '\\tracks\\all.life'
 
     create_track_dirs(input_path, output_path, backup_path, life_path, life_all_path)
