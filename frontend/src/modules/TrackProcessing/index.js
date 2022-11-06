@@ -206,7 +206,7 @@ class TrackProcessing extends Component {
                     isBulkProcessing ? 
                         BULK_PROCESSING :
                         (<>
-                            <PaneContent showList={showList} stage={step}/>
+                            <PaneContent showList={showList} step={step}/>
                             <div style={{ marginTop: '0.5rem' }}>
                                 { buttons }
                             </div>
