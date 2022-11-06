@@ -467,7 +467,7 @@ export const bulkProcess = () => {
 
     dispatch(setIsBulkProcessing(true));
     dispatch(getBulkProgress(true));
-    dispatch(addAlert('Starting bulk processing. You can see the progress on the Track Processing menu.', 'info', 5, 'bulk-start'));
+    dispatch(addAlert('Starting bulk processing. You can see the progress in the Track Processing view.', 'info', 5, 'bulk-start'));
 
     return fetch(getState().get('general').get('server') + '/process/bulk', options)
       .then((response) => response.json())
