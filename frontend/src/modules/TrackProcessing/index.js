@@ -6,12 +6,13 @@ import PaneContent from './PaneContent';
 import ProgressBar from './ProgressBar';
 import Card from '../../components/Card';
 import DownloadingIcon from '@mui/icons-material/Downloading';
+import StopIcon from '@mui/icons-material/Stop';
 import LoadingBar from '../../components/LoadingBar';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { addAlert } from '../../actions/general';
-import { redo, toggleRemainingTracks, undo } from '../../actions/process';
+import { redo, stopBulkProcess, toggleRemainingTracks, undo } from '../../actions/process';
 import { clearTracks, resetHistory } from '../../actions/tracks';
 import { BoundsRecord } from '../../records';
 import { updateBounds } from '../../actions/map';
@@ -19,6 +20,7 @@ import { DONE_STAGE } from '../../constants';
 import { 
     skipDay, nextStep, previousStep, requestServerState, reloadQueue
 } from '../../actions/process';
+import AsyncButton from '../../components/Buttons/AsyncButton';
 
 const errorHandler = (dispatch, err, modifier) => {
     dispatch(addAlert(
@@ -156,6 +158,10 @@ class TrackProcessing extends Component {
                 <DownloadingIcon style={{ color: 'rgb(191, 191, 191)', verticalAlign: 'middle', marginRight: '5px' }} /> 
                 <span style={{verticalAlign: 'middle'}}>Bulk processing currently in progress.</span>
                 <LoadingBar height={30} value={bulkProgress}/>
+                <AsyncButton className={"is-red"} style={{marginTop: '10px'}}onClick={() => dispatch(stopBulkProcess())}>
+                    Stop
+                    <StopIcon style={{marginLeft: '10px'}}/>
+                </AsyncButton>
             </div>
         );
 

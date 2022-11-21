@@ -406,7 +406,7 @@ class ProcessingManager(Manager):
         lifes.from_string(all_lifes)
 
         start_time = datetime.now().timestamp()
-        while len(list(self.queue.values())) > 0:
+        while len(list(self.queue.values())) > 0 and self.is_bulk_processing:
             start = datetime.now().timestamp() - start_time
             
             if self.use_metrics:
@@ -430,10 +430,11 @@ class ProcessingManager(Manager):
             self.bulk_progress = (processed / total_num_days) * 100
             processed += 1
 
-        for life_file in self.life_queue:
-            life_path = join(expanduser(self.config['input_path']), life_file)
-            backup_path = join(expanduser(self.config['backup_path']), life_file)
-            rename(life_path, backup_path)
+        if len(list(self.queue.values())) == 0:
+            for life_file in self.life_queue:
+                life_path = join(expanduser(self.config['input_path']), life_file)
+                backup_path = join(expanduser(self.config['backup_path']), life_file)
+                rename(life_path, backup_path)
 
         self.life_queue = []
 
@@ -442,8 +443,15 @@ class ProcessingManager(Manager):
                 json.dump(self.metrics, metrics_file)
             self.metrics = []
 
+        self.stop_bulk_processing()
+        
+    def stop_bulk_processing(self):
+        """ Sets bulk processing state to stop processing 
+        """
         self.is_bulk_processing = False
         self.bulk_progress = -1
+        self.reset()
+        self.reload_queue()
  
     def preview_to_adjust(self, track):
         """ Processes a track so that it becomes a trip

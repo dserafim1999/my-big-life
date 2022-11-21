@@ -477,7 +477,35 @@ export const bulkProcess = () => {
         throw err;
       })
       .then((json) => {
-        dispatch(addAlert('All tracks have been succesfully uploaded.', 'success', 5, 'bulk-done'));
+        dispatch(addAlert('Bulk processing has finished.', 'success', 5, 'bulk-done'));
+        dispatch(setIsBulkProcessing(false));
+        updateState(dispatch, json, getState);
+      });
+  }
+}
+
+/**
+ * Tells server to stop bulk track processing
+ * 
+ * @request
+ */
+ export const stopBulkProcess = () => {
+  return (dispatch, getState) => {
+    const options = {
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    dispatch(addAlert('Pausing bulk upload. This may take a few seconds...', 'success', 5, 'bulk-done'));
+    
+    return fetch(getState().get('general').get('server') + '/process/stopBulk', options)
+      .then((response) => response.json())
+      .catch((err) => {
+        dispatch(addAlert('Server could not complete request. Check server log for more information.', 'error', 5, 'bulk-err'));
+        dispatch(setIsBulkProcessing(false));
+        throw err;
+      })
+      .then((json) => {
         dispatch(setIsBulkProcessing(false));
         updateState(dispatch, json, getState);
       });
