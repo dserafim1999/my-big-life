@@ -202,7 +202,6 @@ def quartiles(to_show, nr_queries):
         endListIntervalOrdered = sorted(endListInterval, key = lambda tup: tup[0])
         startListIntervalOrdered = sorted(startListInterval, key = lambda tup: tup[0])
 
-
         if size > 4:
             size = 4
         
@@ -211,19 +210,6 @@ def quartiles(to_show, nr_queries):
 
         endTimesInterval = np.array_split(np.array([x[0] for x in endListIntervalOrdered]), size)
         startTimesInterval = np.array_split(np.array([x[0] for x in startListIntervalOrdered]), size)
-
-        if nr_queries == 1:
-            tempEnd = endTimes
-            tempStart = startTimes
-            endTimes = []
-            startTimes = []
-
-            for array in tempEnd:
-                endTimes.append([sum(array)/len(array)])
-
-            for array in tempStart:
-                startTimes.append([sum(array)/len(array)])
-
 
         endT = []
         startT = []
