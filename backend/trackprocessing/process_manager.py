@@ -195,7 +195,7 @@ class ProcessingManager(Manager):
 
         input_path = expanduser(self.config['input_path'])
         files = listdir(input_path)
-        files = [f for f in files if f.split('.')[-1] == 'gpx']
+        files = [f for f in files if f.split('.')[-1].casefold() == 'gpx']
 
         files = [file_details(input_path, f) for f in files]
         files = sorted(files, key=lambda f: f['date'])
@@ -212,7 +212,7 @@ class ProcessingManager(Manager):
 
         input_path = expanduser(self.config['input_path'])
         files = listdir(input_path)
-        files = [f for f in files if f.split('.')[-1] == 'life']
+        files = [f for f in files if f.split('.')[-1].casefold() == 'life']
         return files
 
     def reset(self):
